@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import item.Item;
@@ -15,9 +16,9 @@ import character.CharacterModel;
 
 public class TownModel implements Town {
 
-    private List<Place> places;
+    private final List<Place> places;
     private List<Item> items;
-    private Character targetCharacter;
+    private final Character targetCharacter;
 
     public TownModel(String filename) throws IOException {
         places = new ArrayList<>();
@@ -33,7 +34,8 @@ public class TownModel implements Town {
         String[] townInfo = br.readLine().split(" ");
         int numRows = Integer.parseInt(townInfo[0]);
         int numCols = Integer.parseInt(townInfo[1]);
-        String townName = townInfo[2];
+//        String townName = townInfo[2];
+        String townName = String.join(" ", Arrays.copyOfRange(townInfo, 2, townInfo.length));
         System.out.println("Town: " + townName + " (" + numRows + "x" + numCols + ")");
 
         String[] targetInfo = br.readLine().split(" ");
@@ -48,7 +50,8 @@ public class TownModel implements Town {
             int col1 = Integer.parseInt(placeInfo[1]);
             int row2 = Integer.parseInt(placeInfo[2]);
             int col2 = Integer.parseInt(placeInfo[3]);
-            String placeName = placeInfo[4];
+//            String placeName = placeInfo[4];
+            String placeName = String.join(" ", Arrays.copyOfRange(placeInfo, 4, placeInfo.length));
             Place place = new PlaceModel(row1, col1, row2, col2, placeName);
             places.add(place);
         }
@@ -66,7 +69,8 @@ public class TownModel implements Town {
             String[] itemInfo = br.readLine().split(" ");
             int placeIndex = Integer.parseInt(itemInfo[0]);
             int damage = Integer.parseInt(itemInfo[1]);
-            String itemName = itemInfo[2];
+//            String itemName = itemInfo[2];
+            String itemName = String.join(" ", Arrays.copyOfRange(itemInfo, 2, itemInfo.length));
             Item item = new ItemModel(itemName, damage);
             places.get(placeIndex).addItem(item);
         }
@@ -95,6 +99,10 @@ public class TownModel implements Town {
     @Override
     public Character getCharacter() {
         return targetCharacter;
+    }
+    
+    public List<Place> getPlaces() {
+        return places;
     }
 
 }

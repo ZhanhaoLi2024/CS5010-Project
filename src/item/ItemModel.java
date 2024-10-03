@@ -2,8 +2,8 @@ package item;
 
 public class ItemModel implements Item {
 
-    private String name;
-    private int damage;
+    private final String name;
+    private final int damage;
 
     public ItemModel(String name, int damage) {
         this.name = name;

@@ -6,10 +6,10 @@ import place.Place;
 
 public class CharacterModel implements Character {
 
-    private String name;
-    private int health;
+    private final String name;
+    private final int health;
     private Place currentPlace;
-    private List<Place> places;
+    private final List<Place> places;
 
     public CharacterModel(String name, int health, Place startPlace, List<Place> places) {
         this.name = name;
@@ -23,14 +23,25 @@ public class CharacterModel implements Character {
         int currentIndex = places.indexOf(currentPlace);
         if (currentIndex < places.size() - 1) {
             currentPlace = places.get(currentIndex + 1);
-            System.out.println(name + " moved to " + currentPlace.getName());
         } else {
-            System.out.println(name + " is already at the last place.");
+            currentPlace = places.get(0);
         }
+        System.out.println(name + " moved to " + currentPlace.getName());
     }
 
     @Override
     public Place getCurrentPlace() {
         return currentPlace;
     }
+    
+    @Override
+    public int getHealth() {
+    	return health;
+    }
+
+	@Override
+	public String getName() {
+		return name;
+	}
+    
 }
