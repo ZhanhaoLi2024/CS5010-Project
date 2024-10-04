@@ -1,0 +1,13 @@
+Please choose an option:
+1. Move 'The Mayor' to the next place
+2. Show target's current space
+3. Show neighbors of current space
+4. Show space by index
+5. Show neighbors by index
+0. Exit
+1
+Moving the target character...
+The Mayor moved to Grocery Store
+Target character is in: Grocery Store
+Items in the place:
+Shopping Cart (Damage: 12)

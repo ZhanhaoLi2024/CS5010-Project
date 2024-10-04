@@ -1,0 +1,13 @@
+Please choose an option:
+1. Move 'The Mayor' to the next place
+2. Show target's current space
+3. Show neighbors of current space
+4. Show space by index
+5. Show neighbors by index
+0. Exit
+4
+Enter the index of the space (1 to 20):
+4
+Place: Post Office
+Items in the place:
+Envelope (Damage: 8)
