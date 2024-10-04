@@ -1,0 +1,65 @@
+/Library/Java/JavaVirtualMachines/openjdk-11.jdk/Contents/Home/bin/java -javaagent:/Applications/IntelliJ IDEA.app/Contents/lib/idea_rt.jar=55912:/Applications/IntelliJ IDEA.app/Contents/bin -Dfile.encoding=UTF-8 -classpath /Users/zhanhaoli/Documents/GitHub/cs5010-project-kill-doctor-lucky/bin:/Applications/IntelliJ IDEA.app/Contents/lib/junit4.jar Driver res/SmallTownWorld.txt
+Welcome to Kill Doctor Lucky!
+=== Map Information ===
+Town: Small Town World
+Target name: The Mayor (Health: 100)
+1 Park
+Items in the place: Toy Ball (Damage: 8)
+--------------------
+2 Grocery Store
+Items in the place: Shopping Cart (Damage: 12)
+--------------------
+3 School
+Items in the place: Textbook (Damage: 6)
+--------------------
+4 Post Office
+Items in the place: Envelope (Damage: 8)
+--------------------
+5 Police Station
+Items in the place: Handcuffs (Damage: 20)
+--------------------
+6 Fire Station
+Items in the place: Fire Hose (Damage: 15)
+--------------------
+7 Library
+Items in the place: Storybook (Damage: 10)
+--------------------
+8 Hospital
+Items in the place: Medical Kit (Damage: 18)
+--------------------
+9 Restaurant
+Items in the place: Menu (Damage: 22)
+--------------------
+10 Playground
+Items in the place: Slide (Damage: 6)
+--------------------
+11 Bakery
+Items in the place: Cake (Damage: 10)
+--------------------
+12 Gas Station
+Items in the place: Gas Can (Damage: 8)
+--------------------
+13 House #1
+Items in the place: House Key (Damage: 15)
+--------------------
+14 House #2
+Items in the place: Mailbox Key (Damage: 14)
+--------------------
+15 Gym
+Items in the place: Dumbbells (Damage: 12)
+--------------------
+16 Pharmacy
+Items in the place: Medicine Bottle (Damage: 7)
+--------------------
+17 Barber Shop
+Items in the place: Scissors (Damage: 5)
+--------------------
+18 Coffee Shop
+Items in the place: Coffee Mug (Damage: 10)
+--------------------
+19 Bus Stop
+Items in the place: Bus Ticket (Damage: 7)
+--------------------
+20 Community Center
+Items in the place: Community Badge (Damage: 20)
+--------------------
