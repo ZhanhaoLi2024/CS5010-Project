@@ -9,7 +9,9 @@ import place.Place;
  */
 public interface Character {
 	/**
-	 * Moves the character to the next place.
+	 * Moves the character to the next place in the list of places. If the character
+	 * is currently at the last place in the list, it will move back to the first
+	 * place.
 	 */
 	void moveToNextPlace();
 

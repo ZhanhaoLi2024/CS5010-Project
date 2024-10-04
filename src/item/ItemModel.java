@@ -20,24 +20,14 @@ public class ItemModel implements Item {
         this.damage = damage;
     }
 
-    /**
-     * Retrieves the name of the item.
-     *
-     * @return the name of the item as a String.
-     */
     @Override
     public String getName() {
         return name;
     }
 
-    /**
-     * Retrieves the damage value of the item.
-     *
-     * @return the damage value of the item as an integer.
-     */
     @Override
     public int getDamage() {
-        return damage;
-    }
+		return damage;
+	}
 
 }

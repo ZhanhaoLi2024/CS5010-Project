@@ -15,7 +15,9 @@ import place.Place;
 public interface Town {
 
 	/**
-	 * Loads the town from the specified file.
+	 * Loads the town from the specified file. The town file contains information
+	 * about the town, target character, places, items, and connections between
+	 * places.
 	 *
 	 * @param filename the name of the file to load the town from
 	 * @throws IOException if an I/O error occurs
@@ -27,7 +29,7 @@ public interface Town {
 	 *
 	 * @param place the place to display the information of
 	 */
-	void displayPlaceInfo(Place place);
+	void getPlaceInfo(Place place);
 
 	/**
 	 * Moves the character to the next place.
@@ -41,12 +43,12 @@ public interface Town {
 	 */
 	character.Character getCharacter();
 
-    /**
-     * Retrieves the name of the town.
-     *
-     * @return the name of the town as a String
-     */
-    String getName();
+	/**
+	 * Retrieves the name of the town.
+	 *
+	 * @return the name of the town as a String
+	 */
+	String getName();
 
 	/**
 	 * Retrieves the list of items in the town.
@@ -61,4 +63,25 @@ public interface Town {
 	 * @return the list of places in the town
 	 */
 	List<Place> getPlaces();
+
+	/**
+	 * Retrieves the name of the target character.
+	 *
+	 * @return the name of the target character as a String
+	 */
+	String getTargetName();
+
+	/**
+	 * Retrieves the health status of the target character.
+	 *
+	 * @return the health status of the target character
+	 */
+	int getTargetHealth();
+
+	/**
+	 * Retrieves the name of the town.
+	 *
+	 * @return the name of the town as a String
+	 */
+	String getTownName();
 }

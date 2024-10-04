@@ -52,4 +52,32 @@ public interface Place {
 	 * @return true if the specified place is a neighbor, false otherwise
 	 */
 	boolean isNeighbor(Place other);
+
+	/**
+	 * Retrieves the column of the top-left corner of the place.
+	 *
+	 * @return the column of the top-left corner of the place
+	 */
+	int getCol1();
+
+	/**
+	 * Retrieves the row of the top-left corner of the place.
+	 *
+	 * @return the row of the top-left corner of the place
+	 */
+	int getRow1();
+
+	/**
+	 * Retrieves the column of the bottom-right corner of the place.
+	 *
+	 * @return the column of the bottom-right corner of the place
+	 */
+	int getCol2();
+
+	/**
+	 * Retrieves the row of the bottom-right corner of the place.
+	 *
+	 * @return the row of the bottom-right corner of the place
+	 */
+	int getRow2();
 }
