@@ -1,21 +1,10 @@
 Please choose an option:
 1. Move 'The Mayor' to the next place
 2. Show target's current space
-3. Show neighbors of current space
+3. Show neighbors of target's space
 4. Show space by index
 5. Show neighbors by index
-0. Exit
-2
-Target character is in: Grocery Store
-Items in the place:
-Shopping Cart (Damage: 12)
-
-Please choose an option:
-1. Move 'The Mayor' to the next place
-2. Show target's current space
-3. Show neighbors of current space
-4. Show space by index
-5. Show neighbors by index
+6. Print the map
 0. Exit
 3
 Neighbors of Grocery Store:
