@@ -1,8 +1,9 @@
-/Library/Java/JavaVirtualMachines/openjdk-11.jdk/Contents/Home/bin/java -javaagent:/Applications/IntelliJ IDEA.app/Contents/lib/idea_rt.jar=55912:/Applications/IntelliJ IDEA.app/Contents/bin -Dfile.encoding=UTF-8 -classpath /Users/zhanhaoli/Documents/GitHub/cs5010-project-kill-doctor-lucky/bin:/Applications/IntelliJ IDEA.app/Contents/lib/junit4.jar Driver res/SmallTownWorld.txt
 Welcome to Kill Doctor Lucky!
 === Map Information ===
 Town: Small Town World
 Target name: The Mayor (Health: 100)
+Places in the town: 
+--------------------
 1 Park
 Items in the place: Toy Ball (Damage: 8)
 --------------------
@@ -63,3 +64,12 @@ Items in the place: Bus Ticket (Damage: 7)
 20 Community Center
 Items in the place: Community Badge (Damage: 20)
 --------------------
+
+Please choose an option:
+1. Move 'The Mayor' to the next place
+2. Show target's current space
+3. Show neighbors of target's space
+4. Show space by index
+5. Show neighbors by index
+6. Print the map
+0. Exit
