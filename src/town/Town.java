@@ -11,74 +11,74 @@ import place.Place;
  */
 public interface Town {
 
-	/**
-	 * Loads the town from the specified file. The town file contains information
-	 * about the town, target character, places, items, and connections between
-	 * places.
-	 *
-	 * @param filename the name of the file to load the town from
-	 * @throws IOException if an I/O error occurs
-	 */
-	void loadTown(String filename) throws IOException;
+  /**
+   * Loads the town from the specified file. The town file contains information
+   * about the town, target character, places, items, and connections between
+   * places.
+   *
+   * @param filename the name of the file to load the town from
+   * @throws IOException if an I/O error occurs
+   */
+  void loadTown(String filename) throws IOException;
 
-	/**
-	 * Displays the information of the specified place.
-	 *
-	 * @param place the place to display the information of
-	 */
-	void getPlaceInfo(Place place);
+  /**
+   * Displays the information of the specified place.
+   *
+   * @param place the place to display the information of
+   */
+  void getPlaceInfo(Place place);
 
-	/**
-	 * Moves the character to the next place.
-	 */
-	void moveCharacter();
+  /**
+   * Moves the character to the next place.
+   */
+  void moveCharacter();
 
-	/**
-	 * Retrieves the character in the town.
-	 *
-	 * @return the character in the town
-	 */
-	character.Character getCharacter();
+  /**
+   * Retrieves the character in the town.
+   *
+   * @return the character in the town
+   */
+  character.Character getCharacter();
 
-	/**
-	 * Retrieves the name of the town.
-	 *
-	 * @return the name of the town as a String
-	 */
-	String getName();
+  /**
+   * Retrieves the name of the town.
+   *
+   * @return the name of the town as a String
+   */
+  String getName();
 
-	/**
-	 * Retrieves the list of items in the town.
-	 *
-	 * @return the list of items in the town
-	 */
-	List<String> getItems();
+  /**
+   * Retrieves the list of items in the town.
+   *
+   * @return the list of items in the town
+   */
+  List<String> getItems();
 
-	/**
-	 * Retrieves the list of places in the town.
-	 *
-	 * @return the list of places in the town
-	 */
-	List<Place> getPlaces();
+  /**
+   * Retrieves the list of places in the town.
+   *
+   * @return the list of places in the town
+   */
+  List<Place> getPlaces();
 
-	/**
-	 * Retrieves the name of the target character.
-	 *
-	 * @return the name of the target character as a String
-	 */
-	String getTargetName();
+  /**
+   * Retrieves the name of the target character.
+   *
+   * @return the name of the target character as a String
+   */
+  String getTargetName();
 
-	/**
-	 * Retrieves the health status of the target character.
-	 *
-	 * @return the health status of the target character
-	 */
-	int getTargetHealth();
+  /**
+   * Retrieves the health status of the target character.
+   *
+   * @return the health status of the target character
+   */
+  int getTargetHealth();
 
-	/**
-	 * Retrieves the name of the town.
-	 *
-	 * @return the name of the town as a String
-	 */
-	String getTownName();
+  /**
+   * Retrieves the name of the town.
+   *
+   * @return the name of the town as a String
+   */
+  String getTownName();
 }
