@@ -27,18 +27,18 @@ public class Driver {
    */
   public static void main(String[] args) {
     Scanner scanner = new Scanner(System.in);
-    TownModel town = null;
-
-    try {
-      town = new TownModel("res/SmallTownWorld.txt");
-    } catch (IOException e) {
-      System.out.println("Error loading the town: " + e.getMessage());
-      return;
+    TownModel town = loadTownFromFile(args);
+        if (town == null) {
+      return;  // 如果加载失败，则退出程序
     }
-
+//    try {
+//      town = new TownModel("res/SmallTownWorld.txt");
+//    } catch (IOException e) {
+//      System.out.println("Error loading the town: " + e.getMessage());
+//      return;
+//    }
     System.out.println("Welcome to Kill Doctor Lucky!");
     displayMapInfo(town);
-
     while (true) {
       System.out.println("\nPlease choose an option:");
       System.out.println("1. Move 'The Mayor' to the next place");
@@ -236,5 +236,26 @@ public class Driver {
     g2d.drawRect(x, y, width, height);
 
     g2d.drawString(name, x + width / 4, y + height / 4);
+  }
+
+  /**
+   * Loads the town from the file specified in the command-line arguments.
+   * @param args command-line arguments containing the file name
+   * @return a TownModel object if loaded successfully, null otherwise
+   */
+  private static TownModel loadTownFromFile(String[] args) {
+    if (args.length == 0) {
+      System.out.println("Please provide the world file as a command-line argument.");
+      return null;
+    }
+
+    TownModel town = null;
+    try {
+      town = new TownModel(args[0]);
+    } catch (IOException e) {
+      System.out.println("Error loading the town: " + e.getMessage());
+    }
+
+    return town;
   }
 }
