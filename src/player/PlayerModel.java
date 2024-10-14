@@ -80,4 +80,9 @@ public class PlayerModel implements Player {
     return currentPlace;
   }
 
+  @Override
+  public List<Item> getItems() {
+    return items;
+  }
+
 }
