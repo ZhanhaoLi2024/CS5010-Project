@@ -3,6 +3,8 @@ package place;
 import item.Item;
 import java.util.ArrayList;
 import java.util.List;
+import player.Player;
+
 
 /**
  * A PlaceModel object represents a place in a game. A place has a name, a list
@@ -16,6 +18,7 @@ public class PlaceModel implements Place {
   private final String name;
   private final List<Item> items;
   private final List<Place> neighbors;
+  private final List<Player> players;
 
   /**
    * Constructs a new PlaceModel with the specified row and column coordinates,
@@ -29,10 +32,10 @@ public class PlaceModel implements Place {
    */
   public PlaceModel(int row1, int col1, int row2, int col2, String name) {
     if (row1 < 0 || col1 < 0 || row2 < 0 || col2 < 0) {
-	    throw new IllegalArgumentException("Row and column values must be non-negative.");
-	    }
+      throw new IllegalArgumentException("Row and column values must be non-negative.");
+    }
     if (row1 > row2 || col1 > col2) {
-        throw new IllegalArgumentException("Top-left corner must be less than bottom-right corner.");
+      throw new IllegalArgumentException("Top-left corner must be less than bottom-right corner.");
     }
     this.row1 = row1;
     this.col1 = col1;
@@ -41,6 +44,7 @@ public class PlaceModel implements Place {
     this.name = name;
     this.items = new ArrayList<>();
     this.neighbors = new ArrayList<>();
+    this.players = new ArrayList<>();
   }
 
   @Override
@@ -99,5 +103,26 @@ public class PlaceModel implements Place {
   public int getRow2() {
     return row2;
   }
+
+  @Override
+  public void removePlayer(Player player) {
+    players.remove(player);
+  }
+
+  @Override
+  public void addPlayer(Player player) {
+    players.add(player);
+  }
+
+  @Override
+  public List<Player> getCurrentPlacePlayers() {
+    return players;
+  }
+
+  @Override
+  public void removeItem(Item item) {
+    items.remove(item);
+  }
+
 
 }
