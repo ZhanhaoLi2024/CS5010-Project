@@ -19,26 +19,26 @@ public class Driver {
 
   /**
    * The main method that runs the game. It allows the user to interact with the
-   * game by moving the target character, displaying information about the target
-   * character's current space, and showing the neighbors of the target character's
-   * space.
+   * game by moving the target character, displaying information about the
+   * target character's current space, and showing the neighbors of the target
+   * character's space.
    *
    * @param args the command-line arguments
    */
   public static void main(String[] args) {
     Scanner scanner = new Scanner(System.in);
-    TownModel town = loadTownFromFile(args);
-        if (town == null) {
-      return;  // 如果加载失败，则退出程序
+    TownModel town = null;
+
+    try {
+      town = new TownModel("res/SmallTownWorld.txt");
+    } catch (IOException e) {
+      System.out.println("Error loading the town: " + e.getMessage());
+      return;
     }
-//    try {
-//      town = new TownModel("res/SmallTownWorld.txt");
-//    } catch (IOException e) {
-//      System.out.println("Error loading the town: " + e.getMessage());
-//      return;
-//    }
+
     System.out.println("Welcome to Kill Doctor Lucky!");
     displayMapInfo(town);
+
     while (true) {
       System.out.println("\nPlease choose an option:");
       System.out.println("1. Move 'The Mayor' to the next place");
@@ -52,37 +52,37 @@ public class Driver {
       int choice = scanner.nextInt();
 
       switch (choice) {
-        case 1:
-          moveTargetCharacter(town);
-          break;
-        case 2:
-          getCurrSpace(town);
-          break;
-        case 3:
-          getCurrSpaceNeighbors(town);
-          break;
-        case 4:
-          getSpaceByIndex(town, scanner);
-          break;
-        case 5:
-          getNeighborsByIndex(town, scanner);
-          break;
-        case 6:
-          printMap(town);
-          break;
-        case 0:
-          System.out.println("Exiting...");
-          scanner.close();
-          return;
-        default:
-          System.out.println("Invalid choice, please try again.");
+      case 1:
+        moveTargetCharacter(town);
+        break;
+      case 2:
+        getCurrSpace(town);
+        break;
+      case 3:
+        getCurrSpaceNeighbors(town);
+        break;
+      case 4:
+        getSpaceByIndex(town, scanner);
+        break;
+      case 5:
+        getNeighborsByIndex(town, scanner);
+        break;
+      case 6:
+        printMap(town);
+        break;
+      case 0:
+        System.out.println("Exiting...");
+        scanner.close();
+        return;
+      default:
+        System.out.println("Invalid choice, please try again.");
       }
     }
   }
 
   /**
-   * Displays the information about the town, target character, places, and items
-   * in the town.
+   * Displays the information about the town, target character, places, and
+   * items in the town.
    *
    * @param town the town to display the information of
    */
@@ -142,7 +142,7 @@ public class Driver {
    * Displays the information about the space in the town based on the index
    * provided by the user.
    *
-   * @param town    the town where the target character is located
+   * @param town the town where the target character is located
    * @param scanner the scanner object to read user input
    */
   private static void getSpaceByIndex(TownModel town, Scanner scanner) {
@@ -160,10 +160,10 @@ public class Driver {
   }
 
   /**
-   * Displays the neighbors of the space in the town based on the index provided by
-   * the user.
+   * Displays the neighbors of the space in the town based on the index provided
+   * by the user.
    *
-   * @param town    the town where the target character is located
+   * @param town the town where the target character is located
    * @param scanner the scanner object to read user input
    */
   private static void getNeighborsByIndex(TownModel town, Scanner scanner) {
@@ -220,7 +220,7 @@ public class Driver {
   /**
    * Draws a place on the map image.
    *
-   * @param g2d  the Graphics2D object to draw the place
+   * @param g2d the Graphics2D object to draw the place
    * @param name the name of the place
    * @param row1 the starting row of the place
    * @param col1 the starting column of the place
@@ -240,6 +240,7 @@ public class Driver {
 
   /**
    * Loads the town from the file specified in the command-line arguments.
+   * 
    * @param args command-line arguments containing the file name
    * @return a TownModel object if loaded successfully, null otherwise
    */
@@ -251,7 +252,8 @@ public class Driver {
 
     TownModel town = null;
     try {
-      town = new TownModel(args[0]);
+      town = new TownModel(args[0]); // Load the town from the provided file
+                                     // name
     } catch (IOException e) {
       System.out.println("Error loading the town: " + e.getMessage());
     }
