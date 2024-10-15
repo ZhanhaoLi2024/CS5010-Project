@@ -6,14 +6,27 @@ import java.util.Scanner;
 import place.Place;
 import player.PlayerModel;
 
+/**
+ * The HumanPlayerController class extends the PlayerControllerModel class and
+ * represents a human player in a
+ * game. It allows the player to take a turn by choosing an action to perform.
+ */
 public class HumanPlayerController extends PlayerControllerModel {
   private final Scanner scanner;
 
+  /**
+   * Constructs a new HumanPlayerController with the specified player.
+   *
+   * @param player the player to control
+   */
   public HumanPlayerController(PlayerModel player) {
     super(player);
     this.scanner = new Scanner(System.in);
   }
 
+  /**
+   * Allows the player to take a turn by choosing an action to perform.
+   */
   @Override
   public void takeTurn() {
     System.out.println("Choose an action: ");
@@ -41,13 +54,16 @@ public class HumanPlayerController extends PlayerControllerModel {
         pickUpItem();
         break;
       case 3:
-        lookAround();
+        player.lookAround();
         break;
       default:
         System.out.println("Invalid choice.");
     }
   }
 
+  /**
+   * Closes the scanner used to read input from the player.
+   */
   private void movePlayer() {
     System.out.println("Current location: " + player.getCurrentPlace().getName());
     System.out.println("Available neighbors: ");
@@ -69,6 +85,9 @@ public class HumanPlayerController extends PlayerControllerModel {
     }
   }
 
+  /**
+   * Allows the player to pick up an item from the current place.
+   */
   private void pickUpItem() {
     if (player.getCurrentPlace().getItems().isEmpty()) {
       System.out.println("No items to pick up.");

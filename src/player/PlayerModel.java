@@ -25,6 +25,16 @@ public class PlayerModel implements Player {
    * @param itemLimit  the maximum number of items the player can carry
    */
   public PlayerModel(String name, Place startPlace, int itemLimit) {
+    if (name == null || name.isEmpty()) {
+      throw new IllegalArgumentException("Player name cannot be null or empty.");
+    }
+    if (startPlace == null) {
+      throw new IllegalArgumentException("Starting place cannot be null.");
+    }
+    if (itemLimit < 0) {
+      throw new IllegalArgumentException("Item limit cannot be negative.");
+    }
+
     this.name = name;
     this.currentPlace = startPlace;
     this.itemLimit = itemLimit;
@@ -32,8 +42,20 @@ public class PlayerModel implements Player {
     currentPlace.addPlayer(this); // Add the player to the starting place
   }
 
+  /**
+   * Moves the player to the specified place if it is a neighbor of the current
+   * place.
+   *
+   * @param newPlace the place to move the player to
+   */
   @Override
   public void moveToNeighbor(Place newPlace) {
+    if (newPlace == null) {
+      throw new IllegalArgumentException("Place cannot be null.");
+    }
+    if (currentPlace == null) {
+      throw new IllegalStateException("Current place is null, the player cannot move.");
+    }
     if (currentPlace.isNeighbor(newPlace)) {
       currentPlace.removePlayer(this);
       currentPlace = newPlace;
@@ -42,8 +64,16 @@ public class PlayerModel implements Player {
 
   }
 
+  /**
+   * Picks up an item from the space they are currently occupying.
+   *
+   * @param item the item to pick up
+   */
   @Override
   public void pickUpItem(Item item) {
+    if (item == null) {
+      throw new IllegalArgumentException("Item cannot be null.");
+    }
     if (items.size() < itemLimit && currentPlace.getItems().contains(item)) {
       items.add(item);
       currentPlace.removeItem(item);
@@ -77,25 +107,33 @@ public class PlayerModel implements Player {
 
   @Override
   public String getDescription() {
-    System.out.println("Looking around " + currentPlace.getName());
+    StringBuilder description = new StringBuilder();
+
+    description.append("Looking around ").append(currentPlace.getName()).append("\n");
+
     if (currentPlace.getItems().isEmpty()) {
-      System.out.println("No items here.");
+      description.append("No items here.\n");
     } else {
-      System.out.println("Items here: ");
+      description.append("Items here: \n");
       for (Item item : currentPlace.getItems()) {
-        System.out.println(item.getName() + " (Damage: " + item.getDamage() + ")");
+        description.append(item.getName()).append(" (Damage: ").append(item.getDamage())
+            .append(")\n");
       }
     }
-    System.out.println("Players here: ");
+
+    description.append("Players here: \n");
     for (Player player : currentPlace.getCurrentPlacePlayers()) {
-      System.out.println(player.getName());
+      description.append(player.getName()).append("\n");
     }
-    System.out.println("Neighboring places: ");
+
+    description.append("Neighboring places: \n");
     for (Place neighbor : currentPlace.getNeighbors()) {
-      System.out.println(neighbor.getName());
+      description.append(neighbor.getName()).append("\n");
     }
-    return null;
+
+    return description.toString();
   }
+
 
   @Override
   public String getName() {

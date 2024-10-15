@@ -4,6 +4,11 @@ import item.Item;
 import place.Place;
 import player.PlayerModel;
 
+/**
+ * The PlayerControllerModel class implements the Controller interface and
+ * represents a controller for a player in a game. A player controller has a
+ * player model.
+ */
 public class PlayerControllerModel implements Controller {
   protected PlayerModel player;
 
@@ -11,7 +16,16 @@ public class PlayerControllerModel implements Controller {
     this.player = player;
   }
 
-  protected void movePlayer(Place newPlace) {
+  /**
+   * Moves the player to the specified place if it is a neighbor of the current
+   * place.
+   *
+   * @param newPlace the place to move the player to
+   */
+  public void movePlayer(Place newPlace) {
+    if (newPlace == null) {
+      throw new IllegalArgumentException("Place cannot be null.");
+    }
     if (player.getCurrentPlace().isNeighbor(newPlace)) {
       player.moveToNeighbor(newPlace);
       System.out.println(player.getName() + " moves to " + newPlace.getName());
@@ -20,7 +34,15 @@ public class PlayerControllerModel implements Controller {
     }
   }
 
-  protected void pickUpItem(Item item) {
+  /**
+   * Picks up an item from the current place.
+   *
+   * @param item the item to pick up
+   */
+  public void pickUpItem(Item item) {
+    if (item == null) {
+      throw new IllegalArgumentException("Item cannot be null.");
+    }
     if (player.getCurrentPlace().getItems().contains(item)) {
       player.pickUpItem(item);
       System.out.println(player.getName() + " picked up " + item.getName());
@@ -29,7 +51,7 @@ public class PlayerControllerModel implements Controller {
     }
   }
 
-  protected void lookAround() {
+  public void lookAround() {
     player.lookAround();
   }
 

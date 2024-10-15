@@ -37,7 +37,6 @@ public class Driver {
     this.players = new ArrayList<>();
     this.random = new Random();
     this.scanner = new Scanner(input);
-//    maxTurns = 0;
   }
 
   /**
@@ -175,7 +174,7 @@ public class Driver {
           System.out.println(
               "Do you want to display information for " + player.getName() + "? (yes/no)");
           String response = scanner.next();
-          if (response.equalsIgnoreCase("yes")) {
+          if ("yes".equalsIgnoreCase(response)) {
             displayCurrentPlayerInfo(player);
           }
           HumanPlayerController humanController = new HumanPlayerController((HumanPlayer) player);
@@ -185,7 +184,7 @@ public class Driver {
           System.out.println(
               "Do you want to display information for " + player.getName() + "? (yes/no)");
           String response = scanner.next();
-          if (response.equalsIgnoreCase("yes")) {
+          if ("yes".equalsIgnoreCase(response)) {
             displayCurrentPlayerInfo(player);
           }
           ComputerPlayerController computerController =
@@ -372,8 +371,10 @@ public class Driver {
         playerName + " (Computer) has entered the town at " + startPlace.getName() + ".");
   }
 
+  /**
+   * Displays the current player's information.
+   */
   private void displayCurrentPlayerInfo(PlayerModel player) {
-    String playerName = player.getName();
     System.out.println("Current place: " + player.getCurrentPlace().getName());
     if (player.getItems().isEmpty()) {
       System.out.println("No items carried.");
@@ -384,6 +385,9 @@ public class Driver {
     }
   }
 
+  /**
+   * Displays information about all players in the game.
+   */
   private void displayAllPlayerInfo() {
     System.out.println("Players in the game:");
     int index = 1;
@@ -394,8 +398,11 @@ public class Driver {
     }
   }
 
+  /**
+   * Displays information about a specific player in the game.
+   */
   private void displayPlayerInfo(String playerType) {
-    if (playerType.equals("Computer")) {
+    if ("Computer".equals(playerType)) {
       for (PlayerModel player : players) {
         if (player.getName().equals("David(Computer)")) {
           System.out.println("Computer Player: " + player.getName());
@@ -403,7 +410,7 @@ public class Driver {
           return;
         }
       }
-    } else if (playerType.equals("Human")) {
+    } else if ("Human".equals(playerType)) {
       System.out.println("Enter the player name to display information: ");
       String playerName = scanner.next();
       for (PlayerModel player : players) {
