@@ -18,31 +18,6 @@ public interface Controller {
    */
   void startGame() throws IOException;
 
-
-  /**
-   * Moves the player to a new location.
-   *
-   * @param player the player to move.
-   * @throws IOException if there is an issue with I/O operations.
-   */
-  void movePlayer(Player player) throws IOException;
-
-  /**
-   * Allows a player to pick up an item in their current location.
-   *
-   * @param player the player who is picking up the item.
-   * @throws IOException if there is an issue with I/O operations.
-   */
-  void pickUpItem(Player player) throws IOException;
-
-  /**
-   * Allows a player to look around and see the items in their current location.
-   *
-   * @param player the player who is looking around.
-   * @throws IOException if there is an issue with I/O operations.
-   */
-  void lookAround(Player player) throws IOException;
-
   /**
    * Allows a player to show their current information.
    *
