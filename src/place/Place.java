@@ -2,6 +2,7 @@ package place;
 
 import item.Item;
 import java.util.List;
+import player.Player;
 
 /**
  * The Place interface defines the basic behaviors and attributes of a place in
@@ -79,4 +80,28 @@ public interface Place {
    * @return the row of the bottom-right corner of the place
    */
   int getRow2();
+
+  /**
+   * Removes a player from the place.
+   *
+   * @param player the player to be removed from the place
+   */
+  void removePlayer(Player player);
+
+  /**
+   * Adds a player to the place.
+   *
+   * @param player the player to be added to the place
+   */
+  void addPlayer(Player player);
+
+  /**
+   * Retrieves the list of players in the place.
+   *
+   * @return the list of players in the place
+   */
+  List<Player> getCurrentPlacePlayers();
+
+  void removeItem(Item item);
+
 }
