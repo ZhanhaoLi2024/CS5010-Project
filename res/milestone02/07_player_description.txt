@@ -1,6 +1,0 @@
-Steven's turn:
-Do you want to display information for Steven? (yes/no)
-yes
-Current place: Bakery
-Items carried:
-Menu (Damage: 22)
