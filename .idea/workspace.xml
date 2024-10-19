@@ -36,8 +36,18 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "JUnit.AddHumanPlayerCommandTest.executor": "Run",
+    "JUnit.AddHumanPlayerCommandTest.testAddSinglePlayer.executor": "Run",
+    "JUnit.DisplayPlaceInfoCommandTest.executor": "Run",
+    "JUnit.DisplayPlayerInfoCommandTest.executor": "Run",
     "JUnit.ItemModelTest.executor": "Run",
+    "JUnit.LookAroundCommandTest.executor": "Run",
+    "JUnit.LookAroundCommandTest.testExecuteWithNullPlace.executor": "Run",
+    "JUnit.MovePlayerCommandTest.executor": "Run",
+    "JUnit.MovePlayerCommandTest.testPlayerMovesWithValidInput.executor": "Run",
+    "JUnit.PickUpItemCommandTest.executor": "Run",
     "JUnit.PlaceModelTest.executor": "Run",
+    "JUnit.PlayerModelTest.executor": "Run",
     "JUnit.TargetModelTest.executor": "Run",
     "JUnit.TownModelTest.executor": "Run",
     "JUnit.TownModelTest.testInvalidWorldDescription.executor": "Run",
@@ -54,90 +64,90 @@
     "settings.editor.selected.configurable": "actions.on.save"
   }
 }]]></component>
-  <component name="RunManager" selected="JUnit.TownModelTest">
-    <configuration name="ItemModelTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+  <component name="RunManager" selected="JUnit.PlayerModelTest">
+    <configuration name="LookAroundCommandTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="cs5010-project-kill-doctor-lucky" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="model.item.*" />
+          <option name="PATTERN" value="controller.command.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
-      <option name="PACKAGE_NAME" value="model.item" />
-      <option name="MAIN_CLASS_NAME" value="model.item.ItemModelTest" />
+      <option name="PACKAGE_NAME" value="controller.command" />
+      <option name="MAIN_CLASS_NAME" value="controller.command.LookAroundCommandTest" />
       <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="PlaceModelTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="MovePlayerCommandTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="cs5010-project-kill-doctor-lucky" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="model.place.*" />
+          <option name="PATTERN" value="controller.command.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
-      <option name="PACKAGE_NAME" value="model.place" />
-      <option name="MAIN_CLASS_NAME" value="model.place.PlaceModelTest" />
+      <option name="PACKAGE_NAME" value="controller.command" />
+      <option name="MAIN_CLASS_NAME" value="controller.command.MovePlayerCommandTest" />
       <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="TargetModelTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="MovePlayerCommandTest.testPlayerMovesWithValidInput" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="cs5010-project-kill-doctor-lucky" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="model.target.*" />
+          <option name="PATTERN" value="controller.command.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
-      <option name="PACKAGE_NAME" value="model.target" />
-      <option name="MAIN_CLASS_NAME" value="model.target.TargetModelTest" />
-      <option name="TEST_OBJECT" value="class" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="TownModelTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="cs5010-project-kill-doctor-lucky" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="model.town.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="model.town" />
-      <option name="MAIN_CLASS_NAME" value="model.town.TownModelTest" />
-      <option name="TEST_OBJECT" value="class" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="TownModelTest.testInvalidWorldDescription" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="cs5010-project-kill-doctor-lucky" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="model.town.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="model.town" />
-      <option name="MAIN_CLASS_NAME" value="model.town.TownModelTest" />
-      <option name="METHOD_NAME" value="testInvalidWorldDescription" />
+      <option name="PACKAGE_NAME" value="controller.command" />
+      <option name="MAIN_CLASS_NAME" value="controller.command.MovePlayerCommandTest" />
+      <option name="METHOD_NAME" value="testPlayerMovesWithValidInput" />
       <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="PickUpItemCommandTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="cs5010-project-kill-doctor-lucky" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="controller.command.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="controller.command" />
+      <option name="MAIN_CLASS_NAME" value="controller.command.PickUpItemCommandTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="PlayerModelTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="cs5010-project-kill-doctor-lucky" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="model.player.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="model.player" />
+      <option name="MAIN_CLASS_NAME" value="model.player.PlayerModelTest" />
+      <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="JUnit.TownModelTest" />
-        <item itemvalue="JUnit.TownModelTest.testInvalidWorldDescription" />
-        <item itemvalue="JUnit.TargetModelTest" />
-        <item itemvalue="JUnit.PlaceModelTest" />
-        <item itemvalue="JUnit.ItemModelTest" />
+        <item itemvalue="JUnit.PlayerModelTest" />
+        <item itemvalue="JUnit.PickUpItemCommandTest" />
+        <item itemvalue="JUnit.MovePlayerCommandTest" />
+        <item itemvalue="JUnit.MovePlayerCommandTest.testPlayerMovesWithValidInput" />
+        <item itemvalue="JUnit.LookAroundCommandTest" />
       </list>
     </recent_temporary>
   </component>
@@ -157,7 +167,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1729726636184</updated>
-      <workItem from="1729726637309" duration="7145000" />
+      <workItem from="1729726637309" duration="13255000" />
     </task>
     <servers />
   </component>

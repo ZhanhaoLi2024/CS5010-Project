@@ -12,7 +12,7 @@ import model.player.Player;
 public class MovePlayerCommand implements Command {
   private final Player player;
   private final Appendable output;
-  private final Scanner scanner = new Scanner(System.in);
+  private final Scanner scanner;
 
   /**
    * Constructs a new MovePlayerCommand.
@@ -20,9 +20,10 @@ public class MovePlayerCommand implements Command {
    * @param player the player to move
    * @param output the output stream to write messages to
    */
-  public MovePlayerCommand(Player player, Appendable output) {
+  public MovePlayerCommand(Player player, Appendable output, Scanner scanner) {
     this.player = player;
     this.output = output;
+    this.scanner = scanner;
   }
 
   @Override
@@ -35,7 +36,6 @@ public class MovePlayerCommand implements Command {
       if (player.isComputerControlled()) {
         int randomNeighborIndex = (int) (Math.random() * neighbors.size());
         this.movePlayer(randomNeighborIndex + 1);
-
       } else {
         output.append("Neighbors of ").append(currentPlace.getName()).append(":\n");
         for (int i = 0; i < neighbors.size(); i++) {
@@ -45,11 +45,16 @@ public class MovePlayerCommand implements Command {
               .append("\n");
         }
         output.append("Enter the neighbor number to move to:\n");
-        int neighborNumber = Integer.parseInt(scanner.nextLine());
-        if (neighborNumber < 1 || neighborNumber > neighbors.size()) {
-          output.append("Invalid neighbor number.\n");
-        } else {
-          this.movePlayer(neighborNumber);
+        String userInput = scanner.nextLine(); // 通过 scanner 获取输入
+        try {
+          int neighborNumber = Integer.parseInt(userInput);
+          if (neighborNumber < 1 || neighborNumber > neighbors.size()) {
+            output.append("Invalid neighbor number.\n");
+          } else {
+            this.movePlayer(neighborNumber);
+          }
+        } catch (NumberFormatException e) {
+          output.append("Invalid input. Please enter a number.\n");
         }
       }
     }
@@ -65,7 +70,7 @@ public class MovePlayerCommand implements Command {
     Place currentPlace = player.getCurrentPlace();
     List<Place> neighbors = currentPlace.getNeighbors();
     if (neighbors.isEmpty()) {
-      output.append("No neighbors found. \n");
+      output.append("No neighbors found.\n");
     } else {
       Place newPlace = neighbors.get(neighborNumber - 1);
       player.moveTo(newPlace);

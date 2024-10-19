@@ -14,7 +14,7 @@ import model.player.Player;
 public class PickUpItemCommand implements Command {
   private final Player player;
   private final Appendable output;
-  private final Scanner scanner = new Scanner(System.in);
+  private final Scanner scanner;
 
   /**
    * Constructs a new PickUpItemCommand.
@@ -22,9 +22,10 @@ public class PickUpItemCommand implements Command {
    * @param player the player who is picking up the item.
    * @param output the output stream to write messages to.
    */
-  public PickUpItemCommand(Player player, Appendable output) {
+  public PickUpItemCommand(Player player, Appendable output, Scanner scanner) {
     this.player = player;
     this.output = output;
+    this.scanner = scanner;
   }
 
   @Override
