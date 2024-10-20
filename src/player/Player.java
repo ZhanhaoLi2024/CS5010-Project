@@ -4,6 +4,10 @@ import item.Item;
 import java.util.List;
 import place.Place;
 
+/**
+ * The Player interface defines the basic behaviors and attributes of a player in
+ * a game. A player has a name, a current place, and a list of items.
+ */
 public interface Player {
   /**
    * Moves the player to a neighboring place.

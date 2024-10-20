@@ -1,6 +1,5 @@
 package controller;
 
-import item.Item;
 import java.util.Random;
 import place.Place;
 import player.ComputerPlayer;
@@ -34,27 +33,14 @@ public class ComputerPlayerController extends PlayerControllerModel {
         movePlayerRandomly();
         break;
       case 1:
-        pickUpRandomItem();
+        ((ComputerPlayer) player).pickUpRandomItem();
         break;
       case 2:
-        lookAround();
+        player.lookAround();
         break;
       default:
         System.out.println(player.getName() + " does nothing this turn.");
     }
-  }
-
-  /**
-   * Makes the computer player look around the place they are currently in.
-   */
-  private void pickUpRandomItem() {
-    if (player.getCurrentPlace().getItems().isEmpty()) {
-      System.out.println(player.getName() + " finds no items to pick up.");
-      return;
-    }
-    Item item = player.getCurrentPlace().getItems()
-        .get(random.nextInt(player.getCurrentPlace().getItems().size()));
-    pickUpItem(item);
   }
 
   /**

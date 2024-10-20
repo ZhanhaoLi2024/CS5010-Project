@@ -4,55 +4,26 @@ import item.Item;
 import java.util.Random;
 import place.Place;
 
+/**
+ * The ComputerPlayer class extends the PlayerModel class and represents a computer
+ * player in a game. A computer player has a name, a current place, a list of items,
+ * and an item limit.
+ */
 public class ComputerPlayer extends PlayerModel {
   private final Random random;
 
   /**
-   * Constructs a new PlayerModel with the specified name, starting place, and item
-   * limit.
+   * Constructs a new PlayerModel with the specified name, starting place, item
+   * limit, and random number generator for random actions.
    *
    * @param name       the name of the player
    * @param startPlace the place where the player starts
    * @param itemLimit  the maximum number of items the player can carry
+   * @param random     the random number generator used for picking up random items
    */
   public ComputerPlayer(String name, Place startPlace, int itemLimit, Random random) {
     super(name, startPlace, itemLimit);
     this.random = random;
-  }
-
-//  /**
-//   * Makes the computer player take a turn by randomly choosing an action to perform.
-//   */
-//  public void takeTurn() {
-//    int action = random.nextInt(3);
-//    switch (action) {
-//      case 0:
-//        moveRandomly();
-//        break;
-//      case 1:
-//        pickUpRandomItem();
-//        break;
-//      case 2:
-//        lookAround();
-//        break;
-//      default:
-//        System.out.println(name + " does nothing this turn.");
-//        break;
-//    }
-//  }
-
-  /**
-   * Moving to a random neighboring place.
-   */
-  public void moveRandomly() {
-    if (currentPlace.getNeighbors().isEmpty()) {
-      System.out.println(name + " has no neighboring places to move to.");
-      return;
-    }
-    Place nextPlace =
-        currentPlace.getNeighbors().get(random.nextInt(currentPlace.getNeighbors().size()));
-    moveToNeighbor(nextPlace);
-    System.out.println(name + " moves to " + nextPlace.getName());
   }
 
   /**

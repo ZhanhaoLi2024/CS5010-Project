@@ -20,9 +20,19 @@ public class HumanPlayer extends PlayerModel {
   }
 
   /**
-   * Moving to a neighboring place.
+   * Moves the player to a neighboring place.
+   *
+   * @param newPlace the neighboring place the player wants to move to
+   * @throws IllegalArgumentException if the new place is null
+   * @throws IllegalStateException    if the current place is null
    */
   public void moveToNeighbor(Place newPlace) {
+    if (newPlace == null) {
+      throw new IllegalArgumentException("Place cannot be null.");
+    }
+    if (currentPlace == null) {
+      throw new IllegalStateException("Current place is null, the player cannot move.");
+    }
     if (currentPlace.isNeighbor(newPlace)) {
       super.moveToNeighbor(newPlace);
       System.out.println(name + " moves to " + newPlace.getName());
@@ -32,9 +42,15 @@ public class HumanPlayer extends PlayerModel {
   }
 
   /**
-   * Picking up an item from the space they are currently occupying.
+   * Picks up an item from the current place.
+   *
+   * @param item the item to be picked up
+   * @throws IllegalArgumentException if the item is null
    */
   public void pickUpItem(Item item) {
+    if (item == null) {
+      throw new IllegalArgumentException("Item cannot be null.");
+    }
     if (currentPlace.getItems().contains(item)) {
       super.pickUpItem(item);
       System.out.println(name + " picked up " + item.getName());
@@ -43,11 +59,19 @@ public class HumanPlayer extends PlayerModel {
     }
   }
 
+  /**
+   * Allows the player to look around the current place.
+   */
   public void lookAround() {
     System.out.println(name + " is looking around...");
     super.lookAround();
   }
 
+  /**
+   * Returns a description of the player.
+   *
+   * @return a description of the player
+   */
   public String getDescription() {
     return super.getDescription();
   }
