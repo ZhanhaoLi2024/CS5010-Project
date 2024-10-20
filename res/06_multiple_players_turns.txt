@@ -1,0 +1,96 @@
+Turn 1 of 10
+
+Steven's turn:
+Do you want to display information for Steven? (yes/no)
+yes
+Current place: Park
+No items carried.
+Choose an action: 
+1. Move to a neighboring place
+2. Pick up an item (Current place item: Toy Ball - Damage:8)
+3. Look around
+3
+Steven is looking around...
+Looking around Park
+Items here: 
+Toy Ball (Damage: 8)
+Players here: 
+Steven
+Amy
+Peter
+Candy
+Neighboring places: 
+Grocery Store
+Restaurant
+Playground
+
+Amy's turn:
+Do you want to display information for Amy? (yes/no)
+yes
+Current place: Park
+No items carried.
+Choose an action: 
+1. Move to a neighboring place
+2. Pick up an item (Current place item: Toy Ball - Damage:8)
+3. Look around
+2
+Available items: 
+1. Toy Ball
+Choose an item to pick up: 1
+Amy picked up Toy Ball
+
+Peter's turn:
+Do you want to display information for Peter? (yes/no)
+yes
+Current place: Park
+No items carried.
+Choose an action: 
+1. Move to a neighboring place
+2. Pick up an item (Current place item: No items)
+3. Look around
+1
+Current location: Park
+Available neighbors: 
+1. Grocery Store
+2. Restaurant
+3. Playground
+Choose a neighbor to move to: 1
+Peter moves to Grocery Store
+
+Candy's turn:
+Do you want to display information for Candy? (yes/no)
+yes
+Current place: Park
+No items carried.
+Choose an action: 
+1. Move to a neighboring place
+2. Pick up an item (Current place item: No items
+)
+3. Look around
+1
+Current location: Park
+Available neighbors: 
+1. Grocery Store
+2. Restaurant
+3. Playground
+Choose a neighbor to move to: 2
+Candy moves to Restaurant
+
+David(Computer)'s turn:
+Computer player: David(Computer)'s turn:
+Do you want to display information for David(Computer)? (yes/no)
+yes
+Current place: Grocery Store
+No items carried.
+It's David(Computer)'s turn (Computer).
+David(Computer) is looking around...
+Looking around Grocery Store
+Items here: 
+Shopping Cart (Damage: 12)
+Players here: 
+David(Computer)
+Peter
+Neighboring places: 
+Park
+School
+Restaurant

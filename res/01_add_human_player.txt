@@ -1,0 +1,7 @@
+Adding Human players...
+Enter the name of the human player: 
+Steven 
+Steven (Human) has entered the town at Park.
+Do you want to add another player?
+1 to continue
+2 to stop
