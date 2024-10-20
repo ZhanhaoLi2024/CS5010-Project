@@ -1,43 +1,91 @@
+import controller.ComputerPlayerController;
+import controller.HumanPlayerController;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 import java.util.Scanner;
 import javax.imageio.ImageIO;
 import place.Place;
+import player.ComputerPlayer;
+import player.HumanPlayer;
+import player.PlayerModel;
 import town.TownModel;
 
 /**
- * The Driver class contains the main method that runs the game. It allows the
- * user to interact with the game by moving the target character, displaying
- * information about the target character's current space, and showing the
- * neighbors of the target character's space.
+ * The Driver class is responsible for running the game and handling user input.
  */
 public class Driver {
   private static final int CELL_SIZE = 90;
+  //  private static int maxTurns;
+  private final List<PlayerModel> players;
+  private final Random random;
+  private final Scanner scanner;
+  private TownModel town;
 
   /**
-   * The main method that runs the game. It allows the user to interact with the
-   * game by moving the target character, displaying information about the
-   * target character's current space, and showing the neighbors of the target
-   * character's space.
+   * Constructs the Driver class, responsible for running the game.
+   *
+   * @param input the source of user input, typically System.in
+   */
+  public Driver(Readable input) {
+    this.players = new ArrayList<>();
+    this.random = new Random();
+    this.scanner = new Scanner(input);
+//    maxTurns = 0;
+  }
+
+  /**
+   * The main method for running the game.
    *
    * @param args the command-line arguments
    */
   public static void main(String[] args) {
-    Scanner scanner = new Scanner(System.in);
-    TownModel town = null;
+    // Command-line arguments handling
+    if (args.length < 2) {
+      System.out.println("Usage: java Driver <world_file> <max_turns>");
+      return;
+    }
 
+    String worldFile = args[0];
+    int maxTurns;
     try {
-      town = new TownModel("res/SmallTownWorld.txt");
+      maxTurns = Integer.parseInt(args[1]);
+    } catch (NumberFormatException e) {
+      System.out.println("Invalid max turns argument. It should be an integer.");
+      return;
+    }
+
+    Driver driver = new Driver(new InputStreamReader(System.in));
+    driver.runGame(worldFile, maxTurns);
+  }
+
+  /**
+   * Runs the game based on the specified world file and max number of turns.
+   *
+   * @param worldFile the file containing the world specification
+   * @param maxTurns  the maximum number of turns allowed
+   */
+  public void runGame(String worldFile, int maxTurns) {
+    try {
+      town = new TownModel(worldFile);
     } catch (IOException e) {
       System.out.println("Error loading the town: " + e.getMessage());
       return;
     }
 
     System.out.println("Welcome to Kill Doctor Lucky!");
-    displayMapInfo(town);
+    displayMapInfo();
+
+    System.out.println("Adding Human players...");
+    addHumanControlledPlayers();
+    System.out.println("Adding Computer player...");
+    addComputerControlledPlayer();
 
     while (true) {
       System.out.println("\nPlease choose an option:");
@@ -47,51 +95,118 @@ public class Driver {
       System.out.println("4. Show space by index");
       System.out.println("5. Show neighbors by index");
       System.out.println("6. Print the map");
+      System.out.println("7. Start game");
       System.out.println("0. Exit");
 
       int choice = scanner.nextInt();
 
       switch (choice) {
-      case 1:
-        moveTargetCharacter(town);
-        break;
-      case 2:
-        getCurrSpace(town);
-        break;
-      case 3:
-        getCurrSpaceNeighbors(town);
-        break;
-      case 4:
-        getSpaceByIndex(town, scanner);
-        break;
-      case 5:
-        getNeighborsByIndex(town, scanner);
-        break;
-      case 6:
-        printMap(town);
-        break;
-      case 0:
-        System.out.println("Exiting...");
-        scanner.close();
-        return;
-      default:
-        System.out.println("Invalid choice, please try again.");
+        case 1:
+          moveTargetCharacter();
+          break;
+        case 2:
+          getCurrSpace();
+          break;
+        case 3:
+          getCurrSpaceNeighbors();
+          break;
+        case 4:
+          getSpaceByIndex();
+          break;
+        case 5:
+          getNeighborsByIndex();
+          break;
+        case 6:
+          printMap();
+          break;
+        case 7:
+          showThePlayerInfo(maxTurns);
+          break;
+        case 0:
+          System.out.println("Exiting...");
+          scanner.close();
+          return;
+        default:
+          System.out.println("Invalid choice, please try again.");
+      }
+    }
+  }
+
+  private void showThePlayerInfo(int maxTurns) {
+    while (true) {
+      System.out.println("Do you want to display info for specific player? ");
+      System.out.println("1. Yes");
+      System.out.println("2. No");
+      System.out.println("3. Display Computer Player Info");
+      System.out.println("4. Display all players info");
+
+      int choice = scanner.nextInt();
+      scanner.nextLine();
+      switch (choice) {
+        case 1:
+          displayPlayerInfo("Human");
+          break;
+        case 2:
+          startGameRounds(maxTurns);
+          return;
+        case 3:
+          displayPlayerInfo("Computer");
+          break;
+        case 4:
+          displayAllPlayerInfo();
+          break;
+        default:
+          System.out.println("Invalid choice, please try again.");
       }
     }
   }
 
   /**
-   * Displays the information about the town, target character, places, and
-   * items in the town.
-   *
-   * @param town the town to display the information of
+   * Starts game rounds between human and computer players.
    */
-  private static void displayMapInfo(TownModel town) {
+  private void startGameRounds(int maxTurns) {
+    int currentTurn = 0;
+    while (currentTurn < maxTurns) {
+      System.out.println("\nTurn " + (currentTurn + 1) + " of " + maxTurns);
+
+      for (PlayerModel player : players) {
+        System.out.println("\n" + player.getName() + "'s turn:");
+        if (player instanceof HumanPlayer) {
+          System.out.println(
+              "Do you want to display information for " + player.getName() + "? (yes/no)");
+          String response = scanner.next();
+          if (response.equalsIgnoreCase("yes")) {
+            displayCurrentPlayerInfo(player);
+          }
+          HumanPlayerController humanController = new HumanPlayerController((HumanPlayer) player);
+          humanController.takeTurn();
+        } else if (player instanceof ComputerPlayer) {
+          System.out.println("Computer player: " + player.getName() + "'s turn:");
+          System.out.println(
+              "Do you want to display information for " + player.getName() + "? (yes/no)");
+          String response = scanner.next();
+          if (response.equalsIgnoreCase("yes")) {
+            displayCurrentPlayerInfo(player);
+          }
+          ComputerPlayerController computerController =
+              new ComputerPlayerController((ComputerPlayer) player, random);
+          computerController.takeTurn();
+        }
+      }
+      currentTurn++;
+    }
+    System.out.println("Maximum turns reached. Game over.");
+  }
+
+  /**
+   * Displays the map information including places and items.
+   */
+  private void displayMapInfo() {
     System.out.println("=== Map Information ===");
     System.out.println("Town: " + town.getTownName());
     System.out.println(
         "Target name: " + town.getTargetName() + " (Health: " + town.getTargetHealth() + ")");
-    System.out.println("Places in the town: ");
+    System.out.println("Places in the town:");
     System.out.println("--------------------");
     int index = 1;
     for (Place place : town.getPlaces()) {
@@ -105,48 +220,39 @@ public class Driver {
 
   /**
    * Moves the target character to the next place.
-   *
-   * @param town the town where the target character is located
    */
-  private static void moveTargetCharacter(TownModel town) {
+  private void moveTargetCharacter() {
     System.out.println("Moving the target character...");
     town.moveCharacter();
-    getCurrSpace(town);
+    getCurrSpace();
   }
 
   /**
-   * Displays the information about the target character's current space.
-   *
-   * @param town the town where the target character is located
+   * Displays the current space of the target character.
    */
-  private static void getCurrSpace(TownModel town) {
+  private void getCurrSpace() {
     Place currentPlace = town.getCharacter().getCurrentPlace();
     System.out.println("Target character is in: " + currentPlace.getName());
     System.out.println("Items in the place:");
-    currentPlace.getItems().forEach(
-        item -> System.out.println(item.getName() + " (Damage: " + item.getDamage() + ")"));
+    currentPlace.getItems()
+        .forEach(
+            item -> System.out.println(item.getName() + " (Damage: " + item.getDamage() + ")"));
   }
 
   /**
-   * Displays the neighbors of the target character's space.
-   *
-   * @param town the town where the target character is located
+   * Displays the neighbors of the target character's current space.
    */
-  private static void getCurrSpaceNeighbors(TownModel town) {
+  private void getCurrSpaceNeighbors() {
     Place currentPlace = town.getCharacter().getCurrentPlace();
     System.out.println("Neighbors of " + currentPlace.getName() + ":");
     currentPlace.getNeighbors().forEach(neighbor -> System.out.println(neighbor.getName()));
   }
 
   /**
-   * Displays the information about the space in the town based on the index
-   * provided by the user.
-   *
-   * @param town the town where the target character is located
-   * @param scanner the scanner object to read user input
+   * Displays information about the place by index.
    */
-  private static void getSpaceByIndex(TownModel town, Scanner scanner) {
-    System.out.println("Enter the index of the space (1 to " + (town.getPlaces().size()) + "):");
+  private void getSpaceByIndex() {
+    System.out.println("Enter the index of the space (1 to " + (town.getPlaces().size()) + "): ");
     int index = scanner.nextInt() - 1;
     if (index < 0 || index >= town.getPlaces().size()) {
       System.out.println("Invalid number.");
@@ -154,20 +260,21 @@ public class Driver {
     }
     Place place = town.getPlaces().get(index);
     System.out.println("Place: " + place.getName());
-    System.out.println("Items in the place:");
-    place.getItems().forEach(
-        item -> System.out.println(item.getName() + " (Damage: " + item.getDamage() + ")"));
+    if (place.getItems().isEmpty()) {
+      System.out.println("No items in the place.");
+      return;
+    } else {
+      System.out.println("Items in the place:");
+      place.getItems().forEach(
+          item -> System.out.println(item.getName() + " (Damage: " + item.getDamage() + ")"));
+    }
   }
 
   /**
-   * Displays the neighbors of the space in the town based on the index provided
-   * by the user.
-   *
-   * @param town the town where the target character is located
-   * @param scanner the scanner object to read user input
+   * Displays the neighbors of the place by index.
    */
-  private static void getNeighborsByIndex(TownModel town, Scanner scanner) {
-    System.out.println("Enter the index of the space (1 to " + (town.getPlaces().size()) + "):");
+  private void getNeighborsByIndex() {
+    System.out.println("Enter the index of the space (1 to " + (town.getPlaces().size()) + "): ");
     int index = scanner.nextInt() - 1;
     if (index < 0 || index >= town.getPlaces().size()) {
       System.out.println("Invalid number.");
@@ -180,10 +287,8 @@ public class Driver {
 
   /**
    * Prints the map of the town to a PNG file.
-   *
-   * @param town the town to print the map of
    */
-  private static void printMap(TownModel town) {
+  private void printMap() {
     System.out.println("Printing the map...");
 
     int width = 11 * CELL_SIZE;
@@ -202,9 +307,7 @@ public class Driver {
       int col1 = place.getCol1();
       int row2 = place.getRow2();
       int col2 = place.getCol2();
-
       drawPlace(g2d, place.getName(), row1, col1, row2, col2);
-
     }
 
     try {
@@ -219,45 +322,98 @@ public class Driver {
 
   /**
    * Draws a place on the map image.
-   *
-   * @param g2d the Graphics2D object to draw the place
-   * @param name the name of the place
-   * @param row1 the starting row of the place
-   * @param col1 the starting column of the place
-   * @param row2 the ending row of the place
-   * @param col2 the ending column of the place
    */
-  private static void drawPlace(Graphics2D g2d, String name, int row1, int col1, int row2,
-      int col2) {
+  private void drawPlace(Graphics2D g2d, String name, int row1, int col1, int row2, int col2) {
     int y = col1 * CELL_SIZE;
     int x = row1 * CELL_SIZE;
     int width = (row2 - row1) * CELL_SIZE;
     int height = (col2 - col1) * CELL_SIZE;
     g2d.drawRect(x, y, width, height);
-
     g2d.drawString(name, x + width / 4, y + height / 4);
   }
 
   /**
-   * Loads the town from the file specified in the command-line arguments.
-   * 
-   * @param args command-line arguments containing the file name
-   * @return a TownModel object if loaded successfully, null otherwise
+   * Adds multiple human-controlled players to the world.
    */
-  private static TownModel loadTownFromFile(String[] args) {
-    if (args.length == 0) {
-      System.out.println("Please provide the world file as a command-line argument.");
-      return null;
-    }
+  private void addHumanControlledPlayers() {
+    while (true) {
+      System.out.println("Enter the name of the human player: ");
+      String playerName = scanner.next();
+      Place startPlace = town.getPlaces().get(0);
+      HumanPlayer humanPlayer = new HumanPlayer(playerName, startPlace, 3);
+      players.add(humanPlayer);
+      System.out.println(
+          playerName + " (Human) has entered the town at " + startPlace.getName() + ".");
 
-    TownModel town = null;
-    try {
-      town = new TownModel(args[0]); // Load the town from the provided file
-                                     // name
-    } catch (IOException e) {
-      System.out.println("Error loading the town: " + e.getMessage());
+      System.out.println("Do you want to add another player?");
+      System.out.println("1 to continue");
+      System.out.println("2 to stop");
+      int response = scanner.nextInt();
+      switch (response) {
+        case 1:
+          break;
+        case 2:
+          return;
+        default:
+          System.out.println("Invalid choice. Exiting...");
+      }
     }
+  }
 
-    return town;
+  /**
+   * Adds a computer-controlled player to the world.
+   */
+  private void addComputerControlledPlayer() {
+    String playerName = "David(Computer)";
+    Place startPlace = town.getPlaces().get(1);
+    ComputerPlayer computerPlayer = new ComputerPlayer(playerName, startPlace, 3, random);
+    players.add(computerPlayer);
+    System.out.println(
+        playerName + " (Computer) has entered the town at " + startPlace.getName() + ".");
+  }
+
+  private void displayCurrentPlayerInfo(PlayerModel player) {
+    String playerName = player.getName();
+    System.out.println("Current place: " + player.getCurrentPlace().getName());
+    if (player.getItems().isEmpty()) {
+      System.out.println("No items carried.");
+    } else {
+      System.out.println("Items carried:");
+      player.getItems().forEach(
+          item -> System.out.println(item.getName() + " (Damage: " + item.getDamage() + ")"));
+    }
+  }
+
+  private void displayAllPlayerInfo() {
+    System.out.println("Players in the game:");
+    int index = 1;
+    for (PlayerModel player : players) {
+      System.out.println(index + ". " + player.getName());
+      System.out.println("Current place: " + player.getCurrentPlace().getName());
+      index++;
+    }
+  }
+
+  private void displayPlayerInfo(String playerType) {
+    if (playerType.equals("Computer")) {
+      for (PlayerModel player : players) {
+        if (player.getName().equals("David(Computer)")) {
+          System.out.println("Computer Player: " + player.getName());
+          System.out.println("Current place: " + player.getCurrentPlace().getName());
+          return;
+        }
+      }
+    } else if (playerType.equals("Human")) {
+      System.out.println("Enter the player name to display information: ");
+      String playerName = scanner.next();
+      for (PlayerModel player : players) {
+        if (player.getName().equals(playerName)) {
+          System.out.println("Player: " + player.getName());
+          System.out.println("Current place: " + player.getCurrentPlace().getName());
+          return;
+        }
+      }
+      System.out.println("Player not found.");
+    }
   }
 }

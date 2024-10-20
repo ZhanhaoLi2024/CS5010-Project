@@ -1,0 +1,19 @@
+Steven's turn:
+Do you want to display information for Steven? (yes/no)
+no
+Choose an action: 
+1. Move to a neighboring place
+2. Pick up an item (Current place item: Cake - Damage:10)
+3. Look around
+3
+Steven is looking around...
+Looking around Bakery
+Items here: 
+Cake (Damage: 10)
+Players here: 
+Steven
+Neighboring places: 
+Hospital
+Restaurant
+Playground
+Gas Station

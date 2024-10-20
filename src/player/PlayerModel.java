@@ -29,6 +29,7 @@ public class PlayerModel implements Player {
     this.currentPlace = startPlace;
     this.itemLimit = itemLimit;
     this.items = new ArrayList<>();
+    currentPlace.addPlayer(this); // Add the player to the starting place
   }
 
   @Override
@@ -52,20 +53,46 @@ public class PlayerModel implements Player {
   @Override
   public void lookAround() {
     System.out.println("Looking around " + currentPlace.getName());
-    System.out.println("Items here: " + currentPlace.getItems());
-    System.out.println("Players here: ");
-    for (Player player : currentPlace.getCurrentPlacePlayers()) {
-      System.out.println(player.getName());
+    if (currentPlace.getItems().isEmpty()) {
+      System.out.println("No items here.");
+    } else {
+      System.out.println("Items here: ");
+      currentPlace.getItems().forEach(
+          item -> System.out.println(item.getName() + " (Damage: " + item.getDamage() + ")"));
+    }
+    if (currentPlace.getCurrentPlacePlayers().isEmpty()) {
+      System.out.println("No players here.");
+    } else {
+      System.out.println("Players here: ");
+      for (Player player : currentPlace.getCurrentPlacePlayers()) {
+        System.out.println(player.getName());
+      }
+    }
+
+    System.out.println("Neighboring places: ");
+    for (Place neighbor : currentPlace.getNeighbors()) {
+      System.out.println(neighbor.getName());
     }
   }
 
   @Override
   public String getDescription() {
     System.out.println("Looking around " + currentPlace.getName());
-    System.out.println("Items here: " + currentPlace.getItems());
+    if (currentPlace.getItems().isEmpty()) {
+      System.out.println("No items here.");
+    } else {
+      System.out.println("Items here: ");
+      for (Item item : currentPlace.getItems()) {
+        System.out.println(item.getName() + " (Damage: " + item.getDamage() + ")");
+      }
+    }
     System.out.println("Players here: ");
     for (Player player : currentPlace.getCurrentPlacePlayers()) {
       System.out.println(player.getName());
+    }
+    System.out.println("Neighboring places: ");
+    for (Place neighbor : currentPlace.getNeighbors()) {
+      System.out.println(neighbor.getName());
     }
     return null;
   }

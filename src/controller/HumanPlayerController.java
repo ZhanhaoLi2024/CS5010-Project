@@ -1,6 +1,7 @@
 package controller;
 
 import item.Item;
+import java.util.List;
 import java.util.Scanner;
 import place.Place;
 import player.PlayerModel;
@@ -15,14 +16,22 @@ public class HumanPlayerController extends PlayerControllerModel {
 
   @Override
   public void takeTurn() {
-    System.out.println("It's " + player.getName() + "'s turn.");
     System.out.println("Choose an action: ");
     System.out.println("1. Move to a neighboring place");
-    System.out.println("2. Pick up an item");
+    List<Item> currentPlaceItems = player.getCurrentPlace().getItems();
+    System.out.print("2. Pick up an item (Current place item: ");
+    if (currentPlaceItems.isEmpty()) {
+      System.out.println("No items");
+    } else {
+      for (Item item : currentPlaceItems) {
+        System.out.print(item.getName() + " - Damage:" + item.getDamage());
+      }
+    }
+    System.out.println(")");
     System.out.println("3. Look around");
 
     int choice = scanner.nextInt();
-    scanner.nextLine();  // 清理换行符
+    scanner.nextLine();
 
     switch (choice) {
       case 1:
@@ -54,6 +63,7 @@ public class HumanPlayerController extends PlayerControllerModel {
     if (choice > 0 && choice <= player.getCurrentPlace().getNeighbors().size()) {
       Place newPlace = player.getCurrentPlace().getNeighbors().get(choice - 1);
       movePlayer(newPlace);
+      System.out.println(player.getName() + " moves to " + newPlace.getName());
     } else {
       System.out.println("Invalid choice.");
     }
