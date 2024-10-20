@@ -1,30 +1,254 @@
 Please choose an option:
-1. Move 'The Mayor' to the next place
-2. Show target's current space
-3. Show neighbors of target's space
-4. Show space by index
-5. Show neighbors by index
+1. Show the Map Information
+2. Add the player
+3. Display the player's information
+4. Display the Place's information
+5. Start the game
 6. Print the map
-7. Start game
 0. Exit
 4
-Enter the index of the space (1 to 20): 
-1
-Place: Park
-Items in the place:
-Toy Ball (Damage: 8)
-
 Please choose an option:
-1. Move 'The Mayor' to the next place
-2. Show target's current space
-3. Show neighbors of target's space
-4. Show space by index
-5. Show neighbors by index
-6. Print the map
-7. Start game
+1. Show All Places Info
+2. Show Specific Place Info
 0. Exit
-4
-Enter the index of the space (1 to 20): 
-9
-Place: Restaurant
-No items in the place.
+1
+All places info:
+1. Place name: Park
+Place items:
+Item name: Toy Ball
+Item damage: 8
+Place neighbors:
+Neighbor name: Grocery Store
+Neighbor name: Restaurant
+Neighbor name: Playground
+--------------------
+2. Place name: Grocery Store
+Place items:
+Item name: Shopping Cart
+Item damage: 12
+Place neighbors:
+Neighbor name: Park
+Neighbor name: School
+Neighbor name: Restaurant
+--------------------
+3. Place name: School
+Place items:
+Item name: Textbook
+Item damage: 6
+Place neighbors:
+Neighbor name: Grocery Store
+Neighbor name: Post Office
+Neighbor name: Hospital
+Neighbor name: Restaurant
+--------------------
+4. Place name: Post Office
+Place items:
+Item name: Envelope
+Item damage: 8
+Place neighbors:
+Neighbor name: School
+Neighbor name: Police Station
+Neighbor name: Library
+Neighbor name: Hospital
+--------------------
+5. Place name: Police Station
+Place items:
+Item name: Handcuffs
+Item damage: 20
+Place neighbors:
+Neighbor name: Post Office
+Neighbor name: Fire Station
+Neighbor name: Library
+--------------------
+6. Place name: Fire Station
+Place items:
+Item name: Fire Hose
+Item damage: 15
+Place neighbors:
+Neighbor name: Police Station
+Neighbor name: Library
+Neighbor name: Gym
+Neighbor name: Pharmacy
+--------------------
+7. Place name: Library
+Place items:
+Item name: Storybook
+Item damage: 10
+Place neighbors:
+Neighbor name: Post Office
+Neighbor name: Police Station
+Neighbor name: Fire Station
+Neighbor name: Hospital
+Neighbor name: House #2
+Neighbor name: Gym
+--------------------
+8. Place name: Hospital
+Place items:
+Item name: Medical Kit
+Item damage: 18
+Place neighbors:
+Neighbor name: School
+Neighbor name: Post Office
+Neighbor name: Library
+Neighbor name: Restaurant
+Neighbor name: Bakery
+Neighbor name: Gas Station
+Neighbor name: House #1
+Neighbor name: House #2
+--------------------
+9. Place name: Restaurant
+Place items:
+Item name: Menu
+Item damage: 22
+Place neighbors:
+Neighbor name: Park
+Neighbor name: Grocery Store
+Neighbor name: School
+Neighbor name: Hospital
+Neighbor name: Playground
+Neighbor name: Bakery
+--------------------
+10. Place name: Playground
+Place items:
+Item name: Slide
+Item damage: 6
+Place neighbors:
+Neighbor name: Park
+Neighbor name: Restaurant
+Neighbor name: Bakery
+Neighbor name: Gas Station
+Neighbor name: Bus Stop
+--------------------
+11. Place name: Bakery
+Place items:
+Item name: Cake
+Item damage: 10
+Place neighbors:
+Neighbor name: Hospital
+Neighbor name: Restaurant
+Neighbor name: Playground
+Neighbor name: Gas Station
+--------------------
+12. Place name: Gas Station
+Place items:
+Item name: Gas Can
+Item damage: 8
+Place neighbors:
+Neighbor name: Hospital
+Neighbor name: Playground
+Neighbor name: Bakery
+Neighbor name: House #1
+Neighbor name: Coffee Shop
+Neighbor name: Bus Stop
+--------------------
+13. Place name: House #1
+Place items:
+Item name: House Key
+Item damage: 15
+Place neighbors:
+Neighbor name: Hospital
+Neighbor name: Gas Station
+Neighbor name: House #2
+Neighbor name: Barber Shop
+Neighbor name: Coffee Shop
+Neighbor name: Community Center
+--------------------
+14. Place name: House #2
+Place items:
+Item name: Mailbox Key
+Item damage: 14
+Place neighbors:
+Neighbor name: Library
+Neighbor name: Hospital
+Neighbor name: House #1
+Neighbor name: Gym
+Neighbor name: Pharmacy
+Neighbor name: Barber Shop
+--------------------
+15. Place name: Gym
+Place items:
+Item name: Dumbbells
+Item damage: 12
+Place neighbors:
+Neighbor name: Fire Station
+Neighbor name: Library
+Neighbor name: House #2
+Neighbor name: Pharmacy
+--------------------
+16. Place name: Pharmacy
+Place items:
+Item name: Medicine Bottle
+Item damage: 7
+Place neighbors:
+Neighbor name: Fire Station
+Neighbor name: House #2
+Neighbor name: Gym
+Neighbor name: Barber Shop
+Neighbor name: Community Center
+--------------------
+17. Place name: Barber Shop
+Place items:
+Item name: Scissors
+Item damage: 5
+Place neighbors:
+Neighbor name: House #1
+Neighbor name: House #2
+Neighbor name: Pharmacy
+Neighbor name: Community Center
+--------------------
+18. Place name: Coffee Shop
+Place items:
+Item name: Coffee Mug
+Item damage: 10
+Place neighbors:
+Neighbor name: Gas Station
+Neighbor name: House #1
+Neighbor name: Bus Stop
+--------------------
+19. Place name: Bus Stop
+Place items:
+Item name: Bus Ticket
+Item damage: 7
+Place neighbors:
+Neighbor name: Playground
+Neighbor name: Gas Station
+Neighbor name: Coffee Shop
+--------------------
+20. Place name: Community Center
+Place items:
+Item name: Community Badge
+Item damage: 20
+Place neighbors:
+Neighbor name: House #1
+Neighbor name: Pharmacy
+Neighbor name: Barber Shop
+--------------------
+Please choose an option:
+1. Show All Places Info
+2. Show Specific Place Info
+0. Exit
+2
+Enter the place name:
+Bus Stop
+Place name: Bus Stop
+Place items:
+Item name: Bus Ticket
+Item damage: 7
+Place neighbors:
+Neighbor name: Playground
+Neighbor name: Gas Station
+Neighbor name: Coffee Shop
+Please choose an option:
+1. Show All Places Info
+2. Show Specific Place Info
+0. Exit
+2
+Enter the place name:
+T&T
+Place not found.
+Please choose an option:
+1. Show All Places Info
+2. Show Specific Place Info
+0. Exit
+0
+Exiting...

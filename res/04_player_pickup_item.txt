@@ -1,12 +1,13 @@
-Steven's turn:
-Do you want to display information for Steven? (yes/no)
-no
-Choose an action: 
-1. Move to a neighboring place
-2. Pick up an item (Current place item: Menu - Damage:22)
+Player: Amy's turn
+Your current place: Hospital
+Player has no item in the bag.
+Please choose an option:
+1. Move player
+2. Pick up item
 3. Look around
 2
-Available items: 
-1. Menu
-Choose an item to pick up: 1
-Steven picked up Menu
+Items in Hospital:
+1. Medical Kit (Damage: 18)
+Enter the item number to pick up:
+1
+Picked up Medical Kit.

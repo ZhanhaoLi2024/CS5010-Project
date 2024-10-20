@@ -1,14 +1,13 @@
 Please choose an option:
-1. Move 'The Mayor' to the next place
-2. Show target's current space
-3. Show neighbors of target's space
-4. Show space by index
-5. Show neighbors by index
+1. Show the Map Information
+2. Add the player
+3. Display the player's information
+4. Display the Place's information
+5. Start the game
 6. Print the map
-7. Start game
 0. Exit
 6
 Printing the map...
-2024-10-20 01:27:45.787 java[49513:4754091] +[IMKClient subclass]: chose IMKClient_Legacy
-2024-10-20 01:27:45.787 java[49513:4754091] +[IMKInputSession subclass]: chose IMKInputSession_Legacy
+2024-10-24 15:11:18.485 java[89208:2812235] +[IMKClient subclass]: chose IMKClient_Legacy
+2024-10-24 15:11:18.485 java[89208:2812235] +[IMKInputSession subclass]: chose IMKInputSession_Legacy
 Map saved as map.png
