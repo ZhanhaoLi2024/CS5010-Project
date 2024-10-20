@@ -1,6 +1,7 @@
 package player;
 
 import item.Item;
+import java.util.Random;
 import place.Place;
 
 public class ComputerPlayer extends PlayerModel {
@@ -14,7 +15,7 @@ public class ComputerPlayer extends PlayerModel {
    * @param startPlace the place where the player starts
    * @param itemLimit  the maximum number of items the player can carry
    */
-  public ComputerPlayer(String name, Place startPlace, int itemLimit) {
+  public ComputerPlayer(String name, Place startPlace, int itemLimit, Random random) {
     super(name, startPlace, itemLimit);
     this.random = random;
   }
@@ -72,9 +73,8 @@ public class ComputerPlayer extends PlayerModel {
     super.lookAround();
   }
 
-    public String getDescription() {
-        return super.getDescription();
-    }
-}
+  public String getDescription() {
+    return super.getDescription();
+  }
 
 }
