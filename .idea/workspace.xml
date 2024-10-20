@@ -26,9 +26,9 @@
   <component name="OptimizeOnSaveOptions">
     <option name="myRunOnSave" value="true" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 6
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 6
+}</component>
   <component name="ProjectId" id="2nrMF0dOLcc88MC0GfgwKAvz6Xj" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -51,17 +51,21 @@
     "JUnit.TargetModelTest.executor": "Run",
     "JUnit.TownModelTest.executor": "Run",
     "JUnit.TownModelTest.testInvalidWorldDescription.executor": "Run",
+    "git-widget-placeholder": "milestone02",
+    "kotlin-language-version-configured": "true",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.stylelint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.stylelint": "",
     "node.js.selected.package.tslint": "(autodetect)",
-    "project.structure.last.edited": "Project",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Artifacts",
     "project.structure.proportion": "0.0",
     "project.structure.side.proportion": "0.0",
     "rearrange.code.on.save": "true",
-    "settings.editor.selected.configurable": "actions.on.save"
+    "settings.editor.selected.configurable": "actions.on.save",
+    "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
   <component name="RunManager" selected="JUnit.PlayerModelTest">
@@ -168,6 +172,7 @@
       <option name="presentableId" value="Default" />
       <updated>1729726636184</updated>
       <workItem from="1729726637309" duration="14594000" />
+      <workItem from="1729806370693" duration="319000" />
     </task>
     <servers />
   </component>
