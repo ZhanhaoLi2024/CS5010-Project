@@ -12,7 +12,7 @@ import model.town.Town;
 /**
  * Command to add a human player or computer player to the game.
  */
-public class AddHumanPlayerCommand implements Command {
+public class AddPlayerCommand implements Command {
   private final List<Player> players;
   private final Appendable output;
   private final Town town;
@@ -26,8 +26,8 @@ public class AddHumanPlayerCommand implements Command {
    * @param town    the town where the players are located
    * @param scanner the scanner to get user input
    */
-  public AddHumanPlayerCommand(List<Player> players, Appendable output, Town town,
-                               Scanner scanner) {
+  public AddPlayerCommand(List<Player> players, Appendable output, Town town,
+                          Scanner scanner) {
     this.players = players;
     this.output = output;
     this.town = town;

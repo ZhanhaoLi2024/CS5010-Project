@@ -12,6 +12,7 @@ import model.player.Player;
 public class LookAroundCommand implements Command {
   private final Player player;
   private final Appendable output;
+  private List<Player> players;
 
   /**
    * Constructs a new LookAroundCommand.
@@ -19,9 +20,10 @@ public class LookAroundCommand implements Command {
    * @param player the player who is looking around.
    * @param output the output stream to write messages to.
    */
-  public LookAroundCommand(Player player, Appendable output) {
+  public LookAroundCommand(Player player, Appendable output, List<Player> players) {
     this.player = player;
     this.output = output;
+    this.players = players;
 
   }
 
@@ -45,6 +47,15 @@ public class LookAroundCommand implements Command {
       for (Item item : items) {
         output.append(item.getName()).append(" (Damage: ").append(String.valueOf(item.getDamage()))
             .append(")\n");
+      }
+    }
+    if (players.size() > 1) {
+      for (Player player : players) {
+        if (player.getCurrentPlace().equals(currentPlace)) {
+          if (!player.equals(this.player)) {
+            output.append(player.getName()).append(" is in this place.\n");
+          }
+        }
       }
     }
   }

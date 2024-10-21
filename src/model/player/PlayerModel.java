@@ -1,7 +1,7 @@
 package model.player;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import model.item.Item;
 import model.place.Place;
@@ -14,7 +14,7 @@ public class PlayerModel implements Player {
   private final String name;
   private final boolean isComputerControlled;
   private final int carryLimit;
-  private final Map<String, Integer> inventory;
+  private final List<Item> items;
   private Place currentPlace;
 
   /**
@@ -42,7 +42,7 @@ public class PlayerModel implements Player {
     this.isComputerControlled = isComputerControlled;
     this.carryLimit = carryLimit;
     this.currentPlace = initialPlace;
-    this.inventory = new HashMap<>();
+    this.items = new ArrayList<>();
   }
 
   @Override
@@ -70,15 +70,15 @@ public class PlayerModel implements Player {
 
   @Override
   public void pickUpItem(Item item) {
-    if (inventory.size() >= carryLimit) {
+    if (items.size() >= carryLimit) {
       throw new IllegalStateException("Cannot pick up more items, inventory is full.");
     }
-    inventory.put(item.getName(), item.getDamage());
+    items.add(item);
   }
 
   @Override
-  public Map<String, Integer> getInventory() {
-    return new HashMap<>(this.inventory);
+  public List<Item> getCurrentCarriedItems() {
+    return items;
   }
 
   @Override
@@ -91,8 +91,9 @@ public class PlayerModel implements Player {
     return String.format("Player: %s\nLocation: %s\nInventory: %s\n",
         name,
         currentPlace.getName(),
-        inventory.isEmpty() ? "None" : inventory);
+        items.isEmpty() ? "None" : items);
   }
+
 
   @Override
   public boolean equals(Object obj) {

@@ -14,6 +14,9 @@ import model.player.PlayerModel;
 import org.junit.Before;
 import org.junit.Test;
 
+/**
+ * Test class for PickUpItemCommand.
+ */
 public class PickUpItemCommandTest {
 
   private Player player;
@@ -21,24 +24,27 @@ public class PickUpItemCommandTest {
   private Place place;
   private Scanner scanner;
 
+  /**
+   * Sets up the test fixture.
+   */
   @Before
   public void setUp() {
     place = new PlaceModel(0, 0, 1, 1, "TestPlace");
     output = new StringBuilder();
 
-    // Initialize player with a carry limit of 3
     player = new PlayerModel("Player1", false, 3, place);
 
-    // Add items to the place
     Item sword = new ItemModel("Sword", 10);
     Item shield = new ItemModel("Shield", 5);
     place.addItem(sword);
     place.addItem(shield);
   }
 
+  /**
+   * Tests the constructor of PickUpItemCommand.
+   */
   @Test
   public void testPickUpItemWhenNoItems() throws IOException {
-    // Empty the place of all items
     place.getItems().clear();
 
     scanner = new Scanner("");
@@ -48,55 +54,63 @@ public class PickUpItemCommandTest {
     assertTrue(output.toString().contains("No items found."));
   }
 
+  /**
+   * Tests the constructor of PickUpItemCommand.
+   */
   @Test
   public void testComputerControlledPlayerPicksRandomItem() throws IOException {
-    // Make the player controlled by the computer
     Player computerPlayer = new PlayerModel("Computer", true, 3, place);
 
-    scanner = new Scanner(""); // Input is irrelevant for computer-controlled players
+    scanner = new Scanner("");
     PickUpItemCommand command = new PickUpItemCommand(computerPlayer, output, scanner);
     command.execute();
 
-    assertEquals(1, computerPlayer.getInventory().size());
+    assertEquals(1, computerPlayer.getCurrentCarriedItems().size());
     assertEquals(1, place.getItems().size());
     assertTrue(output.toString().contains("Picked up"));
   }
 
+  /**
+   * Tests the constructor of PickUpItemCommand.
+   */
   @Test
   public void testPlayerPicksValidItem() throws IOException {
-    // Set up the scanner to simulate user input (user picks the second item, i.e., shield)
     scanner = new Scanner("2");
 
     PickUpItemCommand command = new PickUpItemCommand(player, output, scanner);
     command.execute();
 
-    assertEquals(1, player.getInventory().size());
-    assertEquals("Shield", player.getInventory().keySet().iterator().next());
-    assertEquals(1, place.getItems().size()); // Only one item should remain in the place
+    assertEquals(1, player.getCurrentCarriedItems().size());
+    assertEquals("Shield", player.getCurrentCarriedItems());
+//    assertEquals("Shield", player.getCurrentCarriedItems().keySet().iterator().next());
+    assertEquals(1, place.getItems().size());
     assertTrue(output.toString().contains("Picked up Shield."));
   }
 
+  /**
+   * Tests the constructor of PickUpItemCommand.
+   */
   @Test
   public void testPlayerPicksInvalidItemNumber() throws IOException {
-    // Set up the scanner to simulate user input (invalid item number, e.g., 3)
     scanner = new Scanner("3");
 
     PickUpItemCommand command = new PickUpItemCommand(player, output, scanner);
     command.execute();
 
-    assertEquals(0, player.getInventory().size());
-    assertEquals(2, place.getItems().size()); // No items should be picked up
+    assertEquals(0, player.getCurrentCarriedItems().size());
+    assertEquals(2, place.getItems().size());
     assertTrue(output.toString().contains("Invalid item number."));
   }
 
+  /**
+   * Tests the constructor of PickUpItemCommand.
+   */
   @Test(expected = IllegalStateException.class)
   public void testPlayerPicksItemWithFullInventory() throws IOException {
-    // Fill the player's inventory to the limit
     player.pickUpItem(new ItemModel("Item1", 1));
     player.pickUpItem(new ItemModel("Item2", 2));
     player.pickUpItem(new ItemModel("Item3", 3));
 
-    // Set up the scanner to simulate user input (user tries to pick the first item)
     scanner = new Scanner("1");
 
     PickUpItemCommand command = new PickUpItemCommand(player, output, scanner);

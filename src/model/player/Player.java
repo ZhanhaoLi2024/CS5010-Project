@@ -1,6 +1,6 @@
 package model.player;
 
-import java.util.Map;
+import java.util.List;
 import model.item.Item;
 import model.place.Place;
 
@@ -47,11 +47,11 @@ public interface Player {
   void pickUpItem(Item item) throws IllegalStateException;
 
   /**
-   * Retrieve a list of the items currently in the player's inventory.
+   * Get the item currently held by the player.
    *
-   * @return a Map where the keys are item names and the values are item details (such as damage or quantity).
+   * @return the item currently held by the player.
    */
-  Map<String, Integer> getInventory();
+  List<Item> getCurrentCarriedItems();
 
   /**
    * Get the maximum number of items the player can carry.
@@ -66,4 +66,5 @@ public interface Player {
    * @return the description of the player.
    */
   String getDescription();
+
 }

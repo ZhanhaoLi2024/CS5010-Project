@@ -25,6 +25,7 @@ public class DisplayPlaceInfoCommandTest {
   private StringBuilder output;
   private Scanner scanner;
   private List<Place> places;
+  private List<Player> players;
 
   /**
    * Sets up the test fixture.
@@ -111,7 +112,7 @@ public class DisplayPlaceInfoCommandTest {
     String input = "1\n0\n";
     scanner = new Scanner(input);
 
-    DisplayPlaceInfoCommand command = new DisplayPlaceInfoCommand(town, output, scanner);
+    DisplayPlaceInfoCommand command = new DisplayPlaceInfoCommand(town, players, output, scanner);
     command.execute();
 
     assertTrue(output.toString().contains("All places info:"));
@@ -131,7 +132,7 @@ public class DisplayPlaceInfoCommandTest {
     String input = "2\nPlace1\n0\n";
     scanner = new Scanner(input);
 
-    DisplayPlaceInfoCommand command = new DisplayPlaceInfoCommand(town, output, scanner);
+    DisplayPlaceInfoCommand command = new DisplayPlaceInfoCommand(town, players, output, scanner);
     command.execute();
 
     assertTrue(output.toString().contains("Place name: Place1"));
@@ -149,7 +150,7 @@ public class DisplayPlaceInfoCommandTest {
     String input = "2\nUnknownPlace\n0\n";
     scanner = new Scanner(input);
 
-    DisplayPlaceInfoCommand command = new DisplayPlaceInfoCommand(town, output, scanner);
+    DisplayPlaceInfoCommand command = new DisplayPlaceInfoCommand(town, players, output, scanner);
     command.execute();
 
     assertTrue(output.toString().contains("Place not found."));
@@ -167,7 +168,7 @@ public class DisplayPlaceInfoCommandTest {
     String input = "1\n0\n";
     scanner = new Scanner(input);
 
-    DisplayPlaceInfoCommand command = new DisplayPlaceInfoCommand(town, output, scanner);
+    DisplayPlaceInfoCommand command = new DisplayPlaceInfoCommand(town, players, output, scanner);
     command.execute();
 
     assertTrue(output.toString().contains("No places found."));

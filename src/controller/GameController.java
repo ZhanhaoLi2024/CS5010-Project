@@ -1,6 +1,6 @@
 package controller;
 
-import controller.command.AddHumanPlayerCommand;
+import controller.command.AddPlayerCommand;
 import controller.command.DisplayPlaceInfoCommand;
 import controller.command.DisplayPlayerInfoCommand;
 import controller.command.LookAroundCommand;
@@ -31,6 +31,7 @@ public class GameController implements Controller {
   private final Appendable output;
   private final int maxTurns;
   private List<Player> players;
+  private List<Place> places;
   private int currentTurn;
   private boolean quitGame;
 
@@ -50,6 +51,7 @@ public class GameController implements Controller {
     this.currentTurn = 1;
     this.quitGame = false;
     this.players = new ArrayList<>();
+    this.places = new ArrayList<>();
   }
 
   /**
@@ -62,8 +64,7 @@ public class GameController implements Controller {
     output.append("++++++++++++++++++++\n");
     this.output.append("Welcome to the game! You have ").append(String.valueOf(maxTurns))
         .append(" turns.\n");
-//    addComputerPlayer();
-    new AddHumanPlayerCommand(players, output, town, scanner).addComputerPlayer();
+    new AddPlayerCommand(players, output, town, scanner).addComputerPlayer();
     while (!quitGame) {
       this.displayMainMenu();
     }
@@ -89,13 +90,13 @@ public class GameController implements Controller {
         displayMapInfo();
         break;
       case 2:
-        new AddHumanPlayerCommand(players, output, town, scanner).execute();
+        new AddPlayerCommand(players, output, town, scanner).execute();
         break;
       case 3:
         new DisplayPlayerInfoCommand(players, output, scanner).execute();
         break;
       case 4:
-        new DisplayPlaceInfoCommand(town, output, scanner).execute();
+        new DisplayPlaceInfoCommand(town, players, output, scanner).execute();
         break;
       case 5:
         takeTurn();
@@ -149,7 +150,7 @@ public class GameController implements Controller {
             new PickUpItemCommand(player, output, scanner).execute();
             break;
           case 3:
-            new LookAroundCommand(player, output).execute();
+            new LookAroundCommand(player, output, players).execute();
             break;
           default:
             this.output.append("Invalid choice, please try again.\n");
@@ -169,7 +170,10 @@ public class GameController implements Controller {
     }
   }
 
-  private void displayMapInfo() {
+  /**
+   * Displays the map information.
+   */
+  public void displayMapInfo() {
     System.out.println("=== Map Information ===");
     System.out.println("Town: " + town.getTownName());
     System.out.println(
@@ -250,8 +254,8 @@ public class GameController implements Controller {
   /**
    * Prints the map of the town to a PNG file.
    */
-  private void printMap() {
-    System.out.println("Printing the map...");
+  private void printMap() throws IOException {
+    output.append("Printing the map...\n");
 
     int width = 11 * CELL_SIZE;
     int height = 12 * CELL_SIZE;
@@ -274,7 +278,7 @@ public class GameController implements Controller {
 
     try {
       ImageIO.write(mapImage, "png", new File("res/map.png"));
-      System.out.println("Map saved as map.png");
+      output.append("Map saved as map.png\n");
     } catch (IOException e) {
       e.printStackTrace();
     }
@@ -297,17 +301,14 @@ public class GameController implements Controller {
   @Override
   public void showPlayerCurrentInfo(Player player) throws IOException {
     output.append("Your current place: ").append(player.getCurrentPlace().getName()).append("\n");
-    if (player.getInventory().isEmpty()) {
+    if (player.getCurrentCarriedItems().isEmpty()) {
       output.append("Player has no item in the bag.\n");
     } else {
       output.append("Items in the player's bag:\n");
-      player.getInventory().forEach((name, damage) -> {
-        try {
-          output.append(name).append(" (Damage: ").append(String.valueOf(damage)).append(")\n");
-        } catch (IOException e) {
-          throw new RuntimeException(e);
-        }
-      });
+      for (Item item : player.getCurrentCarriedItems()) {
+        output.append(item.getName()).append(" (Damage: ").append(String.valueOf(item.getDamage()))
+            .append(")\n");
+      }
     }
   }
 
@@ -333,5 +334,9 @@ public class GameController implements Controller {
         .filter(item -> item.getName().equals(name))
         .findFirst()
         .orElse(null);
+  }
+
+  public List<Player> getPlayers() {
+    return players;
   }
 }

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Scanner;
 import model.item.Item;
 import model.place.Place;
+import model.player.Player;
 import model.town.Town;
 
 /**
@@ -14,6 +15,7 @@ public class DisplayPlaceInfoCommand implements Command {
   private final Town town;
   private final Appendable output;
   private final Scanner scanner;
+  private List<Player> players;
 
   /**
    * Constructs a new DisplayPlaceInfoCommand.
@@ -22,10 +24,12 @@ public class DisplayPlaceInfoCommand implements Command {
    * @param output  the output stream to write messages to
    * @param scanner the scanner to get user input
    */
-  public DisplayPlaceInfoCommand(Town town, Appendable output, Scanner scanner) {
+  public DisplayPlaceInfoCommand(Town town, List<Player> players, Appendable output,
+                                 Scanner scanner) {
     this.town = town;
     this.output = output;
     this.scanner = scanner;
+    this.players = players;
   }
 
   @Override
@@ -84,17 +88,30 @@ public class DisplayPlaceInfoCommand implements Command {
     output.append("All places info:\n");
     int index = 1;
     for (Place place : places) {
+      output.append("----------\n");
       output.append(index + ". Place name: ").append(place.getName()).append("\n");
+      output.append("----------\n");
       output.append("Place items:\n");
       for (Item item : place.getItems()) {
         output.append("Item name: ").append(item.getName()).append("\n");
         output.append("Item damage: ").append(String.valueOf(item.getDamage())).append("\n");
       }
+      output.append("----------\n");
       output.append("Place neighbors:\n");
       for (Place neighbor : place.getNeighbors()) {
         output.append("Neighbor name: ").append(neighbor.getName()).append("\n");
       }
-      output.append("--------------------\n");
+      output.append("----------\n");
+      if (players.isEmpty()) {
+        output.append("No players in this place.\n");
+      } else {
+        for (Player player : players) {
+          if (player.getCurrentPlace().equals(place)) {
+            output.append(player.getName()).append(" is in this place.\n");
+          }
+        }
+      }
+      output.append("----------\n");
       index++;
     }
   }
@@ -113,16 +130,31 @@ public class DisplayPlaceInfoCommand implements Command {
         .orElse(null);
 
     if (place != null) {
+      output.append("----------\n");
       output.append("Place name: ").append(place.getName()).append("\n");
+      output.append("----------\n");
       output.append("Place items:\n");
+      output.append("----------\n");
       for (Item item : place.getItems()) {
         output.append("Item name: ").append(item.getName()).append("\n");
         output.append("Item damage: ").append(String.valueOf(item.getDamage())).append("\n");
       }
+      output.append("----------\n");
       output.append("Place neighbors:\n");
       for (Place neighbor : place.getNeighbors()) {
         output.append("Neighbor name: ").append(neighbor.getName()).append("\n");
       }
+      output.append("----------\n");
+      if (players.isEmpty()) {
+        output.append("No players in this place.\n");
+      } else {
+        for (Player player : players) {
+          if (player.getCurrentPlace().equals(place)) {
+            output.append(player.getName()).append(" is in this place.\n");
+          }
+        }
+      }
+      output.append("----------\n");
     } else {
       output.append("Place not found.\n");
     }

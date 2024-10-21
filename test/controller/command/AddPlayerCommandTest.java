@@ -21,7 +21,7 @@ import org.junit.Test;
 /**
  * Test class for AddHumanPlayerCommand.
  */
-public class AddHumanPlayerCommandTest {
+public class AddPlayerCommandTest {
 
   private List<Player> players;
   private StringBuilder output;
@@ -49,27 +49,38 @@ public class AddHumanPlayerCommandTest {
     town = new TownModel(loader, "testfile.txt");
   }
 
+  /**
+   * Tests the add single player.
+   *
+   * @throws IOException if there is an issue with I/O operations.
+   */
   @Test
   public void testAddSinglePlayer() throws IOException {
     String input = "Player1\nno\n";
     Scanner scanner = new Scanner(input);
 
-    AddHumanPlayerCommand command = new AddHumanPlayerCommand(players, output, town, scanner);
+    AddPlayerCommand command = new AddPlayerCommand(players, output, town, scanner);
     command.execute();
 
     assertEquals(1, players.size());
     assertEquals("Player1", players.get(0).getName());
+    assertEquals("TestPlace", players.get(0).getCurrentPlace().getName());
 
     assertTrue(output.toString().contains("Player added."));
     assertTrue(output.toString().contains("Enter the player's name:"));
   }
 
+  /**
+   * Tests the add multiple players.
+   *
+   * @throws IOException if there is an issue with I/O operations.
+   */
   @Test
   public void testAddMultiplePlayers() throws IOException {
     String input = "Player1\nyes\nPlayer2\nno\n";
     Scanner scanner = new Scanner(input);
 
-    AddHumanPlayerCommand command = new AddHumanPlayerCommand(players, output, town, scanner);
+    AddPlayerCommand command = new AddPlayerCommand(players, output, town, scanner);
     command.execute();
 
     assertEquals(2, players.size());
@@ -80,10 +91,15 @@ public class AddHumanPlayerCommandTest {
     assertTrue(output.toString().contains("Player added."));
   }
 
+  /**
+   * Tests the add computer player.
+   *
+   * @throws IOException if there is an issue with I/O operations.
+   */
   @Test
   public void testAddComputerPlayer() throws IOException {
-    AddHumanPlayerCommand command =
-        new AddHumanPlayerCommand(players, output, town, new Scanner(""));
+    AddPlayerCommand command =
+        new AddPlayerCommand(players, output, town, new Scanner(""));
     command.addComputerPlayer();
 
     assertEquals(1, players.size());
@@ -93,12 +109,17 @@ public class AddHumanPlayerCommandTest {
     assertTrue(output.toString().contains("Computer player 'David' added."));
   }
 
+  /**
+   * Tests the add computer player.
+   *
+   * @throws IOException if there is an issue with I/O operations.
+   */
   @Test
   public void testInvalidInput() throws IOException {
     String input = "Player1\nmaybe\nno\n";
     Scanner scanner = new Scanner(input);
 
-    AddHumanPlayerCommand command = new AddHumanPlayerCommand(players, output, town, scanner);
+    AddPlayerCommand command = new AddPlayerCommand(players, output, town, scanner);
     command.execute();
 
     assertEquals(1, players.size());

@@ -4,7 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 
-import java.util.Map;
+import java.util.List;
 import model.item.Item;
 import model.item.ItemModel;
 import model.place.Place;
@@ -87,10 +87,20 @@ public class PlayerModelTest {
     player.pickUpItem(item1);
     player.pickUpItem(item2);
 
-    Map<String, Integer> inventory = player.getInventory();
+    List<Item> inventory = player.getCurrentCarriedItems();
     assertEquals(2, inventory.size());
-    assertEquals(Integer.valueOf(10), inventory.get("Sword"));
-    assertEquals(Integer.valueOf(5), inventory.get("Shield"));
+    assertEquals(item1, inventory.get(0));
+    assertEquals(item2, inventory.get(1));
+  }
+
+  /**
+   * Tests the player with no items.
+   */
+  @Test
+  public void testPickUpItemWhenNoItems() {
+    place1.getItems().clear();
+    List<Item> inventory = player.getCurrentCarriedItems();
+    assertEquals(0, inventory.size());
   }
 
   /**
@@ -121,8 +131,10 @@ public class PlayerModelTest {
     String expectedDescription = "Player: Player1\nLocation: Place 1\nInventory: None\n";
     assertEquals(expectedDescription, player.getDescription());
 
-    player.pickUpItem(new ItemModel("Sword", 10));
-    expectedDescription = "Player: Player1\nLocation: Place 1\nInventory: {Sword=10}\n";
+    Item item = new ItemModel("Sword", 10);
+    player.pickUpItem(item);
+    expectedDescription = String.format("Player: Player1\nLocation: Place 1\nInventory: %s\n",
+        player.getCurrentCarriedItems());
     assertEquals(expectedDescription, player.getDescription());
   }
 

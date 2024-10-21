@@ -45,7 +45,7 @@ public class MovePlayerCommand implements Command {
               .append("\n");
         }
         output.append("Enter the neighbor number to move to:\n");
-        String userInput = scanner.nextLine(); // 通过 scanner 获取输入
+        String userInput = scanner.nextLine();
         try {
           int neighborNumber = Integer.parseInt(userInput);
           if (neighborNumber < 1 || neighborNumber > neighbors.size()) {
