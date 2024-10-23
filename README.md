@@ -1,6 +1,6 @@
 # cs5010-project-kill-doctor-lucky
 
-# Milestone01
+# Milestone02
 
 ## Running the Program using JAR File
 
