@@ -1,21 +1,77 @@
 package controller;
 
+import java.io.IOException;
+import model.item.Item;
+import model.place.Place;
+import model.player.Player;
+
 /**
- * The Controller interface represents a controller for a player in a game.
+ * The Controller interface defines the contract for a game controller.
+ * It handles the user input and controls the flow of the game.
  */
 public interface Controller {
-  /**
-   * Responsible for executing a player's turn in the game.
-   */
-  void takeTurn();
 
   /**
-   * Displays the player's information.
+   * Starts the game loop, where the controller receives input, processes it, and interacts with the model.
+   *
+   * @throws IOException if there is an issue with I/O operations.
    */
-  void displayPlayerInfo();
+  void startGame() throws IOException;
+
 
   /**
-   * Displays the place's information.
+   * Moves the player to a new location.
+   *
+   * @param player the player to move.
+   * @throws IOException if there is an issue with I/O operations.
    */
-  void displayPlaceInfo();
+  void movePlayer(Player player) throws IOException;
+
+  /**
+   * Allows a player to pick up an item in their current location.
+   *
+   * @param player the player who is picking up the item.
+   * @throws IOException if there is an issue with I/O operations.
+   */
+  void pickUpItem(Player player) throws IOException;
+
+  /**
+   * Allows a player to look around and see the items in their current location.
+   *
+   * @param player the player who is looking around.
+   * @throws IOException if there is an issue with I/O operations.
+   */
+  void lookAround(Player player) throws IOException;
+
+  /**
+   * Allows a player to show their current information.
+   *
+   * @param player the player who is showing their information.
+   * @throws IOException if there is an issue with I/O operations.
+   */
+  void showPlayerCurrentInfo(Player player) throws IOException;
+
+  /**
+   * Finds a player by their name.
+   *
+   * @param name the name of the player to find.
+   * @return the player with the specified name.
+   */
+  Player findPlayerByName(String name);
+
+  /**
+   * Finds a place by its name.
+   *
+   * @param name the name of the place to find.
+   * @return the place with the specified name.
+   */
+  Place findPlaceByName(String name);
+
+  /**
+   * Finds an item by its name.
+   *
+   * @param name the name of the item to find.
+   * @return the item with the specified name.
+   */
+  Item findItemByName(String name, Place place);
 }
