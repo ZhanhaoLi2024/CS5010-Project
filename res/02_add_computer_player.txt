@@ -1,2 +1,1 @@
-Adding Computer player...
-David(Computer) (Computer) has entered the town at Grocery Store.
+Computer player 'David' added.

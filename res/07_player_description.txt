@@ -1,6 +1,47 @@
-Steven's turn:
-Do you want to display information for Steven? (yes/no)
-yes
-Current place: Bakery
-Items carried:
-Menu (Damage: 22)
+Please choose an option:
+1. Show the Map Information
+2. Add the player
+3. Display the player's information
+4. Display the Place's information
+5. Start the game
+6. Print the map
+0. Exit
+3
+Please choose an option:
+1. Show All Players Info
+2. Show Specific Player Info
+0. Exit
+1
+All players info:
+1. Player name: David(Computer)
+Player current place: Playground
+--------------------
+2. Player name: Steven
+Player current place: Restaurant
+--------------------
+3. Player name: Amy
+Player current place: Hospital
+--------------------
+Please choose an option:
+1. Show All Players Info
+2. Show Specific Player Info
+0. Exit
+2
+Enter the player's name:
+Steven
+Player name: Steven
+Player current place: Restaurant
+Please choose an option:
+1. Show All Players Info
+2. Show Specific Player Info
+0. Exit
+2
+Enter the player's name:
+John
+Player not found.
+Please choose an option:
+1. Show All Players Info
+2. Show Specific Player Info
+0. Exit
+0
+Exiting...

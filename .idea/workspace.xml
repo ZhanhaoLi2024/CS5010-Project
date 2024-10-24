@@ -1,7 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="ArtifactsWorkspaceSettings">
+    <artifacts-to-build>
+      <artifact name="cs5010-project-kill-doctor-lucky:jar" />
+    </artifacts-to-build>
+  </component>
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="ChangeListManager">
-    <list default="true" id="e772e655-67f1-4f1d-82c7-9dc5e9909975" name="Changes" comment="" />
+    <list default="true" id="e772e655-67f1-4f1d-82c7-9dc5e9909975" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/res/01_add_human_player.txt" beforeDir="false" afterPath="$PROJECT_DIR$/res/01_add_human_player.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/res/02_add_computer_player.txt" beforeDir="false" afterPath="$PROJECT_DIR$/res/02_add_computer_player.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/res/03_player_movement.txt" beforeDir="false" afterPath="$PROJECT_DIR$/res/03_player_movement.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/res/04_player_pickup_item.txt" beforeDir="false" afterPath="$PROJECT_DIR$/res/04_player_pickup_item.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/res/05_player_look_around.txt" beforeDir="false" afterPath="$PROJECT_DIR$/res/05_player_look_around.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/res/06_multiple_players_turns.txt" beforeDir="false" afterPath="$PROJECT_DIR$/res/06_multiple_players_turns.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/res/07_player_description.txt" beforeDir="false" afterPath="$PROJECT_DIR$/res/07_player_description.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/res/08_space_description.txt" beforeDir="false" afterPath="$PROJECT_DIR$/res/08_space_description.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/res/09_save_world_map.txt" beforeDir="false" afterPath="$PROJECT_DIR$/res/09_save_world_map.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/res/10_max_turns_game_end.txt" beforeDir="false" afterPath="$PROJECT_DIR$/res/10_max_turns_game_end.txt" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
