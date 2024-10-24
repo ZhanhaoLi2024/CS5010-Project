@@ -1,49 +1,78 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="ArtifactsWorkspaceSettings">
-    <artifacts-to-build>
-      <artifact name="cs5010-project-kill-doctor-lucky:jar" />
-    </artifacts-to-build>
-  </component>
   <component name="AutoImportSettings">
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e772e655-67f1-4f1d-82c7-9dc5e9909975" name="Changes" comment="">
+    <list default="true" id="ca5ea9a6-24c7-4949-9b6f-3f663e61b9fd" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/checkstyle-idea.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/res/01_add_human_player.txt" beforeDir="false" afterPath="$PROJECT_DIR$/res/01_add_human_player.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/res/02_add_computer_player.txt" beforeDir="false" afterPath="$PROJECT_DIR$/res/02_add_computer_player.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/res/03_player_movement.txt" beforeDir="false" afterPath="$PROJECT_DIR$/res/03_player_movement.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/res/04_player_pickup_item.txt" beforeDir="false" afterPath="$PROJECT_DIR$/res/04_player_pickup_item.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/res/05_player_look_around.txt" beforeDir="false" afterPath="$PROJECT_DIR$/res/05_player_look_around.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/res/06_multiple_players_turns.txt" beforeDir="false" afterPath="$PROJECT_DIR$/res/06_multiple_players_turns.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/res/07_player_description.txt" beforeDir="false" afterPath="$PROJECT_DIR$/res/07_player_description.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/res/08_space_description.txt" beforeDir="false" afterPath="$PROJECT_DIR$/res/08_space_description.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/res/09_save_world_map.txt" beforeDir="false" afterPath="$PROJECT_DIR$/res/09_save_world_map.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/res/10_max_turns_game_end.txt" beforeDir="false" afterPath="$PROJECT_DIR$/res/10_max_turns_game_end.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="FormatOnSaveOptions">
+    <option name="myRunOnSave" value="true" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="OptimizeOnSaveOptions">
+    <option name="myRunOnSave" value="true" />
+  </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 7
+}]]></component>
+  <component name="ProjectId" id="2nu2GdOLrRwCg3sdlGNzu0sm22y" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
-    "git-widget-placeholder": "main",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "git-widget-placeholder": "milestone02",
+    "kotlin-language-version-configured": "true",
     "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.stylelint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.stylelint": "",
     "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
     "project.structure.last.edited": "Artifacts",
     "project.structure.proportion": "0.0",
-    "project.structure.side.proportion": "0.0"
+    "project.structure.side.proportion": "0.0",
+    "rearrange.code.on.save": "true",
+    "settings.editor.selected.configurable": "preferences.sourceCode",
+    "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9f38398b9061-39b83d9b5494-intellij.indexing.shared.core-IU-241.18034.62" />
+        <option value="bundled-js-predefined-1d06a55b98c1-0b3e54e931b4-JavaScript-IU-241.18034.62" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="ca5ea9a6-24c7-4949-9b6f-3f663e61b9fd" name="Changes" comment="" />
+      <created>1729808550142</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1729808550142</updated>
+      <workItem from="1729808551238" duration="489000" />
+    </task>
     <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
   </component>
 </project>
