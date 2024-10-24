@@ -1,6 +1,7 @@
 package controller;
 
 import controller.command.AddHumanPlayerCommand;
+import controller.command.DisplayPlaceInfoCommand;
 import controller.command.LookAroundCommand;
 import controller.command.MovePlayerCommand;
 import controller.command.PickUpItemCommand;
@@ -17,7 +18,6 @@ import javax.imageio.ImageIO;
 import model.item.Item;
 import model.place.Place;
 import model.player.Player;
-import model.player.PlayerModel;
 import model.town.Town;
 
 /**
@@ -88,14 +88,13 @@ public class GameController implements Controller {
         displayMapInfo();
         break;
       case 2:
-//        addPlayerMenu();
         new AddHumanPlayerCommand(players, output, town, scanner).execute();
         break;
       case 3:
         showThePlayerInfo();
         break;
       case 4:
-        showThePlaceInfo();
+        new DisplayPlaceInfoCommand(town, output, scanner).execute();
         break;
       case 5:
         takeTurn();
@@ -169,79 +168,6 @@ public class GameController implements Controller {
     }
   }
 
-  private void showSpecificPlaceInfo() throws IOException {
-    output.append("Enter the place name:\n");
-    String placeName = scanner.nextLine();
-    Place place = findPlaceByName(placeName);
-    if (place != null) {
-      output.append("Place name: ").append(place.getName()).append("\n");
-      output.append("Place items:\n");
-      for (Item item : place.getItems()) {
-        output.append("Item name: ").append(item.getName()).append("\n");
-        output.append("Item damage: ").append(String.valueOf(item.getDamage())).append("\n");
-      }
-      output.append("Place neighbors:\n");
-      for (Place neighbor : place.getNeighbors()) {
-        output.append("Neighbor name: ").append(neighbor.getName()).append("\n");
-      }
-    } else {
-      output.append("Place not found.\n");
-    }
-  }
-
-  private void showAllPlacesInfo() throws IOException {
-    if (town.getPlaces().isEmpty()) {
-      output.append("No places found.\n");
-      return;
-    }
-    output.append("All places info:\n");
-    int index = 1;
-    for (Place place : town.getPlaces()) {
-      output.append((char) index).append(". Place name: ").append(place.getName()).append("\n");
-      output.append("Place items:\n");
-      for (Item item : place.getItems()) {
-        output.append("Item name: ").append(item.getName()).append("\n");
-        output.append("Item damage: ").append(String.valueOf(item.getDamage())).append("\n");
-      }
-      output.append("Place neighbors:\n");
-      for (Place neighbor : place.getNeighbors()) {
-        output.append("Neighbor name: ").append(neighbor.getName()).append("\n");
-      }
-      output.append("--------------------\n");
-      index++;
-    }
-  }
-
-  private void showThePlaceInfo() throws IOException {
-    boolean showPlaceInfo = true;
-    while (showPlaceInfo) {
-      this.output.append("Please choose an option:\n");
-      this.output.append("1. Show All Places Info\n");
-      this.output.append("2. Show Specific Place Info\n");
-      this.output.append("0. Exit\n");
-      int choice = 0;
-      try {
-        choice = Integer.parseInt(scanner.nextLine());
-      } catch (NumberFormatException e) {
-        this.output.append("Invalid input. Please enter a number.\n");
-      }
-      switch (choice) {
-        case 1:
-          showAllPlacesInfo();
-          break;
-        case 2:
-          showSpecificPlaceInfo();
-          break;
-        case 0:
-          this.output.append("Exiting...\n");
-          showPlaceInfo = false;
-          break;
-        default:
-          this.output.append("Invalid choice, please try again.\n");
-      }
-    }
-  }
-
   private void showAllPlayersInfo() throws IOException {
     if (players.isEmpty()) {
       output.append("No players found.\n");
@@ -299,42 +225,6 @@ public class GameController implements Controller {
           this.output.append("Invalid choice, please try again.\n");
       }
     }
-  }
-
-  public void addPlayerMenu() throws IOException {
-    boolean addPlayerContinue = true;
-    addPlayer();
-    while (addPlayerContinue) {
-      this.output.append("Do you want to add another player? (yes/no)\n");
-      String choice = scanner.nextLine();
-      if ("yes".equalsIgnoreCase(choice)) {
-        addPlayer();
-      } else if ("no".equalsIgnoreCase(choice)) {
-        addPlayerContinue = false;
-      } else {
-        this.output.append("Invalid input. Please enter 'yes' or 'no'.\n");
-      }
-    }
-  }
-
-  private void addPlayer() throws IOException {
-    this.output.append("Enter the player's name:\n");
-    String playerName = scanner.nextLine();
-    Random random = new Random();
-    Place randomPlace = town.getPlaces().get(random.nextInt(town.getPlaces().size()));
-    Player player = new PlayerModel(playerName, false, 3, randomPlace);
-    this.output.append("Player name: ").append(player.getName()).append("\n");
-    this.output.append(player.getName()).append(" current place: ")
-        .append(player.getCurrentPlace().getName()).append("\n");
-    this.output.append("Player added.\n");
-    players.add(player);
-  }
-
-  private void addComputerPlayer() {
-    Random random = new Random();
-    Place randomPlace = town.getPlaces().get(random.nextInt(town.getPlaces().size()));
-    Player player = new PlayerModel("David(Computer)", true, 3, randomPlace);
-    players.add(player);
   }
 
   private void displayMapInfo() {
