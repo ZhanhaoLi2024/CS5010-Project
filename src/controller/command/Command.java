@@ -7,5 +7,10 @@ import java.io.IOException;
  */
 public interface Command {
 
+  /**
+   * Executes the command.
+   *
+   * @throws IOException if there is an issue with I/O operations.
+   */
   void execute() throws IOException;
 }
