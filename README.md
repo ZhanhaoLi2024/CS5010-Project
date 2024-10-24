@@ -36,6 +36,19 @@ Example run simple text file:
 10. Example Run10 - Game Ending After Reaching Maximum Number of
     Turns: `res/10_max_turns_game_end.txt`
 
+# Milestone01
+
+## Running the Program using JAR File
+
+Steps to Run:
+
+1. Navigate to the `cs5010-project-kill-doctor-lucky` directory where the `res` file is located.
+2. Use the following command to run the program:
+
+```bash
+java -jar res/cs5010-project-kill-doctor-lucky.jar
+```
+
 ## Example Run: Basic Game Functions - Milestone01
 
 This example demonstrates:
