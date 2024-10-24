@@ -1,15 +1,18 @@
-Steven's turn:
-Do you want to display information for Steven? (yes/no)
-no
-Choose an action: 
-1. Move to a neighboring place
-2. Pick up an item (Current place item: Toy Ball - Damage:8)
+Player: Steven's turn
+Your current place: Restaurant
+Player has no item in the bag.
+Please choose an option:
+1. Move player
+2. Pick up item
 3. Look around
 1
-Current location: Park
-Available neighbors: 
-1. Grocery Store
-2. Restaurant
-3. Playground
-Choose a neighbor to move to: 2
-Steven moves to Restaurant
+Neighbors of Restaurant:
+1. Park
+2. Grocery Store
+3. School
+4. Hospital
+5. Playground
+6. Bakery
+Enter the neighbor number to move to:
+3
+Moved to School
