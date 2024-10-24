@@ -2,6 +2,7 @@ package controller;
 
 import controller.command.AddHumanPlayerCommand;
 import controller.command.DisplayPlaceInfoCommand;
+import controller.command.DisplayPlayerInfoCommand;
 import controller.command.LookAroundCommand;
 import controller.command.MovePlayerCommand;
 import controller.command.PickUpItemCommand;
@@ -91,7 +92,7 @@ public class GameController implements Controller {
         new AddHumanPlayerCommand(players, output, town, scanner).execute();
         break;
       case 3:
-        showThePlayerInfo();
+        new DisplayPlayerInfoCommand(players, output, scanner).execute();
         break;
       case 4:
         new DisplayPlaceInfoCommand(town, output, scanner).execute();
@@ -164,65 +165,6 @@ public class GameController implements Controller {
         this.quitGame = false;
         this.players = new ArrayList<>();
         this.startGame();
-      }
-    }
-  }
-
-  private void showAllPlayersInfo() throws IOException {
-    if (players.isEmpty()) {
-      output.append("No players found.\n");
-      return;
-    }
-    output.append("All players info:\n");
-    int index = 1;
-    for (Player player : players) {
-      output.append((char) index).append(". Player name: ").append(player.getName()).append("\n");
-      output.append("Player current place: ").append(player.getCurrentPlace().getName())
-          .append("\n");
-      output.append("--------------------\n");
-      index++;
-    }
-  }
-
-  private void showSpecificPlayerInfo() throws IOException {
-    output.append("Enter the player's name:\n");
-    String playerName = scanner.nextLine();
-    Player player = findPlayerByName(playerName);
-    if (player != null) {
-      output.append("Player name: ").append(player.getName()).append("\n");
-      output.append("Player current place: ").append(player.getCurrentPlace().getName())
-          .append("\n");
-    } else {
-      output.append("Player not found.\n");
-    }
-  }
-
-  private void showThePlayerInfo() throws IOException {
-    boolean showPlayerInfo = true;
-    while (showPlayerInfo) {
-      this.output.append("Please choose an option:\n");
-      this.output.append("1. Show All Players Info\n");
-      this.output.append("2. Show Specific Player Info\n");
-      this.output.append("0. Exit\n");
-      int choice = 0;
-      try {
-        choice = Integer.parseInt(scanner.nextLine());
-      } catch (NumberFormatException e) {
-        this.output.append("Invalid input. Please enter a number.\n");
-      }
-      switch (choice) {
-        case 1:
-          showAllPlayersInfo();
-          break;
-        case 2:
-          showSpecificPlayerInfo();
-          break;
-        case 0:
-          this.output.append("Exiting...\n");
-          showPlayerInfo = false;
-          break;
-        default:
-          this.output.append("Invalid choice, please try again.\n");
       }
     }
   }
