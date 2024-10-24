@@ -1,7 +1,9 @@
 package controller;
 
-import controller.command.Command;
+import controller.command.AddHumanPlayerCommand;
+import controller.command.LookAroundCommand;
 import controller.command.MovePlayerCommand;
+import controller.command.PickUpItemCommand;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
@@ -59,7 +61,8 @@ public class GameController implements Controller {
     output.append("++++++++++++++++++++\n");
     this.output.append("Welcome to the game! You have ").append(String.valueOf(maxTurns))
         .append(" turns.\n");
-    addComputerPlayer();
+//    addComputerPlayer();
+    new AddHumanPlayerCommand(players, output, town, scanner).addComputerPlayer();
     while (!quitGame) {
       this.displayMainMenu();
     }
@@ -85,7 +88,8 @@ public class GameController implements Controller {
         displayMapInfo();
         break;
       case 2:
-        addPlayerMenu();
+//        addPlayerMenu();
+        new AddHumanPlayerCommand(players, output, town, scanner).execute();
         break;
       case 3:
         showThePlayerInfo();
@@ -139,13 +143,13 @@ public class GameController implements Controller {
         }
         switch (choice) {
           case 1:
-            movePlayer(player);
+            new MovePlayerCommand(player, output).execute();
             break;
           case 2:
-            pickUpItem(player);
+            new PickUpItemCommand(player, output).execute();
             break;
           case 3:
-            lookAround(player);
+            new LookAroundCommand(player, output).execute();
             break;
           default:
             this.output.append("Invalid choice, please try again.\n");
@@ -297,7 +301,7 @@ public class GameController implements Controller {
     }
   }
 
-  private void addPlayerMenu() throws IOException {
+  public void addPlayerMenu() throws IOException {
     boolean addPlayerContinue = true;
     addPlayer();
     while (addPlayerContinue) {
@@ -458,96 +462,96 @@ public class GameController implements Controller {
     g2d.drawString(name, x + width / 4, y + height / 4);
   }
 
-  @Override
-  public void movePlayer(Player currentPlayer) throws IOException {
-    Place currentPlace = currentPlayer.getCurrentPlace();
-    List<Place> neighbors = currentPlace.getNeighbors();
-    if (neighbors.isEmpty()) {
-      output.append("No neighbors found.\n");
-    } else {
-      if (currentPlayer.isComputerControlled()) {
-        Command moveCommand =
-            new MovePlayerCommand(currentPlayer,
-                neighbors.get(new Random().nextInt(neighbors.size())));
-        moveCommand.execute(town);
-      } else {
-        output.append("Neighbors of ").append(currentPlace.getName()).append(":\n");
-        for (int i = 0; i < neighbors.size(); i++) {
-          int currentIndex = i + 1;
-          output.append(String.valueOf(currentIndex)).append(". ")
-              .append(neighbors.get(i).getName())
-              .append("\n");
-        }
-        output.append("Enter the neighbor number to move to:\n");
-        int neighborNumber = Integer.parseInt(scanner.nextLine());
-        if (neighborNumber < 1 || neighborNumber > neighbors.size()) {
-          output.append("Invalid neighbor number.\n");
-        } else {
-          Command moveCommand =
-              new MovePlayerCommand(currentPlayer, neighbors.get(neighborNumber - 1));
-          moveCommand.execute(town);
-        }
-      }
-    }
-  }
+//  @Override
+//  public void movePlayer(Player currentPlayer) throws IOException {
+//    Place currentPlace = currentPlayer.getCurrentPlace();
+//    List<Place> neighbors = currentPlace.getNeighbors();
+//    if (neighbors.isEmpty()) {
+//      output.append("No neighbors found.\n");
+//    } else {
+//      if (currentPlayer.isComputerControlled()) {
+//        Command moveCommand =
+//            new MovePlayerCommand(currentPlayer,
+//                neighbors.get(new Random().nextInt(neighbors.size())));
+//        moveCommand.execute(town);
+//      } else {
+//        output.append("Neighbors of ").append(currentPlace.getName()).append(":\n");
+//        for (int i = 0; i < neighbors.size(); i++) {
+//          int currentIndex = i + 1;
+//          output.append(String.valueOf(currentIndex)).append(". ")
+//              .append(neighbors.get(i).getName())
+//              .append("\n");
+//        }
+//        output.append("Enter the neighbor number to move to:\n");
+//        int neighborNumber = Integer.parseInt(scanner.nextLine());
+//        if (neighborNumber < 1 || neighborNumber > neighbors.size()) {
+//          output.append("Invalid neighbor number.\n");
+//        } else {
+//          Command moveCommand =
+//              new MovePlayerCommand(currentPlayer, neighbors.get(neighborNumber - 1));
+//          moveCommand.execute(town);
+//        }
+//      }
+//    }
+//  }
 
-  @Override
-  public void pickUpItem(Player currentPlayer) throws IOException {
-    Place currentPlace = currentPlayer.getCurrentPlace();
-    List<Item> items = currentPlace.getItems();
-    if (items.isEmpty()) {
-      output.append("No items found.\n");
-      return;
-    } else {
-      if (currentPlayer.isComputerControlled()) {
-        Item item = items.get(new Random().nextInt(items.size()));
-        currentPlayer.pickUpItem(item);
-        currentPlace.removeItem(item);
-        output.append("Picked up ").append(item.getName()).append(".\n");
-      } else {
-        output.append("Items in ").append(currentPlace.getName()).append(":\n");
-        for (int i = 0; i < items.size(); i++) {
-          int currentIndex = i + 1;
-          output.append(String.valueOf(currentIndex)).append(". ").append(items.get(i).getName())
-              .append(" (Damage: ").append(String.valueOf(items.get(i).getDamage())).append(")\n");
-        }
-        output.append("Enter the item number to pick up:\n");
-        int itemNumber = Integer.parseInt(scanner.nextLine());
-        if (itemNumber < 1 || itemNumber > items.size()) {
-          output.append("Invalid item number.\n");
-        } else {
-          Item item = items.get(itemNumber - 1);
-          currentPlayer.pickUpItem(item);
-          currentPlace.removeItem(item);
-          output.append("Picked up ").append(item.getName()).append(".\n");
-        }
-      }
-    }
-  }
+//  @Override
+//  public void pickUpItem(Player currentPlayer) throws IOException {
+//    Place currentPlace = currentPlayer.getCurrentPlace();
+//    List<Item> items = currentPlace.getItems();
+//    if (items.isEmpty()) {
+//      output.append("No items found.\n");
+//      return;
+//    } else {
+//      if (currentPlayer.isComputerControlled()) {
+//        Item item = items.get(new Random().nextInt(items.size()));
+//        currentPlayer.pickUpItem(item);
+//        currentPlace.removeItem(item);
+//        output.append("Picked up ").append(item.getName()).append(".\n");
+//      } else {
+//        output.append("Items in ").append(currentPlace.getName()).append(":\n");
+//        for (int i = 0; i < items.size(); i++) {
+//          int currentIndex = i + 1;
+//          output.append(String.valueOf(currentIndex)).append(". ").append(items.get(i).getName())
+//              .append(" (Damage: ").append(String.valueOf(items.get(i).getDamage())).append(")\n");
+//        }
+//        output.append("Enter the item number to pick up:\n");
+//        int itemNumber = Integer.parseInt(scanner.nextLine());
+//        if (itemNumber < 1 || itemNumber > items.size()) {
+//          output.append("Invalid item number.\n");
+//        } else {
+//          Item item = items.get(itemNumber - 1);
+//          currentPlayer.pickUpItem(item);
+//          currentPlace.removeItem(item);
+//          output.append("Picked up ").append(item.getName()).append(".\n");
+//        }
+//      }
+//    }
+//  }
 
-  @Override
-  public void lookAround(Player currentPlayer) throws IOException {
-    Place currentPlace = currentPlayer.getCurrentPlace();
-    List<Place> neighbors = currentPlace.getNeighbors();
-    if (neighbors.isEmpty()) {
-      output.append("No neighbors found.\n");
-    } else {
-      output.append("Neighbors of ").append(currentPlace.getName()).append(":\n");
-      for (Place neighbor : neighbors) {
-        output.append(neighbor.getName()).append("\n");
-      }
-    }
-    List<Item> items = currentPlace.getItems();
-    if (items.isEmpty()) {
-      output.append("No items found.\n");
-    } else {
-      output.append("Items in ").append(currentPlace.getName()).append(":\n");
-      for (Item item : items) {
-        output.append(item.getName()).append(" (Damage: ").append(String.valueOf(item.getDamage()))
-            .append(")\n");
-      }
-    }
-  }
+//  @Override
+//  public void lookAround(Player currentPlayer) throws IOException {
+//    Place currentPlace = currentPlayer.getCurrentPlace();
+//    List<Place> neighbors = currentPlace.getNeighbors();
+//    if (neighbors.isEmpty()) {
+//      output.append("No neighbors found.\n");
+//    } else {
+//      output.append("Neighbors of ").append(currentPlace.getName()).append(":\n");
+//      for (Place neighbor : neighbors) {
+//        output.append(neighbor.getName()).append("\n");
+//      }
+//    }
+//    List<Item> items = currentPlace.getItems();
+//    if (items.isEmpty()) {
+//      output.append("No items found.\n");
+//    } else {
+//      output.append("Items in ").append(currentPlace.getName()).append(":\n");
+//      for (Item item : items) {
+//        output.append(item.getName()).append(" (Damage: ").append(String.valueOf(item.getDamage()))
+//            .append(")\n");
+//      }
+//    }
+//  }
 
   @Override
   public void showPlayerCurrentInfo(Player player) throws IOException {
