@@ -17,6 +17,7 @@ public class AddPlayerCommand implements Command {
   private final Appendable output;
   private final Town town;
   private final Scanner scanner;
+  private final boolean isComputerPlayer;
 
   /**
    * Constructs a new AddHumanPlayerCommand.
@@ -27,16 +28,21 @@ public class AddPlayerCommand implements Command {
    * @param scanner the scanner to get user input
    */
   public AddPlayerCommand(List<Player> players, Appendable output, Town town,
-                          Scanner scanner) {
+                          Scanner scanner, boolean isComputerPlayer) {
     this.players = players;
     this.output = output;
     this.town = town;
     this.scanner = scanner;
+    this.isComputerPlayer = isComputerPlayer;
   }
 
   @Override
   public void execute() throws IOException {
-    addPlayerMenu();
+    if (isComputerPlayer) {
+      addComputerPlayer();
+    } else {
+      addPlayerMenu();
+    }
   }
 
   /**
@@ -70,7 +76,7 @@ public class AddPlayerCommand implements Command {
     String playerName = scanner.nextLine();
     Random random = new Random();
     Place randomPlace = town.getPlaces().get(random.nextInt(town.getPlaces().size()));
-    Player player = new PlayerModel(playerName, false, 3, randomPlace);
+    Player player = new PlayerModel(playerName, false, 3, randomPlace, System.out, scanner);
     output.append("Player name: ").append(player.getName()).append("\n");
     output.append(player.getName()).append(" current place: ")
         .append(player.getCurrentPlace().getName()).append("\n");
@@ -83,10 +89,10 @@ public class AddPlayerCommand implements Command {
    *
    * @throws IOException if there is an issue with I/O operations.
    */
-  public void addComputerPlayer() throws IOException {
+  private void addComputerPlayer() throws IOException {
     Random random = new Random();
     Place randomPlace = town.getPlaces().get(random.nextInt(town.getPlaces().size()));
-    Player player = new PlayerModel("David(Computer)", true, 3, randomPlace);
+    Player player = new PlayerModel("David(Computer)", true, 3, randomPlace, System.out, scanner);
     players.add(player);
     output.append("Computer player 'David' added.\n");
   }

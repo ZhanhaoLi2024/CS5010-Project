@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 import model.item.Item;
 import model.item.ItemModel;
 import model.place.Place;
@@ -23,6 +24,7 @@ public class LookAroundCommandTest {
   private StringBuilder output;
   private Place place;
   private List<Player> players;
+  private Scanner scanner;
 
   /**
    * Sets up the test fixture.
@@ -32,7 +34,7 @@ public class LookAroundCommandTest {
     this.players = new ArrayList<>();
     output = new StringBuilder();
     place = new PlaceModel(0, 0, 1, 1, "TestPlace");
-    player = new PlayerModel("TestPlayer", false, 3, place);
+    player = new PlayerModel("TestPlayer", false, 3, place, System.out, scanner);
     players.add(player);
   }
 
@@ -126,7 +128,7 @@ public class LookAroundCommandTest {
    */
   @Test(expected = IllegalArgumentException.class)
   public void testExecuteWithNullPlace() throws IOException {
-    Player nullPlacePlayer = new PlayerModel("TestPlayer", false, 3, null);
+    Player nullPlacePlayer = new PlayerModel("TestPlayer", false, 3, null, System.out, scanner);
     players.add(nullPlacePlayer);
     LookAroundCommand command = new LookAroundCommand(nullPlacePlayer, output, players);
     command.execute();
@@ -150,7 +152,7 @@ public class LookAroundCommandTest {
    */
   @Test
   public void testCurrentPlaceHaveAnotherPlayer() throws IOException {
-    Player player2 = new PlayerModel("TestPlayer2", false, 3, place);
+    Player player2 = new PlayerModel("TestPlayer2", false, 3, place, System.out, scanner);
     players.add(player2);
     LookAroundCommand command = new LookAroundCommand(player, output, players);
     assertEquals("TestPlace", player.getCurrentPlace().getName());

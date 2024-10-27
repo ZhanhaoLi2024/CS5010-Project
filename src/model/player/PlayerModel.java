@@ -1,8 +1,10 @@
 package model.player;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Scanner;
 import model.item.Item;
 import model.place.Place;
 
@@ -15,7 +17,9 @@ public class PlayerModel implements Player {
   private final boolean isComputerControlled;
   private final int carryLimit;
   private final List<Item> items;
+  private final Scanner scanner;
   private Place currentPlace;
+  private Appendable output;
 
   /**
    * Constructs a new PlayerModel with the specified name, initial place, whether it is controlled by a computer,
@@ -27,7 +31,7 @@ public class PlayerModel implements Player {
    * @param initialPlace         the starting Place of the player.
    */
   public PlayerModel(String name, boolean isComputerControlled, int carryLimit,
-                     Place initialPlace) {
+                     Place initialPlace, Appendable output, Scanner scanner) {
     if (name == null || name.trim().isEmpty()) {
       throw new IllegalArgumentException("Player name cannot be null or empty.");
     }
@@ -43,6 +47,8 @@ public class PlayerModel implements Player {
     this.carryLimit = carryLimit;
     this.currentPlace = initialPlace;
     this.items = new ArrayList<>();
+    this.output = output;
+    this.scanner = scanner;
   }
 
   @Override
@@ -69,7 +75,41 @@ public class PlayerModel implements Player {
   }
 
   @Override
+  public void moveToNextPlace() throws IOException {
+    List<Place> neighbors = currentPlace.getNeighbors();
+    if (neighbors.isEmpty()) {
+      throw new IllegalStateException("No neighbors found.");
+    } else {
+      if (isComputerControlled) {
+        int randomNeighborIndex = (int) (Math.random() * neighbors.size());
+        this.moveTo(neighbors.get(randomNeighborIndex));
+      } else {
+        output.append("Neighbors of ").append(currentPlace.getName()).append(":\n");
+        for (int i = 0; i < neighbors.size(); i++) {
+          int currentIndex = i + 1;
+          output.append(String.valueOf(currentIndex)).append(". ")
+              .append(neighbors.get(i).getName())
+              .append("\n");
+        }
+        output.append("Enter the neighbor number to move to:\n");
+        String userInput = scanner.nextLine();
+        try {
+          int neighborNumber = Integer.parseInt(userInput);
+          if (neighborNumber < 1 || neighborNumber > neighbors.size()) {
+            output.append("Invalid neighbor number.\n");
+          } else {
+            this.moveTo(neighbors.get(neighborNumber - 1));
+          }
+        } catch (NumberFormatException e) {
+          output.append("Invalid input. Please enter a number.\n");
+        }
+      }
+    }
+  }
+
+  @Override
   public void pickUpItem(Item item) {
+//    List<Item> items = currentPlace.getItems()
     if (items.size() >= carryLimit) {
       throw new IllegalStateException("Cannot pick up more items, inventory is full.");
     }
@@ -94,6 +134,36 @@ public class PlayerModel implements Player {
         items.isEmpty() ? "None" : items);
   }
 
+  @Override
+  public void getPlayerCurrentPlaceInfo() throws IOException {
+    List<Place> neighbors = currentPlace.getNeighbors();
+    if (neighbors.isEmpty()) {
+      output.append("No neighbors found.\n");
+    } else {
+      output.append("Neighbors of ").append(currentPlace.getName()).append(":\n");
+      for (Place neighbor : neighbors) {
+        output.append(neighbor.getName()).append("\n");
+      }
+    }
+    List<Item> items = currentPlace.getItems();
+    if (items.isEmpty()) {
+      output.append("No items found.\n");
+    } else {
+      output.append("Items in ").append(currentPlace.getName()).append(":\n");
+      for (Item item : items) {
+        output.append(item.getName()).append(" (Damage: ")
+            .append(String.valueOf(item.getDamage()))
+            .append(")\n");
+      }
+    }
+    if (currentPlace.getCurrentPlacePlayers().size() > 1) {
+      for (Player player : currentPlace.getCurrentPlacePlayers()) {
+        if (!player.equals(this)) {
+          output.append(player.getName()).append(" is in this place.\n");
+        }
+      }
+    }
+  }
 
   @Override
   public boolean equals(Object obj) {

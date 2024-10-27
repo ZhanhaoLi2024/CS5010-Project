@@ -59,7 +59,7 @@ public class AddPlayerCommandTest {
     String input = "Player1\nno\n";
     Scanner scanner = new Scanner(input);
 
-    AddPlayerCommand command = new AddPlayerCommand(players, output, town, scanner);
+    AddPlayerCommand command = new AddPlayerCommand(players, output, town, scanner, false);
     command.execute();
 
     assertEquals(1, players.size());
@@ -80,7 +80,7 @@ public class AddPlayerCommandTest {
     String input = "Player1\nyes\nPlayer2\nno\n";
     Scanner scanner = new Scanner(input);
 
-    AddPlayerCommand command = new AddPlayerCommand(players, output, town, scanner);
+    AddPlayerCommand command = new AddPlayerCommand(players, output, town, scanner, false);
     command.execute();
 
     assertEquals(2, players.size());
@@ -99,8 +99,8 @@ public class AddPlayerCommandTest {
   @Test
   public void testAddComputerPlayer() throws IOException {
     AddPlayerCommand command =
-        new AddPlayerCommand(players, output, town, new Scanner(""));
-    command.addComputerPlayer();
+        new AddPlayerCommand(players, output, town, new Scanner(""), true);
+    command.execute();
 
     assertEquals(1, players.size());
 
@@ -119,7 +119,7 @@ public class AddPlayerCommandTest {
     String input = "Player1\nmaybe\nno\n";
     Scanner scanner = new Scanner(input);
 
-    AddPlayerCommand command = new AddPlayerCommand(players, output, town, scanner);
+    AddPlayerCommand command = new AddPlayerCommand(players, output, town, scanner, false);
     command.execute();
 
     assertEquals(1, players.size());

@@ -32,7 +32,7 @@ public class PickUpItemCommandTest {
     place = new PlaceModel(0, 0, 1, 1, "TestPlace");
     output = new StringBuilder();
 
-    player = new PlayerModel("Player1", false, 3, place);
+    player = new PlayerModel("Player1", false, 3, place, System.out, scanner);
 
     Item sword = new ItemModel("Sword", 10);
     Item shield = new ItemModel("Shield", 5);
@@ -59,7 +59,7 @@ public class PickUpItemCommandTest {
    */
   @Test
   public void testComputerControlledPlayerPicksRandomItem() throws IOException {
-    Player computerPlayer = new PlayerModel("Computer", true, 3, place);
+    Player computerPlayer = new PlayerModel("Computer", true, 3, place, System.out, scanner);
 
     scanner = new Scanner("");
     PickUpItemCommand command = new PickUpItemCommand(computerPlayer, output, scanner);

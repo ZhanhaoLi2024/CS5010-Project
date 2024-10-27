@@ -23,6 +23,7 @@ public class MovePlayerCommandTest {
   private Place currentPlace;
   private Player player;
   private StringBuilder output;
+  private Scanner scanner;
 
   /**
    * Sets up the test fixture.
@@ -32,7 +33,7 @@ public class MovePlayerCommandTest {
     output = new StringBuilder();
     neighbors = new ArrayList<>();
     currentPlace = new PlaceModel(0, 0, 1, 1, "CurrentPlace");
-    player = new PlayerModel("TestPlayer", false, 3, currentPlace);
+    player = new PlayerModel("TestPlayer", false, 3, currentPlace, System.out, scanner);
   }
 
   /**
@@ -42,7 +43,7 @@ public class MovePlayerCommandTest {
    */
   @Test
   public void testPlayerWithNoNeighbors() throws IOException {
-    Scanner scanner = new Scanner(""); // 模拟没有输入
+    Scanner scanner = new Scanner("");
     MovePlayerCommand command = new MovePlayerCommand(player, output, scanner);
     command.execute();
 
@@ -62,7 +63,7 @@ public class MovePlayerCommandTest {
     neighbors.add(neighbor2);
     currentPlace.addNeighbor(neighbor1);
     currentPlace.addNeighbor(neighbor2);
-    player = new PlayerModel("ComputerPlayer", true, 3, currentPlace); // 设置为电脑控制
+    player = new PlayerModel("ComputerPlayer", true, 3, currentPlace, System.out, scanner);
 
     MovePlayerCommand command = new MovePlayerCommand(player, output, new Scanner(""));
     command.execute();
@@ -116,12 +117,12 @@ public class MovePlayerCommandTest {
     currentPlace.addNeighbor(neighbor1);
     currentPlace.addNeighbor(neighbor2);
 
-    Scanner scanner = new Scanner("3"); // 输入超出邻居数量的无效编号
+    Scanner scanner = new Scanner("3");
     MovePlayerCommand command = new MovePlayerCommand(player, output, scanner);
     command.execute();
 
     assertTrue(output.toString().contains("Invalid neighbor number."));
-    assertEquals("CurrentPlace", player.getCurrentPlace().getName()); // 位置不变
+    assertEquals("CurrentPlace", player.getCurrentPlace().getName());
   }
 
   /**
@@ -143,6 +144,6 @@ public class MovePlayerCommandTest {
     command.execute();
 
     assertTrue(output.toString().contains("Invalid input. Please enter a number."));
-    assertEquals("CurrentPlace", player.getCurrentPlace().getName()); // 位置不变
+    assertEquals("CurrentPlace", player.getCurrentPlace().getName());
   }
 }

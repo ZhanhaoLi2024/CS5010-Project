@@ -69,6 +69,11 @@ public class TownData {
     return places;
   }
 
+  /**
+   * Retrieves the list of items in the town.
+   *
+   * @return the list of items in the town
+   */
   public List<Item> getItems() {
     return items;
   }

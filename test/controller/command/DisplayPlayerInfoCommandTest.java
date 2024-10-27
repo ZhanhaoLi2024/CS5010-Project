@@ -32,8 +32,8 @@ public class DisplayPlayerInfoCommandTest {
 
     Place testPlace = new PlaceModel(0, 0, 1, 1, "TestPlace");
 
-    Player player1 = new PlayerModel("Player1", false, 3, testPlace);
-    Player player2 = new PlayerModel("Player2", false, 3, testPlace);
+    Player player1 = new PlayerModel("Player1", false, 3, testPlace, System.out, scanner);
+    Player player2 = new PlayerModel("Player2", false, 3, testPlace, System.out, scanner);
     players.add(player1);
     players.add(player2);
   }

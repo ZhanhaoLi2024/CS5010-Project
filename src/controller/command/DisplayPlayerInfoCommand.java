@@ -3,6 +3,7 @@ package controller.command;
 import java.io.IOException;
 import java.util.List;
 import java.util.Scanner;
+import model.item.Item;
 import model.player.Player;
 
 /**
@@ -56,7 +57,7 @@ public class DisplayPlayerInfoCommand implements Command {
           showAllPlayersInfo();
           break;
         case 2:
-          showSpecificPlayerInfo();
+          entryPlayerName();
           break;
         case 0:
           output.append("Exiting...\n");
@@ -94,18 +95,37 @@ public class DisplayPlayerInfoCommand implements Command {
    *
    * @throws IOException if there is an issue with I/O operations.
    */
-  private void showSpecificPlayerInfo() throws IOException {
+  private void entryPlayerName() throws IOException {
     output.append("Enter the player's name:\n");
     String playerName = scanner.nextLine();
     Player player = players.stream()
         .filter(p -> p.getName().equals(playerName))
         .findFirst()
         .orElse(null);
+    showSpecificPlayerInfo(player);
+  }
 
+  /**
+   * Shows information about a specific player.
+   *
+   * @param player the player to show information about
+   * @throws IOException if there is an issue with I/O operations.
+   */
+  public void showSpecificPlayerInfo(Player player) throws IOException {
     if (player != null) {
       output.append("Player name: ").append(player.getName()).append("\n");
       output.append("Player current place: ").append(player.getCurrentPlace().getName())
           .append("\n");
+      if (player.getCurrentCarriedItems().isEmpty()) {
+        output.append("Player is not carrying any items.\n");
+      } else {
+        output.append("Player is carrying the following items:\n");
+        for (Item item : player.getCurrentCarriedItems()) {
+          output.append(item.getName()).append(" (Damage: ")
+              .append(String.valueOf(item.getDamage()))
+              .append(")\n");
+        }
+      }
     } else {
       output.append("Player not found.\n");
     }

@@ -18,6 +18,7 @@ public class PlaceModel implements Place {
   private final List<Item> items;
   private final List<Place> neighbors;
   private final List<Player> players;
+  private boolean isVisible;
 
   /**
    * Constructs a new PlaceModel with the specified row and column values, name, and list of items.

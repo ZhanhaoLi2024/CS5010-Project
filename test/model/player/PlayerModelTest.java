@@ -5,6 +5,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 
 import java.util.List;
+import java.util.Scanner;
 import model.item.Item;
 import model.item.ItemModel;
 import model.place.Place;
@@ -20,6 +21,7 @@ public class PlayerModelTest {
   private Place place1;
   private Place place2;
   private Player player;
+  private Scanner scanner;
 
   /**
    * Sets up the test fixture.
@@ -31,7 +33,7 @@ public class PlayerModelTest {
     place1.addNeighbor(place2);
     place2.addNeighbor(place1);
 
-    player = new PlayerModel("Player1", false, 3, place1);
+    player = new PlayerModel("Player1", false, 3, place1, System.out, scanner);
   }
 
   /**
@@ -143,8 +145,8 @@ public class PlayerModelTest {
    */
   @Test
   public void testEqualsAndHashCode() {
-    Player samePlayer = new PlayerModel("Player1", false, 3, place1);
-    Player differentPlayer = new PlayerModel("Player2", true, 3, place1);
+    Player samePlayer = new PlayerModel("Player1", false, 3, place1, System.out, scanner);
+    Player differentPlayer = new PlayerModel("Player2", true, 3, place1, System.out, scanner);
 
     assertEquals(player, samePlayer);
     assertNotEquals(player, differentPlayer);

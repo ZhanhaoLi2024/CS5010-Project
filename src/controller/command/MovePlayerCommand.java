@@ -28,36 +28,7 @@ public class MovePlayerCommand implements Command {
 
   @Override
   public void execute() throws IOException {
-    Place currentPlace = player.getCurrentPlace();
-    List<Place> neighbors = currentPlace.getNeighbors();
-    if (neighbors.isEmpty()) {
-      output.append("No neighbors found.\n");
-    } else {
-      if (player.isComputerControlled()) {
-        int randomNeighborIndex = (int) (Math.random() * neighbors.size());
-        this.movePlayer(randomNeighborIndex + 1);
-      } else {
-        output.append("Neighbors of ").append(currentPlace.getName()).append(":\n");
-        for (int i = 0; i < neighbors.size(); i++) {
-          int currentIndex = i + 1;
-          output.append(String.valueOf(currentIndex)).append(". ")
-              .append(neighbors.get(i).getName())
-              .append("\n");
-        }
-        output.append("Enter the neighbor number to move to:\n");
-        String userInput = scanner.nextLine();
-        try {
-          int neighborNumber = Integer.parseInt(userInput);
-          if (neighborNumber < 1 || neighborNumber > neighbors.size()) {
-            output.append("Invalid neighbor number.\n");
-          } else {
-            this.movePlayer(neighborNumber);
-          }
-        } catch (NumberFormatException e) {
-          output.append("Invalid input. Please enter a number.\n");
-        }
-      }
-    }
+    player.moveToNextPlace();
   }
 
   /**
@@ -66,7 +37,7 @@ public class MovePlayerCommand implements Command {
    * @param neighborNumber the index of the neighbor to move to
    * @throws IOException if an I/O error occurs
    */
-  public void movePlayer(int neighborNumber) throws IOException {
+  private void movePlayer(int neighborNumber) throws IOException {
     Place currentPlace = player.getCurrentPlace();
     List<Place> neighbors = currentPlace.getNeighbors();
     if (neighbors.isEmpty()) {

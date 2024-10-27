@@ -1,6 +1,7 @@
 package controller;
 
 import java.io.IOException;
+import java.util.List;
 import model.item.Item;
 import model.place.Place;
 import model.player.Player;
@@ -49,4 +50,35 @@ public interface Controller {
    * @return the item with the specified name.
    */
   Item findItemByName(String name, Place place);
+
+  /**
+   * Prints the map of the town.
+   */
+  void printMap() throws IOException;
+
+  /**
+   * Displays the map information.
+   */
+  void displayMapInfo();
+
+  /**
+   * Allows a player to take a turn.
+   *
+   * @throws IOException if there is an issue with I/O operations.
+   */
+  void takeTurn() throws IOException;
+
+  /**
+   * Gets the list of players.
+   *
+   * @return the list of players.
+   */
+  List<Player> getPlayers();
+
+  /**
+   * Ends the game.
+   *
+   * @throws IOException if there is an issue with I/O operations.
+   */
+  void endGame() throws IOException;
 }

@@ -34,6 +34,7 @@ public class GameController implements Controller {
   private List<Place> places;
   private int currentTurn;
   private boolean quitGame;
+  private boolean continueGame;
 
   /**
    * Creates a new game controller with the given town, input, output, and maximum turns.
@@ -52,6 +53,7 @@ public class GameController implements Controller {
     this.quitGame = false;
     this.players = new ArrayList<>();
     this.places = new ArrayList<>();
+    this.continueGame = true;
   }
 
   /**
@@ -64,7 +66,8 @@ public class GameController implements Controller {
     output.append("++++++++++++++++++++\n");
     this.output.append("Welcome to the game! You have ").append(String.valueOf(maxTurns))
         .append(" turns.\n");
-    new AddPlayerCommand(players, output, town, scanner).addComputerPlayer();
+    // Add Computer-controlled player
+    new AddPlayerCommand(players, output, town, scanner, true).execute();
     while (!quitGame) {
       this.displayMainMenu();
     }
@@ -90,7 +93,7 @@ public class GameController implements Controller {
         displayMapInfo();
         break;
       case 2:
-        new AddPlayerCommand(players, output, town, scanner).execute();
+        new AddPlayerCommand(players, output, town, scanner, false).execute();
         break;
       case 3:
         new DisplayPlayerInfoCommand(players, output, scanner).execute();
@@ -114,8 +117,8 @@ public class GameController implements Controller {
 
   }
 
-  private void takeTurn() throws IOException {
-    boolean continueGame = true;
+  @Override
+  public void takeTurn() throws IOException {
     if (players.size() == 1) {
       output.append("You have to add more than one player\n");
       continueGame = false;
@@ -158,21 +161,27 @@ public class GameController implements Controller {
       }
       currentTurn++;
       if (currentTurn > maxTurns) {
-        continueGame = false;
-        output.append("Game over.\n");
-        output.append("++++++++++++++++++++\n");
-        output.append("\n");
-        this.currentTurn = 1;
-        this.quitGame = false;
-        this.players = new ArrayList<>();
-        this.startGame();
+        endGame();
       }
     }
+  }
+
+  @Override
+  public void endGame() throws IOException {
+    continueGame = false;
+    output.append("Game over.\n");
+    output.append("++++++++++++++++++++\n");
+    output.append("\n");
+    this.currentTurn = 1;
+    this.quitGame = false;
+    this.players = new ArrayList<>();
+    this.startGame();
   }
 
   /**
    * Displays the map information.
    */
+  @Override
   public void displayMapInfo() {
     System.out.println("=== Map Information ===");
     System.out.println("Town: " + town.getTownName());
@@ -190,71 +199,11 @@ public class GameController implements Controller {
     }
   }
 
-  private void moveTargetCharacter() {
-    System.out.println("Moving the target character...");
-    town.moveCharacter();
-    getCurrSpace();
-  }
-
-  private void getCurrSpace() {
-    Place currentPlace = town.getCharacter().getCurrentPlace();
-    System.out.println("Target character is in: " + currentPlace.getName());
-    System.out.println("Items in the place:");
-    currentPlace.getItems()
-        .forEach(
-            item -> System.out.println(item.getName() + " (Damage: " + item.getDamage() + ")"));
-  }
-
-  /**
-   * Displays the neighbors of the target character's current space.
-   */
-  private void getCurrSpaceNeighbors() {
-    Place currentPlace = town.getCharacter().getCurrentPlace();
-    System.out.println("Neighbors of " + currentPlace.getName() + ":");
-    currentPlace.getNeighbors().forEach(neighbor -> System.out.println(neighbor.getName()));
-  }
-
-  /**
-   * Displays information about the place by index.
-   */
-  private void getSpaceByIndex() {
-    System.out.println("Enter the index of the space (1 to " + (town.getPlaces().size()) + "): ");
-    int index = scanner.nextInt() - 1;
-    if (index < 0 || index >= town.getPlaces().size()) {
-      System.out.println("Invalid number.");
-      return;
-    }
-    Place place = town.getPlaces().get(index);
-    System.out.println("Place: " + place.getName());
-    if (place.getItems().isEmpty()) {
-      System.out.println("No items in the place.");
-      return;
-    } else {
-      System.out.println("Items in the place:");
-      place.getItems().forEach(
-          item -> System.out.println(item.getName() + " (Damage: " + item.getDamage() + ")"));
-    }
-  }
-
-  /**
-   * Displays the neighbors of the place by index.
-   */
-  private void getNeighborsByIndex() {
-    System.out.println("Enter the index of the space (1 to " + (town.getPlaces().size()) + "): ");
-    int index = scanner.nextInt() - 1;
-    if (index < 0 || index >= town.getPlaces().size()) {
-      System.out.println("Invalid number.");
-      return;
-    }
-    Place place = town.getPlaces().get(index);
-    System.out.println("Neighbors of " + place.getName() + ":");
-    place.getNeighbors().forEach(neighbor -> System.out.println(neighbor.getName()));
-  }
-
   /**
    * Prints the map of the town to a PNG file.
    */
-  private void printMap() throws IOException {
+  @Override
+  public void printMap() throws IOException {
     output.append("Printing the map...\n");
 
     int width = 11 * CELL_SIZE;
@@ -300,16 +249,7 @@ public class GameController implements Controller {
 
   @Override
   public void showPlayerCurrentInfo(Player player) throws IOException {
-    output.append("Your current place: ").append(player.getCurrentPlace().getName()).append("\n");
-    if (player.getCurrentCarriedItems().isEmpty()) {
-      output.append("Player has no item in the bag.\n");
-    } else {
-      output.append("Items in the player's bag:\n");
-      for (Item item : player.getCurrentCarriedItems()) {
-        output.append(item.getName()).append(" (Damage: ").append(String.valueOf(item.getDamage()))
-            .append(")\n");
-      }
-    }
+    new DisplayPlayerInfoCommand(players, output, scanner).showSpecificPlayerInfo(player);
   }
 
   @Override
@@ -336,6 +276,7 @@ public class GameController implements Controller {
         .orElse(null);
   }
 
+  @Override
   public List<Player> getPlayers() {
     return players;
   }

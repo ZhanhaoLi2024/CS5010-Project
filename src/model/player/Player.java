@@ -1,5 +1,6 @@
 package model.player;
 
+import java.io.IOException;
 import java.util.List;
 import model.item.Item;
 import model.place.Place;
@@ -39,6 +40,13 @@ public interface Player {
   void moveTo(Place newPlace) throws IllegalArgumentException;
 
   /**
+   * Move the player to the next place in the list of neighboring places.
+   *
+   * @throws IOException if there is an issue with I/O operations.
+   */
+  void moveToNextPlace() throws IOException;
+
+  /**
    * Allow the player to pick up an item from the current location.
    *
    * @param item the Item to be picked up.
@@ -66,5 +74,10 @@ public interface Player {
    * @return the description of the player.
    */
   String getDescription();
+
+  /**
+   * Get the player's current place information.
+   */
+  void getPlayerCurrentPlaceInfo() throws IOException;
 
 }
