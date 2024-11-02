@@ -3,9 +3,13 @@ package model.town;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.StringReader;
+import java.util.Scanner;
 import model.item.Item;
 import model.place.Place;
 import model.place.PlaceModel;
@@ -17,7 +21,9 @@ import org.junit.Test;
  */
 public class TownModelTest {
 
+  private final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
   private TownModel town;
+  private Scanner scanner;
 
   /**
    * Sets up the town for testing.
@@ -27,7 +33,6 @@ public class TownModelTest {
     TownLoader loader = new TownLoader();
     String worldFile = "res/SmallTownWorld.txt";
     town = new TownModel(loader, worldFile, new InputStreamReader(System.in), System.out);
-//    town = new TownModel(TownModel(res/SmallTownWorld.txt));
   }
 
   /**
@@ -176,5 +181,26 @@ public class TownModelTest {
     town.addComputerPlayer();
     assertEquals(1, town.getPlayers().size());
     assertEquals("David(Computer)", town.getPlayers().get(0).getName());
+  }
+
+  @Test
+  public void testAddPlayer() throws IOException {
+    String simulatedInput = "Alice\n5\n5\n";
+    StringReader input = new StringReader(simulatedInput);
+
+    StringBuilder output = new StringBuilder();
+
+    TownLoaderInterface loader = new TownLoader();
+    String worldFile = "res/SmallTownWorld.txt";
+    TownModel AddPlayerTown = new TownModel(loader, worldFile, input, output);
+
+    AddPlayerTown.addPlayer();
+
+    String outputContent = output.toString();
+    assertTrue(outputContent.contains("Enter the player's name:"));
+    assertTrue(outputContent.contains("Player name: Alice"));
+    assertTrue(outputContent.contains("Current place: Police Station"));
+    assertTrue(outputContent.contains("You can carry up to 5 items"));
+    assertTrue(outputContent.contains("Player added."));
   }
 }

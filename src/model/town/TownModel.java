@@ -181,4 +181,24 @@ public class TownModel implements Town {
     players.add(player);
     output.append("Computer player 'David' added.\n");
   }
+
+  @Override
+  public void addPlayer() throws IOException {
+    output.append("Enter the player's name:\n");
+    String playerName = scanner.nextLine();
+    output.append("Enter your starting place number:\n");
+    String placeIndex = scanner.nextLine();
+    Place startingPlace = places.get(Integer.parseInt(placeIndex) - 1);
+    output.append("Enter your limit of carrying items:\n");
+    String carryLimit = scanner.nextLine();
+    Player player = new PlayerModel(playerName, false, Integer.parseInt(carryLimit), startingPlace,
+        output, scanner);
+    output.append("Player name: ").append(player.getName()).append("\n");
+    output.append(player.getName()).append("Current place: ").append(startingPlace.getName())
+        .append("\n");
+    output.append("You can carry up to ").append(String.valueOf(player.getCarryLimit()))
+        .append(" items.\n");
+    output.append("Player added.\n");
+    players.add(player);
+  }
 }

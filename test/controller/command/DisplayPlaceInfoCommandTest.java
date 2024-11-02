@@ -111,6 +111,10 @@ public class DisplayPlaceInfoCommandTest {
       public void addComputerPlayer() throws IOException {
 
       }
+
+      @Override
+      public void addPlayer() throws IOException {
+      }
     };
   }
 

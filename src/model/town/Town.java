@@ -106,4 +106,11 @@ public interface Town {
    * @throws IOException if an I/O error occurs
    */
   void addComputerPlayer() throws IOException;
+
+  /**
+   * Adds a player to the town.
+   *
+   * @throws IOException if an I/O error occurs
+   */
+  void addPlayer() throws IOException;
 }
