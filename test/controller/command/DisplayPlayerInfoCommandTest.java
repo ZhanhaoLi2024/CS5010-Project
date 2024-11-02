@@ -30,7 +30,7 @@ public class DisplayPlayerInfoCommandTest {
     players = new ArrayList<>();
     output = new StringBuilder();
 
-    Place testPlace = new PlaceModel(0, 0, 1, 1, "TestPlace");
+    Place testPlace = new PlaceModel(0, 0, 1, 1, "TestPlace", String.valueOf(1));
 
     Player player1 = new PlayerModel("Player1", false, 3, testPlace, System.out, scanner);
     Player player2 = new PlayerModel("Player2", false, 3, testPlace, System.out, scanner);

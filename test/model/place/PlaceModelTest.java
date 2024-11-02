@@ -4,13 +4,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.util.List;
 import model.item.Item;
 import model.item.ItemModel;
-import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
-import model.place.Place;
-import model.place.PlaceModel;
 
 /**
  * The PlaceModelTest class implements the tests for the PlaceModel class.
@@ -28,9 +26,9 @@ public class PlaceModelTest {
    */
   @Before
   public void setUp() {
-    place1 = new PlaceModel(4, 2, 6, 7, "Hospital");
-    place2 = new PlaceModel(6, 3, 9, 5, "Library");
-    place3 = new PlaceModel(9, 3, 11, 7, "Fire Station");
+    place1 = new PlaceModel(4, 2, 6, 7, "Hospital", String.valueOf(1));
+    place2 = new PlaceModel(6, 3, 9, 5, "Library", String.valueOf(2));
+    place3 = new PlaceModel(9, 3, 11, 7, "Fire Station", String.valueOf(3));
 
     item1 = new ItemModel("Medical Kit", 18);
     item2 = new ItemModel("Storybook", 10);
@@ -152,7 +150,7 @@ public class PlaceModelTest {
    */
   @Test(expected = IllegalArgumentException.class)
   public void testInvalidSpaceSpecification() {
-    new PlaceModel(-1, 2, 6, 7, "Invalid Hospital");
+    new PlaceModel(-1, 2, 6, 7, "Invalid Hospital", String.valueOf(4));
   }
 
   /**

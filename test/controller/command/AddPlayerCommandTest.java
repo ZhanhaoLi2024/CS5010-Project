@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -25,6 +26,7 @@ public class AddPlayerCommandTest {
 
   private List<Player> players;
   private StringBuilder output;
+  private Appendable scanner;
   private Town town;
   private List<Place> places;
 
@@ -40,13 +42,13 @@ public class AddPlayerCommandTest {
       @Override
       public TownData loadTown(String filename) throws IOException {
         List<Place> places = new ArrayList<>();
-        places.add(new PlaceModel(0, 0, 1, 1, "TestPlace"));
+        places.add(new PlaceModel(0, 0, 1, 1, "TestPlace", String.valueOf(1)));
         List<Item> items = new ArrayList<>();
         return new TownData("TestTown", "TestTarget", 100, places, items);
       }
     };
 
-    town = new TownModel(loader, "testfile.txt");
+    town = new TownModel(loader, "testfile.txt", new InputStreamReader(System.in), System.out);
   }
 
   /**

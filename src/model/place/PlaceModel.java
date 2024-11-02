@@ -18,6 +18,7 @@ public class PlaceModel implements Place {
   private final List<Item> items;
   private final List<Place> neighbors;
   private final List<Player> players;
+  private final String placeNumber;
   private boolean isVisible;
 
   /**
@@ -31,7 +32,7 @@ public class PlaceModel implements Place {
    * @throws IllegalArgumentException if the row and column values are negative or if the top-left
    *                                  corner is greater than the bottom-right corner
    */
-  public PlaceModel(int row1, int col1, int row2, int col2, String name) {
+  public PlaceModel(int row1, int col1, int row2, int col2, String name, String placeNumber) {
     if (row1 < 0 || col1 < 0 || row2 < 0 || col2 < 0) {
       throw new IllegalArgumentException("Row and column values must be non-negative.");
     }
@@ -46,6 +47,12 @@ public class PlaceModel implements Place {
     this.items = new ArrayList<>();
     this.neighbors = new ArrayList<>();
     this.players = new ArrayList<>();
+    this.placeNumber = placeNumber;
+  }
+
+  @Override
+  public String getPlaceNumber() {
+    return placeNumber;
   }
 
   @Override

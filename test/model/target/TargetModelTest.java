@@ -2,13 +2,12 @@ package model.target;
 
 import static org.junit.Assert.assertEquals;
 
-import model.target.TargetModel;
 import java.util.ArrayList;
 import java.util.List;
-import org.junit.Before;
-import org.junit.Test;
 import model.place.Place;
 import model.place.PlaceModel;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * The CharacterModelTest class tests the methods in the CharacterModel class.
@@ -22,9 +21,9 @@ public class TargetModelTest {
    */
   @Before
   public void setUp() {
-    PlaceModel pharmacy = new PlaceModel(8, 7, 11, 11, "Pharmacy");
-    PlaceModel barberShop = new PlaceModel(6, 9, 8, 11, "Barber Shop");
-    PlaceModel coffeeShop = new PlaceModel(0, 10, 5, 12, "Coffee Shop");
+    PlaceModel pharmacy = new PlaceModel(8, 7, 11, 11, "Pharmacy", String.valueOf(1));
+    PlaceModel barberShop = new PlaceModel(6, 9, 8, 11, "Barber Shop", String.valueOf(2));
+    PlaceModel coffeeShop = new PlaceModel(0, 10, 5, 12, "Coffee Shop", String.valueOf(3));
 
     List<Place> places = new ArrayList<>();
     places.add(pharmacy);

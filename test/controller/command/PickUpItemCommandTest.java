@@ -29,7 +29,7 @@ public class PickUpItemCommandTest {
    */
   @Before
   public void setUp() {
-    place = new PlaceModel(0, 0, 1, 1, "TestPlace");
+    place = new PlaceModel(0, 0, 1, 1, "TestPlace", String.valueOf(1));
     output = new StringBuilder();
 
     player = new PlayerModel("Player1", false, 3, place, System.out, scanner);

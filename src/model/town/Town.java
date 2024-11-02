@@ -91,4 +91,19 @@ public interface Town {
    * @return the list of players in the town
    */
   List<Player> getPlayers();
+
+  /**
+   * Retrieves the neighbors of the specified place.
+   *
+   * @param place the place to retrieve the neighbors of
+   * @return the neighbors of the specified place
+   */
+  List<Place> getCurrentPlaceNeighbors(Place place);
+
+  /**
+   * Adds a computer player to the town.
+   *
+   * @throws IOException if an I/O error occurs
+   */
+  void addComputerPlayer() throws IOException;
 }

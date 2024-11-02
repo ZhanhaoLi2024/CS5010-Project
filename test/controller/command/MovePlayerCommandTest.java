@@ -32,7 +32,7 @@ public class MovePlayerCommandTest {
   public void setUp() {
     output = new StringBuilder();
     neighbors = new ArrayList<>();
-    currentPlace = new PlaceModel(0, 0, 1, 1, "CurrentPlace");
+    currentPlace = new PlaceModel(0, 0, 1, 1, "CurrentPlace", String.valueOf(1));
     player = new PlayerModel("TestPlayer", false, 3, currentPlace, System.out, scanner);
   }
 
@@ -57,8 +57,8 @@ public class MovePlayerCommandTest {
    */
   @Test
   public void testComputerControlledPlayerMovesRandomly() throws IOException {
-    Place neighbor1 = new PlaceModel(0, 1, 1, 2, "Neighbor1");
-    Place neighbor2 = new PlaceModel(1, 0, 2, 1, "Neighbor2");
+    Place neighbor1 = new PlaceModel(0, 1, 1, 2, "Neighbor1", String.valueOf(2));
+    Place neighbor2 = new PlaceModel(1, 0, 2, 1, "Neighbor2", String.valueOf(3));
     neighbors.add(neighbor1);
     neighbors.add(neighbor2);
     currentPlace.addNeighbor(neighbor1);
@@ -80,8 +80,8 @@ public class MovePlayerCommandTest {
    */
   @Test
   public void testPlayerMovesWithValidInput() throws IOException {
-    Place neighbor1 = new PlaceModel(0, 1, 1, 2, "Neighbor1");
-    Place neighbor2 = new PlaceModel(1, 0, 2, 1, "Neighbor2");
+    Place neighbor1 = new PlaceModel(0, 1, 1, 2, "Neighbor1", String.valueOf(2));
+    Place neighbor2 = new PlaceModel(1, 0, 2, 1, "Neighbor2", String.valueOf(3));
     neighbors.add(neighbor1);
     neighbors.add(neighbor2);
     currentPlace.addNeighbor(neighbor1);
@@ -110,8 +110,8 @@ public class MovePlayerCommandTest {
    */
   @Test
   public void testPlayerMovesWithInvalidNeighborInput() throws IOException {
-    Place neighbor1 = new PlaceModel(0, 1, 1, 2, "Neighbor1");
-    Place neighbor2 = new PlaceModel(1, 0, 2, 1, "Neighbor2");
+    Place neighbor1 = new PlaceModel(0, 1, 1, 2, "Neighbor1", String.valueOf(2));
+    Place neighbor2 = new PlaceModel(1, 0, 2, 1, "Neighbor2", String.valueOf(3));
     neighbors.add(neighbor1);
     neighbors.add(neighbor2);
     currentPlace.addNeighbor(neighbor1);
@@ -132,8 +132,8 @@ public class MovePlayerCommandTest {
    */
   @Test
   public void testPlayerMovesWithNonNumericInput() throws IOException {
-    Place neighbor1 = new PlaceModel(0, 1, 1, 2, "Neighbor1");
-    Place neighbor2 = new PlaceModel(1, 0, 2, 1, "Neighbor2");
+    Place neighbor1 = new PlaceModel(0, 1, 1, 2, "Neighbor1", String.valueOf(2));
+    Place neighbor2 = new PlaceModel(1, 0, 2, 1, "Neighbor2", String.valueOf(3));
     neighbors.add(neighbor1);
     neighbors.add(neighbor2);
     currentPlace.addNeighbor(neighbor1);

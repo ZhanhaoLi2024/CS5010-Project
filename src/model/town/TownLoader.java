@@ -47,7 +47,8 @@ public class TownLoader implements TownLoaderInterface {
       int row2 = Integer.parseInt(placeInfo[2]);
       int col2 = Integer.parseInt(placeInfo[3]);
       String placeName = String.join(" ", Arrays.copyOfRange(placeInfo, 4, placeInfo.length));
-      Place place = new PlaceModel(row1, col1, row2, col2, placeName);
+      int placeNumber = i + 1;
+      Place place = new PlaceModel(row1, col1, row2, col2, placeName, String.valueOf(placeNumber));
       places.add(place);
     }
 

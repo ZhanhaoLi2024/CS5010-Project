@@ -10,6 +10,8 @@ import model.player.Player;
  * places.
  */
 public interface Place {
+  String getPlaceNumber();
+
   /**
    * Adds an item to the place.
    *

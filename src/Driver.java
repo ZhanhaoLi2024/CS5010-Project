@@ -33,7 +33,7 @@ public class Driver {
     }
 
     TownLoader loader = new TownLoader();
-    Town town = new TownModel(loader, worldFile);
+    Town town = new TownModel(loader, worldFile, new InputStreamReader(System.in), System.out);
 
     GameController controller =
         new GameController(town, new InputStreamReader(System.in), System.out, maxTurns);

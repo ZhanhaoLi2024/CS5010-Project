@@ -6,11 +6,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
+import java.util.Scanner;
 import model.item.Item;
 import model.item.ItemModel;
 import model.place.Place;
 import model.place.PlaceModel;
 import model.player.Player;
+import model.player.PlayerModel;
 import model.target.Target;
 import model.target.TargetModel;
 
@@ -24,9 +27,12 @@ public class TownModel implements Town {
   private final List<Item> items;
   private final Target targetCharacter;
   private final List<Player> players;
+  private final Appendable output;
+  private final Scanner scanner;
   private String townName;
   private String targetName;
   private int targetHealth;
+  private int currentPlayerIndex;
 
   /**
    * Constructs a new TownModel with the specified town loader and filename.
@@ -35,7 +41,8 @@ public class TownModel implements Town {
    * @param filename the name of the file to load the town from
    * @throws IOException if an I/O error occurs
    */
-  public TownModel(TownLoaderInterface loader, String filename) throws IOException {
+  public TownModel(TownLoaderInterface loader, String filename, Readable scanner, Appendable output)
+      throws IOException {
     TownData townData = loader.loadTown(filename);
     this.townName = townData.getTownName();
     this.targetName = townData.getTargetName();
@@ -44,6 +51,9 @@ public class TownModel implements Town {
     this.items = townData.getItems();
     this.targetCharacter = new TargetModel(targetName, targetHealth, places.get(0), places);
     this.players = new ArrayList<>();
+    this.currentPlayerIndex = 0;
+    this.scanner = new Scanner(scanner);
+    this.output = output;
   }
 
   @Override
@@ -67,7 +77,7 @@ public class TownModel implements Town {
       int row2 = Integer.parseInt(placeInfo[2]);
       int col2 = Integer.parseInt(placeInfo[3]);
       String placeName = String.join(" ", Arrays.copyOfRange(placeInfo, 4, placeInfo.length));
-      Place place = new PlaceModel(row1, col1, row2, col2, placeName);
+      Place place = new PlaceModel(row1, col1, row2, col2, placeName, String.valueOf(i + 1));
       places.add(place);
     }
 
@@ -146,9 +156,29 @@ public class TownModel implements Town {
 
   @Override
   public List<Player> getPlayers() {
-    for (Place place : places) {
-      players.addAll(place.getCurrentPlacePlayers());
-    }
+//    for (Place place : places) {
+//      players.addAll(place.getCurrentPlacePlayers());
+//    }
     return players;
+  }
+
+  @Override
+  public List<Place> getCurrentPlaceNeighbors(Place place) {
+    List<Place> neighbors = new ArrayList<>();
+    for (Place p : places) {
+      if (!p.equals(place) && place.isNeighbor(p)) {
+        neighbors.add(p);
+      }
+    }
+    return neighbors;
+  }
+
+  @Override
+  public void addComputerPlayer() throws IOException {
+    Random random = new Random();
+    Place randomPlace = getPlaces().get(random.nextInt(getPlaces().size()));
+    Player player = new PlayerModel("David(Computer)", true, 3, randomPlace, System.out, scanner);
+    players.add(player);
+    output.append("Computer player 'David' added.\n");
   }
 }

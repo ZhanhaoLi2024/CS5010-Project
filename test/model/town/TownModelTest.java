@@ -4,13 +4,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
-import model.item.Item;
 import java.io.IOException;
-import org.junit.Before;
-import org.junit.Test;
+import java.io.InputStreamReader;
+import model.item.Item;
 import model.place.Place;
 import model.place.PlaceModel;
-import model.town.TownModel;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * The TownModelTest class implements the tests for the TownModel class.
@@ -26,7 +26,7 @@ public class TownModelTest {
   public void setUp() throws IOException {
     TownLoader loader = new TownLoader();
     String worldFile = "res/SmallTownWorld.txt";
-    town = new TownModel(loader, worldFile);
+    town = new TownModel(loader, worldFile, new InputStreamReader(System.in), System.out);
 //    town = new TownModel(TownModel(res/SmallTownWorld.txt));
   }
 
@@ -159,7 +159,7 @@ public class TownModelTest {
   public void testInvalidWorldDescription() throws IOException {
     TownLoader loader = new TownLoader();
     String worldFile = "res/InvalidWorld.txt";
-    town = new TownModel(loader, worldFile);
+    town = new TownModel(loader, worldFile, new InputStreamReader(System.in), System.out);
   }
 
   /**
@@ -169,5 +169,12 @@ public class TownModelTest {
   public void testCharacterStartsInRoom0() {
     Place firstPlace = town.getPlaces().get(0);
     assertEquals(firstPlace, town.getCharacter().getCurrentPlace());
+  }
+
+  @Test
+  public void testAddComputerPlayer() throws IOException {
+    town.addComputerPlayer();
+    assertEquals(1, town.getPlayers().size());
+    assertEquals("David(Computer)", town.getPlayers().get(0).getName());
   }
 }

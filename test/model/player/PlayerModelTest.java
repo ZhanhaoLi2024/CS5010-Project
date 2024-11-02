@@ -28,8 +28,8 @@ public class PlayerModelTest {
    */
   @Before
   public void setUp() {
-    place1 = new PlaceModel(0, 0, 1, 1, "Place 1");
-    place2 = new PlaceModel(1, 1, 2, 2, "Place 2");
+    place1 = new PlaceModel(0, 0, 1, 1, "Place 1", String.valueOf(1));
+    place2 = new PlaceModel(1, 1, 2, 2, "Place 2", String.valueOf(2));
     place1.addNeighbor(place2);
     place2.addNeighbor(place1);
 
@@ -74,7 +74,7 @@ public class PlayerModelTest {
    */
   @Test(expected = IllegalArgumentException.class)
   public void testMoveToInvalidPlace() {
-    Place place3 = new PlaceModel(2, 2, 3, 3, "Place 3");
+    Place place3 = new PlaceModel(2, 2, 3, 3, "Place 3", String.valueOf(3));
     player.moveTo(place3);
   }
 

@@ -89,7 +89,8 @@ public class DisplayPlaceInfoCommand implements Command {
     int index = 1;
     for (Place place : places) {
       output.append("----------\n");
-      output.append(index + ". Place name: ").append(place.getName()).append("\n");
+      output.append("Place Number: " + place.getPlaceNumber() + ". Place name: ")
+          .append(place.getName()).append("\n");
       output.append("----------\n");
       output.append("Place items:\n");
       for (Item item : place.getItems()) {

@@ -33,7 +33,7 @@ public class LookAroundCommandTest {
   public void setUp() {
     this.players = new ArrayList<>();
     output = new StringBuilder();
-    place = new PlaceModel(0, 0, 1, 1, "TestPlace");
+    place = new PlaceModel(0, 0, 1, 1, "TestPlace", String.valueOf(1));
     player = new PlayerModel("TestPlayer", false, 3, place, System.out, scanner);
     players.add(player);
   }
@@ -58,8 +58,8 @@ public class LookAroundCommandTest {
    */
   @Test
   public void testWithNeighborsNoItems() throws IOException {
-    Place neighbor1 = new PlaceModel(1, 0, 2, 1, "Neighbor1");
-    Place neighbor2 = new PlaceModel(0, 1, 1, 2, "Neighbor2");
+    Place neighbor1 = new PlaceModel(1, 0, 2, 1, "Neighbor1", String.valueOf(2));
+    Place neighbor2 = new PlaceModel(0, 1, 1, 2, "Neighbor2", String.valueOf(3));
     place.addNeighbor(neighbor1);
     place.addNeighbor(neighbor2);
 
@@ -97,7 +97,7 @@ public class LookAroundCommandTest {
    */
   @Test
   public void testWithNeighborsAndItems() throws IOException {
-    Place neighbor1 = new PlaceModel(1, 0, 2, 1, "Neighbor1");
+    Place neighbor1 = new PlaceModel(1, 0, 2, 1, "Neighbor1", String.valueOf(2));
     place.addNeighbor(neighbor1);
     Item item1 = new ItemModel("Sword", 10);
     place.addItem(item1);

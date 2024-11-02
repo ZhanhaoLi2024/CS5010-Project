@@ -37,8 +37,8 @@ public class DisplayPlaceInfoCommandTest {
     Item item1 = new ItemModel("Sword", 10);
     Item item2 = new ItemModel("Shield", 5);
 
-    Place place1 = new PlaceModel(0, 0, 1, 1, "Place1");
-    Place place2 = new PlaceModel(2, 2, 3, 3, "Place2");
+    Place place1 = new PlaceModel(0, 0, 1, 1, "Place1", String.valueOf(1));
+    Place place2 = new PlaceModel(2, 2, 3, 3, "Place2", String.valueOf(2));
     place1.addItem(item1);
     place2.addItem(item2);
 
@@ -58,6 +58,11 @@ public class DisplayPlaceInfoCommandTest {
       @Override
       public List<Player> getPlayers() {
         return new ArrayList<>();
+      }
+
+      @Override
+      public List<Place> getCurrentPlaceNeighbors(Place place) {
+        return List.of();
       }
 
       @Override
@@ -100,6 +105,11 @@ public class DisplayPlaceInfoCommandTest {
       @Override
       public List<Item> getItems() {
         return new ArrayList<>();
+      }
+
+      @Override
+      public void addComputerPlayer() throws IOException {
+
       }
     };
   }
