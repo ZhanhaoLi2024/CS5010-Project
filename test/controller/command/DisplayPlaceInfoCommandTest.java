@@ -119,6 +119,10 @@ public class DisplayPlaceInfoCommandTest {
       @Override
       public void showAllPlayersInfo() {
       }
+
+      @Override
+      public void showSpecificPlayerInfo(String playerName) {
+      }
     };
   }
 

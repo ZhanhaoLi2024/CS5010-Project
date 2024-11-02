@@ -57,6 +57,36 @@ public class TownModel implements Town {
   }
 
   @Override
+  public void showSpecificPlayerInfo(String playerName) throws IOException {
+    if (players.isEmpty()) {
+      output.append("No players found.\n");
+      return;
+    }
+    Player player = players.stream()
+        .filter(p -> p.getName().equals(playerName))
+        .findFirst()
+        .orElse(null);
+    if (player != null) {
+      output.append("Player name: ").append(player.getName()).append("\n");
+      output.append("Player current place: ").append(player.getCurrentPlace().getName())
+          .append("\n");
+      output.append("This player can carry up to ").append(String.valueOf(player.getCarryLimit()))
+          .append(" items.\n");
+      if (player.getCurrentCarriedItems().isEmpty()) {
+        output.append("Player is not carrying any items.\n");
+      } else {
+        output.append("Player is carrying the following items:\n");
+        for (Item item : player.getCurrentCarriedItems()) {
+          output.append("- ").append(item.getName()).append(" (Damage: ")
+              .append(String.valueOf(item.getDamage())).append(")\n");
+        }
+      }
+    } else {
+      output.append("Player not found.\n");
+    }
+  }
+
+  @Override
   public void loadTown(String filename) throws IOException {
     BufferedReader br = new BufferedReader(new FileReader(filename));
 

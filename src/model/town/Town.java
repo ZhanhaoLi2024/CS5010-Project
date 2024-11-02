@@ -120,4 +120,11 @@ public interface Town {
    * @throws IOException if there is an issue with I/O operations.
    */
   void showAllPlayersInfo() throws IOException;
+
+  /**
+   * Shows information about a specific player.
+   *
+   * @throws IOException if there is an issue with I/O operations.
+   */
+  void showSpecificPlayerInfo(String playerName) throws IOException;
 }

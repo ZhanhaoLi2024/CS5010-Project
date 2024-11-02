@@ -57,7 +57,7 @@ public class DisplayPlayerInfoCommand implements Command {
           town.showAllPlayersInfo();
           break;
         case 2:
-          entryPlayerName();
+          showSpecificPlayerInfo();
           break;
         case 0:
           output.append("Exiting...\n");
@@ -67,6 +67,12 @@ public class DisplayPlayerInfoCommand implements Command {
           output.append("Invalid choice, please try again.\n");
       }
     }
+  }
+
+  private void showSpecificPlayerInfo() throws IOException {
+    output.append("Enter the player's name:\n");
+    String playerName = scanner.nextLine();
+    town.showSpecificPlayerInfo(playerName);
   }
 
   /**
