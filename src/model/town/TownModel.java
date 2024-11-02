@@ -201,4 +201,25 @@ public class TownModel implements Town {
     output.append("Player added.\n");
     players.add(player);
   }
+
+  @Override
+  public void showAllPlayersInfo() throws IOException {
+    if (players.isEmpty()) {
+      output.append("No players found.\n");
+      return;
+    }
+    output.append("All players info:\n");
+    int index = 1;
+    output.append("--------------------\n");
+    for (Player player : players) {
+      output.append(String.valueOf(index)).append(". Player name: ").append(player.getName())
+          .append("\n");
+      output.append("Player current place: ").append(player.getCurrentPlace().getName())
+          .append("\n");
+      output.append("This player can carry up to ").append(String.valueOf(player.getCarryLimit()))
+          .append(" items.\n");
+      output.append("--------------------\n");
+      index++;
+    }
+  }
 }

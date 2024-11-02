@@ -113,4 +113,11 @@ public interface Town {
    * @throws IOException if an I/O error occurs
    */
   void addPlayer() throws IOException;
+
+  /**
+   * Shows information about all places.
+   *
+   * @throws IOException if there is an issue with I/O operations.
+   */
+  void showAllPlayersInfo() throws IOException;
 }

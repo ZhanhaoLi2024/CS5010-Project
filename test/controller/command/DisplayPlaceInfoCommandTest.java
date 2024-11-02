@@ -115,6 +115,10 @@ public class DisplayPlaceInfoCommandTest {
       @Override
       public void addPlayer() throws IOException {
       }
+
+      @Override
+      public void showAllPlayersInfo() {
+      }
     };
   }
 

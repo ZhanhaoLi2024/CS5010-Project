@@ -96,7 +96,7 @@ public class GameController implements Controller {
         new AddPlayerCommand(players, output, town, scanner, false).execute();
         break;
       case 3:
-        new DisplayPlayerInfoCommand(players, output, scanner).execute();
+        new DisplayPlayerInfoCommand(town, output, scanner).execute();
         break;
       case 4:
         new DisplayPlaceInfoCommand(town, players, output, scanner).execute();
@@ -249,7 +249,8 @@ public class GameController implements Controller {
 
   @Override
   public void showPlayerCurrentInfo(Player player) throws IOException {
-    new DisplayPlayerInfoCommand(players, output, scanner).showSpecificPlayerInfo(player);
+//    new DisplayPlayerInfoCommand(players, output, scanner).showSpecificPlayerInfo(player);
+    System.out.println("不能用了");
   }
 
   @Override

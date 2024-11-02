@@ -1,30 +1,30 @@
 package controller.command;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Scanner;
 import model.item.Item;
 import model.player.Player;
+import model.town.Town;
 
 /**
  * Command to display information about all players or a specific player.
  */
 public class DisplayPlayerInfoCommand implements Command {
-  private final List<Player> players;
   private final Appendable output;
   private final Scanner scanner;
+  private Town town;
 
   /**
    * Constructs a new DisplayPlayerInfoCommand.
    *
-   * @param players the list of players in the game
+   * @param town    the town where the players are located
    * @param output  the output stream to write messages to
    * @param scanner the scanner to get user input
    */
-  public DisplayPlayerInfoCommand(List<Player> players, Appendable output, Scanner scanner) {
-    this.players = players;
+  public DisplayPlayerInfoCommand(Town town, Appendable output, Scanner scanner) {
     this.output = output;
     this.scanner = scanner;
+    this.town = town;
   }
 
   @Override
@@ -54,7 +54,7 @@ public class DisplayPlayerInfoCommand implements Command {
 
       switch (choice) {
         case 1:
-          showAllPlayersInfo();
+          town.showAllPlayersInfo();
           break;
         case 2:
           entryPlayerName();
@@ -75,19 +75,20 @@ public class DisplayPlayerInfoCommand implements Command {
    * @throws IOException if there is an issue with I/O operations.
    */
   private void showAllPlayersInfo() throws IOException {
-    if (players.isEmpty()) {
-      output.append("No players found.\n");
-      return;
-    }
-    output.append("All players info:\n");
-    int index = 1;
-    for (Player player : players) {
-      output.append(index + ". Player name: ").append(player.getName()).append("\n");
-      output.append("Player current place: ").append(player.getCurrentPlace().getName())
-          .append("\n");
-      output.append("--------------------\n");
-      index++;
-    }
+//    if (players.isEmpty()) {
+//      output.append("No players found.\n");
+//      return;
+//    }
+//    output.append("All players info:\n");
+//    int index = 1;
+//    for (Player player : players) {
+//      output.append(index + ". Player name: ").append(player.getName()).append("\n");
+//      output.append("Player current place: ").append(player.getCurrentPlace().getName())
+//          .append("\n");
+//      output.append("--------------------\n");
+//      index++;
+//    }
+    System.out.println("不能用了");
   }
 
   /**
@@ -96,13 +97,14 @@ public class DisplayPlayerInfoCommand implements Command {
    * @throws IOException if there is an issue with I/O operations.
    */
   private void entryPlayerName() throws IOException {
-    output.append("Enter the player's name:\n");
-    String playerName = scanner.nextLine();
-    Player player = players.stream()
-        .filter(p -> p.getName().equals(playerName))
-        .findFirst()
-        .orElse(null);
-    showSpecificPlayerInfo(player);
+//    output.append("Enter the player's name:\n");
+//    String playerName = scanner.nextLine();
+//    Player player = players.stream()
+//        .filter(p -> p.getName().equals(playerName))
+//        .findFirst()
+//        .orElse(null);
+//    showSpecificPlayerInfo(player);
+    System.out.println("不能用了");
   }
 
   /**
