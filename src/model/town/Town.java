@@ -3,6 +3,7 @@ package model.town;
 import java.io.IOException;
 import java.util.List;
 import model.item.Item;
+import model.pet.Pet;
 import model.place.Place;
 import model.player.Player;
 import model.target.Target;
@@ -40,14 +41,21 @@ public interface Town {
   /**
    * Moves the character to the next place.
    */
-  void moveCharacter();
+  void moveTarget();
 
   /**
    * Retrieves the character in the town.
    *
    * @return the character in the town
    */
-  Target getCharacter();
+  Target getTarget();
+
+  /**
+   * Retrieves the pet in the town.
+   *
+   * @return the pet in the town
+   */
+  Pet getPet();
 
   /**
    * Retrieves the name of the town.

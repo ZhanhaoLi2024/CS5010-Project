@@ -8,8 +8,7 @@ import org.junit.Test;
  * The PetModelTest class tests the PetModel class.
  */
 public class PetModelTest {
-
-
+  
   /**
    * Tests the PetModel constructor.
    */

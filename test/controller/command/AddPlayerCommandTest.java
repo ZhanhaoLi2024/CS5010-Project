@@ -44,7 +44,7 @@ public class AddPlayerCommandTest {
         List<Place> places = new ArrayList<>();
         places.add(new PlaceModel(0, 0, 1, 1, "TestPlace", String.valueOf(1)));
         List<Item> items = new ArrayList<>();
-        return new TownData("TestTown", "TestTarget", 100, places, items);
+        return new TownData("TestTown", "TestTarget", "Cat", 100, places, items);
       }
     };
 

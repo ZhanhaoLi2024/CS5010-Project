@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
 import model.item.Item;
+import model.pet.Pet;
+import model.pet.PetModel;
 import model.place.Place;
 import model.player.Player;
 import model.player.PlayerModel;
@@ -24,12 +26,13 @@ public class TownModel implements Town {
   private final List<Player> players;
   private final Appendable output;
   private final Scanner scanner;
-  private String townName;
-  private String targetName;
-  private int targetHealth;
+  private final Pet pet;
+  private final String townName;
+  private final String targetName;
+  private final int targetHealth;
+  private final int maxTurns;
   private int currentPlayerIndex;
   private int currentTurn;
-  private int maxTurns;
 
   /**
    * Constructs a new TownModel with the specified town loader and filename.
@@ -45,6 +48,7 @@ public class TownModel implements Town {
     this.townName = townData.getTownName();
     this.targetName = townData.getTargetName();
     this.targetHealth = townData.getTargetHealth();
+    this.pet = new PetModel(townData.getPetName());
     this.places = townData.getPlaces();
     this.items = townData.getItems();
     this.targetCharacter = new TargetModel(targetName, targetHealth, places.get(0), places);
@@ -91,7 +95,7 @@ public class TownModel implements Town {
   }
 
   @Override
-  public void moveCharacter() {
+  public void moveTarget() {
     targetCharacter.moveToNextPlace();
   }
 
@@ -101,8 +105,13 @@ public class TownModel implements Town {
   }
 
   @Override
-  public Target getCharacter() {
+  public Target getTarget() {
     return targetCharacter;
+  }
+
+  @Override
+  public Pet getPet() {
+    return pet;
   }
 
   public List<Place> getPlaces() {
@@ -160,11 +169,12 @@ public class TownModel implements Town {
     String playerName = scanner.nextLine();
     output.append("Enter your starting place number:\n");
     String placeIndex = scanner.nextLine();
+    int placeNumber = Integer.parseInt(placeIndex);
     Place startingPlace = places.get(Integer.parseInt(placeIndex) - 1);
     output.append("Enter your limit of carrying items:\n");
     String carryLimit = scanner.nextLine();
     Player player = new PlayerModel(playerName, false, Integer.parseInt(carryLimit),
-        Integer.parseInt(placeIndex) - 1,
+        placeNumber,
         output, scanner);
     output.append("Player name: ").append(player.getName()).append("\n");
     output.append(player.getName()).append("Current place: ").append(startingPlace.getName())
@@ -310,16 +320,9 @@ public class TownModel implements Town {
   public void lookAround() throws IOException {
     Player currentPlayer = this.players.get(currentPlayerIndex);
     Place currentPlace = getPlaceByNumber(currentPlayer.getPlayerCurrentPlaceNumber());
-    List<Place> neighbors = currentPlace.getNeighbors();
-    if (neighbors.isEmpty()) {
-      output.append("No neighbors found.\n");
-    } else {
-      output.append("Neighbors of ").append(currentPlace.getName())
-          .append(":\n");
-      for (Place neighbor : neighbors) {
-        output.append(neighbor.getName()).append("\n");
-      }
-    }
+
+    // Current Place Info: name, items, players
+    output.append("Current place: ").append(currentPlace.getName()).append("\n");
     List<Item> items = currentPlace.getItems();
     if (items.isEmpty()) {
       output.append("No items found.\n");
@@ -331,12 +334,62 @@ public class TownModel implements Town {
             .append(")\n");
       }
     }
+    List<Player> currentPlayers = new ArrayList<>();
     for (Player p : players) {
       Place pCurrentPlace = getPlaceByNumber(p.getPlayerCurrentPlaceNumber());
       if (pCurrentPlace.equals(currentPlace) && !p.equals(currentPlayer)) {
-        output.append(p.getName()).append(" is in this place.\n");
+        currentPlayers.add(p);
       }
     }
+    if (!currentPlayers.isEmpty()) {
+      output.append("Players in this place:");
+      if (currentPlayers.size() == 1) {
+        output.append(currentPlayers.get(0).getName()).append("\n");
+      } else {
+        for (Player player : currentPlayers) {
+          output.append(player.getName()).append(", ");
+        }
+        output.append("\n");
+      }
+    }
+
+    // Current Place Neighbors Info: name, items, players
+    List<Place> neighbors = currentPlace.getNeighbors();
+    if (neighbors.isEmpty()) {
+      output.append("No neighbors found.\n");
+    } else {
+      output.append("Neighbors of ").append(currentPlace.getName())
+          .append(":\n");
+      for (Place neighbor : neighbors) {
+        output.append(" - ").append(neighbor.getName()).append("\n");
+        List<Item> neighborItems = neighbor.getItems();
+        if (neighborItems.isEmpty()) {
+          output.append("   No items found.\n");
+        } else {
+          output.append("   Items in ").append(neighbor.getName()).append(":");
+          for (Item item : neighborItems) {
+            output.append(item.getName()).append(" (Damage: ")
+                .append(String.valueOf(item.getDamage()))
+                .append(")\n");
+          }
+        }
+        List<Player> neighborPlayers = new ArrayList<>();
+        for (Player p : players) {
+          Place pCurrentPlace = getPlaceByNumber(p.getPlayerCurrentPlaceNumber());
+          if (pCurrentPlace.equals(neighbor)) {
+            neighborPlayers.add(p);
+          }
+        }
+        if (!neighborPlayers.isEmpty()) {
+          output.append("   Players in this place:");
+          for (Player player : neighborPlayers) {
+            output.append(player.getName()).append(", ");
+          }
+        }
+        output.append("\n");
+      }
+    }
+
 
     this.switchToNextPlayer(); // Next player turn
   }
@@ -411,6 +464,7 @@ public class TownModel implements Town {
       output.append("You have to add at least one player\n");
     }
     currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
+
     if (currentPlayerIndex == 0) {
       currentTurn++;
     }

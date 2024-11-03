@@ -30,6 +30,7 @@ public class TownLoader implements TownLoaderInterface {
     List<Item> items = new ArrayList<>();
     String townName;
     String targetName;
+    String petName;
     int targetHealth;
 
     String[] townInfo = br.readLine().split(" ");
@@ -38,6 +39,8 @@ public class TownLoader implements TownLoaderInterface {
     String[] targetInfo = br.readLine().split(" ");
     targetHealth = Integer.parseInt(targetInfo[0]);
     targetName = String.join(" ", Arrays.copyOfRange(targetInfo, 1, targetInfo.length));
+
+    petName = br.readLine();
 
     int numPlaces = Integer.parseInt(br.readLine());
     for (int i = 0; i < numPlaces; i++) {
@@ -73,6 +76,6 @@ public class TownLoader implements TownLoaderInterface {
 
     br.close();
 
-    return new TownData(townName, targetName, targetHealth, places, items);
+    return new TownData(townName, targetName, petName, targetHealth, places, items);
   }
 }

@@ -51,7 +51,7 @@ public class GameControllerTest {
     items.add(item2);
     place1.addItem(item1);
     place2.addItem(item2);
-    TownData townData = new TownData("TestTown", "Target", 100, places, items);
+    TownData townData = new TownData("TestTown", "Target", "Cat", 100, places, items);
     TownLoaderInterface loader = filename -> townData;
     town = new TownModel(loader, "testfile", new InputStreamReader(System.in), System.out, 3);
     output = new StringBuilder();

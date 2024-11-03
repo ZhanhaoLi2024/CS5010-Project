@@ -1,5 +1,6 @@
 11 12 Small Town World
-100 The Mayor
+50 The Mayor
+Fortune the Cat
 20
 0 0 2 3 Park
 2 0 4 1 Grocery Store

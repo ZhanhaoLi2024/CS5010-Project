@@ -10,6 +10,7 @@ import model.place.Place;
 public class TownData {
   private final String townName;
   private final String targetName;
+  private final String petName;
   private final int targetHealth;
   private final List<Place> places;
   private final List<Item> items;
@@ -24,10 +25,12 @@ public class TownData {
    * @param places       the list of places in the town
    * @param items        the list of items in the town
    */
-  public TownData(String townName, String targetName, int targetHealth, List<Place> places,
+  public TownData(String townName, String targetName, String petName, int targetHealth,
+                  List<Place> places,
                   List<Item> items) {
     this.townName = townName;
     this.targetName = targetName;
+    this.petName = petName;
     this.targetHealth = targetHealth;
     this.places = places;
     this.items = items;
@@ -49,6 +52,15 @@ public class TownData {
    */
   public String getTargetName() {
     return targetName;
+  }
+
+  /**
+   * Retrieves the name of the pet character.
+   *
+   * @return the name of the pet character as a String
+   */
+  public String getPetName() {
+    return petName;
   }
 
   /**

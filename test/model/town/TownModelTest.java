@@ -78,15 +78,15 @@ public class TownModelTest {
    */
   @Test
   public void testCharacterMovement() {
-    Place firstPlace = town.getCharacter().getCurrentPlace();
+    Place firstPlace = town.getTarget().getCurrentPlace();
     assertEquals("Park", firstPlace.getName());
 
-    town.moveCharacter();
-    Place secondPlace = town.getCharacter().getCurrentPlace();
+    town.moveTarget();
+    Place secondPlace = town.getTarget().getCurrentPlace();
     assertEquals("Grocery Store", secondPlace.getName());
 
-    town.moveCharacter();
-    Place thirdPlace = town.getCharacter().getCurrentPlace();
+    town.moveTarget();
+    Place thirdPlace = town.getTarget().getCurrentPlace();
     assertEquals("School", thirdPlace.getName());
   }
 
@@ -96,13 +96,13 @@ public class TownModelTest {
   @Test
   public void testCharacterLoopMovement() {
     for (int i = 0; i < 19; i++) {
-      town.moveCharacter();
+      town.moveTarget();
     }
-    Place lastPlace = town.getCharacter().getCurrentPlace();
+    Place lastPlace = town.getTarget().getCurrentPlace();
     assertEquals("Community Center", lastPlace.getName());
 
-    town.moveCharacter();
-    Place firstPlace = town.getCharacter().getCurrentPlace();
+    town.moveTarget();
+    Place firstPlace = town.getTarget().getCurrentPlace();
     assertEquals("Park", firstPlace.getName());
   }
 
@@ -111,7 +111,7 @@ public class TownModelTest {
    */
   @Test
   public void testGetPlaceInfo() {
-    Place firstPlace = town.getCharacter().getCurrentPlace();
+    Place firstPlace = town.getTarget().getCurrentPlace();
 
     town.getPlaceInfo(firstPlace);
 
@@ -149,7 +149,7 @@ public class TownModelTest {
    */
   @Test
   public void testGetTargetHealth() {
-    assertEquals(100, town.getTargetHealth());
+    assertEquals(50, town.getTargetHealth());
   }
 
   @Test
@@ -173,7 +173,7 @@ public class TownModelTest {
   @Test
   public void testCharacterStartsInRoom0() {
     Place firstPlace = town.getPlaces().get(0);
-    assertEquals(firstPlace, town.getCharacter().getCurrentPlace());
+    assertEquals(firstPlace, town.getTarget().getCurrentPlace());
   }
 
   @Test
