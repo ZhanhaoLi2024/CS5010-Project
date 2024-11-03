@@ -48,7 +48,7 @@ public class AddPlayerCommandTest {
       }
     };
 
-    town = new TownModel(loader, "testfile.txt", new InputStreamReader(System.in), System.out);
+    town = new TownModel(loader, "testfile.txt", new InputStreamReader(System.in), System.out, 3);
   }
 
   /**

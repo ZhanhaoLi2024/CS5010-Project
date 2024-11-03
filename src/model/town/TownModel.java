@@ -28,6 +28,8 @@ public class TownModel implements Town {
   private String targetName;
   private int targetHealth;
   private int currentPlayerIndex;
+  private int currentTurn;
+  private int maxTurns;
 
   /**
    * Constructs a new TownModel with the specified town loader and filename.
@@ -36,7 +38,8 @@ public class TownModel implements Town {
    * @param filename the name of the file to load the town from
    * @throws IOException if an I/O error occurs
    */
-  public TownModel(TownLoaderInterface loader, String filename, Readable scanner, Appendable output)
+  public TownModel(TownLoaderInterface loader, String filename, Readable scanner, Appendable output,
+                   int maxTurns)
       throws IOException {
     TownData townData = loader.loadTown(filename);
     this.townName = townData.getTownName();
@@ -49,36 +52,13 @@ public class TownModel implements Town {
     this.currentPlayerIndex = 0;
     this.scanner = new Scanner(scanner);
     this.output = output;
+    this.currentTurn = 1;
+    this.maxTurns = maxTurns;
   }
 
   @Override
-  public void showSpecificPlayerInfo(String playerName) throws IOException {
-    if (players.isEmpty()) {
-      output.append("No players found.\n");
-      return;
-    }
-    Player player = players.stream()
-        .filter(p -> p.getName().equals(playerName))
-        .findFirst()
-        .orElse(null);
-    if (player != null) {
-      output.append("Player name: ").append(player.getName()).append("\n");
-      output.append("Player current place: ").append(player.getCurrentPlace().getName())
-          .append("\n");
-      output.append("This player can carry up to ").append(String.valueOf(player.getCarryLimit()))
-          .append(" items.\n");
-      if (player.getCurrentCarriedItems().isEmpty()) {
-        output.append("Player is not carrying any items.\n");
-      } else {
-        output.append("Player is carrying the following items:\n");
-        for (Item item : player.getCurrentCarriedItems()) {
-          output.append("- ").append(item.getName()).append(" (Damage: ")
-              .append(String.valueOf(item.getDamage())).append(")\n");
-        }
-      }
-    } else {
-      output.append("Player not found.\n");
-    }
+  public Boolean isGameOver() {
+    return currentTurn > maxTurns;
   }
 
   @Override
@@ -135,9 +115,6 @@ public class TownModel implements Town {
 
   @Override
   public List<Player> getPlayers() {
-//    for (Place place : places) {
-//      players.addAll(place.getCurrentPlacePlayers());
-//    }
     return players;
   }
 
@@ -203,21 +180,59 @@ public class TownModel implements Town {
   }
 
   @Override
-  public void lookAround(Player player) throws IOException {
-    List<Place> neighbors = player.getCurrentPlace().getNeighbors();
+  public void showPlayerCurrentInfo() throws IOException {
+    String playerName = players.get(currentPlayerIndex).getName();
+    getPlayerByName(playerName);
+  }
+
+  @Override
+  public void getPlayerByName(String playerName) throws IOException {
+    if (players.isEmpty()) {
+      output.append("No players found.\n");
+      return;
+    }
+    Player player = players.stream()
+        .filter(p -> p.getName().equals(playerName))
+        .findFirst()
+        .orElse(null);
+    if (player != null) {
+      output.append("Player name: ").append(player.getName()).append("\n");
+      output.append("Player current place: ").append(player.getCurrentPlace().getName())
+          .append("\n");
+      output.append("This player can carry up to ").append(String.valueOf(player.getCarryLimit()))
+          .append(" items.\n");
+      if (player.getCurrentCarriedItems().isEmpty()) {
+        output.append("Player is not carrying any items.\n");
+      } else {
+        output.append("Player is carrying the following items:\n");
+        for (Item item : player.getCurrentCarriedItems()) {
+          output.append("- ").append(item.getName()).append(" (Damage: ")
+              .append(String.valueOf(item.getDamage())).append(")\n");
+        }
+      }
+    } else {
+      output.append("Player not found.\n");
+    }
+  }
+
+  @Override
+  public void lookAround() throws IOException {
+    Player currentPlayer = this.players.get(currentPlayerIndex);
+    List<Place> neighbors = currentPlayer.getCurrentPlace().getNeighbors();
     if (neighbors.isEmpty()) {
       output.append("No neighbors found.\n");
     } else {
-      output.append("Neighbors of ").append(player.getCurrentPlace().getName()).append(":\n");
+      output.append("Neighbors of ").append(currentPlayer.getCurrentPlace().getName())
+          .append(":\n");
       for (Place neighbor : neighbors) {
         output.append(neighbor.getName()).append("\n");
       }
     }
-    List<Item> items = player.getCurrentPlace().getItems();
+    List<Item> items = currentPlayer.getCurrentPlace().getItems();
     if (items.isEmpty()) {
       output.append("No items found.\n");
     } else {
-      output.append("Items in ").append(player.getCurrentPlace().getName()).append(":\n");
+      output.append("Items in ").append(currentPlayer.getCurrentPlace().getName()).append(":\n");
       for (Item item : items) {
         output.append(item.getName()).append(" (Damage: ")
             .append(String.valueOf(item.getDamage()))
@@ -225,14 +240,33 @@ public class TownModel implements Town {
       }
     }
     for (Player p : players) {
-      if (p.getCurrentPlace().equals(player.getCurrentPlace()) && !p.equals(player)) {
+      if (p.getCurrentPlace().equals(currentPlayer.getCurrentPlace()) && !p.equals(currentPlayer)) {
         output.append(p.getName()).append(" is in this place.\n");
       }
+    }
+
+    this.switchToNextPlayer(); // Next player turn
+  }
+
+  @Override
+  public void switchToNextPlayer() throws IOException {
+    if (getPlayers().size() == 1) {
+      output.append("You have to add at least one player\n");
+    }
+    currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
+    if (currentPlayerIndex == 0) {
+      currentTurn++;
     }
   }
 
   @Override
-  public void switchToNextPlayer() {
-    currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
+  public int getCurrentTurn() {
+    return currentTurn;
   }
+
+  @Override
+  public Boolean isComputerControllerPlayer() {
+    return players.get(currentPlayerIndex).isComputerControlled();
+  }
+
 }

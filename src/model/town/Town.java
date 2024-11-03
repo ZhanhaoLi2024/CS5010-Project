@@ -116,17 +116,40 @@ public interface Town {
    *
    * @throws IOException if there is an issue with I/O operations.
    */
-  void showSpecificPlayerInfo(String playerName) throws IOException;
+  void getPlayerByName(String playerName) throws IOException;
 
   /**
    * Allows the player to look around the current place.
    *
    * @throws IOException if there is an issue with I/O operations.
    */
-  void lookAround(Player player) throws IOException;
+  void lookAround() throws IOException;
 
   /**
    * Switches to the next player in the game.
    */
-  void switchToNextPlayer();
+  void switchToNextPlayer() throws IOException;
+
+  /**
+   * Shows the current information of the player.
+   *
+   * @throws IOException if there is an issue with I/O operations
+   */
+  void showPlayerCurrentInfo() throws IOException;
+
+  /**
+   * Checks if the game is over.
+   *
+   * @return true if the game is over, false otherwise
+   */
+  Boolean isGameOver();
+
+  /**
+   * Checks if the computer controller is a player.
+   *
+   * @return true if the computer controller is a player, false otherwise
+   */
+  Boolean isComputerControllerPlayer();
+
+  int getCurrentTurn();
 }

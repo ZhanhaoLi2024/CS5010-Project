@@ -32,7 +32,7 @@ public class TownModelTest {
   public void setUp() throws IOException {
     TownLoader loader = new TownLoader();
     String worldFile = "res/SmallTownWorld.txt";
-    town = new TownModel(loader, worldFile, new InputStreamReader(System.in), System.out);
+    town = new TownModel(loader, worldFile, new InputStreamReader(System.in), System.out, 3);
   }
 
   /**
@@ -164,7 +164,7 @@ public class TownModelTest {
   public void testInvalidWorldDescription() throws IOException {
     TownLoader loader = new TownLoader();
     String worldFile = "res/InvalidWorld.txt";
-    town = new TownModel(loader, worldFile, new InputStreamReader(System.in), System.out);
+    town = new TownModel(loader, worldFile, new InputStreamReader(System.in), System.out, 3);
   }
 
   /**
@@ -192,7 +192,7 @@ public class TownModelTest {
 
     TownLoaderInterface loader = new TownLoader();
     String worldFile = "res/SmallTownWorld.txt";
-    TownModel AddPlayerTown = new TownModel(loader, worldFile, input, output);
+    TownModel AddPlayerTown = new TownModel(loader, worldFile, input, output, 3);
 
     AddPlayerTown.addPlayer();
 

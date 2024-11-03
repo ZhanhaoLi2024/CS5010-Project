@@ -70,6 +70,6 @@ public class DisplayPlayerInfoCommand implements Command {
   private void showSpecificPlayerInfo() throws IOException {
     output.append("Enter the player's name:\n");
     String playerName = scanner.nextLine();
-    town.showSpecificPlayerInfo(playerName);
+    town.getPlayerByName(playerName);
   }
 }

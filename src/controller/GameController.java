@@ -4,8 +4,6 @@ import controller.command.AddPlayerCommand;
 import controller.command.DisplayPlaceInfoCommand;
 import controller.command.DisplayPlayerInfoCommand;
 import controller.command.LookAroundCommand;
-import controller.command.MovePlayerCommand;
-import controller.command.PickUpItemCommand;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
@@ -13,7 +11,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.Scanner;
 import javax.imageio.ImageIO;
 import model.item.Item;
@@ -117,52 +114,54 @@ public class GameController implements Controller {
 
   }
 
+  private void takeTurnForPlayer() throws IOException {
+    boolean isComputerControlled = town.isComputerControllerPlayer();
+    if (!isComputerControlled) {
+      output.append("Please choose an option:\n");
+      output.append("1. Move player\n");
+      output.append("2. Pick up item\n");
+      output.append("3. Look around\n");
+      int choice = 0;
+      try {
+        choice = Integer.parseInt(scanner.nextLine());
+      } catch (NumberFormatException e) {
+        this.output.append("Invalid input. Please enter a number.\n");
+      }
+      switch (choice) {
+        case 1:
+//          new MovePlayerCommand(town.getCurrentPlayer(), output, scanner).execute();
+          break;
+        case 2:
+//          new PickUpItemCommand(town.getCurrentPlayer(), output, scanner).execute();
+          break;
+        case 3:
+          new LookAroundCommand(output, town).execute();
+          break;
+        default:
+          this.output.append("Invalid choice, please try again.\n");
+      }
+    } else {
+      // Computer-controlled player
+      output.append("Computer player's turn.\n");
+      town.switchToNextPlayer();
+    }
+  }
+
   @Override
   public void takeTurn() throws IOException {
-    this.players = town.getPlayers();
-    if (players.size() == 1) {
-      output.append("You have to add more than one player\n");
+    if (town.getPlayers().size() == 1) {
+      output.append("You have to add at least one player\n");
       continueGame = false;
     }
     while (continueGame) {
       output.append("\n");
-      output.append(String.valueOf(currentTurn)).append(" of ").append(String.valueOf(maxTurns))
+      output.append(String.valueOf(town.getCurrentTurn())).append(" of ")
+          .append(String.valueOf(maxTurns))
           .append("\n");
-      for (Player player : players) {
-        output.append("--------------------\n");
-        this.output.append("Player: ").append(player.getName()).append("'s turn\n");
-        showPlayerCurrentInfo(player);
-        int choice = 0;
-        if (player.isComputerControlled()) {
-          choice = new Random().nextInt(3) + 1;
-        } else {
-          this.output.append("Please choose an option:\n");
-          this.output.append("1. Move player\n");
-          this.output.append("2. Pick up item\n");
-          this.output.append("3. Look around\n");
-          try {
-            choice = Integer.parseInt(scanner.nextLine());
-          } catch (NumberFormatException e) {
-            this.output.append("Invalid input. Please enter a number.\n");
-          }
-        }
-        switch (choice) {
-          case 1:
-            new MovePlayerCommand(player, output, scanner).execute();
-            break;
-          case 2:
-            new PickUpItemCommand(player, output, scanner).execute();
-            break;
-          case 3:
-            new LookAroundCommand(player, output, town).execute();
-            break;
-          default:
-            this.output.append("Invalid choice, please try again.\n");
-        }
-      }
-      town.switchToNextPlayer(); // Switch to the next player
-      currentTurn++;
-      if (currentTurn > maxTurns) {
+      town.showPlayerCurrentInfo();
+      this.takeTurnForPlayer();
+      boolean isGameOver = town.isGameOver();
+      if (isGameOver) {
         endGame();
       }
     }
