@@ -1,9 +1,7 @@
 package model.player;
 
-import java.io.IOException;
 import java.util.List;
 import model.item.Item;
-import model.place.Place;
 
 /**
  * The Player interface defines the basic behaviors and attributes for a player in the game.
@@ -29,22 +27,15 @@ public interface Player {
    *
    * @return the current Place the player is in.
    */
-  Place getCurrentPlace();
+  int getPlayerCurrentPlaceNumber();
 
   /**
    * Move the player to a specified neighboring place.
    *
-   * @param newPlace the Place to move the player to.
+   * @param placeNumber the number of the place to move to.
    * @throws IllegalArgumentException if the place is not a valid neighbor.
    */
-  void moveTo(Place newPlace) throws IllegalArgumentException;
-
-  /**
-   * Move the player to the next place in the list of neighboring places.
-   *
-   * @throws IOException if there is an issue with I/O operations.
-   */
-  void moveToNextPlace() throws IOException;
+  void moveToPlaceNumber(int placeNumber) throws IllegalArgumentException;
 
   /**
    * Allow the player to pick up an item from the current location.
@@ -68,16 +59,5 @@ public interface Player {
    */
   int getCarryLimit();
 
-  /**
-   * Return a detailed description of the player, including name, current place, and items carried.
-   *
-   * @return the description of the player.
-   */
-  String getDescription();
-
-  /**
-   * Get the player's current place information.
-   */
-  void getPlayerCurrentPlaceInfo() throws IOException;
 
 }

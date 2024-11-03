@@ -75,6 +75,22 @@ public class TownModel implements Town {
   }
 
   @Override
+  public Place getPlaceByNumber(int placeNumber) {
+    return places.get(placeNumber - 1);
+  }
+
+  @Override
+  public int getPlaceNumberByName(String placeName) throws IOException {
+    for (int i = 0; i < places.size(); i++) {
+      if (places.get(i).getName().equals(placeName)) {
+        return i + 1;
+      }
+    }
+    output.append("Place not found.\n");
+    return -1;
+  }
+
+  @Override
   public void moveCharacter() {
     targetCharacter.moveToNextPlace();
   }
@@ -133,7 +149,7 @@ public class TownModel implements Town {
   public void addComputerPlayer() throws IOException {
     Random random = new Random();
     Place randomPlace = getPlaces().get(random.nextInt(getPlaces().size()));
-    Player player = new PlayerModel("David(Computer)", true, 3, randomPlace, System.out, scanner);
+    Player player = new PlayerModel("David(Computer)", true, 3, 1, System.out, scanner);
     players.add(player);
     output.append("Computer player 'David' added.\n");
   }
@@ -147,7 +163,8 @@ public class TownModel implements Town {
     Place startingPlace = places.get(Integer.parseInt(placeIndex) - 1);
     output.append("Enter your limit of carrying items:\n");
     String carryLimit = scanner.nextLine();
-    Player player = new PlayerModel(playerName, false, Integer.parseInt(carryLimit), startingPlace,
+    Player player = new PlayerModel(playerName, false, Integer.parseInt(carryLimit),
+        Integer.parseInt(placeIndex) - 1,
         output, scanner);
     output.append("Player name: ").append(player.getName()).append("\n");
     output.append(player.getName()).append("Current place: ").append(startingPlace.getName())
@@ -170,7 +187,10 @@ public class TownModel implements Town {
     for (Player player : players) {
       output.append(String.valueOf(index)).append(". Player name: ").append(player.getName())
           .append("\n");
-      output.append("Player current place: ").append(player.getCurrentPlace().getName())
+      String currentPlaceName = getPlaceByNumber(player.getPlayerCurrentPlaceNumber()).getName();
+//      String currentPlaceName = player.getCurrentPlaceNumber()
+      output.append("Player current place: ")
+          .append(getPlaceByNumber(player.getPlayerCurrentPlaceNumber()).getName())
           .append("\n");
       output.append("This player can carry up to ").append(String.valueOf(player.getCarryLimit()))
           .append(" items.\n");
@@ -197,7 +217,8 @@ public class TownModel implements Town {
         .orElse(null);
     if (player != null) {
       output.append("Player name: ").append(player.getName()).append("\n");
-      output.append("Player current place: ").append(player.getCurrentPlace().getName())
+      output.append("Player current place: ")
+          .append(getPlaceByNumber(player.getPlayerCurrentPlaceNumber()).getName())
           .append("\n");
       output.append("This player can carry up to ").append(String.valueOf(player.getCarryLimit()))
           .append(" items.\n");
@@ -218,21 +239,22 @@ public class TownModel implements Town {
   @Override
   public void lookAround() throws IOException {
     Player currentPlayer = this.players.get(currentPlayerIndex);
-    List<Place> neighbors = currentPlayer.getCurrentPlace().getNeighbors();
+    Place currentPlace = getPlaceByNumber(currentPlayer.getPlayerCurrentPlaceNumber());
+    List<Place> neighbors = currentPlace.getNeighbors();
     if (neighbors.isEmpty()) {
       output.append("No neighbors found.\n");
     } else {
-      output.append("Neighbors of ").append(currentPlayer.getCurrentPlace().getName())
+      output.append("Neighbors of ").append(currentPlace.getName())
           .append(":\n");
       for (Place neighbor : neighbors) {
         output.append(neighbor.getName()).append("\n");
       }
     }
-    List<Item> items = currentPlayer.getCurrentPlace().getItems();
+    List<Item> items = currentPlace.getItems();
     if (items.isEmpty()) {
       output.append("No items found.\n");
     } else {
-      output.append("Items in ").append(currentPlayer.getCurrentPlace().getName()).append(":\n");
+      output.append("Items in ").append(currentPlace.getName()).append(":\n");
       for (Item item : items) {
         output.append(item.getName()).append(" (Damage: ")
             .append(String.valueOf(item.getDamage()))
@@ -240,7 +262,8 @@ public class TownModel implements Town {
       }
     }
     for (Player p : players) {
-      if (p.getCurrentPlace().equals(currentPlayer.getCurrentPlace()) && !p.equals(currentPlayer)) {
+      Place pCurrentPlace = getPlaceByNumber(p.getPlayerCurrentPlaceNumber());
+      if (pCurrentPlace.equals(currentPlace) && !p.equals(currentPlayer)) {
         output.append(p.getName()).append(" is in this place.\n");
       }
     }
@@ -251,11 +274,12 @@ public class TownModel implements Town {
   @Override
   public void movePlayer() throws IOException {
     Player currentPlayer = this.players.get(currentPlayerIndex);
-    List<Place> neighbors = currentPlayer.getCurrentPlace().getNeighbors();
+    Place currentPlace = getPlaceByNumber(currentPlayer.getPlayerCurrentPlaceNumber());
+    List<Place> neighbors = currentPlace.getNeighbors();
     if (neighbors.isEmpty()) {
       output.append("No neighbors found.\n");
     } else {
-      output.append("Neighbors of ").append(currentPlayer.getCurrentPlace().getName())
+      output.append("Neighbors of ").append(currentPlace.getName())
           .append(":\n");
       for (int i = 0; i < neighbors.size(); i++) {
         output.append(String.valueOf(i + 1)).append(". ").append(neighbors.get(i).getName())
@@ -266,9 +290,9 @@ public class TownModel implements Town {
       if (neighborNumber < 1 || neighborNumber > neighbors.size()) {
         output.append("Invalid neighbor number.\n");
       } else {
-        Place newPlace = neighbors.get(neighborNumber - 1);
-        currentPlayer.moveTo(newPlace);
-        output.append("Moved to ").append(newPlace.getName()).append("\n");
+        int playerMoveNumber = getPlaceNumberByName(neighbors.get(neighborNumber - 1).getName());
+        currentPlayer.moveToPlaceNumber(playerMoveNumber);
+        output.append("Moved to ").append(neighbors.get(neighborNumber - 1).getName()).append("\n");
       }
     }
 
@@ -278,7 +302,8 @@ public class TownModel implements Town {
   @Override
   public void pickUpItem() throws IOException {
     Player currentPlayer = this.players.get(currentPlayerIndex);
-    List<Item> items = currentPlayer.getCurrentPlace().getItems();
+    Place currentPlace = getPlaceByNumber(currentPlayer.getPlayerCurrentPlaceNumber());
+    List<Item> items = currentPlace.getItems();
     if (items.isEmpty()) {
       output.append("No items found.\n");
       return;
@@ -286,10 +311,10 @@ public class TownModel implements Town {
       if (currentPlayer.isComputerControlled()) {
         Item item = items.get(new Random().nextInt(items.size()));
         currentPlayer.pickUpItem(item);
-        currentPlayer.getCurrentPlace().removeItem(item);
+        currentPlace.removeItem(item);
         output.append("Picked up ").append(item.getName()).append(".\n");
       } else {
-        output.append("Items in ").append(currentPlayer.getCurrentPlace().getName()).append(":\n");
+        output.append("Items in ").append(currentPlace.getName()).append(":\n");
         for (int i = 0; i < items.size(); i++) {
           int currentIndex = i + 1;
           output.append(String.valueOf(currentIndex)).append(". ").append(items.get(i).getName())
@@ -302,7 +327,7 @@ public class TownModel implements Town {
         } else {
           Item item = items.get(itemNumber - 1);
           currentPlayer.pickUpItem(item);
-          currentPlayer.getCurrentPlace().removeItem(item);
+          currentPlace.removeItem(item);
           output.append("Picked up ").append(item.getName()).append(".\n");
         }
       }

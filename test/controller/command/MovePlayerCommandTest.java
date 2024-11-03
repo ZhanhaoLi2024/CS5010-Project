@@ -29,7 +29,7 @@ public class MovePlayerCommandTest {
     output = new StringBuilder();
     neighbors = new ArrayList<>();
     currentPlace = new PlaceModel(0, 0, 1, 1, "CurrentPlace", String.valueOf(1));
-    player = new PlayerModel("TestPlayer", false, 3, currentPlace, System.out, scanner);
+    player = new PlayerModel("TestPlayer", false, 3, 1, System.out, scanner);
   }
 
   /**

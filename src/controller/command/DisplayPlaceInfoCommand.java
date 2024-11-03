@@ -3,8 +3,6 @@ package controller.command;
 import java.io.IOException;
 import java.util.List;
 import java.util.Scanner;
-import model.item.Item;
-import model.place.Place;
 import model.player.Player;
 import model.town.Town;
 
@@ -59,10 +57,10 @@ public class DisplayPlaceInfoCommand implements Command {
 
       switch (choice) {
         case 1:
-          showAllPlacesInfo();
+//          showAllPlacesInfo();
           break;
         case 2:
-          showSpecificPlaceInfo();
+//          showSpecificPlaceInfo();
           break;
         case 0:
           output.append("Exiting...\n");
@@ -79,85 +77,85 @@ public class DisplayPlaceInfoCommand implements Command {
    *
    * @throws IOException if there is an issue with I/O operations.
    */
-  private void showAllPlacesInfo() throws IOException {
-    List<Place> places = town.getPlaces();
-    if (places.isEmpty()) {
-      output.append("No places found.\n");
-      return;
-    }
-    output.append("All places info:\n");
-    int index = 1;
-    for (Place place : places) {
-      output.append("----------\n");
-      output.append("Place Number: " + place.getPlaceNumber() + ". Place name: ")
-          .append(place.getName()).append("\n");
-      output.append("----------\n");
-      output.append("Place items:\n");
-      for (Item item : place.getItems()) {
-        output.append("Item name: ").append(item.getName()).append("\n");
-        output.append("Item damage: ").append(String.valueOf(item.getDamage())).append("\n");
-      }
-      output.append("----------\n");
-      output.append("Place neighbors:\n");
-      for (Place neighbor : place.getNeighbors()) {
-        output.append("Neighbor name: ").append(neighbor.getName()).append("\n");
-      }
-      output.append("----------\n");
-      if (players.isEmpty()) {
-        output.append("No players in this place.\n");
-      } else {
-        for (Player player : players) {
-          if (player.getCurrentPlace().equals(place)) {
-            output.append(player.getName()).append(" is in this place.\n");
-          }
-        }
-      }
-      output.append("----------\n");
-      index++;
-    }
-  }
+//  private void showAllPlacesInfo() throws IOException {
+//    List<Place> places = town.getPlaces();
+//    if (places.isEmpty()) {
+//      output.append("No places found.\n");
+//      return;
+//    }
+//    output.append("All places info:\n");
+//    int index = 1;
+//    for (Place place : places) {
+//      output.append("----------\n");
+//      output.append("Place Number: " + place.getPlaceNumber() + ". Place name: ")
+//          .append(place.getName()).append("\n");
+//      output.append("----------\n");
+//      output.append("Place items:\n");
+//      for (Item item : place.getItems()) {
+//        output.append("Item name: ").append(item.getName()).append("\n");
+//        output.append("Item damage: ").append(String.valueOf(item.getDamage())).append("\n");
+//      }
+//      output.append("----------\n");
+//      output.append("Place neighbors:\n");
+//      for (Place neighbor : place.getNeighbors()) {
+//        output.append("Neighbor name: ").append(neighbor.getName()).append("\n");
+//      }
+//      output.append("----------\n");
+//      if (players.isEmpty()) {
+//        output.append("No players in this place.\n");
+//      } else {
+//        for (Player player : players) {
+//          if (player.getCurrentPlace().equals(place)) {
+//            output.append(player.getName()).append(" is in this place.\n");
+//          }
+//        }
+//      }
+//      output.append("----------\n");
+//      index++;
+//    }
+//  }
 
   /**
    * Shows information about a specific place.
    *
    * @throws IOException if there is an issue with I/O operations.
    */
-  private void showSpecificPlaceInfo() throws IOException {
-    output.append("Enter the place name:\n");
-    String placeName = scanner.nextLine();
-    Place place = town.getPlaces().stream()
-        .filter(p -> p.getName().equals(placeName))
-        .findFirst()
-        .orElse(null);
-
-    if (place != null) {
-      output.append("----------\n");
-      output.append("Place name: ").append(place.getName()).append("\n");
-      output.append("----------\n");
-      output.append("Place items:\n");
-      output.append("----------\n");
-      for (Item item : place.getItems()) {
-        output.append("Item name: ").append(item.getName()).append("\n");
-        output.append("Item damage: ").append(String.valueOf(item.getDamage())).append("\n");
-      }
-      output.append("----------\n");
-      output.append("Place neighbors:\n");
-      for (Place neighbor : place.getNeighbors()) {
-        output.append("Neighbor name: ").append(neighbor.getName()).append("\n");
-      }
-      output.append("----------\n");
-      if (players.isEmpty()) {
-        output.append("No players in this place.\n");
-      } else {
-        for (Player player : players) {
-          if (player.getCurrentPlace().equals(place)) {
-            output.append(player.getName()).append(" is in this place.\n");
-          }
-        }
-      }
-      output.append("----------\n");
-    } else {
-      output.append("Place not found.\n");
-    }
-  }
+//  private void showSpecificPlaceInfo() throws IOException {
+//    output.append("Enter the place name:\n");
+//    String placeName = scanner.nextLine();
+//    Place place = town.getPlaces().stream()
+//        .filter(p -> p.getName().equals(placeName))
+//        .findFirst()
+//        .orElse(null);
+//
+//    if (place != null) {
+//      output.append("----------\n");
+//      output.append("Place name: ").append(place.getName()).append("\n");
+//      output.append("----------\n");
+//      output.append("Place items:\n");
+//      output.append("----------\n");
+//      for (Item item : place.getItems()) {
+//        output.append("Item name: ").append(item.getName()).append("\n");
+//        output.append("Item damage: ").append(String.valueOf(item.getDamage())).append("\n");
+//      }
+//      output.append("----------\n");
+//      output.append("Place neighbors:\n");
+//      for (Place neighbor : place.getNeighbors()) {
+//        output.append("Neighbor name: ").append(neighbor.getName()).append("\n");
+//      }
+//      output.append("----------\n");
+//      if (players.isEmpty()) {
+//        output.append("No players in this place.\n");
+//      } else {
+//        for (Player player : players) {
+//          if (player.getCurrentPlace().equals(place)) {
+//            output.append(player.getName()).append(" is in this place.\n");
+//          }
+//        }
+//      }
+//      output.append("----------\n");
+//    } else {
+//      output.append("Place not found.\n");
+//    }
+//  }
 }

@@ -27,7 +27,7 @@ public class PickUpItemCommandTest {
     place = new PlaceModel(0, 0, 1, 1, "TestPlace", String.valueOf(1));
     output = new StringBuilder();
 
-    player = new PlayerModel("Player1", false, 3, place, System.out, scanner);
+    player = new PlayerModel("Player1", false, 3, 1, System.out, scanner);
 
     Item sword = new ItemModel("Sword", 10);
     Item shield = new ItemModel("Shield", 5);

@@ -66,7 +66,8 @@ public class AddPlayerCommandTest {
 
     assertEquals(1, players.size());
     assertEquals("Player1", players.get(0).getName());
-    assertEquals("TestPlace", players.get(0).getCurrentPlace().getName());
+    Place currentPlace = town.getPlaceByNumber(players.get(0).getPlayerCurrentPlaceNumber());
+    assertEquals("TestPlace", currentPlace.getName());
 
     assertTrue(output.toString().contains("Player added."));
     assertTrue(output.toString().contains("Enter the player's name:"));

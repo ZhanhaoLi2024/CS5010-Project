@@ -36,7 +36,7 @@ public class LookAroundCommandTest {
     this.players = new ArrayList<>();
     output = new StringBuilder();
     place = new PlaceModel(0, 0, 1, 1, "TestPlace", String.valueOf(1));
-    player = new PlayerModel("TestPlayer", false, 3, place, System.out, scanner);
+    player = new PlayerModel("TestPlayer", false, 3, 1, System.out, scanner);
     players.add(player);
   }
 
@@ -130,7 +130,7 @@ public class LookAroundCommandTest {
    */
   @Test(expected = IllegalArgumentException.class)
   public void testExecuteWithNullPlace() throws IOException {
-    Player nullPlacePlayer = new PlayerModel("TestPlayer", false, 3, null, System.out, scanner);
+    Player nullPlacePlayer = new PlayerModel("TestPlayer", false, 3, 0, System.out, scanner);
     players.add(nullPlacePlayer);
     LookAroundCommand command = new LookAroundCommand(output, town);
     command.execute();
@@ -142,7 +142,8 @@ public class LookAroundCommandTest {
   @Test
   public void testCurrentPlaceIsNotItem() throws IOException {
     LookAroundCommand command = new LookAroundCommand(output, town);
-    assertEquals("TestPlace", player.getCurrentPlace().getName());
+    Place currentPlace = town.getPlaceByNumber(player.getPlayerCurrentPlaceNumber());
+    assertEquals("TestPlace", currentPlace.getName());
 
     Item item = new ItemModel("Sword", 10);
     place.addItem(item);
@@ -154,10 +155,11 @@ public class LookAroundCommandTest {
    */
   @Test
   public void testCurrentPlaceHaveAnotherPlayer() throws IOException {
-    Player player2 = new PlayerModel("TestPlayer2", false, 3, place, System.out, scanner);
+    Player player2 = new PlayerModel("TestPlayer2", false, 3, 1, System.out, scanner);
     players.add(player2);
     LookAroundCommand command = new LookAroundCommand(output, town);
-    assertEquals("TestPlace", player.getCurrentPlace().getName());
+    Place currentPlace = town.getPlaceByNumber(player.getPlayerCurrentPlaceNumber());
+    assertEquals("TestPlace", currentPlace.getName());
     command.execute();
     String expectedOutput =
         "No neighbors found.\nNo items found.\nTestPlayer2 is in this place.\n";

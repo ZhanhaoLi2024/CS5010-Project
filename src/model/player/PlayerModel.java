@@ -1,12 +1,11 @@
 package model.player;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Scanner;
 import model.item.Item;
-import model.place.Place;
+
 
 /**
  * PlayerModel implements the Player interface and represents a player in the game.
@@ -18,7 +17,7 @@ public class PlayerModel implements Player {
   private final int carryLimit;
   private final List<Item> items;
   private final Scanner scanner;
-  private Place currentPlace;
+  private int currentPlaceNumber;
   private Appendable output;
 
   /**
@@ -28,24 +27,24 @@ public class PlayerModel implements Player {
    * @param name                 the name of the player.
    * @param isComputerControlled whether the player is controlled by a computer.
    * @param carryLimit           the maximum number of items the player can carry.
-   * @param currentPlace         the starting Place of the player.
+   * @param currentPlaceNumber   the starting Place of the player.
    */
   public PlayerModel(String name, boolean isComputerControlled, int carryLimit,
-                     Place currentPlace, Appendable output, Scanner scanner) {
+                     int currentPlaceNumber, Appendable output, Scanner scanner) {
     if (name == null || name.trim().isEmpty()) {
       throw new IllegalArgumentException("Player name cannot be null or empty.");
     }
     if (carryLimit <= 0) {
       throw new IllegalArgumentException("Carry limit must be positive.");
     }
-    if (currentPlace == null) {
+    if (currentPlaceNumber == 0) {
       throw new IllegalArgumentException("Initial place cannot be null.");
     }
 
     this.name = name;
     this.isComputerControlled = isComputerControlled;
     this.carryLimit = carryLimit;
-    this.currentPlace = currentPlace;
+    this.currentPlaceNumber = currentPlaceNumber;
     this.items = new ArrayList<>();
     this.output = output;
     this.scanner = scanner;
@@ -62,54 +61,21 @@ public class PlayerModel implements Player {
   }
 
   @Override
-  public Place getCurrentPlace() {
-    return this.currentPlace;
+  public int getPlayerCurrentPlaceNumber() {
+    return this.currentPlaceNumber;
   }
 
   @Override
-  public void moveTo(Place newPlace) {
-    if (newPlace == null || !currentPlace.getNeighbors().contains(newPlace)) {
-      throw new IllegalArgumentException("Invalid move. The place is not a neighbor.");
-    }
-    this.currentPlace = newPlace;
-  }
-
-  @Override
-  public void moveToNextPlace() throws IOException {
-    List<Place> neighbors = currentPlace.getNeighbors();
-    if (neighbors.isEmpty()) {
-      throw new IllegalStateException("No neighbors found.");
+  public void moveToPlaceNumber(int newPlaceNumber) {
+    if (newPlaceNumber > 0) {
+      this.currentPlaceNumber = newPlaceNumber;
     } else {
-      if (isComputerControlled) {
-        int randomNeighborIndex = (int) (Math.random() * neighbors.size());
-        this.moveTo(neighbors.get(randomNeighborIndex));
-      } else {
-        output.append("Neighbors of ").append(currentPlace.getName()).append(":\n");
-        for (int i = 0; i < neighbors.size(); i++) {
-          int currentIndex = i + 1;
-          output.append(String.valueOf(currentIndex)).append(". ")
-              .append(neighbors.get(i).getName())
-              .append("\n");
-        }
-        output.append("Enter the neighbor number to move to:\n");
-        String userInput = scanner.nextLine();
-        try {
-          int neighborNumber = Integer.parseInt(userInput);
-          if (neighborNumber < 1 || neighborNumber > neighbors.size()) {
-            output.append("Invalid neighbor number.\n");
-          } else {
-            this.moveTo(neighbors.get(neighborNumber - 1));
-          }
-        } catch (NumberFormatException e) {
-          output.append("Invalid input. Please enter a number.\n");
-        }
-      }
+      throw new IllegalArgumentException("Invalid move. The place is not a neighbor.");
     }
   }
 
   @Override
   public void pickUpItem(Item item) {
-//    List<Item> items = currentPlace.getItems()
     if (items.size() >= carryLimit) {
       throw new IllegalStateException("Cannot pick up more items, inventory is full.");
     }
@@ -124,45 +90,6 @@ public class PlayerModel implements Player {
   @Override
   public int getCarryLimit() {
     return this.carryLimit;
-  }
-
-  @Override
-  public String getDescription() {
-    return String.format("Player: %s\nLocation: %s\nInventory: %s\n",
-        name,
-        currentPlace.getName(),
-        items.isEmpty() ? "None" : items);
-  }
-
-  @Override
-  public void getPlayerCurrentPlaceInfo() throws IOException {
-    List<Place> neighbors = currentPlace.getNeighbors();
-    if (neighbors.isEmpty()) {
-      output.append("No neighbors found.\n");
-    } else {
-      output.append("Neighbors of ").append(currentPlace.getName()).append(":\n");
-      for (Place neighbor : neighbors) {
-        output.append(neighbor.getName()).append("\n");
-      }
-    }
-    List<Item> items = currentPlace.getItems();
-    if (items.isEmpty()) {
-      output.append("No items found.\n");
-    } else {
-      output.append("Items in ").append(currentPlace.getName()).append(":\n");
-      for (Item item : items) {
-        output.append(item.getName()).append(" (Damage: ")
-            .append(String.valueOf(item.getDamage()))
-            .append(")\n");
-      }
-    }
-    if (currentPlace.getCurrentPlacePlayers().size() > 1) {
-      for (Player player : currentPlace.getCurrentPlacePlayers()) {
-        if (!player.equals(this)) {
-          output.append(player.getName()).append(" is in this place.\n");
-        }
-      }
-    }
   }
 
   @Override

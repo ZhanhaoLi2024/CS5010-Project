@@ -22,6 +22,22 @@ public interface Town {
   void getPlaceInfo(Place place);
 
   /**
+   * Retrieves the place number by name.
+   *
+   * @param placeName the name of the place
+   * @return the place number
+   */
+  int getPlaceNumberByName(String placeName) throws IOException;
+
+  /**
+   * Retrieves the place by number.
+   *
+   * @param placeNumber the number of the place
+   * @return the place
+   */
+  Place getPlaceByNumber(int placeNumber);
+
+  /**
    * Moves the character to the next place.
    */
   void moveCharacter();
