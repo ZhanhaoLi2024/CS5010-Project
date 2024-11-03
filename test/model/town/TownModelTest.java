@@ -13,6 +13,8 @@ import java.util.Scanner;
 import model.item.Item;
 import model.place.Place;
 import model.place.PlaceModel;
+import model.player.Player;
+import model.player.PlayerModel;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -197,10 +199,70 @@ public class TownModelTest {
     AddPlayerTown.addPlayer();
 
     String outputContent = output.toString();
+    System.out.println("Actual Output: \n" + outputContent);
     assertTrue(outputContent.contains("Enter the player's name:"));
     assertTrue(outputContent.contains("Player name: Alice"));
     assertTrue(outputContent.contains("Current place: Police Station"));
     assertTrue(outputContent.contains("You can carry up to 5 items"));
     assertTrue(outputContent.contains("Player added."));
+  }
+
+  @Test
+  public void testLookAroundNoPetNoPlayer() throws IOException {
+    StringBuilder output = new StringBuilder();
+    String simulatedInput = "Alice\n1\n5\n";
+    StringReader input = new StringReader(simulatedInput);
+    TownLoaderInterface loader = new TownLoader();
+    String worldFile = "res/SmallTownWorld.txt";
+    TownModel town = new TownModel(loader, worldFile, input, output, 10);
+    Player player1 = new PlayerModel("Alice", false, 10, 3, System.out, scanner);
+    town.getPlayers().add(player1);
+//    town.switchToNextPlayer();
+    town.lookAround();
+    
+    String outputContent = output.toString();
+//    System.out.println("Actual Output: \n" + outputContent);
+    assertTrue(outputContent.contains("Current place: School"));
+    assertTrue(outputContent.contains("Items in School:"));
+    assertTrue(outputContent.contains("Textbook (Damage: 6)"));
+    assertTrue(outputContent.contains("Neighbors of School:"));
+    assertTrue(outputContent.contains(" - Grocery Store"));
+    assertTrue(outputContent.contains("   Items in Grocery Store:Shopping Cart (Damage: 12)"));
+    assertTrue(outputContent.contains(" - Post Office"));
+    assertTrue(outputContent.contains("   Items in Post Office:Envelope (Damage: 8)"));
+    assertTrue(outputContent.contains(" - Hospital"));
+    assertTrue(outputContent.contains("   Items in Hospital:Medical Kit (Damage: 18)"));
+    assertTrue(outputContent.contains(" - Restaurant"));
+    assertTrue(outputContent.contains("   Items in Restaurant:Menu (Damage: 22)"));
+  }
+
+  @Test
+  public void testLookAroundNoPet() throws IOException {
+    StringBuilder output = new StringBuilder();
+    String simulatedInput = "Alice\n1\n5\n";
+    StringReader input = new StringReader(simulatedInput);
+    TownLoaderInterface loader = new TownLoader();
+    String worldFile = "res/SmallTownWorld.txt";
+    TownModel town = new TownModel(loader, worldFile, input, output, 10);
+    Player player1 = new PlayerModel("Alice", false, 10, 3, System.out, scanner);
+    Player player2 = new PlayerModel("Bob", false, 10, 8, System.out, scanner);
+    town.getPlayers().add(player1);
+    town.getPlayers().add(player2);
+    town.lookAround();
+
+    String outputContent = output.toString();
+    assertTrue(outputContent.contains("Current place: School"));
+    assertTrue(outputContent.contains("Items in School:"));
+    assertTrue(outputContent.contains("Textbook (Damage: 6)"));
+    assertTrue(outputContent.contains("Neighbors of School:"));
+    assertTrue(outputContent.contains(" - Grocery Store"));
+    assertTrue(outputContent.contains("   Items in Grocery Store:Shopping Cart (Damage: 12)"));
+    assertTrue(outputContent.contains(" - Post Office"));
+    assertTrue(outputContent.contains("   Items in Post Office:Envelope (Damage: 8)"));
+    assertTrue(outputContent.contains(" - Hospital"));
+    assertTrue(outputContent.contains("   Items in Hospital:Medical Kit (Damage: 18)"));
+    assertTrue(outputContent.contains("   Players in this place:Bob"));
+    assertTrue(outputContent.contains(" - Restaurant"));
+    assertTrue(outputContent.contains("   Items in Restaurant:Menu (Damage: 22)"));
   }
 }

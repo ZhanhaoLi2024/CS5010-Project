@@ -20,7 +20,7 @@ public class PetModel implements Pet {
       throw new IllegalArgumentException("Error in PetModel: Pet name cannot be empty/null\n!");
     }
     this.petName = petName;
-    this.currentPlaceNumber = 0; // set initial place number as 0
+    this.currentPlaceNumber = 1; // set initial place number as 0
   }
 
   /**

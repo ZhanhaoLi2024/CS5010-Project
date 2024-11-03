@@ -268,7 +268,6 @@ public class TownModel implements Town {
       output.append(String.valueOf(index)).append(". Player name: ").append(player.getName())
           .append("\n");
       String currentPlaceName = getPlaceByNumber(player.getPlayerCurrentPlaceNumber()).getName();
-//      String currentPlaceName = player.getCurrentPlaceNumber()
       output.append("Player current place: ")
           .append(getPlaceByNumber(player.getPlayerCurrentPlaceNumber()).getName())
           .append("\n");
@@ -361,36 +360,48 @@ public class TownModel implements Town {
       output.append("Neighbors of ").append(currentPlace.getName())
           .append(":\n");
       for (Place neighbor : neighbors) {
-        output.append(" - ").append(neighbor.getName()).append("\n");
-        List<Item> neighborItems = neighbor.getItems();
-        if (neighborItems.isEmpty()) {
-          output.append("   No items found.\n");
+        int petCurrentPlaceNumber = pet.getPetCurrentPlaceNumber();
+        int neighborCurrentPlaceNumber = getPlaceNumberByName(neighbor.getName());
+        if (petCurrentPlaceNumber == neighborCurrentPlaceNumber) {
+          output.append(" - ").append(neighbor.getName()).append(" (Pet is here)\n");
         } else {
-          output.append("   Items in ").append(neighbor.getName()).append(":");
-          for (Item item : neighborItems) {
-            output.append(item.getName()).append(" (Damage: ")
-                .append(String.valueOf(item.getDamage()))
-                .append(")\n");
+          // Place's name
+          output.append(" - ").append(neighbor.getName()).append("\n");
+          // Place's items
+          List<Item> neighborItems = neighbor.getItems();
+          if (neighborItems.isEmpty()) {
+            output.append("   No items found.\n");
+          } else {
+            output.append("   Items in ").append(neighbor.getName()).append(":");
+            for (Item item : neighborItems) {
+              output.append(item.getName()).append(" (Damage: ")
+                  .append(String.valueOf(item.getDamage()))
+                  .append(")\n");
+            }
+          }
+          // Place's players
+          List<Player> neighborPlayers = new ArrayList<>();
+          for (Player p : players) {
+            Place pCurrentPlace = getPlaceByNumber(p.getPlayerCurrentPlaceNumber());
+            if (pCurrentPlace.equals(neighbor)) {
+              neighborPlayers.add(p);
+            }
+          }
+          if (!neighborPlayers.isEmpty()) {
+            output.append("   Players in this place:");
+            if (neighborPlayers.size() == 1) {
+              output.append(neighborPlayers.get(0).getName()).append("\n");
+            } else {
+              for (Player player : neighborPlayers) {
+                output.append(player.getName()).append(", ");
+              }
+              output.append("\n");
+            }
           }
         }
-        List<Player> neighborPlayers = new ArrayList<>();
-        for (Player p : players) {
-          Place pCurrentPlace = getPlaceByNumber(p.getPlayerCurrentPlaceNumber());
-          if (pCurrentPlace.equals(neighbor)) {
-            neighborPlayers.add(p);
-          }
-        }
-        if (!neighborPlayers.isEmpty()) {
-          output.append("   Players in this place:");
-          for (Player player : neighborPlayers) {
-            output.append(player.getName()).append(", ");
-          }
-        }
-        output.append("\n");
       }
+      output.append("\n");
     }
-
-
     this.switchToNextPlayer(); // Next player turn
   }
 
