@@ -1,17 +1,12 @@
 package model.town;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
 import model.item.Item;
-import model.item.ItemModel;
 import model.place.Place;
-import model.place.PlaceModel;
 import model.player.Player;
 import model.player.PlayerModel;
 import model.target.Target;
@@ -84,52 +79,6 @@ public class TownModel implements Town {
     } else {
       output.append("Player not found.\n");
     }
-  }
-
-  @Override
-  public void loadTown(String filename) throws IOException {
-    BufferedReader br = new BufferedReader(new FileReader(filename));
-
-    String[] townInfo = br.readLine().split(" ");
-    int numRows = Integer.parseInt(townInfo[0]);
-    int numCols = Integer.parseInt(townInfo[1]);
-    townName = String.join(" ", Arrays.copyOfRange(townInfo, 2, townInfo.length));
-
-    String[] targetInfo = br.readLine().split(" ");
-    targetHealth = Integer.parseInt(targetInfo[0]);
-    targetName = String.join(" ", Arrays.copyOfRange(targetInfo, 1, targetInfo.length));
-
-    int numPlaces = Integer.parseInt(br.readLine());
-    for (int i = 0; i < numPlaces; i++) {
-      String[] placeInfo = br.readLine().split(" ");
-      int row1 = Integer.parseInt(placeInfo[0]);
-      int col1 = Integer.parseInt(placeInfo[1]);
-      int row2 = Integer.parseInt(placeInfo[2]);
-      int col2 = Integer.parseInt(placeInfo[3]);
-      String placeName = String.join(" ", Arrays.copyOfRange(placeInfo, 4, placeInfo.length));
-      Place place = new PlaceModel(row1, col1, row2, col2, placeName, String.valueOf(i + 1));
-      places.add(place);
-    }
-
-    for (Place place : places) {
-      for (Place otherPlace : places) {
-        if (!place.equals(otherPlace) && place.isNeighbor(otherPlace)) {
-          place.addNeighbor(otherPlace);
-        }
-      }
-    }
-
-    int numItems = Integer.parseInt(br.readLine());
-    for (int i = 0; i < numItems; i++) {
-      String[] itemInfo = br.readLine().split(" ");
-      int placeIndex = Integer.parseInt(itemInfo[0]);
-      int damage = Integer.parseInt(itemInfo[1]);
-      String itemName = String.join(" ", Arrays.copyOfRange(itemInfo, 2, itemInfo.length));
-      Item item = new ItemModel(itemName, damage);
-      places.get(placeIndex).addItem(item);
-    }
-
-    br.close();
   }
 
   @Override
@@ -251,5 +200,39 @@ public class TownModel implements Town {
       output.append("--------------------\n");
       index++;
     }
+  }
+
+  @Override
+  public void lookAround(Player player) throws IOException {
+    List<Place> neighbors = player.getCurrentPlace().getNeighbors();
+    if (neighbors.isEmpty()) {
+      output.append("No neighbors found.\n");
+    } else {
+      output.append("Neighbors of ").append(player.getCurrentPlace().getName()).append(":\n");
+      for (Place neighbor : neighbors) {
+        output.append(neighbor.getName()).append("\n");
+      }
+    }
+    List<Item> items = player.getCurrentPlace().getItems();
+    if (items.isEmpty()) {
+      output.append("No items found.\n");
+    } else {
+      output.append("Items in ").append(player.getCurrentPlace().getName()).append(":\n");
+      for (Item item : items) {
+        output.append(item.getName()).append(" (Damage: ")
+            .append(String.valueOf(item.getDamage()))
+            .append(")\n");
+      }
+    }
+    for (Player p : players) {
+      if (p.getCurrentPlace().equals(player.getCurrentPlace()) && !p.equals(player)) {
+        output.append(p.getName()).append(" is in this place.\n");
+      }
+    }
+  }
+
+  @Override
+  public void switchToNextPlayer() {
+    currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
   }
 }

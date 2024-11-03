@@ -66,10 +66,6 @@ public class DisplayPlaceInfoCommandTest {
       }
 
       @Override
-      public void loadTown(String filename) throws IOException {
-      }
-
-      @Override
       public void getPlaceInfo(Place place) {
       }
 
@@ -123,6 +119,14 @@ public class DisplayPlaceInfoCommandTest {
       @Override
       public void showSpecificPlayerInfo(String playerName) {
       }
+
+      @Override
+      public void lookAround(Player player) {
+      }
+
+      @Override
+      public void switchToNextPlayer() {
+      }
     };
   }
 
@@ -134,7 +138,7 @@ public class DisplayPlaceInfoCommandTest {
     String input = "1\n0\n";
     scanner = new Scanner(input);
 
-    DisplayPlaceInfoCommand command = new DisplayPlaceInfoCommand(town, players, output, scanner);
+    DisplayPlaceInfoCommand command = new DisplayPlaceInfoCommand(town, output, scanner);
     command.execute();
 
     assertTrue(output.toString().contains("All places info:"));
@@ -154,7 +158,7 @@ public class DisplayPlaceInfoCommandTest {
     String input = "2\nPlace1\n0\n";
     scanner = new Scanner(input);
 
-    DisplayPlaceInfoCommand command = new DisplayPlaceInfoCommand(town, players, output, scanner);
+    DisplayPlaceInfoCommand command = new DisplayPlaceInfoCommand(town, output, scanner);
     command.execute();
 
     assertTrue(output.toString().contains("Place name: Place1"));
@@ -172,7 +176,7 @@ public class DisplayPlaceInfoCommandTest {
     String input = "2\nUnknownPlace\n0\n";
     scanner = new Scanner(input);
 
-    DisplayPlaceInfoCommand command = new DisplayPlaceInfoCommand(town, players, output, scanner);
+    DisplayPlaceInfoCommand command = new DisplayPlaceInfoCommand(town, output, scanner);
     command.execute();
 
     assertTrue(output.toString().contains("Place not found."));
@@ -190,7 +194,7 @@ public class DisplayPlaceInfoCommandTest {
     String input = "1\n0\n";
     scanner = new Scanner(input);
 
-    DisplayPlaceInfoCommand command = new DisplayPlaceInfoCommand(town, players, output, scanner);
+    DisplayPlaceInfoCommand command = new DisplayPlaceInfoCommand(town, output, scanner);
     command.execute();
 
     assertTrue(output.toString().contains("No places found."));

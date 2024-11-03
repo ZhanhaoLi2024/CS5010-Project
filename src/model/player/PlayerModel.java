@@ -28,24 +28,24 @@ public class PlayerModel implements Player {
    * @param name                 the name of the player.
    * @param isComputerControlled whether the player is controlled by a computer.
    * @param carryLimit           the maximum number of items the player can carry.
-   * @param initialPlace         the starting Place of the player.
+   * @param currentPlace         the starting Place of the player.
    */
   public PlayerModel(String name, boolean isComputerControlled, int carryLimit,
-                     Place initialPlace, Appendable output, Scanner scanner) {
+                     Place currentPlace, Appendable output, Scanner scanner) {
     if (name == null || name.trim().isEmpty()) {
       throw new IllegalArgumentException("Player name cannot be null or empty.");
     }
     if (carryLimit <= 0) {
       throw new IllegalArgumentException("Carry limit must be positive.");
     }
-    if (initialPlace == null) {
+    if (currentPlace == null) {
       throw new IllegalArgumentException("Initial place cannot be null.");
     }
 
     this.name = name;
     this.isComputerControlled = isComputerControlled;
     this.carryLimit = carryLimit;
-    this.currentPlace = initialPlace;
+    this.currentPlace = currentPlace;
     this.items = new ArrayList<>();
     this.output = output;
     this.scanner = scanner;

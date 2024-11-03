@@ -15,16 +15,6 @@ import model.target.Target;
 public interface Town {
 
   /**
-   * Loads the town from the specified file. The town file contains information
-   * about the town, target character, places, items, and connections between
-   * places.
-   *
-   * @param filename the name of the file to load the town from
-   * @throws IOException if an I/O error occurs
-   */
-  void loadTown(String filename) throws IOException;
-
-  /**
    * Displays the information of the specified place.
    *
    * @param place the place to display the information of
@@ -127,4 +117,16 @@ public interface Town {
    * @throws IOException if there is an issue with I/O operations.
    */
   void showSpecificPlayerInfo(String playerName) throws IOException;
+
+  /**
+   * Allows the player to look around the current place.
+   *
+   * @throws IOException if there is an issue with I/O operations.
+   */
+  void lookAround(Player player) throws IOException;
+
+  /**
+   * Switches to the next player in the game.
+   */
+  void switchToNextPlayer();
 }

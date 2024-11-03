@@ -1,16 +1,13 @@
 package controller.command;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Scanner;
-import model.player.Player;
 import model.town.Town;
 
 /**
  * Command to add a human player or computer player to the game.
  */
 public class AddPlayerCommand implements Command {
-  private final List<Player> players;
   private final Appendable output;
   private final Town town;
   private final Scanner scanner;
@@ -19,14 +16,12 @@ public class AddPlayerCommand implements Command {
   /**
    * Constructs a new AddHumanPlayerCommand.
    *
-   * @param players the list of players in the game
    * @param output  the output stream to write messages to
    * @param town    the town where the players are located
    * @param scanner the scanner to get user input
    */
-  public AddPlayerCommand(List<Player> players, Appendable output, Town town,
+  public AddPlayerCommand(Appendable output, Town town,
                           Scanner scanner, boolean isComputerPlayer) {
-    this.players = players;
     this.output = output;
     this.town = town;
     this.scanner = scanner;

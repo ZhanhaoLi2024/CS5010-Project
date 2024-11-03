@@ -24,7 +24,7 @@ public class DisplayPlaceInfoCommand implements Command {
    * @param output  the output stream to write messages to
    * @param scanner the scanner to get user input
    */
-  public DisplayPlaceInfoCommand(Town town, List<Player> players, Appendable output,
+  public DisplayPlaceInfoCommand(Town town, Appendable output,
                                  Scanner scanner) {
     this.town = town;
     this.output = output;

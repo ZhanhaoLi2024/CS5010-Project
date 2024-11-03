@@ -2,8 +2,6 @@ package controller.command;
 
 import java.io.IOException;
 import java.util.Scanner;
-import model.item.Item;
-import model.player.Player;
 import model.town.Town;
 
 /**
@@ -73,69 +71,5 @@ public class DisplayPlayerInfoCommand implements Command {
     output.append("Enter the player's name:\n");
     String playerName = scanner.nextLine();
     town.showSpecificPlayerInfo(playerName);
-  }
-
-  /**
-   * Shows information about all players.
-   *
-   * @throws IOException if there is an issue with I/O operations.
-   */
-  private void showAllPlayersInfo() throws IOException {
-//    if (players.isEmpty()) {
-//      output.append("No players found.\n");
-//      return;
-//    }
-//    output.append("All players info:\n");
-//    int index = 1;
-//    for (Player player : players) {
-//      output.append(index + ". Player name: ").append(player.getName()).append("\n");
-//      output.append("Player current place: ").append(player.getCurrentPlace().getName())
-//          .append("\n");
-//      output.append("--------------------\n");
-//      index++;
-//    }
-    System.out.println("不能用了");
-  }
-
-  /**
-   * Shows information about a specific player.
-   *
-   * @throws IOException if there is an issue with I/O operations.
-   */
-  private void entryPlayerName() throws IOException {
-//    output.append("Enter the player's name:\n");
-//    String playerName = scanner.nextLine();
-//    Player player = players.stream()
-//        .filter(p -> p.getName().equals(playerName))
-//        .findFirst()
-//        .orElse(null);
-//    showSpecificPlayerInfo(player);
-    System.out.println("不能用了");
-  }
-
-  /**
-   * Shows information about a specific player.
-   *
-   * @param player the player to show information about
-   * @throws IOException if there is an issue with I/O operations.
-   */
-  public void showSpecificPlayerInfo(Player player) throws IOException {
-    if (player != null) {
-      output.append("Player name: ").append(player.getName()).append("\n");
-      output.append("Player current place: ").append(player.getCurrentPlace().getName())
-          .append("\n");
-      if (player.getCurrentCarriedItems().isEmpty()) {
-        output.append("Player is not carrying any items.\n");
-      } else {
-        output.append("Player is carrying the following items:\n");
-        for (Item item : player.getCurrentCarriedItems()) {
-          output.append(item.getName()).append(" (Damage: ")
-              .append(String.valueOf(item.getDamage()))
-              .append(")\n");
-        }
-      }
-    } else {
-      output.append("Player not found.\n");
-    }
   }
 }

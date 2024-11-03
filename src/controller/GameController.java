@@ -67,7 +67,7 @@ public class GameController implements Controller {
     this.output.append("Welcome to the game! You have ").append(String.valueOf(maxTurns))
         .append(" turns.\n");
     // Add Computer-controlled player
-    new AddPlayerCommand(players, output, town, scanner, true).execute();
+    new AddPlayerCommand(output, town, scanner, true).execute();
     while (!quitGame) {
       this.displayMainMenu();
     }
@@ -93,13 +93,13 @@ public class GameController implements Controller {
         displayMapInfo();
         break;
       case 2:
-        new AddPlayerCommand(players, output, town, scanner, false).execute();
+        new AddPlayerCommand(output, town, scanner, false).execute();
         break;
       case 3:
         new DisplayPlayerInfoCommand(town, output, scanner).execute();
         break;
       case 4:
-        new DisplayPlaceInfoCommand(town, players, output, scanner).execute();
+        new DisplayPlaceInfoCommand(town, output, scanner).execute();
         break;
       case 5:
         takeTurn();
@@ -119,6 +119,7 @@ public class GameController implements Controller {
 
   @Override
   public void takeTurn() throws IOException {
+    this.players = town.getPlayers();
     if (players.size() == 1) {
       output.append("You have to add more than one player\n");
       continueGame = false;
@@ -153,12 +154,13 @@ public class GameController implements Controller {
             new PickUpItemCommand(player, output, scanner).execute();
             break;
           case 3:
-            new LookAroundCommand(player, output, players).execute();
+            new LookAroundCommand(player, output, town).execute();
             break;
           default:
             this.output.append("Invalid choice, please try again.\n");
         }
       }
+      town.switchToNextPlayer(); // Switch to the next player
       currentTurn++;
       if (currentTurn > maxTurns) {
         endGame();
