@@ -125,6 +125,21 @@ public interface Town {
    *
    * @throws IOException if there is an issue with I/O operations.
    */
+  void showAllPlacesInfo() throws IOException;
+
+  /**
+   * Shows information about a specific place.
+   *
+   * @param placeName the name of the place
+   * @throws IOException if there is an issue with I/O operations.
+   */
+  void getPlaceByName(String placeName) throws IOException;
+
+  /**
+   * Shows information about all places.
+   *
+   * @throws IOException if there is an issue with I/O operations.
+   */
   void showAllPlayersInfo() throws IOException;
 
   /**

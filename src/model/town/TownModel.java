@@ -176,6 +176,76 @@ public class TownModel implements Town {
   }
 
   @Override
+  public void showAllPlacesInfo() throws IOException {
+    if (places.isEmpty()) {
+      output.append("No places found.\n");
+      return;
+    }
+    output.append("All places info:\n");
+    int index = 1;
+    for (Place place : places) {
+      output.append("----------\n");
+      output.append("Place Number: ").append(String.valueOf(index)).append(". Place name: ")
+          .append(place.getName()).append("\n");
+      output.append("----------\n");
+      output.append("Place items:\n");
+      for (Item item : place.getItems()) {
+        output.append("Item name: ").append(item.getName()).append("\n");
+        output.append("Item damage: ").append(String.valueOf(item.getDamage())).append("\n");
+      }
+      output.append("----------\n");
+      output.append("Place neighbors:\n");
+      for (Place neighbor : place.getNeighbors()) {
+        output.append("Neighbor name: ").append(neighbor.getName()).append("\n");
+      }
+      output.append("----------\n");
+      if (players.isEmpty()) {
+        output.append("No players in this place.\n");
+      } else {
+        for (Player player : players) {
+          Place currentPlace = getPlaceByNumber(player.getPlayerCurrentPlaceNumber());
+          if (currentPlace.equals(place)) {
+            output.append(player.getName()).append(" is in this place.\n");
+          }
+        }
+      }
+      index++;
+    }
+  }
+
+  @Override
+  public void getPlaceByName(String PlaceName) throws IOException {
+    Place place = getPlaces().stream()
+        .filter(p -> p.getName().equals(PlaceName))
+        .findFirst()
+        .orElse(null);
+    if (place != null) {
+      output.append("Place name: ").append(place.getName()).append("\n");
+      output.append("Place items:\n");
+      for (Item item : place.getItems()) {
+        output.append("Item name: ").append(item.getName()).append("\n");
+        output.append("Item damage: ").append(String.valueOf(item.getDamage())).append("\n");
+      }
+      output.append("Place neighbors:\n");
+      for (Place neighbor : place.getNeighbors()) {
+        output.append("Neighbor name: ").append(neighbor.getName()).append("\n");
+      }
+      if (players.isEmpty()) {
+        output.append("No players in this place.\n");
+      } else {
+        for (Player player : players) {
+          Place currentPlace = getPlaceByNumber(player.getPlayerCurrentPlaceNumber());
+          if (currentPlace.equals(place)) {
+            output.append(player.getName()).append(" is in this place.\n");
+          }
+        }
+      }
+    } else {
+      output.append("Place not found.\n");
+    }
+  }
+
+  @Override
   public void showAllPlayersInfo() throws IOException {
     if (players.isEmpty()) {
       output.append("No players found.\n");
