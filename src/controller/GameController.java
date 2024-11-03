@@ -4,6 +4,7 @@ import controller.command.AddPlayerCommand;
 import controller.command.DisplayPlaceInfoCommand;
 import controller.command.DisplayPlayerInfoCommand;
 import controller.command.LookAroundCommand;
+import controller.command.MovePlayerCommand;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
@@ -13,7 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import javax.imageio.ImageIO;
-import model.item.Item;
 import model.place.Place;
 import model.player.Player;
 import model.town.Town;
@@ -64,7 +64,7 @@ public class GameController implements Controller {
     this.output.append("Welcome to the game! You have ").append(String.valueOf(maxTurns))
         .append(" turns.\n");
     // Add Computer-controlled player
-    new AddPlayerCommand(output, town, scanner, true).execute();
+    new AddPlayerCommand(town, output, scanner, true).execute();
     while (!quitGame) {
       this.displayMainMenu();
     }
@@ -90,7 +90,7 @@ public class GameController implements Controller {
         displayMapInfo();
         break;
       case 2:
-        new AddPlayerCommand(output, town, scanner, false).execute();
+        new AddPlayerCommand(town, output, scanner, false).execute();
         break;
       case 3:
         new DisplayPlayerInfoCommand(town, output, scanner).execute();
@@ -129,7 +129,7 @@ public class GameController implements Controller {
       }
       switch (choice) {
         case 1:
-//          new MovePlayerCommand(town.getCurrentPlayer(), output, scanner).execute();
+          new MovePlayerCommand(town, output, scanner).execute();
           break;
         case 2:
 //          new PickUpItemCommand(town.getCurrentPlayer(), output, scanner).execute();
@@ -246,36 +246,6 @@ public class GameController implements Controller {
     int height = (col2 - col1) * CELL_SIZE;
     g2d.drawRect(x, y, width, height);
     g2d.drawString(name, x + width / 4, y + height / 4);
-  }
-
-  @Override
-  public void showPlayerCurrentInfo(Player player) throws IOException {
-//    new DisplayPlayerInfoCommand(players, output, scanner).showSpecificPlayerInfo(player);
-    System.out.println("不能用了");
-  }
-
-  @Override
-  public Player findPlayerByName(String name) {
-    return players.stream()
-        .filter(player -> player.getName().equals(name))
-        .findFirst()
-        .orElse(null);
-  }
-
-  @Override
-  public Place findPlaceByName(String name) {
-    return town.getPlaces().stream()
-        .filter(place -> place.getName().equals(name))
-        .findFirst()
-        .orElse(null);
-  }
-
-  @Override
-  public Item findItemByName(String name, Place place) {
-    return place.getItems().stream()
-        .filter(item -> item.getName().equals(name))
-        .findFirst()
-        .orElse(null);
   }
 
   @Override

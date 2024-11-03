@@ -20,7 +20,7 @@ public class AddPlayerCommand implements Command {
    * @param town    the town where the players are located
    * @param scanner the scanner to get user input
    */
-  public AddPlayerCommand(Appendable output, Town town,
+  public AddPlayerCommand(Town town, Appendable output,
                           Scanner scanner, boolean isComputerPlayer) {
     this.output = output;
     this.town = town;

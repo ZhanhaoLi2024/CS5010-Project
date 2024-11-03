@@ -2,8 +2,6 @@ package controller;
 
 import java.io.IOException;
 import java.util.List;
-import model.item.Item;
-import model.place.Place;
 import model.player.Player;
 
 /**
@@ -18,38 +16,6 @@ public interface Controller {
    * @throws IOException if there is an issue with I/O operations.
    */
   void startGame() throws IOException;
-
-  /**
-   * Allows a player to show their current information.
-   *
-   * @param player the player who is showing their information.
-   * @throws IOException if there is an issue with I/O operations.
-   */
-  void showPlayerCurrentInfo(Player player) throws IOException;
-
-  /**
-   * Finds a player by their name.
-   *
-   * @param name the name of the player to find.
-   * @return the player with the specified name.
-   */
-  Player findPlayerByName(String name);
-
-  /**
-   * Finds a place by its name.
-   *
-   * @param name the name of the place to find.
-   * @return the place with the specified name.
-   */
-  Place findPlaceByName(String name);
-
-  /**
-   * Finds an item by its name.
-   *
-   * @param name the name of the item to find.
-   * @return the item with the specified name.
-   */
-  Item findItemByName(String name, Place place);
 
   /**
    * Prints the map of the town.

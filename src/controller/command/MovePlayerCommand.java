@@ -1,34 +1,34 @@
 package controller.command;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Scanner;
-import model.place.Place;
-import model.player.Player;
+import model.town.Town;
 
 /**
  * Command to move a player to a neighboring place.
  */
 public class MovePlayerCommand implements Command {
-  private final Player player;
   private final Appendable output;
   private final Scanner scanner;
+  private Town town;
 
   /**
    * Constructs a new MovePlayerCommand.
    *
-   * @param player the player to move
-   * @param output the output stream to write messages to
+   * @param output  the output stream to write messages to
+   * @param scanner the scanner to get user input
+   * @param town    the town where the player is located
    */
-  public MovePlayerCommand(Player player, Appendable output, Scanner scanner) {
-    this.player = player;
+  public MovePlayerCommand(Town town, Appendable output, Scanner scanner) {
     this.output = output;
     this.scanner = scanner;
+    this.town = town;
   }
 
   @Override
   public void execute() throws IOException {
-    player.moveToNextPlace();
+//    player.moveToNextPlace();
+    town.movePlayer();
   }
 
   /**
@@ -37,15 +37,15 @@ public class MovePlayerCommand implements Command {
    * @param neighborNumber the index of the neighbor to move to
    * @throws IOException if an I/O error occurs
    */
-  private void movePlayer(int neighborNumber) throws IOException {
-    Place currentPlace = player.getCurrentPlace();
-    List<Place> neighbors = currentPlace.getNeighbors();
-    if (neighbors.isEmpty()) {
-      output.append("No neighbors found.\n");
-    } else {
-      Place newPlace = neighbors.get(neighborNumber - 1);
-      player.moveTo(newPlace);
-      output.append("Moved to ").append(newPlace.getName()).append("\n");
-    }
-  }
+//  private void movePlayer(int neighborNumber) throws IOException {
+//    Place currentPlace = player.getCurrentPlace();
+//    List<Place> neighbors = currentPlace.getNeighbors();
+//    if (neighbors.isEmpty()) {
+//      output.append("No neighbors found.\n");
+//    } else {
+//      Place newPlace = neighbors.get(neighborNumber - 1);
+//      player.moveTo(newPlace);
+//      output.append("Moved to ").append(newPlace.getName()).append("\n");
+//    }
+//  }
 }

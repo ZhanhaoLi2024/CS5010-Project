@@ -249,6 +249,33 @@ public class TownModel implements Town {
   }
 
   @Override
+  public void movePlayer() throws IOException {
+    Player currentPlayer = this.players.get(currentPlayerIndex);
+    List<Place> neighbors = currentPlayer.getCurrentPlace().getNeighbors();
+    if (neighbors.isEmpty()) {
+      output.append("No neighbors found.\n");
+    } else {
+      output.append("Neighbors of ").append(currentPlayer.getCurrentPlace().getName())
+          .append(":\n");
+      for (int i = 0; i < neighbors.size(); i++) {
+        output.append(String.valueOf(i + 1)).append(". ").append(neighbors.get(i).getName())
+            .append("\n");
+      }
+      output.append("Enter the number of the neighbor to move to:\n");
+      int neighborNumber = Integer.parseInt(scanner.nextLine());
+      if (neighborNumber < 1 || neighborNumber > neighbors.size()) {
+        output.append("Invalid neighbor number.\n");
+      } else {
+        Place newPlace = neighbors.get(neighborNumber - 1);
+        currentPlayer.moveTo(newPlace);
+        output.append("Moved to ").append(newPlace.getName()).append("\n");
+      }
+    }
+
+    this.switchToNextPlayer();
+  }
+
+  @Override
   public void switchToNextPlayer() throws IOException {
     if (getPlayers().size() == 1) {
       output.append("You have to add at least one player\n");

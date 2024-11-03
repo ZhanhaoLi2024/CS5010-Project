@@ -152,4 +152,11 @@ public interface Town {
   Boolean isComputerControllerPlayer();
 
   int getCurrentTurn();
+
+  /**
+   * Moves the player to the next place in the list of neighboring places.
+   *
+   * @throws IOException if there is an issue with I/O operations.
+   */
+  void movePlayer() throws IOException;
 }
