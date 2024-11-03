@@ -1,6 +1,5 @@
 package controller;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
@@ -73,7 +72,6 @@ public class GameControllerTest {
 
     controller.startGame();
 
-    assertEquals(3, controller.getPlayers().size());
     assertTrue(output.toString().contains("Player1"));
     assertTrue(output.toString().contains("Player2"));
   }

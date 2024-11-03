@@ -276,6 +276,41 @@ public class TownModel implements Town {
   }
 
   @Override
+  public void pickUpItem() throws IOException {
+    Player currentPlayer = this.players.get(currentPlayerIndex);
+    List<Item> items = currentPlayer.getCurrentPlace().getItems();
+    if (items.isEmpty()) {
+      output.append("No items found.\n");
+      return;
+    } else {
+      if (currentPlayer.isComputerControlled()) {
+        Item item = items.get(new Random().nextInt(items.size()));
+        currentPlayer.pickUpItem(item);
+        currentPlayer.getCurrentPlace().removeItem(item);
+        output.append("Picked up ").append(item.getName()).append(".\n");
+      } else {
+        output.append("Items in ").append(currentPlayer.getCurrentPlace().getName()).append(":\n");
+        for (int i = 0; i < items.size(); i++) {
+          int currentIndex = i + 1;
+          output.append(String.valueOf(currentIndex)).append(". ").append(items.get(i).getName())
+              .append(" (Damage: ").append(String.valueOf(items.get(i).getDamage())).append(")\n");
+        }
+        output.append("Enter the item number to pick up:\n");
+        int itemNumber = Integer.parseInt(scanner.nextLine());
+        if (itemNumber < 1 || itemNumber > items.size()) {
+          output.append("Invalid item number.\n");
+        } else {
+          Item item = items.get(itemNumber - 1);
+          currentPlayer.pickUpItem(item);
+          currentPlayer.getCurrentPlace().removeItem(item);
+          output.append("Picked up ").append(item.getName()).append(".\n");
+        }
+      }
+    }
+    this.switchToNextPlayer();
+  }
+
+  @Override
   public void switchToNextPlayer() throws IOException {
     if (getPlayers().size() == 1) {
       output.append("You have to add at least one player\n");

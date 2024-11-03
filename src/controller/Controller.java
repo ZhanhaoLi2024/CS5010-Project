@@ -1,8 +1,6 @@
 package controller;
 
 import java.io.IOException;
-import java.util.List;
-import model.player.Player;
 
 /**
  * The Controller interface defines the contract for a game controller.
@@ -33,13 +31,6 @@ public interface Controller {
    * @throws IOException if there is an issue with I/O operations.
    */
   void takeTurn() throws IOException;
-
-  /**
-   * Gets the list of players.
-   *
-   * @return the list of players.
-   */
-  List<Player> getPlayers();
 
   /**
    * Ends the game.

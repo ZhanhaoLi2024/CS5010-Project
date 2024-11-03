@@ -159,4 +159,11 @@ public interface Town {
    * @throws IOException if there is an issue with I/O operations.
    */
   void movePlayer() throws IOException;
+
+  /**
+   * Allows the player to pick up an item from the current location.
+   *
+   * @throws IllegalStateException if the player cannot carry any more items.
+   */
+  void pickUpItem() throws IOException;
 }

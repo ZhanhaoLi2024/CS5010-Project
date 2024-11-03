@@ -5,17 +5,15 @@ import controller.command.DisplayPlaceInfoCommand;
 import controller.command.DisplayPlayerInfoCommand;
 import controller.command.LookAroundCommand;
 import controller.command.MovePlayerCommand;
+import controller.command.PickUpItemCommand;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 import javax.imageio.ImageIO;
 import model.place.Place;
-import model.player.Player;
 import model.town.Town;
 
 /**
@@ -27,8 +25,8 @@ public class GameController implements Controller {
   private final Scanner scanner;
   private final Appendable output;
   private final int maxTurns;
-  private List<Player> players;
-  private List<Place> places;
+  //  private List<Player> players;
+//  private List<Place> places;
   private int currentTurn;
   private boolean quitGame;
   private boolean continueGame;
@@ -48,8 +46,8 @@ public class GameController implements Controller {
     this.maxTurns = maxTurns;
     this.currentTurn = 1;
     this.quitGame = false;
-    this.players = new ArrayList<>();
-    this.places = new ArrayList<>();
+//    this.players = new ArrayList<>();
+//    this.places = new ArrayList<>();
     this.continueGame = true;
   }
 
@@ -132,7 +130,7 @@ public class GameController implements Controller {
           new MovePlayerCommand(town, output, scanner).execute();
           break;
         case 2:
-//          new PickUpItemCommand(town.getCurrentPlayer(), output, scanner).execute();
+          new PickUpItemCommand(town, output, scanner).execute();
           break;
         case 3:
           new LookAroundCommand(output, town).execute();
@@ -175,7 +173,7 @@ public class GameController implements Controller {
     output.append("\n");
     this.currentTurn = 1;
     this.quitGame = false;
-    this.players = new ArrayList<>();
+//    this.players = new ArrayList<>();
     this.startGame();
   }
 
@@ -246,10 +244,5 @@ public class GameController implements Controller {
     int height = (col2 - col1) * CELL_SIZE;
     g2d.drawRect(x, y, width, height);
     g2d.drawString(name, x + width / 4, y + height / 4);
-  }
-
-  @Override
-  public List<Player> getPlayers() {
-    return players;
   }
 }

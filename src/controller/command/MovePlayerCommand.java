@@ -27,7 +27,6 @@ public class MovePlayerCommand implements Command {
 
   @Override
   public void execute() throws IOException {
-//    player.moveToNextPlace();
     town.movePlayer();
   }
 
