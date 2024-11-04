@@ -303,6 +303,9 @@ public class TownModelTest {
         town.isPlaceVisible(placeToTest));
   }
 
+  /**
+   * Tests the visibility of a place when the pet is in the place.
+   */
   @Test
   public void testPlaceNotVisibleWhenPetPresent() throws IOException {
     Town town = createTestTown();
@@ -312,5 +315,20 @@ public class TownModelTest {
 
     assertFalse("Place should not be visible when pet is present",
         town.isPlaceVisible(placeToTest));
+  }
+
+  @Test
+  public void testVisibilityChangesWhenPetMoves() throws IOException {
+    Town town = createTestTown();
+    Place place1 = town.getPlaceByNumber(1);
+    Place place2 = town.getPlaceByNumber(2);
+
+    town.getPet().movePet(1);
+    assertFalse("Place1 should not be visible", town.isPlaceVisible(place1));
+    assertTrue("Place2 should be visible", town.isPlaceVisible(place2));
+
+    town.getPet().movePet(2);
+    assertTrue("Place1 should now be visible", town.isPlaceVisible(place1));
+    assertFalse("Place2 should now not be visible", town.isPlaceVisible(place2));
   }
 }
