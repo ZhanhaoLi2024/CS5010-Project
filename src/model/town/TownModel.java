@@ -111,7 +111,39 @@ public class TownModel implements Town {
 
   @Override
   public Pet getPet() {
-    return pet;
+    return this.pet;
+  }
+
+  /**
+   * Determines if a place is visible (not blocked by pet).
+   *
+   * @param place the place to check visibility for
+   * @return true if the place is visible, false otherwise
+   */
+  @Override
+  public boolean isPlaceVisible(Place place) {
+    // A place is not visible if the pet is there
+    return !place.getPlaceNumber().equals(String.valueOf(pet.getPetCurrentPlaceNumber()));
+  }
+
+  /**
+   * Moves the pet to a new location.
+   *
+   * @param placeNumber the number of the place to move the pet to
+   * @throws IllegalArgumentException if the place number is invalid
+   */
+  @Override
+  public void movePet(int placeNumber) throws IOException {
+    // Validate place number
+    if (placeNumber <= 0 || placeNumber > places.size()) {
+      throw new IllegalArgumentException("Invalid place number!");
+    }
+
+    // Move the pet
+    pet.movePet(placeNumber);
+    output.append(String.format("Pet %s moved to %s\n",
+        pet.getName(),
+        getPlaceByNumber(placeNumber).getName()));
   }
 
   public List<Place> getPlaces() {
@@ -360,9 +392,9 @@ public class TownModel implements Town {
       output.append("Neighbors of ").append(currentPlace.getName())
           .append(":\n");
       for (Place neighbor : neighbors) {
-        int petCurrentPlaceNumber = pet.getPetCurrentPlaceNumber();
-        int neighborCurrentPlaceNumber = getPlaceNumberByName(neighbor.getName());
-        if (petCurrentPlaceNumber == neighborCurrentPlaceNumber) {
+//        int petCurrentPlaceNumber = pet.getPetCurrentPlaceNumber();
+//        int neighborCurrentPlaceNumber = getPlaceNumberByName(neighbor.getName());
+        if (!isPlaceVisible(neighbor)) {
           output.append(" - ").append(neighbor.getName()).append(" (Pet is here)\n");
         } else {
           // Place's name

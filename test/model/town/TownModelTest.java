@@ -9,6 +9,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringReader;
+import java.io.StringWriter;
 import java.util.Scanner;
 import model.item.Item;
 import model.place.Place;
@@ -219,7 +220,7 @@ public class TownModelTest {
     town.getPlayers().add(player1);
 //    town.switchToNextPlayer();
     town.lookAround();
-    
+
     String outputContent = output.toString();
 //    System.out.println("Actual Output: \n" + outputContent);
     assertTrue(outputContent.contains("Current place: School"));
@@ -264,5 +265,41 @@ public class TownModelTest {
     assertTrue(outputContent.contains("   Players in this place:Bob"));
     assertTrue(outputContent.contains(" - Restaurant"));
     assertTrue(outputContent.contains("   Items in Restaurant:Menu (Damage: 22)"));
+  }
+
+  /**
+   * Creates a test town with the specified configuration.
+   */
+  private Town createTestTown() throws IOException {
+    String worldData = "3 3 Test World\n"
+        + "50 Target\n"
+        + "TestPet\n"
+        + "3\n"
+        + "0 0 1 1 Place1\n"
+        + "1 1 2 2 Place2\n"
+        + "2 2 3 3 Place3\n"
+        + "0\n";
+
+    return new TownModel(
+        new TownLoader(),
+        "res/SmallTownWorld.txt",
+        new StringReader(worldData),
+        new StringWriter(),
+        10
+    );
+  }
+
+  /**
+   * Tests the visibility of a place when the pet is in the place.
+   */
+  @Test
+  public void testPlaceVisibleWhenPetElsewhere() throws IOException {
+    Town town = createTestTown();
+    Place placeToTest = town.getPlaceByNumber(2);
+
+    town.getPet().movePet(1);
+
+    assertTrue("Place should be visible when pet is elsewhere",
+        town.isPlaceVisible(placeToTest));
   }
 }

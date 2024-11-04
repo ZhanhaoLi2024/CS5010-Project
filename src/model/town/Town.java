@@ -58,6 +58,22 @@ public interface Town {
   Pet getPet();
 
   /**
+   * Determines if a place is visible (not blocked by pet).
+   *
+   * @param place the place to check visibility for
+   * @return true if the place is visible, false otherwise
+   */
+  boolean isPlaceVisible(Place place);
+
+  /**
+   * Moves the pet to a new location.
+   *
+   * @param placeNumber the number of the place to move the pet to
+   * @throws IllegalArgumentException if the place number is invalid
+   */
+  void movePet(int placeNumber) throws IOException;
+
+  /**
    * Retrieves the name of the town.
    *
    * @return the name of the town as a String
