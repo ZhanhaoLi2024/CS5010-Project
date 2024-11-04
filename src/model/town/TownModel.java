@@ -351,35 +351,42 @@ public class TownModel implements Town {
 
   @Override
   public void lookAround() throws IOException {
+    if (players.isEmpty()) {
+      throw new IllegalStateException("Cannot look around: No players in the game");
+    }
+
     Player currentPlayer = this.players.get(currentPlayerIndex);
     Place currentPlace = getPlaceByNumber(currentPlayer.getPlayerCurrentPlaceNumber());
 
     // Current Place Info: name, items, players
+    // First show current place name
     output.append("Current place: ").append(currentPlace.getName()).append("\n");
+    // Show items in current place
     List<Item> items = currentPlace.getItems();
+    output.append("Items in ").append(currentPlace.getName()).append(":\n");
     if (items.isEmpty()) {
       output.append("No items found.\n");
     } else {
-      output.append("Items in ").append(currentPlace.getName()).append(":\n");
       for (Item item : items) {
         output.append(item.getName()).append(" (Damage: ")
             .append(String.valueOf(item.getDamage()))
             .append(")\n");
       }
     }
-    List<Player> currentPlayers = new ArrayList<>();
+    // Show players in current place
+    List<Player> currentPlacePlayers = new ArrayList<>();
     for (Player p : players) {
       Place pCurrentPlace = getPlaceByNumber(p.getPlayerCurrentPlaceNumber());
       if (pCurrentPlace.equals(currentPlace) && !p.equals(currentPlayer)) {
-        currentPlayers.add(p);
+        currentPlacePlayers.add(p);
       }
     }
-    if (!currentPlayers.isEmpty()) {
+    if (!currentPlacePlayers.isEmpty()) {
       output.append("Players in this place:");
-      if (currentPlayers.size() == 1) {
-        output.append(currentPlayers.get(0).getName()).append("\n");
+      if (currentPlacePlayers.size() == 1) {
+        output.append(currentPlacePlayers.get(0).getName()).append("\n");
       } else {
-        for (Player player : currentPlayers) {
+        for (Player player : currentPlacePlayers) {
           output.append(player.getName()).append(", ");
         }
         output.append("\n");
@@ -387,6 +394,7 @@ public class TownModel implements Town {
     }
 
     // Current Place Neighbors Info: name, items, players
+    // Show neighbors
     List<Place> neighbors = currentPlace.getNeighbors();
     if (neighbors.isEmpty()) {
       output.append("No neighbors found.\n");
@@ -394,48 +402,48 @@ public class TownModel implements Town {
       output.append("Neighbors of ").append(currentPlace.getName())
           .append(":\n");
       for (Place neighbor : neighbors) {
-//        int petCurrentPlaceNumber = pet.getPetCurrentPlaceNumber();
-//        int neighborCurrentPlaceNumber = getPlaceNumberByName(neighbor.getName());
+        output.append(" - ").append(neighbor.getName());
+
+        // Check if pet is in this neighbor
         if (!isPlaceVisible(neighbor)) {
-          output.append(" - ").append(neighbor.getName()).append(" (Pet is here)\n");
-        } else {
-          // Place's name
-          output.append(" - ").append(neighbor.getName()).append("\n");
-          // Place's items
-          List<Item> neighborItems = neighbor.getItems();
-          if (neighborItems.isEmpty()) {
-            output.append("   No items found.\n");
+          output.append(" (Pet is here)\n");
+          continue; // Skip showing items and players for spaces with pet
+        }
+        output.append("\n");
+
+        // Show items in visible neighbors
+        List<Item> neighborItems = neighbor.getItems();
+        if (!neighborItems.isEmpty()) {
+          output.append("   Items in ").append(neighbor.getName()).append(":");
+          for (Item item : neighborItems) {
+            output.append(item.getName()).append(" (Damage: ")
+                .append(String.valueOf(item.getDamage()))
+                .append(")\n");
+          }
+        }
+
+        // Show players in visible neighbors
+        List<Player> neighborPlayers = new ArrayList<>();
+        for (Player p : players) {
+          Place pCurrentPlace = getPlaceByNumber(p.getPlayerCurrentPlaceNumber());
+          if (pCurrentPlace.equals(neighbor)) {
+            neighborPlayers.add(p);
+          }
+        }
+        if (!neighborPlayers.isEmpty()) {
+          output.append("   Players in this place:");
+          if (neighborPlayers.size() == 1) {
+            output.append(neighborPlayers.get(0).getName()).append("\n");
           } else {
-            output.append("   Items in ").append(neighbor.getName()).append(":");
-            for (Item item : neighborItems) {
-              output.append(item.getName()).append(" (Damage: ")
-                  .append(String.valueOf(item.getDamage()))
-                  .append(")\n");
+            for (Player player : neighborPlayers) {
+              output.append(player.getName()).append(", ");
             }
-          }
-          // Place's players
-          List<Player> neighborPlayers = new ArrayList<>();
-          for (Player p : players) {
-            Place pCurrentPlace = getPlaceByNumber(p.getPlayerCurrentPlaceNumber());
-            if (pCurrentPlace.equals(neighbor)) {
-              neighborPlayers.add(p);
-            }
-          }
-          if (!neighborPlayers.isEmpty()) {
-            output.append("   Players in this place:");
-            if (neighborPlayers.size() == 1) {
-              output.append(neighborPlayers.get(0).getName()).append("\n");
-            } else {
-              for (Player player : neighborPlayers) {
-                output.append(player.getName()).append(", ");
-              }
-              output.append("\n");
-            }
+            output.append("\n");
           }
         }
       }
-      output.append("\n");
     }
+    output.append("\n");
     this.switchToNextPlayer(); // Next player turn
   }
 

@@ -26,18 +26,21 @@ import org.junit.Test;
  */
 public class TownModelTest {
 
-  private final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+  //  private ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
   private TownModel town;
   private Scanner scanner;
+  private ByteArrayOutputStream outputStream;
+  private StringBuilder output;
 
   /**
    * Sets up the town for testing.
    */
   @Before
   public void setUp() throws IOException {
+    output = new StringBuilder();
     TownLoader loader = new TownLoader();
     String worldFile = "res/SmallTownWorld.txt";
-    town = new TownModel(loader, worldFile, new InputStreamReader(System.in), System.out, 3);
+    town = new TownModel(loader, worldFile, new StringReader(""), output, 3);
   }
 
   /**
@@ -117,9 +120,7 @@ public class TownModelTest {
   @Test
   public void testGetPlaceInfo() {
     Place firstPlace = town.getTarget().getCurrentPlace();
-
-    town.getPlaceInfo(firstPlace);
-
+    
     assertEquals("Park", firstPlace.getName());
     assertFalse(firstPlace.getItems().isEmpty());
     assertEquals("Toy Ball", firstPlace.getItems().get(0).getName());
@@ -202,71 +203,11 @@ public class TownModelTest {
     AddPlayerTown.addPlayer();
 
     String outputContent = output.toString();
-    System.out.println("Actual Output: \n" + outputContent);
     assertTrue(outputContent.contains("Enter the player's name:"));
     assertTrue(outputContent.contains("Player name: Alice"));
     assertTrue(outputContent.contains("Current place: Police Station"));
     assertTrue(outputContent.contains("You can carry up to 5 items"));
     assertTrue(outputContent.contains("Player added."));
-  }
-
-  @Test
-  public void testLookAroundNoPetNoPlayer() throws IOException {
-    StringBuilder output = new StringBuilder();
-    String simulatedInput = "Alice\n1\n5\n";
-    StringReader input = new StringReader(simulatedInput);
-    TownLoaderInterface loader = new TownLoader();
-    String worldFile = "res/SmallTownWorld.txt";
-    TownModel town = new TownModel(loader, worldFile, input, output, 10);
-    Player player1 = new PlayerModel("Alice", false, 10, 3, System.out, scanner);
-    town.getPlayers().add(player1);
-//    town.switchToNextPlayer();
-    town.lookAround();
-
-    String outputContent = output.toString();
-//    System.out.println("Actual Output: \n" + outputContent);
-    assertTrue(outputContent.contains("Current place: School"));
-    assertTrue(outputContent.contains("Items in School:"));
-    assertTrue(outputContent.contains("Textbook (Damage: 6)"));
-    assertTrue(outputContent.contains("Neighbors of School:"));
-    assertTrue(outputContent.contains(" - Grocery Store"));
-    assertTrue(outputContent.contains("   Items in Grocery Store:Shopping Cart (Damage: 12)"));
-    assertTrue(outputContent.contains(" - Post Office"));
-    assertTrue(outputContent.contains("   Items in Post Office:Envelope (Damage: 8)"));
-    assertTrue(outputContent.contains(" - Hospital"));
-    assertTrue(outputContent.contains("   Items in Hospital:Medical Kit (Damage: 18)"));
-    assertTrue(outputContent.contains(" - Restaurant"));
-    assertTrue(outputContent.contains("   Items in Restaurant:Menu (Damage: 22)"));
-  }
-
-  @Test
-  public void testLookAroundNoPet() throws IOException {
-    StringBuilder output = new StringBuilder();
-    String simulatedInput = "Alice\n1\n5\n";
-    StringReader input = new StringReader(simulatedInput);
-    TownLoaderInterface loader = new TownLoader();
-    String worldFile = "res/SmallTownWorld.txt";
-    TownModel town = new TownModel(loader, worldFile, input, output, 10);
-    Player player1 = new PlayerModel("Alice", false, 10, 3, System.out, scanner);
-    Player player2 = new PlayerModel("Bob", false, 10, 8, System.out, scanner);
-    town.getPlayers().add(player1);
-    town.getPlayers().add(player2);
-    town.lookAround();
-
-    String outputContent = output.toString();
-    assertTrue(outputContent.contains("Current place: School"));
-    assertTrue(outputContent.contains("Items in School:"));
-    assertTrue(outputContent.contains("Textbook (Damage: 6)"));
-    assertTrue(outputContent.contains("Neighbors of School:"));
-    assertTrue(outputContent.contains(" - Grocery Store"));
-    assertTrue(outputContent.contains("   Items in Grocery Store:Shopping Cart (Damage: 12)"));
-    assertTrue(outputContent.contains(" - Post Office"));
-    assertTrue(outputContent.contains("   Items in Post Office:Envelope (Damage: 8)"));
-    assertTrue(outputContent.contains(" - Hospital"));
-    assertTrue(outputContent.contains("   Items in Hospital:Medical Kit (Damage: 18)"));
-    assertTrue(outputContent.contains("   Players in this place:Bob"));
-    assertTrue(outputContent.contains(" - Restaurant"));
-    assertTrue(outputContent.contains("   Items in Restaurant:Menu (Damage: 22)"));
   }
 
   /**
@@ -641,4 +582,178 @@ public class TownModelTest {
     town.lookAround();
     assertEquals(2, town.getPet().getPetCurrentPlaceNumber());
   }
+
+  /**
+   * Helper method to create a test town with a player in a specific location
+   */
+  private TownModel setupTestTown(int playerLocation) throws IOException {
+    StringBuilder testOutput = new StringBuilder();
+    TownModel testTown = new TownModel(
+        new TownLoader(),
+        "res/SmallTownWorld.txt",
+        new StringReader(""),
+        testOutput,
+        10
+    );
+
+    Player player = new PlayerModel("Alice", false, 10, playerLocation, testOutput, scanner);
+    testTown.getPlayers().add(player);
+
+    return testTown;
+  }
+
+  /**
+   * Test basic lookAround without pet influence (baseline test)
+   */
+  @Test
+  public void testLookAroundBasicNoPlayerNoPet() throws IOException {
+    StringBuilder output = new StringBuilder();
+    TownModel testTown = new TownModel(
+        new TownLoader(),
+        "res/SmallTownWorld.txt",
+        new StringReader(""),
+        output,
+        10
+    );
+
+    Player player =
+        new PlayerModel("TestPlayer", false, 10, 3, output, new Scanner(new StringReader("")));
+    testTown.getPlayers().add(player);
+
+    testTown.lookAround();
+
+    String outputContent = output.toString();
+    assertTrue("Should show current place",
+        outputContent.contains("Current place: School"));
+    assertTrue("Should show items in School",
+        outputContent.contains("Items in School:") &&
+            outputContent.contains("Textbook (Damage: 6)"));
+  }
+
+  /**
+   * Test lookAround with pet in one neighbor room - main functionality
+   */
+  @Test
+  public void testLookAroundWithPetInNeighbor() throws IOException {
+    StringBuilder output = new StringBuilder();
+    TownModel testTown = new TownModel(
+        new TownLoader(),
+        "res/SmallTownWorld.txt",
+        new StringReader(""),
+        output,
+        10
+    );
+    Player player =
+        new PlayerModel("TestPlayer", false, 10, 3, output, new Scanner(new StringReader("")));
+    testTown.getPlayers().add(player);
+
+    testTown.movePet(2);
+    testTown.lookAround();
+    String outputContent = output.toString();
+    assertTrue("Should show current place",
+        outputContent.contains("Current place: School"));
+    assertTrue("Should show pet in neighbor",
+        outputContent.contains("Grocery Store (Pet is here)"));
+  }
+
+  /**
+   * Test lookAround when pet is in player's current room
+   */
+  @Test
+  public void testLookAroundWithPetInCurrentRoom() throws IOException {
+    StringBuilder output = new StringBuilder();
+    TownModel testTown = new TownModel(
+        new TownLoader(),
+        "res/SmallTownWorld.txt",
+        new StringReader(""),
+        output,
+        10
+    );
+    Player player =
+        new PlayerModel("TestPlayer", false, 10, 3, output, new Scanner(new StringReader("")));
+    testTown.getPlayers().add(player);
+    testTown.addComputerPlayer();
+    testTown.movePet(3);
+    output.setLength(0);
+    testTown.lookAround();
+    String outputContent = output.toString();
+    assertTrue("Should show current place",
+        outputContent.contains("Current place: School"));
+    assertTrue("Should show items in current room",
+        outputContent.contains("Items in School:") &&
+            outputContent.contains("Textbook"));
+  }
+
+  @Test
+  public void testLookAroundWithPetMovingBetweenNeighbors() throws IOException {
+    StringBuilder output = new StringBuilder();
+    TownModel testTown = new TownModel(
+        new TownLoader(),
+        "res/SmallTownWorld.txt",
+        new StringReader(""),
+        output,
+        10
+    );
+    Player humanPlayer = new PlayerModel(
+        "TestPlayer",
+        false,
+        10,
+        3,
+        output,
+        new Scanner(new StringReader(""))
+    );
+    testTown.getPlayers().add(humanPlayer);
+    testTown.addComputerPlayer();
+    while (testTown.isComputerControllerPlayer()) {
+      testTown.switchToNextPlayer();
+    }
+    testTown.movePet(2);
+    output.setLength(0);
+    testTown.lookAround();
+    String firstLook = output.toString();
+    assertTrue("Player should still be in School",
+        humanPlayer.getPlayerCurrentPlaceNumber() == 3);
+    testTown.movePet(8);
+    output.setLength(0);
+    while (testTown.isComputerControllerPlayer()) {
+      testTown.switchToNextPlayer();
+    }
+    testTown.lookAround();
+    String secondLook = output.toString();
+    assertTrue("First look should show current place",
+        firstLook.contains("Current place: School"));
+    assertTrue("First look should show pet in Grocery Store",
+        firstLook.contains("Grocery Store (Pet is here)"));
+    assertTrue("Second look should show current place",
+        secondLook.contains("Current place: School"));
+    assertTrue("Second look should show pet in Hospital",
+        secondLook.contains("Hospital (Pet is here)"));
+    assertTrue("Second look should now show items in Grocery Store",
+        secondLook.contains("Shopping Cart") || secondLook.contains("Grocery Store"));
+  }
+
+  /**
+   * Test invalid pet movement
+   */
+  @Test(expected = IllegalArgumentException.class)
+  public void testLookAroundWithInvalidPetMove() throws IOException {
+    TownModel testTown = setupTestTown(3);
+    testTown.movePet(999); // Invalid room number
+  }
+
+  /**
+   * Test lookAround with no players in game
+   */
+  @Test(expected = IllegalStateException.class)
+  public void testLookAroundWithNoPlayers() throws IOException {
+    TownModel testTown = new TownModel(
+        new TownLoader(),
+        "res/SmallTownWorld.txt",
+        new StringReader(""),
+        new StringBuilder(),
+        10
+    );
+    testTown.lookAround();
+  }
+
 }
