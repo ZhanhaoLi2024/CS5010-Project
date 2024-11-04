@@ -302,4 +302,15 @@ public class TownModelTest {
     assertTrue("Place should be visible when pet is elsewhere",
         town.isPlaceVisible(placeToTest));
   }
+
+  @Test
+  public void testPlaceNotVisibleWhenPetPresent() throws IOException {
+    Town town = createTestTown();
+    Place placeToTest = town.getPlaceByNumber(2);
+
+    town.getPet().movePet(2);
+
+    assertFalse("Place should not be visible when pet is present",
+        town.isPlaceVisible(placeToTest));
+  }
 }
