@@ -197,7 +197,7 @@ public interface Town {
    *
    * @return true if the game is over, false otherwise
    */
-  Boolean isGameOver();
+  boolean isGameOver();
 
   /**
    * Checks if the computer controller is a player.
@@ -221,4 +221,29 @@ public interface Town {
    * @throws IllegalStateException if the player cannot carry any more items.
    */
   void pickUpItem() throws IOException;
+
+  /**
+   * Gets the index of the current player.
+   *
+   * @return the index of the current player
+   */
+  int getCurrentPlayerIndex();
+
+  /**
+   * Checks if a player can be seen by other players.
+   * A player is visible if another player is in the same room or a neighboring room.
+   *
+   * @param player the player to check visibility for
+   * @return true if the player can be seen by others, false otherwise
+   */
+  boolean isPlayerVisible(Player player);
+
+  /**
+   * Displays the current state of the target character.
+   *
+   * @throws IOException if there is an error writing output
+   */
+  void showTargetInfo() throws IOException;
+  
+  void startTurn() throws IOException;
 }

@@ -61,8 +61,8 @@ public class TownModel implements Town {
   }
 
   @Override
-  public Boolean isGameOver() {
-    return currentTurn > maxTurns;
+  public boolean isGameOver() {
+    return currentTurn > maxTurns || targetCharacter.isDefeated();
   }
 
   @Override
@@ -533,4 +533,55 @@ public class TownModel implements Town {
     return players.get(currentPlayerIndex).isComputerControlled();
   }
 
+  /**
+   * Gets the index of the current player.
+   *
+   * @return the index of the current player
+   */
+  @Override
+  public int getCurrentPlayerIndex() {
+    return currentPlayerIndex;
+  }
+
+  /**
+   * Checks if a player can be seen by other players.
+   * A player is visible if another player is in the same room or a neighboring room.
+   *
+   * @param player the player to check visibility for
+   * @return true if the player can be seen by others, false otherwise
+   */
+  @Override
+  public boolean isPlayerVisible(Player player) {
+    Place playerPlace = getPlaceByNumber(player.getPlayerCurrentPlaceNumber());
+
+    for (Player otherPlayer : players) {
+      if (otherPlayer != player) {
+        Place otherPlace = getPlaceByNumber(otherPlayer.getPlayerCurrentPlaceNumber());
+        if (playerPlace.equals(otherPlace) || playerPlace.isNeighbor(otherPlace)) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  /**
+   * Displays the current state of the target character.
+   *
+   * @throws IOException if there is an error writing output
+   */
+  @Override
+  public void showTargetInfo() throws IOException {
+    output.append(String.format("Target: %s (Health: %d) is in %s\n",
+        targetCharacter.getName(),
+        targetCharacter.getHealth(),
+        targetCharacter.getCurrentPlace().getName()));
+  }
+
+  @Override
+  public void startTurn() throws IOException {
+    currentTurn++;
+    showTargetInfo();
+    showPlayerCurrentInfo();
+  }
 }
