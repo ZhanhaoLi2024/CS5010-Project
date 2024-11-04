@@ -16,8 +16,8 @@ public class PetModel implements Pet {
    * @throws IllegalArgumentException if the provided pet name is empty or null.
    */
   public PetModel(String petName) throws IllegalArgumentException {
-    if (petName.isEmpty()) {
-      throw new IllegalArgumentException("Error in PetModel: Pet name cannot be empty/null\n!");
+    if (petName == null || petName.trim().isEmpty()) {
+      throw new IllegalArgumentException("Pet name cannot be null, empty, or only whitespace!");
     }
     this.petName = petName;
     this.currentPlaceNumber = 1; // set initial place number as 0
@@ -51,11 +51,10 @@ public class PetModel implements Pet {
    */
   @Override
   public void movePet(int placeNumber) {
-    if (placeNumber >= 0) {
-      this.currentPlaceNumber = placeNumber;
-    } else {
+    if (placeNumber <= 0) {
       throw new IllegalArgumentException(
-          "Error in Pet movePet: input placeNum cannot be negative!");
+          "Error in Pet movePet: place number must be positive!");
     }
+    this.currentPlaceNumber = placeNumber;
   }
 }
