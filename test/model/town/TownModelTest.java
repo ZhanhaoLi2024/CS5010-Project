@@ -310,25 +310,142 @@ public class TownModelTest {
   public void testPlaceNotVisibleWhenPetPresent() throws IOException {
     Town town = createTestTown();
     Place placeToTest = town.getPlaceByNumber(2);
-
     town.getPet().movePet(2);
-
     assertFalse("Place should not be visible when pet is present",
         town.isPlaceVisible(placeToTest));
   }
 
+  /**
+   * Tests the visibility of a place when the pet is in the place.
+   */
   @Test
   public void testVisibilityChangesWhenPetMoves() throws IOException {
     Town town = createTestTown();
     Place place1 = town.getPlaceByNumber(1);
     Place place2 = town.getPlaceByNumber(2);
-
     town.getPet().movePet(1);
     assertFalse("Place1 should not be visible", town.isPlaceVisible(place1));
     assertTrue("Place2 should be visible", town.isPlaceVisible(place2));
-
     town.getPet().movePet(2);
     assertTrue("Place1 should now be visible", town.isPlaceVisible(place1));
     assertFalse("Place2 should now not be visible", town.isPlaceVisible(place2));
+  }
+
+  /**
+   * Tests the visibility of a place when the pet is in the place.
+   */
+  @Test
+  public void testVisibilityInFirstPlace() throws IOException {
+    Town town = createTestTown();
+    Place firstPlace = town.getPlaceByNumber(1);
+    town.getPet().movePet(1);
+    assertFalse("First place should not be visible when pet is there",
+        town.isPlaceVisible(firstPlace));
+  }
+
+  /**
+   * Tests the visibility of a place when the pet is in the place.
+   */
+  @Test
+  public void testVisibilityInLastPlace() throws IOException {
+    Town town = createTestTown();
+    Place lastPlace = town.getPlaceByNumber(3);
+    town.getPet().movePet(3);
+    assertFalse("Last place should not be visible when pet is there",
+        town.isPlaceVisible(lastPlace));
+  }
+
+  /**
+   * Tests the visibility of a place when the pet is in the place.
+   */
+  @Test(expected = IllegalArgumentException.class)
+  public void testNullPlace() throws IOException {
+    Town town = createTestTown();
+    town.isPlaceVisible(null);
+  }
+
+  /**
+   * Tests the visibility of a place when the pet is in the place.
+   */
+  @Test
+  public void testVisibilityWithMultiplePetMoves() throws IOException {
+    Town town = createTestTown();
+    Place place1 = town.getPlaceByNumber(1);
+    Place place2 = town.getPlaceByNumber(2);
+    Place place3 = town.getPlaceByNumber(3);
+    town.getPet().movePet(1);
+    assertFalse("Place1 should not be visible", town.isPlaceVisible(place1));
+    assertTrue("Place2 should be visible", town.isPlaceVisible(place2));
+    assertTrue("Place3 should be visible", town.isPlaceVisible(place3));
+    town.getPet().movePet(2);
+    assertTrue("Place1 should be visible", town.isPlaceVisible(place1));
+    assertFalse("Place2 should not be visible", town.isPlaceVisible(place2));
+    assertTrue("Place3 should be visible", town.isPlaceVisible(place3));
+    town.getPet().movePet(3);
+    assertTrue("Place1 should be visible", town.isPlaceVisible(place1));
+    assertTrue("Place2 should be visible", town.isPlaceVisible(place2));
+    assertFalse("Place3 should not be visible", town.isPlaceVisible(place3));
+  }
+
+  /**
+   * Tests the visibility of a place when the pet is in the place.
+   */
+  @Test
+  public void testConcurrentVisibilityChecks() throws IOException, InterruptedException {
+    final Town town = createTestTown();
+    final int threadCount = 3;
+    Thread[] threads = new Thread[threadCount];
+    final boolean[] results = new boolean[threadCount];
+    for (int i = 0; i < threadCount; i++) {
+      final int placeIndex = i + 1;
+      threads[i] = new Thread(() -> {
+        try {
+          Place place = town.getPlaceByNumber(placeIndex);
+          results[placeIndex - 1] = town.isPlaceVisible(place);
+        } catch (Exception e) {
+          e.printStackTrace();
+        }
+      });
+      threads[i].start();
+    }
+    for (Thread thread : threads) {
+      thread.join();
+    }
+    boolean atLeastOneVisible = false;
+    for (boolean result : results) {
+      if (result) {
+        atLeastOneVisible = true;
+        break;
+      }
+    }
+    assertTrue("At least one place should be visible", atLeastOneVisible);
+  }
+
+  /**
+   * Tests the performance of the visibility check.
+   */
+  @Test
+  public void testVisibilityCheckPerformance() throws IOException {
+    Town town = createTestTown();
+    Place placeToTest = town.getPlaceByNumber(1);
+    long startTime = System.nanoTime();
+    for (int i = 0; i < 10000; i++) {
+      town.isPlaceVisible(placeToTest);
+    }
+    long endTime = System.nanoTime();
+    long duration = (endTime - startTime) / 1000000;
+    assertTrue("Visibility check should complete within 100ms", duration < 100);
+  }
+
+  /**
+   * Tests the retrieval of the target name.
+   */
+  @Test
+  public void testVisibilityWithDuplicatePlaceNumbers() throws IOException {
+    Town town = createTestTown();
+    Place duplicatePlace = new PlaceModel(0, 0, 1, 1, "DuplicatePlace", "1");
+    town.getPet().movePet(1);
+    assertFalse("Should handle places with same number correctly",
+        town.isPlaceVisible(duplicatePlace));
   }
 }

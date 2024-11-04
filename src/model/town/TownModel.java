@@ -122,7 +122,9 @@ public class TownModel implements Town {
    */
   @Override
   public boolean isPlaceVisible(Place place) {
-    // A place is not visible if the pet is there
+    if (place == null) {
+      throw new IllegalArgumentException("Place cannot be null");
+    }
     return !place.getPlaceNumber().equals(String.valueOf(pet.getPetCurrentPlaceNumber()));
   }
 
