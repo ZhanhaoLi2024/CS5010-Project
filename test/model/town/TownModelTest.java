@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Scanner;
 import model.item.Item;
 import model.place.Place;
@@ -447,5 +449,196 @@ public class TownModelTest {
     town.getPet().movePet(1);
     assertFalse("Should handle places with same number correctly",
         town.isPlaceVisible(duplicatePlace));
+  }
+
+  /**
+   * Tests the retrieval of the target name.
+   */
+  private String createTempWorldFile() throws IOException {
+    String worldSpec = "7 8 Test World\n"
+        + "50 Doctor Lucky\n"
+        + "Fortune the Cat\n"
+        + "4\n"
+        + "0 0 1 1 Room1\n"
+        + "1 1 2 2 Room2\n"
+        + "2 2 3 3 Room3\n"
+        + "3 3 4 4 Room4\n"
+        + "2\n"
+        + "0 1 Sword\n"
+        + "1 2 Knife\n";
+    Path tempFile = Files.createTempFile("world", ".txt");
+    Files.write(tempFile, worldSpec.getBytes());
+    tempFile.toFile().deleteOnExit();
+    return tempFile.toString();
+  }
+
+  /**
+   * Creates a town with the specified user input.
+   */
+  private Town createTown(StringWriter output, String userInput) throws IOException {
+    String worldFile = createTempWorldFile();
+    return new TownModel(new TownLoader(), worldFile, new StringReader(userInput), output, 10);
+  }
+
+  /**
+   * Tests the retrieval of the target name.
+   */
+  @Test
+  public void testValidPetMove() throws IOException {
+    StringWriter output = new StringWriter();
+    Town town = createTown(output, "");
+    town.movePet(2);
+    assertEquals(2, town.getPet().getPetCurrentPlaceNumber());
+    String expectedOutput = String.format("Pet %s moved to Room2\n", town.getPet().getName());
+    assertEquals(expectedOutput, output.toString());
+  }
+
+  /**
+   * Tests the retrieval of the target name.
+   */
+  @Test
+  public void testMoveToCurrentLocation() throws IOException {
+    StringWriter output = new StringWriter();
+    Town town = createTown(output, "");
+    town.movePet(1);
+    assertEquals(1, town.getPet().getPetCurrentPlaceNumber());
+    String expectedOutput = String.format("Pet %s moved to Room1\n", town.getPet().getName());
+    assertEquals(expectedOutput, output.toString());
+  }
+
+  /**
+   * Tests the retrieval of the target name.
+   */
+  @Test
+  public void testMultipleMovesSequentially() throws IOException {
+    StringWriter output = new StringWriter();
+    Town town = createTown(output, "");
+    town.movePet(2);
+    town.movePet(3);
+    town.movePet(4);
+    assertEquals(4, town.getPet().getPetCurrentPlaceNumber());
+  }
+
+  /**
+   * Tests the retrieval of the target name.
+   */
+  @Test(expected = IllegalArgumentException.class)
+  public void testMoveToNegativeRoomNumber() throws IOException {
+    StringWriter output = new StringWriter();
+    Town town = createTown(output, "");
+    town.movePet(-1);
+  }
+
+  /**
+   * Tests the retrieval of the target name.
+   */
+  @Test(expected = IllegalArgumentException.class)
+  public void testMoveToZeroRoom() throws IOException {
+    StringWriter output = new StringWriter();
+    Town town = createTown(output, "");
+    town.movePet(0);
+  }
+
+  /**
+   * Tests the retrieval of the target name.
+   */
+  @Test(expected = IllegalArgumentException.class)
+  public void testMoveToNonExistentRoom() throws IOException {
+    StringWriter output = new StringWriter();
+    Town town = createTown(output, "");
+    town.movePet(99);
+  }
+
+  /**
+   * Tests the retrieval of the target name.
+   */
+  @Test
+  public void testRoomVisibilityAfterPetMove() throws IOException {
+    StringWriter output = new StringWriter();
+    Town town = createTown(output, "");
+    town.movePet(2);
+    assertEquals(false, town.isPlaceVisible(town.getPlaceByNumber(2)));
+    assertEquals(true, town.isPlaceVisible(town.getPlaceByNumber(1)));
+    assertEquals(true, town.isPlaceVisible(town.getPlaceByNumber(3)));
+  }
+
+  /**
+   * Tests the retrieval of the target name.
+   */
+  @Test
+  public void testRepeatedMovesToSameRoom() throws IOException {
+    StringWriter output = new StringWriter();
+    Town town = createTown(output, "");
+    town.movePet(2);
+    String firstMoveOutput = output.toString();
+    StringWriter newOutput = new StringWriter();
+    Town newTown = createTown(newOutput, "");
+    newTown.movePet(2);
+    assertEquals(firstMoveOutput, newOutput.toString());
+  }
+
+  /**
+   * Tests the retrieval of the target name.
+   */
+  @Test(expected = NullPointerException.class)
+  public void testMoveWithNullOutput() throws IOException {
+    String worldFile = createTempWorldFile();
+    Town town = new TownModel(new TownLoader(), worldFile, new StringReader(""), null, 10);
+    town.movePet(2);
+  }
+
+  /**
+   * Tests the retrieval of the target name.
+   */
+  @Test
+  public void testPetMoveEffectOnLookAround() throws IOException {
+    StringWriter output = new StringWriter();
+    String userInput = "TestPlayer\n1\n3\n";
+    Town town = createTown(output, userInput);
+    town.addPlayer();
+    town.movePet(2);
+    town.lookAround();
+    String outputStr = output.toString();
+    assert (outputStr.contains("Pet is here"));
+  }
+
+  /**
+   * Tests the retrieval of the target name.
+   */
+  @Test
+  public void testPetMoveEffectOnNeighboringRooms() throws IOException {
+    StringWriter output = new StringWriter();
+    Town town = createTown(output, "");
+    town.movePet(2);
+    assertEquals(true, town.isPlaceVisible(town.getPlaceByNumber(1)));
+    assertEquals(true, town.isPlaceVisible(town.getPlaceByNumber(3)));
+  }
+
+  /**
+   * Tests the retrieval of the target name.
+   */
+  @Test
+  public void testPetMoveDuringGame() throws IOException {
+    StringWriter output = new StringWriter();
+    String userInput = "TestPlayer\n1\n3\nno\n";
+    Town town = createTown(output, userInput);
+    town.addPlayer();
+    town.addComputerPlayer();
+    town.movePet(2);
+    assertEquals(2, town.getPet().getPetCurrentPlaceNumber());
+  }
+
+  /**
+   * Tests the retrieval of the target name.
+   */
+  @Test
+  public void testPetLocationPersistence() throws IOException {
+    StringWriter output = new StringWriter();
+    String userInput = "TestPlayer\n1\n3\n";
+    Town town = createTown(output, userInput);
+    town.movePet(2);
+    town.addPlayer();
+    town.lookAround();
+    assertEquals(2, town.getPet().getPetCurrentPlaceNumber());
   }
 }
