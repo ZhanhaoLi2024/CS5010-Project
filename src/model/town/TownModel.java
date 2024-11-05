@@ -314,6 +314,10 @@ public class TownModel implements Town {
 
   @Override
   public void showPlayerCurrentInfo() throws IOException {
+    if (players.isEmpty()) {
+      output.append("No players in the game.\n");
+      return;
+    }
     String playerName = players.get(currentPlayerIndex).getName();
     getPlayerByName(playerName);
   }
@@ -513,11 +517,10 @@ public class TownModel implements Town {
 
   @Override
   public void switchToNextPlayer() throws IOException {
-    if (getPlayers().size() == 1) {
-      output.append("You have to add at least one player\n");
+    if (players.size() <= 1) {
+      return;
     }
     currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
-
     if (currentPlayerIndex == 0) {
       currentTurn++;
     }
@@ -552,8 +555,10 @@ public class TownModel implements Town {
    */
   @Override
   public boolean isPlayerVisible(Player player) {
+    if (player == null) {
+      throw new IllegalArgumentException("Player cannot be null");
+    }
     Place playerPlace = getPlaceByNumber(player.getPlayerCurrentPlaceNumber());
-
     for (Player otherPlayer : players) {
       if (otherPlayer != player) {
         Place otherPlace = getPlaceByNumber(otherPlayer.getPlayerCurrentPlaceNumber());
@@ -580,6 +585,9 @@ public class TownModel implements Town {
 
   @Override
   public void startTurn() throws IOException {
+    if (players.isEmpty()) {
+      throw new IllegalStateException("Cannot start turn: No players in the game");
+    }
     currentTurn++;
     showTargetInfo();
     showPlayerCurrentInfo();

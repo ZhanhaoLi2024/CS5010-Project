@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -120,7 +121,7 @@ public class TownModelTest {
   @Test
   public void testGetPlaceInfo() {
     Place firstPlace = town.getTarget().getCurrentPlace();
-    
+
     assertEquals("Park", firstPlace.getName());
     assertFalse(firstPlace.getItems().isEmpty());
     assertEquals("Toy Ball", firstPlace.getItems().get(0).getName());
@@ -754,6 +755,278 @@ public class TownModelTest {
         10
     );
     testTown.lookAround();
+  }
+
+  /**
+   * Tests getting current player index with no players.
+   */
+  @Test
+  public void testGetCurrentPlayerIndexWithNoPlayers() {
+    assertEquals(0, town.getCurrentPlayerIndex());
+  }
+
+  /**
+   * Tests getting current player index with single player.
+   */
+  @Test
+  public void testGetCurrentPlayerIndexWithSinglePlayer() throws IOException {
+    String simulatedInput = "Alice\n1\n5\n";
+    TownModel testTown = new TownModel(
+        new TownLoader(),
+        "res/SmallTownWorld.txt",
+        new StringReader(simulatedInput),
+        new StringBuilder(),
+        3
+    );
+    testTown.addPlayer();
+    assertEquals(0, testTown.getCurrentPlayerIndex());
+  }
+
+  /**
+   * Tests current player index changes correctly after switching players.
+   */
+  @Test
+  public void testCurrentPlayerIndexAfterSwitching() throws IOException {
+    String simulatedInput = "Alice\n1\n5\n";
+    TownModel testTown = new TownModel(
+        new TownLoader(),
+        "res/SmallTownWorld.txt",
+        new StringReader(simulatedInput),
+        new StringBuilder(),
+        3
+    );
+
+    testTown.addComputerPlayer();
+    assertEquals(0, testTown.getCurrentPlayerIndex());
+
+    testTown.switchToNextPlayer();
+    assertEquals(0, testTown.getCurrentPlayerIndex());
+  }
+
+  /**
+   * Tests player visibility when players are in same place.
+   */
+  @Test
+  public void testPlayerVisibilityInSamePlace() throws IOException {
+    // Create two players in the same place
+    String simulatedInput = "Alice\n1\n5\nBob\n1\n5\n";
+    StringReader input = new StringReader(simulatedInput);
+    TownModel testTown =
+        new TownModel(new TownLoader(), "res/SmallTownWorld.txt", input, output, 3);
+
+    testTown.addPlayer(); // Add Alice
+    testTown.addPlayer(); // Add Bob
+
+    Player alice = testTown.getPlayers().get(0);
+    assertTrue("Players in same place should be visible to each other",
+        testTown.isPlayerVisible(alice));
+  }
+
+  /**
+   * Tests player visibility when players are in neighboring places.
+   */
+  @Test
+  public void testPlayerVisibilityInNeighboringPlaces() throws IOException {
+    // Set up players in neighboring places
+    String simulatedInput = "Alice\n1\n5\nBob\n2\n5\n";
+    StringReader input = new StringReader(simulatedInput);
+    TownModel testTown =
+        new TownModel(new TownLoader(), "res/SmallTownWorld.txt", input, output, 3);
+
+    testTown.addPlayer(); // Add Alice in place 1
+    testTown.addPlayer(); // Add Bob in place 2
+
+    Player alice = testTown.getPlayers().get(0);
+    assertTrue("Players in neighboring places should be visible to each other",
+        testTown.isPlayerVisible(alice));
+  }
+
+  /**
+   * Tests player visibility when players are not in neighboring places.
+   */
+  @Test
+  public void testPlayerVisibilityInDistantPlaces() throws IOException {
+    // Set up players in non-neighboring places
+    String simulatedInput = "Alice\n1\n5\nBob\n5\n5\n";
+    StringReader input = new StringReader(simulatedInput);
+    TownModel testTown =
+        new TownModel(new TownLoader(), "res/SmallTownWorld.txt", input, output, 3);
+
+    testTown.addPlayer(); // Add Alice in place 1
+    testTown.addPlayer(); // Add Bob in place 5
+
+    Player alice = testTown.getPlayers().get(0);
+    assertFalse("Players in distant places should not be visible to each other",
+        testTown.isPlayerVisible(alice));
+  }
+
+  /**
+   * Tests player visibility with single player in game.
+   */
+  @Test
+  public void testPlayerVisibilityWithSinglePlayer() throws IOException {
+    String simulatedInput = "Alice\n1\n5\n";
+    StringReader input = new StringReader(simulatedInput);
+    TownModel testTown =
+        new TownModel(new TownLoader(), "res/SmallTownWorld.txt", input, output, 3);
+
+    testTown.addPlayer(); // Add single player
+    Player alice = testTown.getPlayers().get(0);
+
+    assertFalse("Single player should not be visible to others",
+        testTown.isPlayerVisible(alice));
+  }
+
+  /**
+   * Tests player visibility with null player parameter.
+   */
+  @Test
+  public void testPlayerVisibilityWithNullPlayer() {
+    try {
+      town.isPlayerVisible(null);
+      fail("Expected IllegalArgumentException");
+    } catch (IllegalArgumentException e) {
+      assertEquals("Player cannot be null", e.getMessage());
+    }
+  }
+
+  /**
+   * Tests showing target info with full health.
+   */
+  @Test
+  public void testShowTargetInfoFullHealth() throws IOException {
+    StringBuilder output = new StringBuilder();
+    TownModel testTown = new TownModel(
+        new TownLoader(),
+        "res/SmallTownWorld.txt",
+        new StringReader(""),
+        output,
+        3
+    );
+
+    testTown.showTargetInfo();
+    String result = output.toString();
+    assertTrue(result.contains("The Mayor"));
+    assertTrue(result.contains("Health: 50"));
+    assertTrue(result.contains("Park")); // Starting place
+  }
+
+  /**
+   * Tests showing target info after target moves.
+   */
+  @Test
+  public void testShowTargetInfoAfterMove() throws IOException {
+    StringBuilder output = new StringBuilder();
+    TownModel testTown = new TownModel(
+        new TownLoader(),
+        "res/SmallTownWorld.txt",
+        new StringReader(""),
+        output,
+        3
+    );
+
+    testTown.moveTarget(); // Move to next place
+    testTown.showTargetInfo();
+    String result = output.toString();
+    assertTrue(result.contains("The Mayor"));
+    assertTrue(result.contains("Grocery Store")); // Second place
+  }
+
+  /**
+   * Tests starting new turn updates turn counter and shows info.
+   */
+  @Test
+  public void testStartTurnBasicFunctionality() throws IOException {
+    StringBuilder output = new StringBuilder();
+    TownModel testTown = new TownModel(
+        new TownLoader(),
+        "res/SmallTownWorld.txt",
+        new StringReader("Alice\n1\n5\n"),
+        output,
+        3
+    );
+
+    testTown.addPlayer();
+    int initialTurn = testTown.getCurrentTurn();
+    testTown.startTurn();
+
+    assertEquals("Turn counter should increment", initialTurn + 1, testTown.getCurrentTurn());
+    String result = output.toString();
+    assertTrue("Should show target info", result.contains("Target:"));
+    assertTrue("Should show player info", result.contains("Alice"));
+  }
+
+  /**
+   * Tests starting turn with no players.
+   */
+  @Test
+  public void testStartTurnWithNoPlayers() throws IOException {
+    StringBuilder output = new StringBuilder();
+    TownModel testTown = new TownModel(
+        new TownLoader(),
+        "res/SmallTownWorld.txt",
+        new StringReader(""),
+        output,
+        3
+    );
+
+    int initialTurn = testTown.getCurrentTurn();
+    try {
+      testTown.startTurn();
+      fail("Expected IllegalStateException");
+    } catch (IllegalStateException e) {
+      assertEquals("Cannot start turn: No players in the game", e.getMessage());
+    }
+    assertEquals("Turn counter should not increment without players",
+        initialTurn, testTown.getCurrentTurn());
+  }
+
+  /**
+   * Tests starting turn with multiple players.
+   */
+  @Test
+  public void testStartTurnWithMultiplePlayers() throws IOException {
+    StringBuilder output = new StringBuilder();
+    TownModel testTown = new TownModel(
+        new TownLoader(),
+        "res/SmallTownWorld.txt",
+        new StringReader("Alice\n1\n5\n"),
+        output,
+        3
+    );
+
+    testTown.addPlayer();
+    testTown.addComputerPlayer();
+
+    int initialTurn = testTown.getCurrentTurn();
+    testTown.startTurn();
+
+    assertEquals("Turn counter should increment", initialTurn + 1, testTown.getCurrentTurn());
+    String result = output.toString();
+    assertTrue("Should show target info", result.contains("Target:"));
+    assertTrue("Should show current player info",
+        result.contains(testTown.getPlayers().get(testTown.getCurrentPlayerIndex()).getName()));
+  }
+
+  /**
+   * Tests starting turn after maximum turns reached.
+   */
+  @Test
+  public void testStartTurnAfterMaxTurns() throws IOException {
+    StringBuilder output = new StringBuilder();
+    TownModel testTown = new TownModel(
+        new TownLoader(),
+        "res/SmallTownWorld.txt",
+        new StringReader("Alice\n1\n5\n"),
+        output,
+        2  // Set max turns to 2
+    );
+
+    testTown.addPlayer();
+    testTown.startTurn(); // Turn 2
+    testTown.startTurn(); // Turn 3 (exceeds max)
+
+    assertTrue("Game should be over", testTown.isGameOver());
   }
 
 }
