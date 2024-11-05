@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.util.Scanner;
 import javax.imageio.ImageIO;
 import model.place.Place;
+import model.player.Player;
 import model.town.Town;
 
 /**
@@ -113,40 +114,130 @@ public class GameController implements Controller {
 
   }
 
+  /**
+   * Handles a turn for the current player. Distinguishes between human and computer-controlled
+   * players and delegates to the appropriate handler method. This method enforces the game's
+   * turn-based mechanics and ensures each player takes valid actions according to the game rules.
+   * For human players, it presents a menu of possible actions.
+   * For computer players, it automatically determines and executes the optimal action.
+   *
+   * @throws IOException if there is an error in reading input or writing output
+   */
   private void takeTurnForPlayer() throws IOException {
     boolean isComputerControlled = town.isComputerControllerPlayer();
     if (!isComputerControlled) {
-      output.append("Please choose an option:\n");
-      output.append("1. Move player\n");
-      output.append("2. Pick up item\n");
-      output.append("3. Look around\n");
-      int choice = 0;
-      try {
-        choice = Integer.parseInt(scanner.nextLine());
-      } catch (NumberFormatException e) {
-        this.output.append("Invalid input. Please enter a number.\n");
-      }
-      switch (choice) {
-        case 1:
-          new MovePlayerCommand(town, output, scanner).execute();
-          break;
-        case 2:
-          new PickUpItemCommand(town, output, scanner).execute();
-          break;
-        case 3:
-          new LookAroundCommand(output, town).execute();
-          break;
-        case 4:
-          new AttackTargetCommand(town, output, scanner).execute();  // Added attack command
-          break;
-        default:
-          this.output.append("Invalid choice, please try again.\n");
-      }
+      handleHumanTurn();
     } else {
-      // Computer-controlled player
-      output.append("Computer player's turn.\n");
-      town.switchToNextPlayer();
+      handleComputerTurn();
     }
+  }
+
+  /**
+   * Handles a turn for a human player by displaying available actions and processing their choice.
+   * Available actions include:
+   * 1. Moving to a neighboring space
+   * 2. Picking up items from the current space
+   * 3. Looking around to gather information
+   * 4. Attempting to attack the target character
+   * <p>
+   * The method validates user input and executes the chosen action through the appropriate command.
+   * Invalid inputs are handled gracefully with error messages.
+   * Each action consumes one turn, whether successful or not.
+   *
+   * @throws IOException if there is an error in reading input or writing output
+   */
+  private void handleHumanTurn() throws IOException {
+    output.append("Please choose an option:\n");
+    output.append("1. Move player\n");
+    output.append("2. Pick up item\n");
+    output.append("3. Look around\n");
+    output.append("4. Attack target\n");
+
+    int choice = 0;
+    try {
+      choice = Integer.parseInt(scanner.nextLine());
+    } catch (NumberFormatException e) {
+      this.output.append("Invalid input. Please enter a number.\n");
+    }
+
+    switch (choice) {
+      case 1:
+        new MovePlayerCommand(town, output, scanner).execute();
+        break;
+      case 2:
+        new PickUpItemCommand(town, output, scanner).execute();
+        break;
+      case 3:
+        new LookAroundCommand(output, town).execute();
+        break;
+      case 4:
+        new AttackTargetCommand(town, output, scanner).execute();
+        break;
+      default:
+        this.output.append("Invalid choice, please try again.\n");
+    }
+  }
+
+  /**
+   * Handles a turn for a computer-controlled player by automatically selecting and executing
+   * the optimal action based on the current game state. The computer player follows a strict
+   * priority system for decision making:
+   * <p>
+   * Priority 1: Attack the target if:
+   * - In the same room as the target
+   * - Not visible to other players
+   * - Has items (will use highest damage item) or can use poke attack
+   * <p>
+   * Priority 2: Pick up items if:
+   * - Items are available in the current space
+   * - Has room in inventory (below carry limit)
+   * <p>
+   * Priority 3: Move towards target if:
+   * - Carrying items that can be used for attack
+   * - Not in the same room as target
+   * <p>
+   * Priority 4: Look around if:
+   * - No higher priority actions are available
+   * - Need to gather information about surroundings
+   * <p>
+   * Each action is executed through the appropriate command pattern implementation
+   * and consumes one turn. The method provides feedback about the computer's actions
+   * through the output interface.
+   *
+   * @throws IOException if there is an error in writing output
+   */
+  private void handleComputerTurn() throws IOException {
+    output.append("Computer player's turn.\n");
+    Player computerPlayer = town.getPlayers().get(town.getCurrentPlayerIndex());
+    Place currentPlace = town.getPlaceByNumber(computerPlayer.getPlayerCurrentPlaceNumber());
+
+    // First priority: Attack if in same room as target and not visible
+    if (currentPlace.getPlaceNumber().equals(
+        town.getTarget().getCurrentPlace().getPlaceNumber())
+        && !town.isPlayerVisible(computerPlayer)) {
+      output.append("Computer player attempts to attack the target.\n");
+      new AttackTargetCommand(town, output, scanner).execute();
+      return;
+    }
+
+    // Second priority: Pick up items if available and has space
+    if (!currentPlace.getItems().isEmpty()
+        && computerPlayer.getCurrentCarriedItems().size() < computerPlayer.getCarryLimit()) {
+      output.append("Computer player picks up an item.\n");
+      new PickUpItemCommand(town, output, scanner).execute();
+      return;
+    }
+
+    // Third priority: Move towards target if carrying items
+    if (!computerPlayer.getCurrentCarriedItems().isEmpty()) {
+      output.append("Computer player moves to find the target.\n");
+      new MovePlayerCommand(town, output, scanner).execute();
+      return;
+    }
+
+    // Fourth priority: Look around to gather information
+    output.append("Computer player looks around.\n");
+    new LookAroundCommand(output, town).execute();
   }
 
   @Override

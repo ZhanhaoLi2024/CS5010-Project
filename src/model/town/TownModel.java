@@ -456,27 +456,76 @@ public class TownModel implements Town {
     Player currentPlayer = this.players.get(currentPlayerIndex);
     Place currentPlace = getPlaceByNumber(currentPlayer.getPlayerCurrentPlaceNumber());
     List<Place> neighbors = currentPlace.getNeighbors();
+
     if (neighbors.isEmpty()) {
       output.append("No neighbors found.\n");
+      return;
+    }
+
+    if (currentPlayer.isComputerControlled()) {
+      handleComputerPlayerMove(currentPlayer, currentPlace, neighbors);
     } else {
-      output.append("Neighbors of ").append(currentPlace.getName())
-          .append(":\n");
-      for (int i = 0; i < neighbors.size(); i++) {
-        output.append(String.valueOf(i + 1)).append(". ").append(neighbors.get(i).getName())
-            .append("\n");
-      }
-      output.append("Enter the number of the neighbor to move to:\n");
-      int neighborNumber = Integer.parseInt(scanner.nextLine());
-      if (neighborNumber < 1 || neighborNumber > neighbors.size()) {
-        output.append("Invalid neighbor number.\n");
-      } else {
-        int playerMoveNumber = getPlaceNumberByName(neighbors.get(neighborNumber - 1).getName());
-        currentPlayer.moveToPlaceNumber(playerMoveNumber);
-        output.append("Moved to ").append(neighbors.get(neighborNumber - 1).getName()).append("\n");
-      }
+      handleHumanPlayerMove(currentPlayer, currentPlace, neighbors);
     }
 
     this.switchToNextPlayer();
+  }
+
+  /**
+   * Handles movement logic for computer-controlled player.
+   */
+  private void handleComputerPlayerMove(Player player, Place currentPlace, List<Place> neighbors)
+      throws IOException {
+    // First try to move towards target if visible
+    Place targetPlace = getTarget().getCurrentPlace();
+
+    // If target is in a neighboring space, move there
+    for (Place neighbor : neighbors) {
+      if (neighbor.equals(targetPlace)) {
+        movePlayerToNeighbor(player, neighbor);
+        return;
+      }
+    }
+
+    // Otherwise, move randomly
+    Random random = new Random();
+    int randomNeighbor = random.nextInt(neighbors.size());
+    movePlayerToNeighbor(player, neighbors.get(randomNeighbor));
+  }
+
+  /**
+   * Handles movement logic for human player.
+   */
+  private void handleHumanPlayerMove(Player player, Place currentPlace, List<Place> neighbors)
+      throws IOException {
+    output.append("Neighbors of ").append(currentPlace.getName())
+        .append(":\n");
+    for (int i = 0; i < neighbors.size(); i++) {
+      output.append(String.valueOf(i + 1)).append(". ")
+          .append(neighbors.get(i).getName())
+          .append("\n");
+    }
+    output.append("Enter the number of the neighbor to move to:\n");
+
+    try {
+      int neighborNumber = Integer.parseInt(scanner.nextLine());
+      if (neighborNumber < 1 || neighborNumber > neighbors.size()) {
+        output.append("Invalid neighbor number.\n");
+        return;
+      }
+      movePlayerToNeighbor(player, neighbors.get(neighborNumber - 1));
+    } catch (NumberFormatException e) {
+      output.append("Invalid input. Please enter a number.\n");
+    }
+  }
+
+  /**
+   * Moves a player to the specified neighboring place.
+   */
+  private void movePlayerToNeighbor(Player player, Place neighbor) throws IOException {
+    int newPlaceNumber = getPlaceNumberByName(neighbor.getName());
+    player.moveToPlaceNumber(newPlaceNumber);
+    output.append("Moved to ").append(neighbor.getName()).append("\n");
   }
 
   @Override
