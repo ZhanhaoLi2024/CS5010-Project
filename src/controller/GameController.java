@@ -1,6 +1,7 @@
 package controller;
 
 import controller.command.AddPlayerCommand;
+import controller.command.AttackTargetCommand;
 import controller.command.DisplayPlaceInfoCommand;
 import controller.command.DisplayPlayerInfoCommand;
 import controller.command.LookAroundCommand;
@@ -134,6 +135,9 @@ public class GameController implements Controller {
           break;
         case 3:
           new LookAroundCommand(output, town).execute();
+          break;
+        case 4:
+          new AttackTargetCommand(town, output, scanner).execute();  // Added attack command
           break;
         default:
           this.output.append("Invalid choice, please try again.\n");

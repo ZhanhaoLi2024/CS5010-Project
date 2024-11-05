@@ -592,4 +592,155 @@ public class TownModel implements Town {
     showTargetInfo();
     showPlayerCurrentInfo();
   }
+
+  /**
+   * Executes an attack with a specific item.
+   *
+   * @param player the player performing the attack
+   * @param item   the item being used
+   * @throws IOException              if there is an error with output
+   * @throws IllegalArgumentException if player or item is null
+   */
+  @Override
+  public void executeItemAttack(Player player, Item item) throws IOException {
+    if (player == null || item == null) {
+      throw new IllegalArgumentException("Player and item cannot be null");
+    }
+
+    String playerPlaceNumber = String.valueOf(player.getPlayerCurrentPlaceNumber());
+    String targetPlaceNumber = targetCharacter.getCurrentPlace().getPlaceNumber();
+
+    // Validate player is in same room as target
+    if (!playerPlaceNumber.equals(targetPlaceNumber)) {
+      output.append("Attack failed: You must be in the same room as the target!\n");
+      return;
+    }
+
+    // Check if player is visible to others
+    if (isPlayerVisible(player)) {
+      output.append("Attack failed: Other players have witnessed your attempt!\n");
+      return;
+    }
+
+    // Execute attack (always successful if not seen)
+    boolean targetDefeated = targetCharacter.takeDamage(item.getDamage());
+
+    // Remove used item from player's inventory
+    player.getCurrentCarriedItems().remove(item);
+    output.append("Attack successful with ").append(item.getName())
+        .append(" for ").append(String.valueOf(item.getDamage())).append(" damage!\n");
+
+    if (targetDefeated) {
+      output.append(player.getName()).append(" has eliminated the target!\n");
+    }
+  }
+
+  /**
+   * Executes a basic poke attack that deals 1 damage.
+   *
+   * @param player the player performing the poke attack
+   * @throws IOException              if there is an error with output
+   * @throws IllegalArgumentException if player is null
+   */
+  @Override
+  public void executePoke(Player player) throws IOException {
+    if (player == null) {
+      throw new IllegalArgumentException("Player cannot be null");
+    }
+
+    String playerPlaceNumber = String.valueOf(player.getPlayerCurrentPlaceNumber());
+    String targetPlaceNumber = targetCharacter.getCurrentPlace().getPlaceNumber();
+
+    if (!playerPlaceNumber.equals(targetPlaceNumber)) {
+      output.append("Attack failed: You must be in the same room as the target!\n");
+      return;
+    }
+
+    if (isPlayerVisible(player)) {
+      output.append("Attack failed: Other players have witnessed your attempt!\n");
+      return;
+    }
+
+    // Poke attack (always successful if not seen)
+    boolean targetDefeated = targetCharacter.takeDamage(1);
+    output.append("Successfully poked the target in the eye for 1 damage!\n");
+
+    if (targetDefeated) {
+      output.append(player.getName())
+          .append(" has eliminated the target with a poke in the eye!\n");
+    }
+  }
+
+  /**
+   * Executes an attack for a computer-controlled player.
+   *
+   * @param player the computer-controlled player
+   * @throws IOException              if there is an error with output
+   * @throws IllegalArgumentException if player is null or not computer-controlled
+   */
+  @Override
+  public void executeComputerAttack(Player player) throws IOException {
+    if (player == null || !player.isComputerControlled()) {
+      throw new IllegalArgumentException("Player must be a non-null computer-controlled player");
+    }
+
+    // Computer always attempts to attack if in the same room as target
+    List<Item> items = player.getCurrentCarriedItems();
+
+    if (items.isEmpty()) {
+      executePoke(player);
+      return;
+    }
+
+    // Find and use item with highest damage
+    Item bestItem = items.stream()
+        .max((i1, i2) -> Integer.compare(i1.getDamage(), i2.getDamage()))
+        .get();
+
+    executeItemAttack(player, bestItem);
+  }
+
+  /**
+   * Handles attack options and execution for human players.
+   *
+   * @param player the human player making the attack
+   * @throws IOException              if there is an error with output
+   * @throws IllegalArgumentException if player is null or is computer-controlled
+   */
+  @Override
+  public void handleHumanAttack(Player player) throws IOException {
+    if (player == null || player.isComputerControlled()) {
+      throw new IllegalArgumentException("Player must be a non-null human player");
+    }
+
+    List<Item> items = player.getCurrentCarriedItems();
+
+    output.append("\nChoose your attack:\n");
+    output.append("0. Poke in the eye (1 damage)\n");
+
+    for (int i = 0; i < items.size(); i++) {
+      Item item = items.get(i);
+      output.append(String.valueOf(i + 1)).append(". Use ")
+          .append(item.getName())
+          .append(" (").append(String.valueOf(item.getDamage())).append(" damage)\n");
+    }
+
+    try {
+      int choice = Integer.parseInt(scanner.nextLine());
+      if (choice == 0) {
+        executePoke(player);
+      } else if (choice >= 1 && choice <= items.size()) {
+        executeItemAttack(player, items.get(choice - 1));
+      } else {
+        output.append("Invalid choice. Attack cancelled.\n");
+      }
+    } catch (NumberFormatException e) {
+      output.append("Invalid input. Attack cancelled.\n");
+    }
+  }
+
+  @Override
+  public int getMaxTurns() {
+    return maxTurns;
+  }
 }

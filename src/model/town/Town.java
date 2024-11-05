@@ -244,6 +244,50 @@ public interface Town {
    * @throws IOException if there is an error writing output
    */
   void showTargetInfo() throws IOException;
-  
+
   void startTurn() throws IOException;
+
+  /**
+   * Executes an attack with a specific item.
+   *
+   * @param player the player performing the attack
+   * @param item   the item being used
+   * @throws IOException              if there is an error with output
+   * @throws IllegalArgumentException if player or item is null
+   */
+  void executeItemAttack(Player player, Item item) throws IOException;
+
+  /**
+   * Executes a basic poke attack that deals 1 damage.
+   *
+   * @param player the player performing the poke attack
+   * @throws IOException              if there is an error with output
+   * @throws IllegalArgumentException if player is null
+   */
+  void executePoke(Player player) throws IOException;
+
+  /**
+   * Executes an attack for a computer-controlled player.
+   *
+   * @param player the computer-controlled player
+   * @throws IOException              if there is an error with output
+   * @throws IllegalArgumentException if player is null or not computer-controlled
+   */
+  void executeComputerAttack(Player player) throws IOException;
+
+  /**
+   * Handles attack options and execution for human players.
+   *
+   * @param player the human player making the attack
+   * @throws IOException              if there is an error with output
+   * @throws IllegalArgumentException if player is null or is computer-controlled
+   */
+  void handleHumanAttack(Player player) throws IOException;
+
+  /**
+   * Retrieves the maximum number of turns allowed in the game.
+   *
+   * @return the maximum number of turns allowed in the game
+   */
+  int getMaxTurns();
 }
