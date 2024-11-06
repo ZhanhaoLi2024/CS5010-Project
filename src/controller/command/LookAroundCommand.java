@@ -7,7 +7,6 @@ import model.town.Town;
  * Command to allow a player to look around in their current place.
  */
 public class LookAroundCommand implements Command {
-  private final Appendable output;
   private final Town town;
 
   /**
@@ -17,7 +16,6 @@ public class LookAroundCommand implements Command {
    * @param town   the town where the player is located
    */
   public LookAroundCommand(Appendable output, Town town) {
-    this.output = output;
     this.town = town;
   }
 

@@ -27,8 +27,6 @@ public class GameController implements Controller {
   private final Scanner scanner;
   private final Appendable output;
   private final int maxTurns;
-  //  private List<Player> players;
-//  private List<Place> places;
   private int currentTurn;
   private boolean quitGame;
   private boolean continueGame;
@@ -48,8 +46,6 @@ public class GameController implements Controller {
     this.maxTurns = maxTurns;
     this.currentTurn = 1;
     this.quitGame = false;
-//    this.players = new ArrayList<>();
-//    this.places = new ArrayList<>();
     this.continueGame = true;
   }
 
@@ -268,7 +264,6 @@ public class GameController implements Controller {
     output.append("\n");
     this.currentTurn = 1;
     this.quitGame = false;
-//    this.players = new ArrayList<>();
     this.startGame();
   }
 

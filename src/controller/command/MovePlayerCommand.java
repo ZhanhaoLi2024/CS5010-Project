@@ -9,8 +9,6 @@ import model.town.Town;
  */
 public class MovePlayerCommand implements Command {
   private final Town town;
-  private final Appendable output;
-  private final Scanner scanner;
 
   /**
    * Constructs a new MovePlayerCommand.
@@ -21,8 +19,6 @@ public class MovePlayerCommand implements Command {
    */
   public MovePlayerCommand(Town town, Appendable output, Scanner scanner) {
     this.town = town;
-    this.output = output;
-    this.scanner = scanner;
   }
 
   @Override

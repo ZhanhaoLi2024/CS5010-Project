@@ -10,7 +10,7 @@ import model.town.Town;
 public class DisplayPlayerInfoCommand implements Command {
   private final Appendable output;
   private final Scanner scanner;
-  private Town town;
+  private final Town town;
 
   /**
    * Constructs a new DisplayPlayerInfoCommand.
