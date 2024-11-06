@@ -1,1 +1,11 @@
 /bin/
+
+*.class
+
+.idea/workspace.xml
+
+.idea/
+.metadata/
+
+.DS_Store
+

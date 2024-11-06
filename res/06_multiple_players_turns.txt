@@ -1,0 +1,44 @@
+2 of 3
+--------------------
+Player: David(Computer)'s turn
+Your current place: Bakery
+Player has no item in the bag.
+Moved to Gas Station
+--------------------
+Player: Steven's turn
+Your current place: School
+Player has no item in the bag.
+Please choose an option:
+1. Move player
+2. Pick up item
+3. Look around
+3
+Neighbors of School:
+Grocery Store
+Post Office
+Hospital
+Restaurant
+Items in School:
+Textbook (Damage: 6)
+--------------------
+Player: Amy's turn
+Your current place: Hospital
+Items in the player's bag:
+Medical Kit (Damage: 18)
+Please choose an option:
+1. Move player
+2. Pick up item
+3. Look around
+1
+Neighbors of Hospital:
+1. School
+2. Post Office
+3. Library
+4. Restaurant
+5. Bakery
+6. Gas Station
+7. House #1
+8. House #2
+Enter the neighbor number to move to:
+4
+Moved to Restaurant
