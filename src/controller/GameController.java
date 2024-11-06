@@ -5,6 +5,7 @@ import controller.command.AttackTargetCommand;
 import controller.command.DisplayPlaceInfoCommand;
 import controller.command.DisplayPlayerInfoCommand;
 import controller.command.LookAroundCommand;
+import controller.command.MovePetCommand;
 import controller.command.MovePlayerCommand;
 import controller.command.PickUpItemCommand;
 import java.awt.Color;
@@ -148,6 +149,7 @@ public class GameController implements Controller {
     output.append("2. Pick up item\n");
     output.append("3. Look around\n");
     output.append("4. Attack target\n");
+    output.append("5. Move pet\n");
 
     int choice = 0;
     try {
@@ -168,6 +170,9 @@ public class GameController implements Controller {
         break;
       case 4:
         new AttackTargetCommand(town, output, scanner).execute();
+        break;
+      case 5:
+        new MovePetCommand(town, output, scanner).execute();
         break;
       default:
         this.output.append("Invalid choice, please try again.\n");
