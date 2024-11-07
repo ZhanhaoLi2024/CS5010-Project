@@ -67,6 +67,11 @@ public class GameController implements Controller {
     }
   }
 
+  /**
+   * Displays the main menu of the game.
+   *
+   * @throws IOException if an I/O error occurs
+   */
   private void displayMainMenu() throws IOException {
     output.append("Please choose an option:\n");
     output.append("1. Show the Map Information\n");
@@ -182,12 +187,12 @@ public class GameController implements Controller {
   /**
    * Handles a turn for a computer-controlled player by automatically selecting and executing
    * the optimal action based on the current game state. The computer player follows a strict
-   * priority system for decision making:
+   * priority system for decision-making:
    * <p>
    * Priority 1: Attack the target if:
    * - In the same room as the target
    * - Not visible to other players
-   * - Has items (will use highest damage item) or can use poke attack
+   * - Has items (will use the highest damage item) or can use poke attack
    * <p>
    * Priority 2: Pick up items if:
    * - Items are available in the current space
@@ -241,6 +246,17 @@ public class GameController implements Controller {
     new LookAroundCommand(output, town).execute();
   }
 
+  /**
+   * Executes a turn in the game. This method is responsible for managing the game state and
+   * ensuring that each player takes a turn in the correct order. The game continues until the
+   * maximum number of turns is reached or the game ends due to a player winning or quitting.
+   * <p>
+   * The method displays the current turn number, player information, and prompts the current player
+   * to take their turn. It checks if the game is over after each turn and ends the game if necessary.
+   * The game loop continues until the game is over or the player quits.
+   *
+   * @throws IOException if there is an error in reading input or writing output
+   */
   @Override
   public void takeTurn() throws IOException {
     if (town.getPlayers().size() == 1) {
@@ -261,6 +277,11 @@ public class GameController implements Controller {
     }
   }
 
+  /**
+   * Ends the game and resets the game state for a new game.
+   *
+   * @throws IOException if there is an error in writing output
+   */
   @Override
   public void endGame() throws IOException {
     continueGame = false;

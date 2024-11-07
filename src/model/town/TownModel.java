@@ -639,7 +639,24 @@ public class TownModel implements Town {
     }
     currentTurn++;
     showTargetInfo();
-    showPlayerCurrentInfo();
+    showBriefPlayerInfo();
+  }
+
+  /**
+   * Displays brief information about the current player.
+   *
+   * @throws IOException if there is an error writing output
+   */
+  private void showBriefPlayerInfo() throws IOException {
+    Player currentPlayer = players.get(currentPlayerIndex);
+    Place currentPlace = getPlaceByNumber(currentPlayer.getPlayerCurrentPlaceNumber());
+
+    output.append("\nCurrent player: ").append(currentPlayer.getName())
+        .append("\nLocation: ").append(currentPlace.getName())
+        .append("\nItems carried: ")
+        .append(String.valueOf(currentPlayer.getCurrentCarriedItems().size()))
+        .append("/").append(String.valueOf(currentPlayer.getCarryLimit()))
+        .append("\n");
   }
 
   /**
