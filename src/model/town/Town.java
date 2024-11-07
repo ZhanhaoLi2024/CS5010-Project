@@ -2,6 +2,10 @@ package model.town;
 
 import java.io.IOException;
 import java.util.List;
+import model.dto.GameStateDTO;
+import model.dto.PlaceDTO;
+import model.dto.PlayerDTO;
+import model.dto.TargetDTO;
 import model.item.Item;
 import model.pet.Pet;
 import model.place.Place;
@@ -14,13 +18,6 @@ import model.target.Target;
  * between different places.
  */
 public interface Town {
-
-  /**
-   * Displays the information of the specified place.
-   *
-   * @param place the place to display the information of
-   */
-  void getPlaceInfo(Place place);
 
   /**
    * Retrieves the place number by name.
@@ -144,53 +141,12 @@ public interface Town {
    */
   void addPlayer() throws IOException;
 
-  /**
-   * Shows information about all places.
-   *
-   * @throws IOException if there is an issue with I/O operations.
-   */
-  void showAllPlacesInfo() throws IOException;
-
-  /**
-   * Shows information about a specific place.
-   *
-   * @param placeName the name of the place
-   * @throws IOException if there is an issue with I/O operations.
-   */
-  void getPlaceByName(String placeName) throws IOException;
-
-  /**
-   * Shows information about all places.
-   *
-   * @throws IOException if there is an issue with I/O operations.
-   */
-  void showAllPlayersInfo() throws IOException;
-
-  /**
-   * Shows information about a specific player.
-   *
-   * @throws IOException if there is an issue with I/O operations.
-   */
-  void getPlayerByName(String playerName) throws IOException;
-
-  /**
-   * Allows the player to look around the current place.
-   *
-   * @throws IOException if there is an issue with I/O operations.
-   */
-  void lookAround() throws IOException;
+  void pickUpItem(int itemIndex) throws IOException;
 
   /**
    * Switches to the next player in the game.
    */
   void switchToNextPlayer() throws IOException;
-
-  /**
-   * Shows the current information of the player.
-   *
-   * @throws IOException if there is an issue with I/O operations
-   */
-  void showPlayerCurrentInfo() throws IOException;
 
   /**
    * Checks if the game is over.
@@ -206,21 +162,14 @@ public interface Town {
    */
   Boolean isComputerControllerPlayer();
 
+  /**
+   * Retrieves the current turn number.
+   *
+   * @return the current turn number
+   */
   int getCurrentTurn();
 
-  /**
-   * Moves the player to the next place in the list of neighboring places.
-   *
-   * @throws IOException if there is an issue with I/O operations.
-   */
-  void movePlayer() throws IOException;
-
-  /**
-   * Allows the player to pick up an item from the current location.
-   *
-   * @throws IllegalStateException if the player cannot carry any more items.
-   */
-  void pickUpItem() throws IOException;
+  void movePlayer(int targetPlaceNumber) throws IOException;
 
   /**
    * Gets the index of the current player.
@@ -239,15 +188,6 @@ public interface Town {
   boolean isPlayerVisible(Player player);
 
   /**
-   * Displays the current state of the target character.
-   *
-   * @throws IOException if there is an error writing output
-   */
-  void showTargetInfo() throws IOException;
-
-  void startTurn() throws IOException;
-
-  /**
    * Executes an attack with a specific item.
    *
    * @param player the player performing the attack
@@ -257,32 +197,7 @@ public interface Town {
    */
   void executeItemAttack(Player player, Item item) throws IOException;
 
-  /**
-   * Executes a basic poke attack that deals 1 damage.
-   *
-   * @param player the player performing the poke attack
-   * @throws IOException              if there is an error with output
-   * @throws IllegalArgumentException if player is null
-   */
-  void executePoke(Player player) throws IOException;
-
-  /**
-   * Executes an attack for a computer-controlled player.
-   *
-   * @param player the computer-controlled player
-   * @throws IOException              if there is an error with output
-   * @throws IllegalArgumentException if player is null or not computer-controlled
-   */
-  void executeComputerAttack(Player player) throws IOException;
-
-  /**
-   * Handles attack options and execution for human players.
-   *
-   * @param player the human player making the attack
-   * @throws IOException              if there is an error with output
-   * @throws IllegalArgumentException if player is null or is computer-controlled
-   */
-  void handleHumanAttack(Player player) throws IOException;
+  AttackResult attackTarget(Integer itemIndex) throws IOException;
 
   /**
    * Retrieves the maximum number of turns allowed in the game.
@@ -290,4 +205,40 @@ public interface Town {
    * @return the maximum number of turns allowed in the game
    */
   int getMaxTurns();
+
+  /**
+   * Shows information about the current player's state.
+   *
+   * @throws IOException if there is an error with output
+   */
+  void showPlayerCurrentInfo() throws IOException;
+
+  /**
+   * Gets the current game state as a DTO
+   *
+   * @return GameStateDTO containing the current game state
+   */
+  GameStateDTO getGameState();
+
+  /**
+   * Gets information about a specific place as a DTO
+   *
+   * @param placeNumber the number of the place
+   * @return PlaceDTO containing place information
+   */
+  PlaceDTO getPlaceInfo(int placeNumber);
+
+  /**
+   * Gets information about the current player as a DTO
+   *
+   * @return PlayerDTO containing current player information
+   */
+  PlayerDTO getCurrentPlayerInfo();
+
+  /**
+   * Gets information about the target as a DTO
+   *
+   * @return TargetDTO containing target information
+   */
+  TargetDTO getTargetInfo();
 }
