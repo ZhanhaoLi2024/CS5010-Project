@@ -9,33 +9,9 @@ import java.io.IOException;
 public interface Controller {
 
   /**
-   * Starts the game loop, where the controller receives input, processes it, and interacts with the model.
+   * Starts the game and handles the main game loop.
    *
-   * @throws IOException if there is an issue with I/O operations.
+   * @throws IOException if there's an error with I/O operations
    */
   void startGame() throws IOException;
-
-  /**
-   * Prints the map of the town.
-   */
-  void printMap() throws IOException;
-
-  /**
-   * Displays the map information.
-   */
-  void displayMapInfo();
-
-  /**
-   * Allows a player to take a turn.
-   *
-   * @throws IOException if there is an issue with I/O operations.
-   */
-  void takeTurn() throws IOException;
-
-  /**
-   * Ends the game.
-   *
-   * @throws IOException if there is an issue with I/O operations.
-   */
-  void endGame() throws IOException;
 }
