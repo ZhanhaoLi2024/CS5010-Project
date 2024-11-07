@@ -7,6 +7,7 @@ import model.dto.PlaceDTO;
 import model.dto.PlayerDTO;
 import model.dto.TargetDTO;
 import model.item.Item;
+import model.observer.GameSubject;
 import model.pet.Pet;
 import model.place.Place;
 import model.player.Player;
@@ -17,7 +18,7 @@ import model.target.Target;
  * game. A town has a name, a list of places, and a character that can move
  * between different places.
  */
-public interface Town {
+public interface Town extends GameSubject {
 
   /**
    * Retrieves the place number by name.

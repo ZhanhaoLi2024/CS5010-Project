@@ -13,8 +13,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import model.dto.GameStateDTO;
+import model.dto.ItemDTO;
+import model.dto.PlaceDTO;
 import model.dto.PlayerDTO;
+import model.dto.TargetDTO;
 import model.item.Item;
+import model.observer.GameObserver;
 import model.place.Place;
 import model.town.Town;
 import view.GameView;
@@ -23,7 +27,7 @@ import view.GameView;
  * The GameController coordinates interactions between the Town model and GameView.
  * It handles user input and updates the view accordingly while keeping the model and view decoupled.
  */
-public class GameController implements Controller {
+public class GameController implements Controller, GameObserver {
   private final Town townModel;
   private final GameView view;
   private boolean isGameRunning;
@@ -38,6 +42,7 @@ public class GameController implements Controller {
     this.townModel = townModel;
     this.view = view;
     this.isGameRunning = true;
+    townModel.addObserver(this);
   }
 
   /**
@@ -225,13 +230,10 @@ public class GameController implements Controller {
 
   // Helper methods for computer player decision making
   private boolean canAttackTarget(PlayerDTO player) {
-    if (player.getCurrentPlaceNumber() ==
-        townModel.getTarget().getCurrentPlace().getPlaceNumber()) {
-      townModel.isPlayerVisible(
-          townModel.getPlayers().get(townModel.getCurrentPlayerIndex()));
-    }
-    return
-        false;
+    return String.valueOf(player.getCurrentPlaceNumber())
+        .equals(townModel.getTarget().getCurrentPlace().getPlaceNumber())
+        &&
+        !townModel.isPlayerVisible(townModel.getPlayers().get(townModel.getCurrentPlayerIndex()));
   }
 
   private boolean canPickUpItem(PlayerDTO player) {
@@ -281,6 +283,86 @@ public class GameController implements Controller {
       placeInfo.add(info.toString());
     }
     return placeInfo;
+  }
+
+  @Override
+  public void onGameStateChanged(GameStateDTO gameState) {
+    try {
+      // Update view with new game state
+      view.displayGameState(
+          gameState.getCurrentTurn(),
+          gameState.getMaxTurns(),
+          getPlayerInfoStrings(gameState.getCurrentPlayerIndex())
+      );
+
+      // Check game end conditions
+      if (gameState.isGameOver()) {
+        handleGameEnd();
+      }
+    } catch (IOException e) {
+      // Handle exception
+    }
+  }
+
+  @Override
+  public void onPlaceStateChanged(PlaceDTO placeInfo) {
+    try {
+      // Update view with new place state
+      List<String> placeInfoStrings = new ArrayList<>();
+      placeInfoStrings.add(formatPlaceInfo(placeInfo));
+      view.displayPlaceInfo(placeInfoStrings);
+    } catch (IOException e) {
+      // Handle exception
+    }
+  }
+
+  @Override
+  public void onPlayerStateChanged(PlayerDTO playerInfo) {
+    try {
+      // Update view with new player state
+      List<String> playerInfoStrings = new ArrayList<>();
+      playerInfoStrings.add(formatPlayerInfo(playerInfo));
+      view.displayPlayerInfo(playerInfoStrings);
+    } catch (IOException e) {
+      // Handle exception
+    }
+  }
+
+  @Override
+  public void onTargetStateChanged(TargetDTO targetInfo) {
+    try {
+      // Update view with new target state
+      view.displayMessage(String.format(
+          "Target %s health: %d",
+          targetInfo.getName(),
+          targetInfo.getHealth()
+      ));
+    } catch (IOException e) {
+      // Handle exception
+    }
+  }
+
+  // Helper method to format place information
+  private String formatPlaceInfo(PlaceDTO place) {
+    StringBuilder info = new StringBuilder(place.getName());
+    info.append("\nItems:");
+    for (ItemDTO item : place.getItems()) {
+      info.append("\n  - ").append(item.getName())
+          .append(" (Damage: ").append(item.getDamage()).append(")");
+    }
+    info.append("\nPlayers here: ").append(String.join(", ", place.getPlayerNames()));
+    return info.toString();
+  }
+
+  // Helper method to format player information
+  private String formatPlayerInfo(PlayerDTO player) {
+    return String.format(
+        "%s at %s (Items: %d/%d)",
+        player.getName(),
+        townModel.getPlaceByNumber(player.getCurrentPlaceNumber()).getName(),
+        player.getItems().size(),
+        player.getCarryLimit()
+    );
   }
 
   //  /**

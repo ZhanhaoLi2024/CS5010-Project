@@ -12,6 +12,7 @@ import model.dto.PlaceDTO;
 import model.dto.PlayerDTO;
 import model.dto.TargetDTO;
 import model.item.Item;
+import model.observer.GameObserver;
 import model.pet.Pet;
 import model.pet.PetModel;
 import model.place.Place;
@@ -38,6 +39,7 @@ public class TownModel implements Town {
   private final int targetHealth;
   private final int maxTurns;
   private final DTOMapper dtoMapper;
+  private final List<GameObserver> observers;
   private int currentPlayerIndex;
   private int currentTurn;
 
@@ -66,6 +68,7 @@ public class TownModel implements Town {
     this.currentTurn = 1;
     this.maxTurns = maxTurns;
     this.dtoMapper = new DTOMapperImpl();
+    this.observers = new ArrayList<>();
   }
 
   @Override
@@ -216,6 +219,10 @@ public class TownModel implements Town {
 
   @Override
   public void movePlayer(int targetPlaceNumber) throws IOException {
+    // Store old state
+    int oldPlaceNumber = players.get(currentPlayerIndex).getPlayerCurrentPlaceNumber();
+
+    // Execute move logic
     Player currentPlayer = players.get(currentPlayerIndex);
     Place currentPlace = getPlaceByNumber(currentPlayer.getPlayerCurrentPlaceNumber());
     Place targetPlace = getPlaceByNumber(targetPlaceNumber);
@@ -227,7 +234,20 @@ public class TownModel implements Town {
     currentPlace.removePlayer(currentPlayer);
     currentPlayer.moveToPlaceNumber(targetPlaceNumber);
     targetPlace.addPlayer(currentPlayer);
+
+    // Notify observers
+    PlaceDTO oldPlaceInfo = getPlaceInfo(oldPlaceNumber);
+    PlaceDTO newPlaceInfo = getPlaceInfo(targetPlaceNumber);
+    PlayerDTO playerInfo = getCurrentPlayerInfo();
+
+    for (GameObserver observer : observers) {
+      observer.onPlaceStateChanged(oldPlaceInfo);
+      observer.onPlaceStateChanged(newPlaceInfo);
+      observer.onPlayerStateChanged(playerInfo);
+    }
+
     switchToNextPlayer();
+    notifyObservers(); // General game state update
   }
 
   /**
@@ -267,6 +287,7 @@ public class TownModel implements Town {
 
   @Override
   public void pickUpItem(int itemIndex) throws IOException {
+    // Store current state
     Player currentPlayer = players.get(currentPlayerIndex);
     Place currentPlace = getPlaceByNumber(currentPlayer.getPlayerCurrentPlaceNumber());
     List<Item> items = currentPlace.getItems();
@@ -278,7 +299,18 @@ public class TownModel implements Town {
     Item item = items.get(itemIndex);
     currentPlayer.pickUpItem(item);
     currentPlace.removeItem(item);
+
+    // Notify observers
+    PlayerDTO playerInfo = getCurrentPlayerInfo();
+    PlaceDTO placeInfo = getPlaceInfo(currentPlayer.getPlayerCurrentPlaceNumber());
+
+    for (GameObserver observer : observers) {
+      observer.onPlayerStateChanged(playerInfo);
+      observer.onPlaceStateChanged(placeInfo);
+    }
+
     switchToNextPlayer();
+    notifyObservers(); // General game state update
   }
 
   @Override
@@ -393,43 +425,52 @@ public class TownModel implements Town {
   public AttackResult attackTarget(Integer itemIndex) throws IOException {
     Player currentPlayer = players.get(currentPlayerIndex);
 
-    // Validate player is in same room as target
+    // Execute attack logic
+    AttackResult result;
     if (!isPlayerWithTarget(currentPlayer)) {
-      return new AttackResult("Player must be in same room as target");
-    }
-
-    // Check if attack is visible
-    if (isPlayerVisible(currentPlayer)) {
-      return new AttackResult("Attack was seen by other players");
-    }
-
-    int damage;
-    String itemUsed;
-
-    // Handle poke attack (itemIndex null) or item attack
-    if (itemIndex == null) {
-      damage = 1;
-      itemUsed = "poke";
+      result = new AttackResult("Player must be in same room as target");
+    } else if (isPlayerVisible(currentPlayer)) {
+      result = new AttackResult("Attack was seen by other players");
     } else {
-      List<Item> items = currentPlayer.getCurrentCarriedItems();
-      if (itemIndex < 0 || itemIndex >= items.size()) {
-        return new AttackResult("Invalid item index");
+      int damage;
+      String itemUsed;
+
+      if (itemIndex == null) {
+        damage = 1;
+        itemUsed = "poke";
+      } else {
+        List<Item> items = currentPlayer.getCurrentCarriedItems();
+        if (itemIndex < 0 || itemIndex >= items.size()) {
+          return new AttackResult("Invalid item index");
+        }
+        Item item = items.get(itemIndex);
+        damage = item.getDamage();
+        itemUsed = item.getName();
+        currentPlayer.getCurrentCarriedItems().remove(item);
       }
-      Item item = items.get(itemIndex);
-      damage = item.getDamage();
-      itemUsed = item.getName();
-      currentPlayer.getCurrentCarriedItems().remove(item);
+
+      boolean targetDefeated = targetCharacter.takeDamage(damage);
+      result = new AttackResult(
+          true,
+          String.format("Attack successful with %s for %d damage", itemUsed, damage),
+          targetDefeated,
+          damage
+      );
     }
 
-    boolean targetDefeated = targetCharacter.takeDamage(damage);
-    switchToNextPlayer();
+    // Notify observers
+    PlayerDTO playerInfo = getCurrentPlayerInfo();
+    TargetDTO targetInfo = getTargetInfo();
 
-    return new AttackResult(
-        true,
-        String.format("Attack successful with %s for %d damage", itemUsed, damage),
-        targetDefeated,
-        damage
-    );
+    for (GameObserver observer : observers) {
+      observer.onPlayerStateChanged(playerInfo);
+      observer.onTargetStateChanged(targetInfo);
+    }
+
+    switchToNextPlayer();
+    notifyObservers(); // General game state update
+
+    return result;
   }
 
   @Override
@@ -478,5 +519,25 @@ public class TownModel implements Town {
   @Override
   public TargetDTO getTargetInfo() {
     return dtoMapper.toTargetDto(targetCharacter);
+  }
+
+  @Override
+  public void addObserver(GameObserver observer) {
+    if (!observers.contains(observer)) {
+      observers.add(observer);
+    }
+  }
+
+  @Override
+  public void removeObserver(GameObserver observer) {
+    observers.remove(observer);
+  }
+
+  @Override
+  public void notifyObservers() {
+    GameStateDTO gameState = getGameState();
+    for (GameObserver observer : observers) {
+      observer.onGameStateChanged(gameState);
+    }
   }
 }
