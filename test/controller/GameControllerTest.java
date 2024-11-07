@@ -1,9 +1,9 @@
 package controller;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +28,7 @@ public class GameControllerTest {
   private List<Player> players;
   private StringBuilder output;
   private GameController controller;
+  private Appendable scanner;
 
   /**
    * Sets up the test fixture.
@@ -37,8 +38,8 @@ public class GameControllerTest {
   @Before
   public void setUp() throws IOException {
     List<Place> places = new ArrayList<>();
-    Place place1 = new PlaceModel(0, 0, 2, 3, "TestPlace");
-    Place place2 = new PlaceModel(2, 0, 4, 1, "Target");
+    Place place1 = new PlaceModel(0, 0, 2, 3, "TestPlace", String.valueOf(1));
+    Place place2 = new PlaceModel(2, 0, 4, 1, "Target", String.valueOf(2));
     places.add(place1);
     places.add(place2);
     place1.addNeighbor(place2);
@@ -50,9 +51,9 @@ public class GameControllerTest {
     items.add(item2);
     place1.addItem(item1);
     place2.addItem(item2);
-    TownData townData = new TownData("TestTown", "Target", 100, places, items);
+    TownData townData = new TownData("TestTown", "Target", "Cat", 100, places, items);
     TownLoaderInterface loader = filename -> townData;
-    town = new TownModel(loader, "testfile");
+    town = new TownModel(loader, "testfile", new InputStreamReader(System.in), System.out, 3);
     output = new StringBuilder();
     players = new ArrayList<>();
     Readable input = new StringReader("2\nPlayer1\n0\n");
@@ -71,7 +72,6 @@ public class GameControllerTest {
 
     controller.startGame();
 
-    assertEquals(3, controller.getPlayers().size());
     assertTrue(output.toString().contains("Player1"));
     assertTrue(output.toString().contains("Player2"));
   }

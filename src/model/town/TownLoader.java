@@ -30,6 +30,7 @@ public class TownLoader implements TownLoaderInterface {
     List<Item> items = new ArrayList<>();
     String townName;
     String targetName;
+    String petName;
     int targetHealth;
 
     String[] townInfo = br.readLine().split(" ");
@@ -39,6 +40,8 @@ public class TownLoader implements TownLoaderInterface {
     targetHealth = Integer.parseInt(targetInfo[0]);
     targetName = String.join(" ", Arrays.copyOfRange(targetInfo, 1, targetInfo.length));
 
+    petName = br.readLine();
+
     int numPlaces = Integer.parseInt(br.readLine());
     for (int i = 0; i < numPlaces; i++) {
       String[] placeInfo = br.readLine().split(" ");
@@ -47,7 +50,8 @@ public class TownLoader implements TownLoaderInterface {
       int row2 = Integer.parseInt(placeInfo[2]);
       int col2 = Integer.parseInt(placeInfo[3]);
       String placeName = String.join(" ", Arrays.copyOfRange(placeInfo, 4, placeInfo.length));
-      Place place = new PlaceModel(row1, col1, row2, col2, placeName);
+      int placeNumber = i + 1;
+      Place place = new PlaceModel(row1, col1, row2, col2, placeName, String.valueOf(placeNumber));
       places.add(place);
     }
 
@@ -72,6 +76,6 @@ public class TownLoader implements TownLoaderInterface {
 
     br.close();
 
-    return new TownData(townName, targetName, targetHealth, places, items);
+    return new TownData(townName, targetName, petName, targetHealth, places, items);
   }
 }

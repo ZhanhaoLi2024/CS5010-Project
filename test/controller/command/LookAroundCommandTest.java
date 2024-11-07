@@ -12,6 +12,7 @@ import model.place.Place;
 import model.place.PlaceModel;
 import model.player.Player;
 import model.player.PlayerModel;
+import model.town.Town;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -25,6 +26,7 @@ public class LookAroundCommandTest {
   private Place place;
   private List<Player> players;
   private Scanner scanner;
+  private Town town;
 
   /**
    * Sets up the test fixture.
@@ -33,8 +35,8 @@ public class LookAroundCommandTest {
   public void setUp() {
     this.players = new ArrayList<>();
     output = new StringBuilder();
-    place = new PlaceModel(0, 0, 1, 1, "TestPlace");
-    player = new PlayerModel("TestPlayer", false, 3, place, System.out, scanner);
+    place = new PlaceModel(0, 0, 1, 1, "TestPlace", String.valueOf(1));
+    player = new PlayerModel("TestPlayer", false, 3, 1, System.out, scanner);
     players.add(player);
   }
 
@@ -45,7 +47,7 @@ public class LookAroundCommandTest {
    */
   @Test
   public void testNoNeighborsNoItems() throws IOException {
-    LookAroundCommand command = new LookAroundCommand(player, output, players);
+    LookAroundCommand command = new LookAroundCommand(output, town);
     command.execute();
 
     assertEquals("No neighbors found.\nNo items found.\n", output.toString());
@@ -58,12 +60,12 @@ public class LookAroundCommandTest {
    */
   @Test
   public void testWithNeighborsNoItems() throws IOException {
-    Place neighbor1 = new PlaceModel(1, 0, 2, 1, "Neighbor1");
-    Place neighbor2 = new PlaceModel(0, 1, 1, 2, "Neighbor2");
+    Place neighbor1 = new PlaceModel(1, 0, 2, 1, "Neighbor1", String.valueOf(2));
+    Place neighbor2 = new PlaceModel(0, 1, 1, 2, "Neighbor2", String.valueOf(3));
     place.addNeighbor(neighbor1);
     place.addNeighbor(neighbor2);
 
-    LookAroundCommand command = new LookAroundCommand(player, output, players);
+    LookAroundCommand command = new LookAroundCommand(output, town);
     command.execute();
 
     String expectedOutput = "Neighbors of TestPlace:\nNeighbor1\nNeighbor2\nNo items found.\n";
@@ -82,7 +84,7 @@ public class LookAroundCommandTest {
     place.addItem(item1);
     place.addItem(item2);
 
-    LookAroundCommand command = new LookAroundCommand(player, output, players);
+    LookAroundCommand command = new LookAroundCommand(output, town);
     command.execute();
 
     String expectedOutput = "No neighbors found.\nItems in TestPlace:\n" + "Sword (Damage: 10)\n" +
@@ -97,12 +99,12 @@ public class LookAroundCommandTest {
    */
   @Test
   public void testWithNeighborsAndItems() throws IOException {
-    Place neighbor1 = new PlaceModel(1, 0, 2, 1, "Neighbor1");
+    Place neighbor1 = new PlaceModel(1, 0, 2, 1, "Neighbor1", String.valueOf(2));
     place.addNeighbor(neighbor1);
     Item item1 = new ItemModel("Sword", 10);
     place.addItem(item1);
 
-    LookAroundCommand command = new LookAroundCommand(player, output, players);
+    LookAroundCommand command = new LookAroundCommand(output, town);
     command.execute();
 
     String expectedOutput =
@@ -117,7 +119,7 @@ public class LookAroundCommandTest {
    */
   @Test(expected = NullPointerException.class)
   public void testExecuteWithNullPlayer() throws IOException {
-    LookAroundCommand command = new LookAroundCommand(null, output, players);
+    LookAroundCommand command = new LookAroundCommand(output, town);
     command.execute();
   }
 
@@ -128,9 +130,9 @@ public class LookAroundCommandTest {
    */
   @Test(expected = IllegalArgumentException.class)
   public void testExecuteWithNullPlace() throws IOException {
-    Player nullPlacePlayer = new PlayerModel("TestPlayer", false, 3, null, System.out, scanner);
+    Player nullPlacePlayer = new PlayerModel("TestPlayer", false, 3, 0, System.out, scanner);
     players.add(nullPlacePlayer);
-    LookAroundCommand command = new LookAroundCommand(nullPlacePlayer, output, players);
+    LookAroundCommand command = new LookAroundCommand(output, town);
     command.execute();
   }
 
@@ -139,8 +141,9 @@ public class LookAroundCommandTest {
    */
   @Test
   public void testCurrentPlaceIsNotItem() throws IOException {
-    LookAroundCommand command = new LookAroundCommand(player, output, players);
-    assertEquals("TestPlace", player.getCurrentPlace().getName());
+    LookAroundCommand command = new LookAroundCommand(output, town);
+    Place currentPlace = town.getPlaceByNumber(player.getPlayerCurrentPlaceNumber());
+    assertEquals("TestPlace", currentPlace.getName());
 
     Item item = new ItemModel("Sword", 10);
     place.addItem(item);
@@ -152,10 +155,11 @@ public class LookAroundCommandTest {
    */
   @Test
   public void testCurrentPlaceHaveAnotherPlayer() throws IOException {
-    Player player2 = new PlayerModel("TestPlayer2", false, 3, place, System.out, scanner);
+    Player player2 = new PlayerModel("TestPlayer2", false, 3, 1, System.out, scanner);
     players.add(player2);
-    LookAroundCommand command = new LookAroundCommand(player, output, players);
-    assertEquals("TestPlace", player.getCurrentPlace().getName());
+    LookAroundCommand command = new LookAroundCommand(output, town);
+    Place currentPlace = town.getPlaceByNumber(player.getPlayerCurrentPlaceNumber());
+    assertEquals("TestPlace", currentPlace.getName());
     command.execute();
     String expectedOutput =
         "No neighbors found.\nNo items found.\nTestPlayer2 is in this place.\n";

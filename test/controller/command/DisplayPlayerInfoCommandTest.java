@@ -10,6 +10,7 @@ import model.place.Place;
 import model.place.PlaceModel;
 import model.player.Player;
 import model.player.PlayerModel;
+import model.town.Town;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -21,6 +22,7 @@ public class DisplayPlayerInfoCommandTest {
   private List<Player> players;
   private StringBuilder output;
   private Scanner scanner;
+  private Town town;
 
   /**
    * Sets up the test fixture.
@@ -30,10 +32,10 @@ public class DisplayPlayerInfoCommandTest {
     players = new ArrayList<>();
     output = new StringBuilder();
 
-    Place testPlace = new PlaceModel(0, 0, 1, 1, "TestPlace");
+    Place testPlace = new PlaceModel(0, 0, 1, 1, "TestPlace", String.valueOf(1));
 
-    Player player1 = new PlayerModel("Player1", false, 3, testPlace, System.out, scanner);
-    Player player2 = new PlayerModel("Player2", false, 3, testPlace, System.out, scanner);
+    Player player1 = new PlayerModel("Player1", false, 3, 1, System.out, scanner);
+    Player player2 = new PlayerModel("Player2", false, 3, 1, System.out, scanner);
     players.add(player1);
     players.add(player2);
   }
@@ -48,7 +50,7 @@ public class DisplayPlayerInfoCommandTest {
     String input = "1\n0\n";
     scanner = new Scanner(input);
 
-    DisplayPlayerInfoCommand command = new DisplayPlayerInfoCommand(players, output, scanner);
+    DisplayPlayerInfoCommand command = new DisplayPlayerInfoCommand(town, output, scanner);
     command.execute();
 
     assertTrue(output.toString().contains("All players info:"));
@@ -66,7 +68,7 @@ public class DisplayPlayerInfoCommandTest {
     String input = "2\nPlayer1\n0\n";
     scanner = new Scanner(input);
 
-    DisplayPlayerInfoCommand command = new DisplayPlayerInfoCommand(players, output, scanner);
+    DisplayPlayerInfoCommand command = new DisplayPlayerInfoCommand(town, output, scanner);
     command.execute();
 
     assertTrue(output.toString().contains("Player name: Player1"));
@@ -83,7 +85,7 @@ public class DisplayPlayerInfoCommandTest {
     String input = "2\nUnknownPlayer\n0\n";
     scanner = new Scanner(input);
 
-    DisplayPlayerInfoCommand command = new DisplayPlayerInfoCommand(players, output, scanner);
+    DisplayPlayerInfoCommand command = new DisplayPlayerInfoCommand(town, output, scanner);
     command.execute();
 
     assertTrue(output.toString().contains("Player not found."));
@@ -101,7 +103,7 @@ public class DisplayPlayerInfoCommandTest {
     String input = "1\n0\n";
     scanner = new Scanner(input);
 
-    DisplayPlayerInfoCommand command = new DisplayPlayerInfoCommand(players, output, scanner);
+    DisplayPlayerInfoCommand command = new DisplayPlayerInfoCommand(town, output, scanner);
     command.execute();
 
     assertTrue(output.toString().contains("No players found."));
