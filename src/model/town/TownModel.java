@@ -66,15 +66,37 @@ public class TownModel implements Town {
   }
 
   @Override
-  public void getPlaceInfo(Place place) {
-    System.out.println("Place: " + place.getName());
-    System.out.println("Items in the place:");
-    for (Item item : place.getItems()) {
-      System.out.println("- " + item.getName() + " (Damage: " + item.getDamage() + ")");
+  public void getPlaceInfo(Place place) throws IOException {
+    if (place == null) {
+      throw new IllegalArgumentException("Place cannot be null");
     }
-    System.out.println("Neighboring places:");
+
+    // place information
+    output.append("Place: ").append(place.getName()).append("\n");
+
+    // items information
+    output.append("Items in the place:\n");
+    for (Item item : place.getItems()) {
+      output.append("- ").append(item.getName())
+          .append(" (Damage: ").append(String.valueOf(item.getDamage()))
+          .append(")\n");
+    }
+
+    // neighbors information
+    output.append("Neighboring places:\n");
     for (Place neighbor : place.getNeighbors()) {
-      System.out.println("- " + neighbor.getName());
+      output.append("- ").append(neighbor.getName()).append("\n");
+    }
+
+    // players information
+    List<Player> playersInPlace = place.getCurrentPlacePlayers();
+    if (!playersInPlace.isEmpty()) {
+      output.append("Players in this place:\n");
+      for (Player player : playersInPlace) {
+        output.append("- ").append(player.getName()).append("\n");
+      }
+    } else {
+      output.append("No players in this place.\n");
     }
   }
 
@@ -209,51 +231,99 @@ public class TownModel implements Town {
     return placeNumber > 0 && placeNumber <= places.size();
   }
 
-  @Override
-  public void addPlayer() throws IOException {
-    try {
-      // Get and validate player name
+  /**
+   * Gets a valid player name from the user.
+   *
+   * @return the valid player name
+   * @throws IOException if there is an error with input/output
+   */
+  private String getValidPlayerName() throws IOException {
+    while (true) {
       output.append("Enter the player's name:\n");
       String playerName = scanner.nextLine().trim();
+
       if (playerName.isEmpty()) {
-        output.append("Name cannot be empty.\n");
-        return;
+        output.append("Name cannot be empty. Please try again.\n");
+        continue;
       }
+
       if (!isPlayerNameUnique(playerName)) {
         output.append("This name is already taken. Please choose another.\n");
-        return;
-      }
-      // Get and validate starting place
-      output.append("Enter your starting place number (1-").append(String.valueOf(places.size()))
-          .append("):\n");
-      int placeNumber = Integer.parseInt(scanner.nextLine());
-      if (!isValidPlaceNumber(placeNumber)) {
-        output.append("Invalid place number. Must be between 1 and ")
-            .append(String.valueOf(places.size())).append(".\n");
-        return;
-      }
-      Place startingPlace = places.get(placeNumber - 1);
-
-      // Get and validate carry limit
-      output.append("Enter your limit of carrying items (1-10):\n");
-      int carryLimit = Integer.parseInt(scanner.nextLine());
-      if (carryLimit < 1 || carryLimit > 10) {
-        output.append("Invalid carry limit. Must be between 1 and 10.\n");
-        return;
+        continue;
       }
 
-      // Create and add player
-      Player player = new PlayerModel(playerName, false, carryLimit, placeNumber, output, scanner);
-      players.add(player);
-
-      // Confirm addition
-      output.append("Player added successfully:\n")
-          .append("Name: ").append(playerName).append("\n")
-          .append("Location: ").append(startingPlace.getName()).append("\n")
-          .append("Carry limit: ").append(String.valueOf(carryLimit)).append("\n");
-    } catch (NumberFormatException e) {
-      output.append("Invalid input. Please enter a number.\n");
+      return playerName;
     }
+  }
+
+  /**
+   * Gets a valid place number from the user.
+   *
+   * @return the valid place number
+   * @throws IOException if there is an error with input/output
+   */
+  private int getValidPlaceNumber() throws IOException {
+    while (true) {
+      try {
+        output.append("Enter your starting place number (1-")
+            .append(String.valueOf(places.size()))
+            .append("):\n");
+
+        int placeNumber = Integer.parseInt(scanner.nextLine());
+
+        if (!isValidPlaceNumber(placeNumber)) {
+          output.append("Invalid place number. Must be between 1 and ")
+              .append(String.valueOf(places.size()))
+              .append(". Please try again.\n");
+          continue;
+        }
+
+        return placeNumber;
+      } catch (NumberFormatException e) {
+        output.append("Invalid input. Please enter a number.\n");
+      }
+    }
+  }
+
+  /**
+   * Gets a valid carry limit from the user.
+   *
+   * @return the valid carry limit
+   * @throws IOException if there is an error with input/output
+   */
+  private int getValidCarryLimit() throws IOException {
+    while (true) {
+      try {
+        output.append("Enter your limit of carrying items (1-10):\n");
+        int carryLimit = Integer.parseInt(scanner.nextLine());
+
+        if (carryLimit < 1 || carryLimit > 10) {
+          output.append("Invalid carry limit. Must be between 1 and 10. Please try again.\n");
+          continue;
+        }
+
+        return carryLimit;
+      } catch (NumberFormatException e) {
+        output.append("Invalid input. Please enter a number.\n");
+      }
+    }
+  }
+
+  @Override
+  public void addPlayer() throws IOException {
+    String playerName = getValidPlayerName();
+    int placeNumber = getValidPlaceNumber();
+    int carryLimit = getValidCarryLimit();
+
+    Place startingPlace = places.get(placeNumber - 1);
+    Player player = new PlayerModel(playerName, false, carryLimit, placeNumber, output, scanner);
+    players.add(player);
+
+    // Confirm addition
+    output.append("Player added successfully:\n")
+        .append("Name: ").append(playerName).append("\n")
+        .append("Location: ").append(startingPlace.getName()).append("\n")
+        .append("Carry limit: ").append(String.valueOf(carryLimit)).append("\n");
   }
 
   @Override

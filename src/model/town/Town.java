@@ -20,7 +20,7 @@ public interface Town {
    *
    * @param place the place to display the information of
    */
-  void getPlaceInfo(Place place);
+  void getPlaceInfo(Place place) throws IOException;
 
   /**
    * Retrieves the place number by name.
