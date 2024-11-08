@@ -188,35 +188,93 @@ public class TownModel implements Town {
     return neighbors;
   }
 
-  @Override
-  public void addComputerPlayer() throws IOException {
-    Random random = new Random();
-    Place randomPlace = getPlaces().get(random.nextInt(getPlaces().size()));
-    Player player = new PlayerModel("David(Computer)", true, 3, 1, System.out, scanner);
-    players.add(player);
-    output.append("Computer player 'David' added.\n");
+  /**
+   * Validates if a player name is unique
+   *
+   * @param name The name to check
+   * @return true if the name is unique, false otherwise
+   */
+  private boolean isPlayerNameUnique(String name) {
+    return players.stream()
+        .noneMatch(p -> p.getName().equalsIgnoreCase(name));
+  }
+
+  /**
+   * Validates if a place number is valid
+   *
+   * @param placeNumber The place number to check
+   * @return true if the place number is valid, false otherwise
+   */
+  private boolean isValidPlaceNumber(int placeNumber) {
+    return placeNumber > 0 && placeNumber <= places.size();
   }
 
   @Override
   public void addPlayer() throws IOException {
-    output.append("Enter the player's name:\n");
-    String playerName = scanner.nextLine();
-    output.append("Enter your starting place number:\n");
-    String placeIndex = scanner.nextLine();
-    int placeNumber = Integer.parseInt(placeIndex);
-    Place startingPlace = places.get(Integer.parseInt(placeIndex) - 1);
-    output.append("Enter your limit of carrying items:\n");
-    String carryLimit = scanner.nextLine();
-    Player player = new PlayerModel(playerName, false, Integer.parseInt(carryLimit),
-        placeNumber,
-        output, scanner);
-    output.append("Player name: ").append(player.getName()).append("\n");
-    output.append(player.getName()).append("Current place: ").append(startingPlace.getName())
-        .append("\n");
-    output.append("You can carry up to ").append(String.valueOf(player.getCarryLimit()))
-        .append(" items.\n");
-    output.append("Player added.\n");
+    try {
+      // Get and validate player name
+      output.append("Enter the player's name:\n");
+      String playerName = scanner.nextLine().trim();
+      if (playerName.isEmpty()) {
+        output.append("Name cannot be empty.\n");
+        return;
+      }
+      if (!isPlayerNameUnique(playerName)) {
+        output.append("This name is already taken. Please choose another.\n");
+        return;
+      }
+      // Get and validate starting place
+      output.append("Enter your starting place number (1-").append(String.valueOf(places.size()))
+          .append("):\n");
+      int placeNumber = Integer.parseInt(scanner.nextLine());
+      if (!isValidPlaceNumber(placeNumber)) {
+        output.append("Invalid place number. Must be between 1 and ")
+            .append(String.valueOf(places.size())).append(".\n");
+        return;
+      }
+      Place startingPlace = places.get(placeNumber - 1);
+
+      // Get and validate carry limit
+      output.append("Enter your limit of carrying items (1-10):\n");
+      int carryLimit = Integer.parseInt(scanner.nextLine());
+      if (carryLimit < 1 || carryLimit > 10) {
+        output.append("Invalid carry limit. Must be between 1 and 10.\n");
+        return;
+      }
+
+      // Create and add player
+      Player player = new PlayerModel(playerName, false, carryLimit, placeNumber, output, scanner);
+      players.add(player);
+
+      // Confirm addition
+      output.append("Player added successfully:\n")
+          .append("Name: ").append(playerName).append("\n")
+          .append("Location: ").append(startingPlace.getName()).append("\n")
+          .append("Carry limit: ").append(String.valueOf(carryLimit)).append("\n");
+    } catch (NumberFormatException e) {
+      output.append("Invalid input. Please enter a number.\n");
+    }
+  }
+
+  @Override
+  public void addComputerPlayer() throws IOException {
+    // Generate a random valid position
+    Random random = new Random();
+    int randomPlaceNumber = random.nextInt(places.size()) + 1;
+
+    // Generate a unique name
+    String computerName = "Computer-" + (players.size() + 1);
+    while (!isPlayerNameUnique(computerName)) {
+      computerName = "Computer-" + random.nextInt(1000);
+    }
+
+    // Create computer player with random starting position
+    Player player = new PlayerModel(computerName, true, 3, randomPlaceNumber, output, scanner);
     players.add(player);
+
+    output.append("Computer player '").append(computerName)
+        .append("' added at ").append(places.get(randomPlaceNumber - 1).getName())
+        .append(".\n");
   }
 
   @Override
@@ -569,10 +627,24 @@ public class TownModel implements Town {
     if (players.size() <= 1) {
       return;
     }
+
+    // Save previous player for reference
+    Player previousPlayer = players.get(currentPlayerIndex);
+
+    // Update player index and turn counter
     currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
     if (currentPlayerIndex == 0) {
       currentTurn++;
+      // Move target when we complete a full round
+      moveTarget();
     }
+
+    // Notify about turn change
+    Player currentPlayer = players.get(currentPlayerIndex);
+    output.append("\nTurn changed from ").append(previousPlayer.getName())
+        .append(" to ").append(currentPlayer.getName())
+        .append(" (Turn ").append(String.valueOf(currentTurn))
+        .append(")\n");
   }
 
   @Override
