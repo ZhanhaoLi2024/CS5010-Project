@@ -242,4 +242,40 @@ public interface Town extends GameSubject {
    * @return TargetDTO containing target information
    */
   TargetDTO getTargetInfo();
+
+  /**
+   * Look around the current player's location
+   * Shows details about the current room, items, players and visible neighbors
+   *
+   * @throws IOException if there's an error with output
+   */
+  void lookAround() throws IOException;
+
+  /**
+   * Get information about the current place
+   *
+   * @return PlaceDTO containing current place information
+   */
+//  PlaceDTO getCurrentPlaceInfo();
+
+  /**
+   * Get available items in current location
+   *
+   * @return List of ItemDTO objects
+   */
+//  List<ItemDTO> getCurrentPlaceItems();
+
+  /**
+   * Get current player's inventory
+   *
+   * @return List of ItemDTO objects
+   */
+//  List<ItemDTO> getCurrentPlayerItems();
+
+  /**
+   * Get current player's carry limit
+   *
+   * @return carry limit as integer
+   */
+//  int getCurrentPlayerCarryLimit();
 }

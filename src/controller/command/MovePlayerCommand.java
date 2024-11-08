@@ -1,28 +1,20 @@
 package controller.command;
 
 import java.io.IOException;
-import java.util.Scanner;
 import model.town.Town;
 
 /**
- * Command to move a player to a neighboring place.
+ * Refactored MovePlayerCommand implementing the Command interface
  */
 public class MovePlayerCommand implements Command {
-  private final Town town;
+  private final int targetPlaceNumber;
 
-  /**
-   * Constructs a new MovePlayerCommand.
-   *
-   * @param town    the town where the player is located
-   * @param output  the output stream to write messages to
-   * @param scanner the scanner to get user input
-   */
-  public MovePlayerCommand(Town town, Appendable output, Scanner scanner) {
-    this.town = town;
+  public MovePlayerCommand(int targetPlaceNumber) {
+    this.targetPlaceNumber = targetPlaceNumber;
   }
 
   @Override
-  public void execute() throws IOException {
-    town.movePlayer();
+  public void execute(Town town) throws IOException {
+    town.movePlayer(targetPlaceNumber);
   }
 }

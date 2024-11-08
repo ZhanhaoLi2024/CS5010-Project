@@ -1,28 +1,20 @@
 package controller.command;
 
 import java.io.IOException;
-import java.util.Scanner;
 import model.town.Town;
 
 /**
- * Command to allow a player to pick up an item in their current place.
+ * Refactored PickUpItemCommand implementing the Command interface
  */
 public class PickUpItemCommand implements Command {
-  private final Town town;
+  private final int itemIndex;
 
-  /**
-   * Constructs a new PickUpItemCommand.
-   *
-   * @param town    the town where the player is located.
-   * @param output  the output stream to write messages to.
-   * @param scanner the scanner to get user input
-   */
-  public PickUpItemCommand(Town town, Appendable output, Scanner scanner) {
-    this.town = town;
+  public PickUpItemCommand(int itemIndex) {
+    this.itemIndex = itemIndex;
   }
 
   @Override
-  public void execute() throws IOException {
-    town.pickUpItem();
+  public void execute(Town town) throws IOException {
+    town.pickUpItem(itemIndex);
   }
 }

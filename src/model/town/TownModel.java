@@ -540,4 +540,94 @@ public class TownModel implements Town {
       observer.onGameStateChanged(gameState);
     }
   }
+
+  @Override
+  public void lookAround() throws IOException {
+    Player currentPlayer = players.get(currentPlayerIndex);
+    Place currentPlace = getPlaceByNumber(currentPlayer.getPlayerCurrentPlaceNumber());
+
+    if (!isPlaceVisible(currentPlace)) {
+      output.append("This room is too dark to see anything - the pet is here!\n");
+      return;
+    }
+
+    // Display current location info
+    output.append("\nCurrently in: ").append(currentPlace.getName()).append("\n");
+
+    // Display players in current room
+    List<Player> playersHere = currentPlace.getCurrentPlacePlayers();
+    if (!playersHere.isEmpty()) {
+      output.append("Players here: ");
+      for (int i = 0; i < playersHere.size(); i++) {
+        output.append(playersHere.get(i).getName());
+        if (i < playersHere.size() - 1) {
+          output.append(", ");
+        }
+      }
+      output.append("\n");
+    }
+
+    // Display items in current room
+    List<Item> items = currentPlace.getItems();
+    if (!items.isEmpty()) {
+      output.append("Items here: \n");
+      for (Item item : items) {
+        output.append("- ").append(item.getName())
+            .append(" (Damage: ").append(String.valueOf(item.getDamage())).append(")\n");
+      }
+    }
+
+    // Display target character if present
+    if (String.valueOf(currentPlayer.getPlayerCurrentPlaceNumber())
+        .equals(targetCharacter.getCurrentPlace().getPlaceNumber())) {
+      output.append("Target ").append(targetCharacter.getName())
+          .append(" is here! (Health: ").append(String.valueOf(targetCharacter.getHealth()))
+          .append(")\n");
+    }
+
+    // Display pet if present
+    if (pet.getPetCurrentPlaceNumber() == currentPlayer.getPlayerCurrentPlaceNumber()) {
+      output.append(pet.getName()).append(" is here!\n");
+    }
+
+    // Display visible neighboring rooms
+    List<Place> neighbors = getCurrentPlaceNeighbors(currentPlace);
+    if (!neighbors.isEmpty()) {
+      output.append("\nVisible exits:\n");
+      for (Place neighbor : neighbors) {
+        if (isPlaceVisible(neighbor)) {
+          output.append("- ").append(neighbor.getName()).append("\n");
+
+          // Show players in neighboring rooms
+          List<Player> playersInNeighbor = neighbor.getCurrentPlacePlayers();
+          if (!playersInNeighbor.isEmpty()) {
+            output.append("  Players visible: ");
+            for (int i = 0; i < playersInNeighbor.size(); i++) {
+              output.append(playersInNeighbor.get(i).getName());
+              if (i < playersInNeighbor.size() - 1) {
+                output.append(", ");
+              }
+            }
+            output.append("\n");
+          }
+
+          // Show target if visible in neighbor
+          if (String.valueOf(neighbor.getPlaceNumber())
+              .equals(targetCharacter.getCurrentPlace().getPlaceNumber())) {
+            output.append("  Target ").append(targetCharacter.getName())
+                .append(" is visible!\n");
+          }
+        } else {
+          output.append("- ").append(neighbor.getName())
+              .append(" (Too dark to see inside)\n");
+        }
+      }
+    }
+
+    // Notify observers about the look action
+    notifyObservers();
+
+    // This counts as a turn
+    switchToNextPlayer();
+  }
 }

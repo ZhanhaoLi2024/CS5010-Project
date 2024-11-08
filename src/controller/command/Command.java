@@ -1,16 +1,17 @@
 package controller.command;
 
 import java.io.IOException;
+import model.town.Town;
 
 /**
- * The Command interface for executing actions in the game.
+ * Command interface - represents game actions
  */
 public interface Command {
-
   /**
-   * Executes the command.
+   * Executes the command
    *
-   * @throws IOException if there is an issue with I/O operations.
+   * @param town the town to execute the command on
+   * @throws IOException if an IO error occurs
    */
-  void execute() throws IOException;
+  void execute(Town town) throws IOException;
 }
