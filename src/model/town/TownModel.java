@@ -660,29 +660,31 @@ public class TownModel implements Town {
   public void pickUpItem() throws IOException {
     Player currentPlayer = this.players.get(currentPlayerIndex);
     Place currentPlace = getPlaceByNumber(currentPlayer.getPlayerCurrentPlaceNumber());
-    List<Item> items = currentPlace.getItems();
-    if (items.isEmpty()) {
+    List<Item> currentItems = currentPlace.getItems();
+    if (currentItems.isEmpty()) {
       output.append("No items found.\n");
       return;
     } else {
       if (currentPlayer.isComputerControlled()) {
-        Item item = items.get(new Random().nextInt(items.size()));
+        Item item = currentItems.get(new Random().nextInt(currentItems.size()));
         currentPlayer.pickUpItem(item);
         currentPlace.removeItem(item);
         output.append("Picked up ").append(item.getName()).append(".\n");
       } else {
         output.append("Items in ").append(currentPlace.getName()).append(":\n");
-        for (int i = 0; i < items.size(); i++) {
+        for (int i = 0; i < currentItems.size(); i++) {
           int currentIndex = i + 1;
-          output.append(String.valueOf(currentIndex)).append(". ").append(items.get(i).getName())
-              .append(" (Damage: ").append(String.valueOf(items.get(i).getDamage())).append(")\n");
+          output.append(String.valueOf(currentIndex)).append(". ")
+              .append(currentItems.get(i).getName())
+              .append(" (Damage: ").append(String.valueOf(currentItems.get(i).getDamage()))
+              .append(")\n");
         }
         output.append("Enter the item number to pick up:\n");
         int itemNumber = Integer.parseInt(scanner.nextLine());
-        if (itemNumber < 1 || itemNumber > items.size()) {
+        if (itemNumber < 1 || itemNumber > currentItems.size()) {
           output.append("Invalid item number.\n");
         } else {
-          Item item = items.get(itemNumber - 1);
+          Item item = currentItems.get(itemNumber - 1);
           currentPlayer.pickUpItem(item);
           currentPlace.removeItem(item);
           output.append("Picked up ").append(item.getName()).append(".\n");
@@ -893,15 +895,15 @@ public class TownModel implements Town {
     }
 
     // Computer always attempts to attack if in the same room as target
-    List<Item> items = player.getCurrentCarriedItems();
+    List<Item> computerItems = player.getCurrentCarriedItems();
 
-    if (items.isEmpty()) {
+    if (computerItems.isEmpty()) {
       executePoke(player);
       return;
     }
 
     // Find and use item with highest damage
-    Item bestItem = items.stream()
+    Item bestItem = computerItems.stream()
         .max((i1, i2) -> Integer.compare(i1.getDamage(), i2.getDamage()))
         .get();
 
@@ -921,13 +923,13 @@ public class TownModel implements Town {
       throw new IllegalArgumentException("Player must be a non-null human player");
     }
 
-    List<Item> items = player.getCurrentCarriedItems();
+    List<Item> humanItems = player.getCurrentCarriedItems();
 
     output.append("\nChoose your attack:\n");
     output.append("0. Poke in the eye (1 damage)\n");
 
-    for (int i = 0; i < items.size(); i++) {
-      Item item = items.get(i);
+    for (int i = 0; i < humanItems.size(); i++) {
+      Item item = humanItems.get(i);
       output.append(String.valueOf(i + 1)).append(". Use ")
           .append(item.getName())
           .append(" (").append(String.valueOf(item.getDamage())).append(" damage)\n");
@@ -937,8 +939,8 @@ public class TownModel implements Town {
       int choice = Integer.parseInt(scanner.nextLine());
       if (choice == 0) {
         executePoke(player);
-      } else if (choice >= 1 && choice <= items.size()) {
-        executeItemAttack(player, items.get(choice - 1));
+      } else if (choice >= 1 && choice <= humanItems.size()) {
+        executeItemAttack(player, humanItems.get(choice - 1));
       } else {
         output.append("Invalid choice. Attack cancelled.\n");
       }

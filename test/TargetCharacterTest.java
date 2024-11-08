@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
@@ -58,14 +59,12 @@ public class TargetCharacterTest {
           output,
           10
       );
-    } catch (Exception e) {
+    } catch (IOException | IllegalArgumentException e) {
       fail("Failed to initialize town: " + e.getMessage());
     }
   }
 
-  /**
-   * Test target character creation and initial state
-   */
+  // tests the target character initialization
   @Test
   public void testTargetCharacterInitialization() {
     assertEquals("The Mayor", targetCharacter.getName());
@@ -74,13 +73,9 @@ public class TargetCharacterTest {
     assertFalse(targetCharacter.isDefeated());
   }
 
-  /**
-   * Test target character position display
-   *
-   * @throws Exception if the target character position display fails
-   */
+  // tests the display of the target character's
   @Test
-  public void testTargetCharacterPositionDisplay() throws Exception {
+  public void testTargetCharacterPositionDisplay() throws IOException, IllegalArgumentException {
     town.showTargetInfo();
     String outputText = output.toString();
     assertTrue(outputText.contains("The Mayor"));
@@ -88,22 +83,18 @@ public class TargetCharacterTest {
     assertTrue(outputText.contains(town.getTarget().getCurrentPlace().getName()));
   }
 
-  /**
-   * Test target character automatic movement
-   */
+  // Test target character automatic movement
   @Test
   public void testTargetCharacterAutomaticMovement() {
     Place initialPlace = targetCharacter.getCurrentPlace();
     targetCharacter.moveToNextPlace();
-    assertFalse("Target character should move to a new place",
-        initialPlace.equals(targetCharacter.getCurrentPlace()));
+    assertNotEquals("Target character should move to a new place", initialPlace,
+        targetCharacter.getCurrentPlace());
     assertEquals("Target character should move to second place",
         places.get(1), targetCharacter.getCurrentPlace());
   }
 
-  /**
-   * Test target character movement cycle
-   */
+  // Test target character movement cycle
   @Test
   public void testTargetCharacterMovementCycle() {
     // Move through all places
@@ -115,9 +106,7 @@ public class TargetCharacterTest {
         places.get(0), targetCharacter.getCurrentPlace());
   }
 
-  /**
-   * Test target character health management
-   */
+  // Test target character health management
   @Test
   public void testTargetCharacterHealthManagement() {
     assertEquals(50, targetCharacter.getHealth());
@@ -130,22 +119,15 @@ public class TargetCharacterTest {
     assertTrue(targetCharacter.isDefeated());
   }
 
-  /**
-   * Test target character health management with invalid damage value
-   */
+  // Test target character health management with invalid damage value
   @Test(expected = IllegalArgumentException.class)
   public void testInvalidDamageValue() {
     targetCharacter.takeDamage(-10);
   }
 
-
-  /**
-   * Test target character position after multiple turns
-   *
-   * @throws Exception if the target character position after multiple turns fails
-   */
+  // Test target character position after multiple turns
   @Test
-  public void testTargetCharacterPositionAfterMultipleTurns() throws Exception {
+  public void testTargetCharacterPositionAfterMultipleTurns() {
     Place initialPlace = town.getTarget().getCurrentPlace();
 
     // Simulate multiple turns
@@ -153,57 +135,43 @@ public class TargetCharacterTest {
       town.moveTarget();
     }
 
-    assertFalse("Target character should not be in initial place after movement",
-        initialPlace.equals(town.getTarget().getCurrentPlace()));
+    assertNotEquals("Target character should not be in initial place after movement", initialPlace,
+        town.getTarget().getCurrentPlace());
   }
 
-  /**
-   * Test target character initialization with invalid values
-   */
+  // Test target character initialization with invalid values
   @Test(expected = IllegalArgumentException.class)
   public void testTargetCharacterInvalidHealth() {
     new TargetModel("The Mayor", -10, places.get(0), places);
   }
 
-  /**
-   * Test target character initialization with invalid values
-   */
+  // Test target character initialization with invalid values
   @Test(expected = IllegalArgumentException.class)
   public void testTargetCharacterNullName() {
     new TargetModel(null, 50, places.get(0), places);
   }
 
-  /**
-   * Test target character initialization with invalid values
-   */
+  // Test target character initialization with invalid values
   @Test(expected = IllegalArgumentException.class)
   public void testTargetCharacterEmptyName() {
     new TargetModel("", 50, places.get(0), places);
   }
 
-  /**
-   * Test target character initialization with invalid values
-   */
+  // Test target character initialization with invalid values
   @Test(expected = IllegalArgumentException.class)
   public void testTargetCharacterNullStartPlace() {
     new TargetModel("The Mayor", 50, null, places);
   }
 
-  /**
-   * Test target character initialization with invalid values
-   */
+  // Test target character initialization with invalid values
   @Test(expected = IllegalArgumentException.class)
   public void testTargetCharacterNullPlacesList() {
     new TargetModel("The Mayor", 50, places.get(0), null);
   }
 
-  /**
-   * Test target character info display with extreme health values
-   *
-   * @throws Exception if the target character info display with extreme health values fails
-   */
+  // Test target character initialization with invalid values
   @Test
-  public void testTargetCharacterInfoDisplayWithExtremeHealth() throws Exception {
+  public void testTargetCharacterInfoDisplayWithExtremeHealth() {
     // Test with very high health
     Target highHealthTarget = new TargetModel("High Health Mayor",
         Integer.MAX_VALUE, places.get(0), places);
@@ -216,9 +184,7 @@ public class TargetCharacterTest {
     assertTrue(lowHealthTarget.isDefeated());
   }
 
-  /**
-   * Test consecutive damage calculations
-   */
+  // Test target character initialization with invalid values
   @Test
   public void testConsecutiveDamageCalculations() {
     targetCharacter.takeDamage(10);
@@ -238,7 +204,7 @@ public class TargetCharacterTest {
 
   // Test target movement during player turns
   @Test
-  public void testTargetMovementDuringPlayerTurns() throws Exception {
+  public void testTargetMovementDuringPlayerTurns() throws IOException, IllegalArgumentException {
     // Add multiple players
     town.addComputerPlayer(); // First player
     town.addComputerPlayer(); // Second player
@@ -249,13 +215,13 @@ public class TargetCharacterTest {
     town.switchToNextPlayer(); // Player 1's turn ends
     town.switchToNextPlayer(); // Player 2's turn ends, should trigger target movement
 
-    assertFalse("Target should move after all players complete their turns",
-        initialTargetPlace.equals(town.getTarget().getCurrentPlace()));
+    assertNotEquals("Target should move after all players complete their turns", initialTargetPlace,
+        town.getTarget().getCurrentPlace());
   }
 
   // Test target visibility in different game states
   @Test
-  public void testTargetVisibilityInformation() throws Exception {
+  public void testTargetVisibilityInformation() throws IOException, IllegalArgumentException {
     // Add a player to the game
     town.addComputerPlayer();
     Player player = town.getPlayers().get(0);
@@ -282,7 +248,7 @@ public class TargetCharacterTest {
 
   // Test target position information after max turns
   @Test
-  public void testTargetPositionAfterMaxTurns() throws Exception {
+  public void testTargetPositionAfterMaxTurns() throws IOException, IllegalArgumentException {
     // Add two players to properly test turn cycling
     town.addComputerPlayer(); // First player
     town.addComputerPlayer(); // Second player
@@ -297,8 +263,8 @@ public class TargetCharacterTest {
 
       // Verify turn progression
       if (town.getCurrentTurn() > initialTurn) {
-        assertFalse("Target should move after complete round",
-            initialPlace.equals(town.getTarget().getCurrentPlace()));
+        assertNotEquals("Target should move after complete round", initialPlace,
+            town.getTarget().getCurrentPlace());
       }
     }
 
@@ -309,7 +275,7 @@ public class TargetCharacterTest {
 
   // Test target info display during combat
   @Test
-  public void testTargetInfoDuringCombat() throws Exception {
+  public void testTargetInfoDuringCombat() throws IOException, IllegalArgumentException {
     // Add a player in the same room as target
     Player player = new PlayerModel("TestPlayer", false, 5, 1, output,
         new Scanner(new StringReader("")));
@@ -333,7 +299,7 @@ public class TargetCharacterTest {
 
   // Test target movement pattern
   @Test
-  public void testTargetMovementPattern() throws Exception {
+  public void testTargetMovementPattern() {
     List<String> movementPattern = new ArrayList<>();
     Place startPlace = town.getTarget().getCurrentPlace();
     movementPattern.add(startPlace.getName());
@@ -354,7 +320,8 @@ public class TargetCharacterTest {
 
   // Test target position display during game state changes
   @Test
-  public void testTargetPositionDisplayDuringGameStateChanges() throws Exception {
+  public void testTargetPositionDisplayDuringGameStateChanges()
+      throws IOException, IllegalArgumentException {
     town.addComputerPlayer();
 
     // Test display at game start
@@ -378,15 +345,14 @@ public class TargetCharacterTest {
 
     // Verify that the new location is different and shown in display
     String newPlace = town.getTarget().getCurrentPlace().getName();
-    assertFalse("Target should have moved to a new location",
-        initialPlace.equals(newPlace));
+    assertNotEquals("Target should have moved to a new location", initialPlace, newPlace);
     assertTrue("Display after move should show new location",
         afterMoveDisplay.contains(newPlace));
   }
 
   // Test target health display edge cases
   @Test
-  public void testTargetHealthDisplayEdgeCases() throws Exception {
+  public void testTargetHealthDisplayEdgeCases() throws IOException, IllegalArgumentException {
     // Test near-death state
     Target target = town.getTarget();
     while (target.getHealth() > 1) {
@@ -405,11 +371,9 @@ public class TargetCharacterTest {
         zeroHealthDisplay.contains("Health: 0"));
   }
 
-  /**
-   * Test concurrent player attack attempts on target
-   */
+  // Test concurrent player attack attempts on target
   @Test
-  public void testConcurrentPlayerAttackAttempts() throws Exception {
+  public void testConcurrentPlayerAttackAttempts() throws IOException, IllegalArgumentException {
     // Prepare input for adding players
     String input = "Player1\n1\n3\nPlayer2\n1\n3\n"; // name, place number, carry limit
     StringReader inputReader = new StringReader(input);
@@ -484,17 +448,15 @@ public class TargetCharacterTest {
         targetPlace.getCurrentPlacePlayers().contains(player1));
     assertTrue("Player2 should be in different place",
         farPlace.getCurrentPlacePlayers().contains(player2));
-    assertFalse("Players should be in different places",
-        player1.getPlayerCurrentPlaceNumber() == player2.getPlayerCurrentPlaceNumber());
+    assertNotEquals("Players should be in different places", player1.getPlayerCurrentPlaceNumber(),
+        player2.getPlayerCurrentPlaceNumber());
     assertFalse("Player2's new place should not be neighbor of target's place",
         targetPlace.isNeighbor(farPlace));
   }
 
-  /**
-   * Test target movement behavior when spaces are occupied
-   */
+  // Test target movement with occupied spaces in the world
   @Test
-  public void testTargetMovementWithOccupiedSpaces() throws Exception {
+  public void testTargetMovementWithOccupiedSpaces() throws IOException, IllegalArgumentException {
     // Add multiple players in different spaces
     town.addComputerPlayer(); // Player 1
     town.addComputerPlayer(); // Player 2
@@ -524,9 +486,7 @@ public class TargetCharacterTest {
             .count());
   }
 
-  /**
-   * Test target behavior at world boundaries
-   */
+  // Test target behavior at world boundaries
   @Test
   public void testTargetBehaviorAtWorldBoundaries() {
     Place currentPlace = town.getTarget().getCurrentPlace();
@@ -534,26 +494,24 @@ public class TargetCharacterTest {
 
     // Find places at world boundaries (those with fewer neighbors)
     List<Place> boundaryPlaces = places.stream()
-        .filter(p -> town.getCurrentPlaceNeighbors(p).size() <
-            Math.max(town.getCurrentPlaceNeighbors(places.get(0)).size(),
-                town.getCurrentPlaceNeighbors(places.get(places.size() / 2)).size()))
+        .filter(p -> town.getCurrentPlaceNeighbors(p).size()
+            < Math.max(town.getCurrentPlaceNeighbors(places.get(0)).size(),
+            town.getCurrentPlaceNeighbors(places.get(places.size() / 2)).size()))
         .collect(java.util.stream.Collectors.toList());
 
     // Test movement from boundary places
     for (Place boundaryPlace : boundaryPlaces) {
       targetCharacter.moveToNextPlace();
-      assertFalse("Target should never be stuck at boundaries",
-          targetCharacter.getCurrentPlace().equals(boundaryPlace));
+      assertNotEquals("Target should never be stuck at boundaries",
+          targetCharacter.getCurrentPlace(), boundaryPlace);
       assertTrue("Target should move to a valid place after boundary",
           places.contains(targetCharacter.getCurrentPlace()));
     }
   }
 
-  /**
-   * Test target state persistence during game events
-   */
+  // Test target state persistence during game events
   @Test
-  public void testTargetStatePersistence() throws Exception {
+  public void testTargetStatePersistence() throws IOException, IllegalArgumentException {
     // Initial state
     int initialHealth = town.getTarget().getHealth();
     Place initialPlace = town.getTarget().getCurrentPlace();
@@ -592,8 +550,8 @@ public class TargetCharacterTest {
     // Verify final state
     assertEquals("Health should reflect total damage taken",
         initialHealth - 25, town.getTarget().getHealth());
-    assertFalse("Position should have changed",
-        initialPlace.equals(town.getTarget().getCurrentPlace()));
+    assertNotEquals("Position should have changed", initialPlace,
+        town.getTarget().getCurrentPlace());
 
     // Additional state verifications
     assertFalse("Target should not be defeated from partial damage",
@@ -610,11 +568,10 @@ public class TargetCharacterTest {
         beforeFinalMove, town.getTarget().getCurrentPlace());
   }
 
-  /**
-   * Test target interaction with pet's visibility effect
-   */
+  // Test target interaction with pet visibility effect
   @Test
-  public void testTargetInteractionWithPetVisibility() throws Exception {
+  public void testTargetInteractionWithPetVisibility()
+      throws IOException, IllegalArgumentException {
     // Add a player
     town.addComputerPlayer();
     Player player = town.getPlayers().get(0);

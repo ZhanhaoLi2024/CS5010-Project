@@ -9,8 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 import model.item.Item;
 import model.item.ItemModel;
-import model.pet.Pet;
-import model.pet.PetModel;
 import model.place.Place;
 import model.place.PlaceModel;
 import model.player.Player;
@@ -28,10 +26,6 @@ import org.junit.Test;
 public class LookAroundTest {
   private Town town;
   private StringWriter output;
-  private List<Place> testPlaces;
-  private List<Item> testItems;
-  private List<Player> testPlayers;
-  private Pet testPet;
 
   /**
    * Sets up the test environment before each test.
@@ -47,7 +41,7 @@ public class LookAroundTest {
    */
   private void setupTestEnvironment() {
     // Create test places
-    testPlaces = new ArrayList<>();
+    List<Place> testPlaces = new ArrayList<>();
     testPlaces.add(new PlaceModel(0, 0, 2, 2, "Living Room", "1"));
     testPlaces.add(new PlaceModel(2, 0, 4, 2, "Kitchen", "2"));
     testPlaces.add(new PlaceModel(0, 2, 2, 4, "Bedroom", "3"));
@@ -62,7 +56,6 @@ public class LookAroundTest {
     }
 
     // Create test items
-    testItems = new ArrayList<>();
     Item knife = new ItemModel("Kitchen Knife", 10);
     Item book = new ItemModel("Book", 2);
     Item pillow = new ItemModel("Pillow", 1);
@@ -72,8 +65,6 @@ public class LookAroundTest {
     testPlaces.get(1).addItem(knife);     // Kitchen
     testPlaces.get(2).addItem(pillow);    // Bedroom
 
-    // Create test pet
-    testPet = new PetModel("TestPet");
 
     try {
       // Initialize town with actual game file
@@ -89,9 +80,7 @@ public class LookAroundTest {
     }
   }
 
-  /**
-   * Test basic look around functionality in current space
-   */
+  // Test basic look around functionality in current space
   @Test
   public void testBasicLookAround() throws IOException {
     // Add a player to the game
@@ -110,9 +99,7 @@ public class LookAroundTest {
         result.contains("Neighbors of"));
   }
 
-  /**
-   * Test looking around with items in current space
-   */
+  // Test looking around with items in current space
   @Test
   public void testLookAroundWithItems() throws IOException {
     // Add a player
@@ -137,9 +124,7 @@ public class LookAroundTest {
         result.contains("Damage: 5"));
   }
 
-  /**
-   * Test looking around with multiple players in space
-   */
+  // Test looking around with multiple players in space
   @Test
   public void testLookAroundWithMultiplePlayers() throws IOException {
     // Add two players in the same space
@@ -162,13 +147,11 @@ public class LookAroundTest {
         result.contains(player2.getName()));
   }
 
-  /**
-   * Test looking around with pet blocking visibility
-   */
+  // Test looking around with pet blocking visibility
   @Test
   public void testLookAroundWithPetBlocking() throws IOException {
     // Create a controlled test environment
-    StringWriter mockOutput = new StringWriter();
+    final StringWriter mockOutput = new StringWriter();
     List<Place> places = new ArrayList<>();
 
     // Create a center room and a neighbor
@@ -226,9 +209,7 @@ public class LookAroundTest {
         result.contains("Neighbor Room"));
   }
 
-  /**
-   * Test looking around when pet is in current room
-   */
+  // Test looking around with pet in current room
   @Test
   public void testLookAroundWithPetInCurrentRoom() throws IOException {
     // Add a player
@@ -247,13 +228,11 @@ public class LookAroundTest {
     assertTrue("Should show current room details",
         result.contains("Current place:"));
     assertTrue("Should still show items in current room",
-        !result.contains("No items found") ||
-            town.getPlaceByNumber(currentPlaceNumber).getItems().isEmpty());
+        !result.contains("No items found")
+            || town.getPlaceByNumber(currentPlaceNumber).getItems().isEmpty());
   }
 
-  /**
-   * Test looking around with pet movement
-   */
+  // Test looking around with pet movement
   @Test
   public void testLookAroundWithPetMovement() throws IOException {
     // Add a player
@@ -263,7 +242,6 @@ public class LookAroundTest {
 
     // Initial look around without pet
     town.lookAround();
-    String beforePet = output.toString();
 
     // Clear output
     output.getBuffer().setLength(0);
@@ -286,9 +264,7 @@ public class LookAroundTest {
     }
   }
 
-  /**
-   * Test looking around from a space with no neighbors
-   */
+  // Test looking around from a space with no neighbors
   @Test
   public void testLookAroundWithNoNeighbors() throws IOException {
     // Create a mock town with a single isolated place
@@ -327,9 +303,7 @@ public class LookAroundTest {
         result.contains("No neighbors found"));
   }
 
-  /**
-   * Alternative test for space with no accessible neighbors (blocked by pet)
-   */
+  // Alternative test for space with no accessible neighbors (blocked by pet)
   @Test
   public void testLookAroundWithBlockedNeighbors() throws IOException {
     // Add a player to the game
@@ -352,14 +326,12 @@ public class LookAroundTest {
       // Verify blocked neighbor is indicated
       assertTrue("Should indicate pet's presence",
           result.contains("Pet is here"));
-      assertTrue("Should not show items in blocked space",
-          !result.contains("Items in " + neighbor.getName()));
+      assertFalse("Should not show items in blocked space",
+          result.contains("Items in " + neighbor.getName()));
     }
   }
 
-  /**
-   * Test looking around with no items in current space
-   */
+  // Test looking around with no items in current space
   @Test
   public void testLookAroundEmptySpace() throws IOException {
     // Add a player
@@ -379,9 +351,7 @@ public class LookAroundTest {
         result.contains("No items found"));
   }
 
-  /**
-   * Test looking around with maximum items and players
-   */
+  // Test looking around with maximum items and players
   @Test
   public void testLookAroundMaximumContent() throws IOException {
     // Add multiple players
@@ -416,17 +386,13 @@ public class LookAroundTest {
     }
   }
 
-  /**
-   * Test error handling when looking around with no players
-   */
+  // Test error handling when looking around with no players
   @Test(expected = IllegalStateException.class)
   public void testLookAroundNoPlayers() throws IOException {
     town.lookAround(); // Should throw IllegalStateException
   }
 
-  /**
-   * Test looking around at game boundaries
-   */
+  // Test looking around at game boundaries
   @Test
   public void testLookAroundAtGameBoundaries() throws IOException {
     // Create a small max turns game
@@ -459,9 +425,7 @@ public class LookAroundTest {
     assertTrue("Should still function near end", endResult.contains("Current place:"));
   }
 
-  /**
-   * Test concurrent modification during look around
-   */
+  // Test concurrent modification during look around
   @Test
   public void testLookAroundWithConcurrentChanges() throws IOException {
     // Add initial player

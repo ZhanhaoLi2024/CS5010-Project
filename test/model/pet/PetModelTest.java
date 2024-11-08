@@ -25,7 +25,7 @@ public class PetModelTest {
    */
   @Test(expected = IllegalArgumentException.class)
   public void testPetModel() {
-    PetModel pet = new PetModel("");
+    PetModel testPet = new PetModel("");
   }
 
   /**
@@ -33,8 +33,8 @@ public class PetModelTest {
    */
   @Test
   public void testPetModel2() {
-    PetModel pet = new PetModel("Test");
-    assertEquals("Test", pet.getName());
+    PetModel testPet = new PetModel("Test");
+    assertEquals("Test", testPet.getName());
   }
 
   /**
@@ -42,8 +42,8 @@ public class PetModelTest {
    */
   @Test
   public void testGetPetCurrentPlaceNumber() {
-    PetModel pet = new PetModel("Test");
-    assertEquals(1, pet.getPetCurrentPlaceNumber());
+    PetModel testPet = new PetModel("Test");
+    assertEquals(1, testPet.getPetCurrentPlaceNumber());
   }
 
   /**
@@ -51,9 +51,9 @@ public class PetModelTest {
    */
   @Test
   public void testMovePet() {
-    PetModel pet = new PetModel("Test");
-    pet.movePet(1);
-    assertEquals(1, pet.getPetCurrentPlaceNumber());
+    PetModel testPet = new PetModel("Test");
+    testPet.movePet(1);
+    assertEquals(1, testPet.getPetCurrentPlaceNumber());
   }
 
   /**
@@ -61,8 +61,8 @@ public class PetModelTest {
    */
   @Test(expected = IllegalArgumentException.class)
   public void testMovePet2() {
-    PetModel pet = new PetModel("Test");
-    pet.movePet(-1);
+    PetModel testPet = new PetModel("Test");
+    testPet.movePet(-1);
   }
 
   // Constructor Tests
@@ -91,7 +91,7 @@ public class PetModelTest {
    */
   @Test(expected = IllegalArgumentException.class)
   public void testNullNameConstruction() {
-    new PetModel(null);
+    new PetModel(null); // This should throw an IllegalArgumentException
   }
 
   /**
@@ -258,41 +258,51 @@ public class PetModelTest {
     }
   }
 
+  /**
+   * Tests the state consistency after a valid move.
+   */
   @Test
   public void testNameImmutability() {
     String originalName = pet.getName();
     // Try to modify the returned name
-    String returnedName = pet.getName();
-    returnedName = "NewName";
     assertEquals("Pet name should remain unchanged", originalName, pet.getName());
   }
 
+  /**
+   * Tests the PetModel constructor with a valid name.
+   */
   @Test
   public void testInitialPosition() {
-    PetModel pet = new PetModel("Test");
-    assertEquals("Pet should start at position 1", 1, pet.getPetCurrentPlaceNumber());
+    PetModel testPet = new PetModel("Test");
+    assertEquals("Pet should start at position 1", 1, testPet.getPetCurrentPlaceNumber());
   }
 
+  /**
+   * Tests the movePet method with a valid place number.
+   */
   @Test
   public void testPositionAfterMove() {
-    PetModel pet = new PetModel("Test");
-    pet.movePet(2);
-    assertEquals("Pet should move to position 2", 2, pet.getPetCurrentPlaceNumber());
+    PetModel testPet = new PetModel("Test");
+    testPet.movePet(2);
+    assertEquals("Pet should move to position 2", 2, testPet.getPetCurrentPlaceNumber());
 
     // Move back to initial position
-    pet.movePet(1);
-    assertEquals("Pet should move back to position 1", 1, pet.getPetCurrentPlaceNumber());
+    testPet.movePet(1);
+    assertEquals("Pet should move back to position 1", 1, testPet.getPetCurrentPlaceNumber());
   }
 
+  /**
+   * Tests the movePet method with a valid place number.
+   */
   @Test
   public void testPositionValidity() {
-    PetModel pet = new PetModel("Test");
+    PetModel testPet = new PetModel("Test");
 
     // Test various valid positions
     for (int pos = 1; pos <= 5; pos++) {
-      pet.movePet(pos);
+      testPet.movePet(pos);
       assertEquals("Pet should move to valid position " + pos,
-          pos, pet.getPetCurrentPlaceNumber());
+          pos, testPet.getPetCurrentPlaceNumber());
     }
   }
 
