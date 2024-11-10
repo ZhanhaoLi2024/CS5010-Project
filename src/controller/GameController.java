@@ -47,7 +47,7 @@ public class GameController implements Controller {
     this.maxTurns = maxTurns;
     this.currentTurn = 1;
     this.quitGame = false;
-    this.continueGame = true;
+//    this.continueGame = true;
   }
 
   /**
@@ -259,9 +259,13 @@ public class GameController implements Controller {
    */
   @Override
   public void takeTurn() throws IOException {
+    System.out.println("Starting the game...");
+    System.out.println("Current Players: " + town.getPlayers().size());
     if (town.getPlayers().size() == 1) {
       output.append("You have to add at least one player\n");
       continueGame = false;
+    } else {
+      continueGame = true;
     }
     while (continueGame) {
       output.append("\n");
@@ -290,7 +294,7 @@ public class GameController implements Controller {
     output.append("\n");
     this.currentTurn = 1;
     this.quitGame = false;
-    this.startGame();
+    town.resetGameState();
   }
 
   /**

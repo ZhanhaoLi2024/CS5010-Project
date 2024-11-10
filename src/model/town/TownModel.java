@@ -20,17 +20,19 @@ import model.target.TargetModel;
  * places.
  */
 public class TownModel implements Town {
-  private final List<Place> places;
-  private final List<Item> items;
-  private final Target targetCharacter;
-  private final List<Player> players;
   private final Appendable output;
   private final Scanner scanner;
-  private final Pet pet;
   private final String townName;
-  private final String targetName;
-  private final int targetHealth;
   private final int maxTurns;
+  private final String worldFile;
+  private final TownLoaderInterface loader;
+  private List<Place> places;
+  private List<Item> items;
+  private List<Player> players;
+  private String targetName;
+  private int targetHealth;
+  private Target targetCharacter;
+  private Pet pet;
   private int currentPlayerIndex;
   private int currentTurn;
 
@@ -44,6 +46,7 @@ public class TownModel implements Town {
   public TownModel(TownLoaderInterface loader, String filename, Readable scanner, Appendable output,
                    int maxTurns)
       throws IOException {
+    this.loader = loader;
     TownData townData = loader.loadTown(filename);
     this.townName = townData.getTownName();
     this.targetName = townData.getTargetName();
@@ -58,6 +61,27 @@ public class TownModel implements Town {
     this.output = output;
     this.currentTurn = 1;
     this.maxTurns = maxTurns;
+    this.worldFile = filename;
+  }
+
+  /**
+   * Resets the game state to the initial state.
+   */
+  @Override
+  public void resetGameState() throws IOException {
+    TownData townData = loader.loadTown(this.worldFile);
+    this.players = new ArrayList<>();
+    this.currentPlayerIndex = 0;
+    this.targetName = townData.getTargetName();
+    this.targetHealth = townData.getTargetHealth();
+    this.targetCharacter = new TargetModel(targetName, targetHealth, places.get(0), places);
+    this.pet = new PetModel(townData.getPetName());
+    this.items = townData.getItems();
+    this.places = townData.getPlaces();
+    this.currentTurn = 1;
+
+    addComputerPlayer();
+
   }
 
   @Override

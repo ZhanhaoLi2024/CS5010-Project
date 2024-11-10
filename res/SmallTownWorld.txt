@@ -1,5 +1,5 @@
 11 12 Small Town World
-50 The Mayor
+10 The Mayor
 Fortune the Cat
 20
 0 0 2 3 Park

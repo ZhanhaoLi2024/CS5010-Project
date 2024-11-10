@@ -193,6 +193,13 @@ public interface Town {
   void showPlayerCurrentInfo() throws IOException;
 
   /**
+   * Resets the game state to the initial configuration.
+   *
+   * @throws IOException if there is an issue with I/O operations.
+   */
+  void resetGameState() throws IOException;
+
+  /**
    * Checks if the game is over.
    *
    * @return true if the game is over, false otherwise
