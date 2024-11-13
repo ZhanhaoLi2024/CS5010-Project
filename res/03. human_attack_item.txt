@@ -60,6 +60,7 @@ Please choose an option:
 
 Hi Ivan, you are in Park
 Target is in Park
+Pet is in Park
 Item in this place: 
  - Toy Ball (Damage: 8)
 Please choose an option:
@@ -135,6 +136,7 @@ Please choose an option:
 
 Hi Ivan, you are in Grocery Store
 Target is in Park
+Pet is in Park
 Item in this place: 
  - Shopping Cart (Damage: 12)
 Please choose an option:
@@ -156,6 +158,7 @@ Turn changed from Ivan to Steven (Turn 1)
 
 Hi Steven, you are in School
 Target is in Park
+Pet is in Park
 Item in this place: 
  - Textbook (Damage: 6)
 Please choose an option:
@@ -256,6 +259,7 @@ Please choose an option:
 
 Hi Ivan, you are in Park
 Target is in Park
+Pet is in Park
 Item in this place: 
  - Toy Ball (Damage: 8)
 Please choose an option:

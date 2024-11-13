@@ -474,6 +474,10 @@ public class TownModel implements Town {
     // show target current place
     output.append("Target is in ").append(targetCharacter.getCurrentPlace().getName()).append("\n");
 
+    // Show pet current place
+    output.append("Pet is in ").append(getPlaceByNumber(pet.getPetCurrentPlaceNumber()).getName())
+        .append("\n");
+
     // Show available items
     if (!currentPlace.getItems().isEmpty()) {
       for (Item item : currentPlace.getItems()) {

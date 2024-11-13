@@ -10,10 +10,14 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 import model.item.Item;
+import model.item.ItemModel;
 import model.place.Place;
 import model.place.PlaceModel;
 import model.player.Player;
@@ -978,4 +982,149 @@ public class TownModelTest {
     assertTrue("Game should be over", testTown.isGameOver());
   }
 
+  /**
+   * Tests showing the basic location information.
+   */
+  @Test
+  public void testShowBasicLocationInfo()
+      throws IOException, NoSuchFieldException, IllegalAccessException {
+    List<Place> places = new ArrayList<>();
+    places.add(new PlaceModel(0, 0, 2, 3, "Park", "1"));
+    places.add(new PlaceModel(2, 0, 4, 1, "Grocery Store", "2"));
+    List<Item> items = new ArrayList<>();
+    items.add(new ItemModel("Toy Ball", 8));
+    items.add(new ItemModel("Shopping Cart", 12));
+
+    String simulatedInput = "Player 1\n1\n5\n";
+    TownModel townModel =
+        new TownModel(new TownLoader(), "res/SmallTownWorld.txt", new StringReader(simulatedInput),
+            new StringBuilder(), 10);
+    townModel.resetGameState();
+    townModel.addPlayer();
+
+    townModel.showBasicLocationInfo();
+
+    Field outputField = townModel.getClass().getDeclaredField("output");
+    outputField.setAccessible(true);
+    StringBuilder localOutput = (StringBuilder) outputField.get(townModel);
+
+    assertTrue(localOutput.toString().contains("Hi Player 1, you are in Park"));
+    assertTrue(localOutput.toString().contains("Target is in Park"));
+    assertTrue(localOutput.toString().contains("Pet is in Park"));
+    assertTrue(localOutput.toString().contains("Item in this place: "));
+    assertTrue(localOutput.toString().contains("Toy Ball (Damage: 8)"));
+  }
+
+  /**
+   * Tests showing the basic location information with other players.
+   */
+  @Test
+  public void testShowBasicLocationInfoWithOther()
+      throws IOException, NoSuchFieldException, IllegalAccessException {
+    List<Place> places = new ArrayList<>();
+    places.add(new PlaceModel(0, 0, 2, 3, "Park", "1"));
+    places.add(new PlaceModel(2, 0, 4, 1, "Grocery Store", "2"));
+    List<Item> items = new ArrayList<>();
+    items.add(new ItemModel("Toy Ball", 8));
+    items.add(new ItemModel("Shopping Cart", 12));
+
+    String simulatedInput = "Player 1\n1\n5\nPlayer 2\n1\n5\n";
+    TownModel townModel =
+        new TownModel(new TownLoader(), "res/SmallTownWorld.txt", new StringReader(simulatedInput),
+            new StringBuilder(), 10);
+    townModel.resetGameState();
+    townModel.addPlayer();
+    townModel.addPlayer();
+
+    townModel.showBasicLocationInfo();
+
+    Field outputField = townModel.getClass().getDeclaredField("output");
+    outputField.setAccessible(true);
+    StringBuilder localOutput = (StringBuilder) outputField.get(townModel);
+
+    assertTrue(localOutput.toString().contains("Hi Player 1, you are in Park"));
+    assertTrue(localOutput.toString().contains("Players in this place:"));
+    assertTrue(localOutput.toString().contains("Player 2"));
+    assertTrue(localOutput.toString().contains("Target is in Park"));
+    assertTrue(localOutput.toString().contains("Pet is in Park"));
+    assertTrue(localOutput.toString().contains("Item in this place: "));
+    assertTrue(localOutput.toString().contains("Toy Ball (Damage: 8)"));
+  }
+
+  /**
+   * Tests showing the basic location information without items.
+   */
+  @Test
+  public void testShowBasicLocationInfoWithoutItem()
+      throws IOException, NoSuchFieldException, IllegalAccessException {
+    List<Place> places = new ArrayList<>();
+    places.add(new PlaceModel(0, 0, 2, 3, "Park", "1"));
+    places.add(new PlaceModel(2, 0, 4, 1, "Grocery Store", "2"));
+    List<Item> items = new ArrayList<>();
+    items.add(new ItemModel("Toy Ball", 8));
+    items.add(new ItemModel("Shopping Cart", 12));
+
+    String simulatedInput = "Player 1\n1\n5\nPlayer 2\n1\n5\n";
+    TownModel townModel =
+        new TownModel(new TownLoader(), "res/SmallTownWorld.txt", new StringReader(simulatedInput),
+            new StringBuilder(), 10);
+    townModel.resetGameState();
+    townModel.addPlayer();
+    townModel.addPlayer();
+
+    // Remove all items
+    for (Place place : townModel.getPlaces()) {
+      place.getItems().clear();
+    }
+
+    townModel.showBasicLocationInfo();
+
+    Field outputField = townModel.getClass().getDeclaredField("output");
+    outputField.setAccessible(true);
+    StringBuilder localOutput = (StringBuilder) outputField.get(townModel);
+
+    assertTrue(localOutput.toString().contains("Hi Player 1, you are in Park"));
+    assertTrue(localOutput.toString().contains("Players in this place:"));
+    assertTrue(localOutput.toString().contains("Player 2"));
+    assertTrue(localOutput.toString().contains("Target is in Park"));
+    assertTrue(localOutput.toString().contains("Pet is in Park"));
+  }
+
+  /**
+   * Tests showing the basic location information with pet in other place.
+   */
+  @Test
+  public void testShowBasicLocationInfoPetInOtherPlace()
+      throws IOException, NoSuchFieldException, IllegalAccessException {
+    List<Place> places = new ArrayList<>();
+    places.add(new PlaceModel(0, 0, 2, 3, "Park", "1"));
+    places.add(new PlaceModel(2, 0, 4, 1, "Grocery Store", "2"));
+    List<Item> items = new ArrayList<>();
+    items.add(new ItemModel("Toy Ball", 8));
+    items.add(new ItemModel("Shopping Cart", 12));
+
+    String simulatedInput = "Player 1\n1\n5\nPlayer 2\n1\n5\n";
+    TownModel townModel =
+        new TownModel(new TownLoader(), "res/SmallTownWorld.txt", new StringReader(simulatedInput),
+            new StringBuilder(), 10);
+    townModel.resetGameState();
+    townModel.addPlayer();
+    townModel.addPlayer();
+
+    // move pet to other place
+    townModel.movePet(2);
+
+    townModel.showBasicLocationInfo();
+
+    Field outputField = townModel.getClass().getDeclaredField("output");
+    outputField.setAccessible(true);
+    StringBuilder localOutput = (StringBuilder) outputField.get(townModel);
+
+    assertTrue(localOutput.toString().contains("Hi Player 1, you are in Park"));
+    assertTrue(localOutput.toString().contains("Players in this place:"));
+    assertTrue(localOutput.toString().contains("Player 2"));
+    assertTrue(localOutput.toString().contains("Target is in Park"));
+    assertTrue(localOutput.toString().contains("Item in this place: "));
+    assertTrue(localOutput.toString().contains("Toy Ball (Damage: 8)"));
+  }
 }
