@@ -134,22 +134,25 @@ The `res/` directory contains example runs demonstrating key features:
 The project includes comprehensive unit tests for:
 
 - Pet visibility mechanics
-- Combat system
+- Attack system
 - Victory conditions
 - Target movement
+- Pet movement
 - Computer player AI
 
-Run tests using:
+## Limitations
 
-```bash
-java -cp bin org.junit.runner.JUnitCore <test-class>
-```
+- Game is text-based with no graphical interface
+- No undo/redo functionality for actions
+- No save/load functionality
+- Pet starts in the same location as the target
+- Computer-controlled players follow a fixed strategy pattern
 
 ## Future Improvements
 
 - Graphical user interface
 - Additional game modes
-- Enhanced AI strategies
+- Enhanced computer-controller strategies
 - Save/load game state
 
 ## Authors
