@@ -1,0 +1,107 @@
+1 of 3
+Player name: Computer-1
+Player current place: Hospital
+This player can carry up to 3 items.
+Player is not carrying any items.
+Computer player's turn.
+Computer player picks up an item.
+Picked up Medical Kit.
+
+Turn changed from Computer-1 to Ivan (Turn 1)
+
+1 of 3
+Player name: Ivan
+Player current place: Grocery Store
+This player can carry up to 3 items.
+Player is not carrying any items.
+Please choose an option:
+1. Move player
+2. Pick up item
+3. Look around
+4. Attack target
+5. Move pet
+2
+Items in Grocery Store:
+1. Shopping Cart (Damage: 12)
+Enter the item number to pick up:
+1
+Picked up Shopping Cart.
+
+Turn changed from Ivan to Steven (Turn 1)
+
+1 of 3
+Player name: Steven
+Player current place: Gas Station
+This player can carry up to 3 items.
+Player is not carrying any items.
+Please choose an option:
+1. Move player
+2. Pick up item
+3. Look around
+4. Attack target
+5. Move pet
+5
+
+Available places to move the pet:
+1. Park
+2. Grocery Store
+3. School
+4. Post Office
+5. Police Station
+6. Fire Station
+7. Library
+8. Hospital
+9. Restaurant
+10. Playground
+11. Bakery
+12. Gas Station
+13. House #1
+14. House #2
+15. Gym
+16. Pharmacy
+17. Barber Shop
+18. Coffee Shop
+19. Bus Stop
+20. Community Center
+Enter the number of the place to move the pet to (or 0 to cancel):
+2
+Pet Fortune the Cat moved to Grocery Store
+
+Turn changed from Steven to Computer-1 (Turn 2)
+
+2 of 3
+Player name: Computer-1
+Player current place: Hospital
+This player can carry up to 3 items.
+Player is carrying the following items:
+- Medical Kit (Damage: 18)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to House #1
+
+Turn changed from Computer-1 to Ivan (Turn 2)
+
+2 of 3
+Player name: Ivan
+Player current place: Grocery Store
+This player can carry up to 3 items.
+Player is carrying the following items:
+- Shopping Cart (Damage: 12)
+Please choose an option:
+1. Move player
+2. Pick up item
+3. Look around
+4. Attack target
+5. Move pet
+4
+
+Choose your attack:
+0. Poke in the eye (1 damage)
+1. Use Shopping Cart (12 damage)
+1
+Attack successful with Shopping Cart for 12 damage!
+Ivan has eliminated the target!
+
+Turn changed from Ivan to Steven (Turn 2)
+Game Over! Ivan has successfully eliminated the target and won the game!
+Game over.

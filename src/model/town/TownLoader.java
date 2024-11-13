@@ -26,11 +26,11 @@ public class TownLoader implements TownLoaderInterface {
   @Override
   public TownData loadTown(String filename) throws IOException {
     BufferedReader br = new BufferedReader(new FileReader(filename));
-    List<Place> places = new ArrayList<>();
-    List<Item> items = new ArrayList<>();
+    final List<Place> places = new ArrayList<>();
+    final List<Item> items = new ArrayList<>();
     String townName;
     String targetName;
-    String petName;
+    final String petName;
     int targetHealth;
 
     String[] townInfo = br.readLine().split(" ");

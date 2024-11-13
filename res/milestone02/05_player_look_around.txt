@@ -1,0 +1,15 @@
+Player: Steven's turn
+Your current place: School
+Player has no item in the bag.
+Please choose an option:
+1. Move player
+2. Pick up item
+3. Look around
+3
+Neighbors of School:
+Grocery Store
+Post Office
+Hospital
+Restaurant
+Items in School:
+Textbook (Damage: 6)

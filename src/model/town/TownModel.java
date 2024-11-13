@@ -20,44 +20,74 @@ import model.target.TargetModel;
  * places.
  */
 public class TownModel implements Town {
-  private final List<Place> places;
-  private final List<Item> items;
-  private final Target targetCharacter;
-  private final List<Player> players;
   private final Appendable output;
   private final Scanner scanner;
-  private final Pet pet;
   private final String townName;
-  private final String targetName;
-  private final int targetHealth;
   private final int maxTurns;
+  private final String worldFile;
+  private final TownLoaderInterface loader;
+  private List<Place> places;
+  private List<Item> items;
+  private List<Player> players;
+  private String targetName;
+  private int targetHealth;
+  private Target targetCharacter;
+  private Pet pet;
   private int currentPlayerIndex;
   private int currentTurn;
 
   /**
    * Constructs a new TownModel with the specified town loader and filename.
    *
-   * @param loader   the town loader to load the town data
-   * @param filename the name of the file to load the town from
+   * @param townLoader   the town loader to load the town data
+   * @param filename     the name of the file to load the town from
+   * @param townScanner  the scanner to read input from
+   * @param townOutput   the appendable to write output to
+   * @param townMaxTurns the maximum number of turns allowed in the game
    * @throws IOException if an I/O error occurs
    */
-  public TownModel(TownLoaderInterface loader, String filename, Readable scanner, Appendable output,
-                   int maxTurns)
+  public TownModel(TownLoaderInterface townLoader, String filename, Readable townScanner,
+                   Appendable townOutput,
+                   int townMaxTurns)
       throws IOException {
-    TownData townData = loader.loadTown(filename);
+    this.loader = townLoader;
+    TownData townData = townLoader.loadTown(filename);
     this.townName = townData.getTownName();
     this.targetName = townData.getTargetName();
     this.targetHealth = townData.getTargetHealth();
-    this.pet = new PetModel(townData.getPetName());
     this.places = townData.getPlaces();
     this.items = townData.getItems();
     this.targetCharacter = new TargetModel(targetName, targetHealth, places.get(0), places);
+    int targetCurrentPlaceNumber =
+        Integer.parseInt(targetCharacter.getCurrentPlace().getPlaceNumber());
+    this.pet = new PetModel(townData.getPetName(), targetCurrentPlaceNumber);
     this.players = new ArrayList<>();
     this.currentPlayerIndex = 0;
-    this.scanner = new Scanner(scanner);
-    this.output = output;
+    this.scanner = new Scanner(townScanner);
+    this.output = townOutput;
     this.currentTurn = 1;
-    this.maxTurns = maxTurns;
+    this.maxTurns = townMaxTurns;
+    this.worldFile = filename;
+  }
+
+  /**
+   * Resets the game state to the initial state.
+   */
+  @Override
+  public void resetGameState() throws IOException {
+    TownData townData = loader.loadTown(this.worldFile);
+    this.players = new ArrayList<>();
+    this.currentPlayerIndex = 0;
+    this.targetName = townData.getTargetName();
+    this.targetHealth = townData.getTargetHealth();
+    this.targetCharacter = new TargetModel(targetName, targetHealth, places.get(0), places);
+    int targetCurrentPlaceNumber =
+        Integer.parseInt(targetCharacter.getCurrentPlace().getPlaceNumber());
+    this.pet = new PetModel(townData.getPetName(), targetCurrentPlaceNumber);
+    this.items = townData.getItems();
+    this.places = townData.getPlaces();
+    this.currentTurn = 1;
+
   }
 
   @Override
@@ -66,16 +96,9 @@ public class TownModel implements Town {
   }
 
   @Override
-  public void getPlaceInfo(Place place) {
-    System.out.println("Place: " + place.getName());
-    System.out.println("Items in the place:");
-    for (Item item : place.getItems()) {
-      System.out.println("- " + item.getName() + " (Damage: " + item.getDamage() + ")");
-    }
-    System.out.println("Neighboring places:");
-    for (Place neighbor : place.getNeighbors()) {
-      System.out.println("- " + neighbor.getName());
-    }
+  public void showPetCurrentInfo() throws IOException {
+    output.append("Pet info: ").append(pet.getName()).append("is in ")
+        .append(getPlaceByNumber(pet.getPetCurrentPlaceNumber()).getName()).append("\n");
   }
 
   @Override
@@ -148,6 +171,7 @@ public class TownModel implements Town {
         getPlaceByNumber(placeNumber).getName()));
   }
 
+  @Override
   public List<Place> getPlaces() {
     return places;
   }
@@ -188,35 +212,141 @@ public class TownModel implements Town {
     return neighbors;
   }
 
-  @Override
-  public void addComputerPlayer() throws IOException {
-    Random random = new Random();
-    Place randomPlace = getPlaces().get(random.nextInt(getPlaces().size()));
-    Player player = new PlayerModel("David(Computer)", true, 3, 1, System.out, scanner);
-    players.add(player);
-    output.append("Computer player 'David' added.\n");
+  /**
+   * Validates if a player name is unique (not already taken).
+   *
+   * @param name The name to check
+   * @return true if the name is unique, false otherwise
+   */
+  private boolean isPlayerNameUnique(String name) {
+    return players.stream()
+        .noneMatch(p -> p.getName().equalsIgnoreCase(name));
+  }
+
+  /**
+   * Validates if a place number is valid (within the range of places).
+   *
+   * @param placeNumber The place number to check
+   * @return true if the place number is valid, false otherwise
+   */
+  private boolean isValidPlaceNumber(int placeNumber) {
+    return placeNumber > 0 && placeNumber <= places.size();
+  }
+
+  /**
+   * Gets a valid player name from the user.
+   *
+   * @return the valid player name
+   * @throws IOException if there is an error with input/output
+   */
+  private String getValidPlayerName() throws IOException {
+    while (true) {
+      output.append("Enter the player's name:\n");
+      String playerName = scanner.nextLine().trim();
+
+      if (playerName.isEmpty()) {
+        output.append("Name cannot be empty. Please try again.\n");
+        continue;
+      }
+
+      if (!isPlayerNameUnique(playerName)) {
+        output.append("This name is already taken. Please choose another.\n");
+        continue;
+      }
+
+      return playerName;
+    }
+  }
+
+  /**
+   * Gets a valid place number from the user.
+   *
+   * @return the valid place number
+   * @throws IOException if there is an error with input/output
+   */
+  private int getValidPlaceNumber() throws IOException {
+    while (true) {
+      try {
+        output.append("Enter your starting place number (1-")
+            .append(String.valueOf(places.size()))
+            .append("):\n");
+
+        int placeNumber = Integer.parseInt(scanner.nextLine());
+
+        if (!isValidPlaceNumber(placeNumber)) {
+          output.append("Invalid place number. Must be between 1 and ")
+              .append(String.valueOf(places.size()))
+              .append(". Please try again.\n");
+          continue;
+        }
+
+        return placeNumber;
+      } catch (NumberFormatException e) {
+        output.append("Invalid input. Please enter a number.\n");
+      }
+    }
+  }
+
+  /**
+   * Gets a valid carry limit from the user.
+   *
+   * @return the valid carry limit
+   * @throws IOException if there is an error with input/output
+   */
+  private int getValidCarryLimit() throws IOException {
+    while (true) {
+      try {
+        output.append("Enter your limit of carrying items (1-10):\n");
+        int carryLimit = Integer.parseInt(scanner.nextLine());
+
+        if (carryLimit < 1 || carryLimit > 10) {
+          output.append("Invalid carry limit. Must be between 1 and 10. Please try again.\n");
+          continue;
+        }
+
+        return carryLimit;
+      } catch (NumberFormatException e) {
+        output.append("Invalid input. Please enter a number.\n");
+      }
+    }
   }
 
   @Override
   public void addPlayer() throws IOException {
-    output.append("Enter the player's name:\n");
-    String playerName = scanner.nextLine();
-    output.append("Enter your starting place number:\n");
-    String placeIndex = scanner.nextLine();
-    int placeNumber = Integer.parseInt(placeIndex);
-    Place startingPlace = places.get(Integer.parseInt(placeIndex) - 1);
-    output.append("Enter your limit of carrying items:\n");
-    String carryLimit = scanner.nextLine();
-    Player player = new PlayerModel(playerName, false, Integer.parseInt(carryLimit),
-        placeNumber,
-        output, scanner);
-    output.append("Player name: ").append(player.getName()).append("\n");
-    output.append(player.getName()).append("Current place: ").append(startingPlace.getName())
-        .append("\n");
-    output.append("You can carry up to ").append(String.valueOf(player.getCarryLimit()))
-        .append(" items.\n");
-    output.append("Player added.\n");
+    String playerName = getValidPlayerName();
+    int placeNumber = getValidPlaceNumber();
+    int carryLimit = getValidCarryLimit();
+
+    Place startingPlace = places.get(placeNumber - 1);
+    Player player = new PlayerModel(playerName, false, carryLimit, placeNumber);
     players.add(player);
+
+    // Confirm addition
+    output.append("Player added successfully:\n")
+        .append("Name: ").append(playerName).append("\n")
+        .append("Location: ").append(startingPlace.getName()).append("\n")
+        .append("Carry limit: ").append(String.valueOf(carryLimit)).append("\n");
+  }
+
+  @Override
+  public void addComputerPlayer() throws IOException {
+    // Generate a random valid position
+    Random random = new Random();
+    int randomPlaceNumber = random.nextInt(places.size()) + 1;
+
+    // Generate a unique name
+    String computerName = "Computer-" + (players.size() + 1);
+    while (!isPlayerNameUnique(computerName)) {
+      computerName = "Computer-" + random.nextInt(1000);
+    }
+
+    // Create computer player with random starting position
+    Player player = new PlayerModel(computerName, true, 3, randomPlaceNumber);
+    players.add(player);
+
+    output.append("Computer player '").append(computerName)
+        .append("' added at ").append(places.get(randomPlaceNumber - 1).getName())
+        .append(".\n");
   }
 
   @Override
@@ -258,9 +388,9 @@ public class TownModel implements Town {
   }
 
   @Override
-  public void getPlaceByName(String PlaceName) throws IOException {
+  public void getPlaceByName(String placeNameString) throws IOException {
     Place place = getPlaces().stream()
-        .filter(p -> p.getName().equals(PlaceName))
+        .filter(p -> p.getName().equals(placeNameString))
         .findFirst()
         .orElse(null);
     if (place != null) {
@@ -301,7 +431,6 @@ public class TownModel implements Town {
     for (Player player : players) {
       output.append(String.valueOf(index)).append(". Player name: ").append(player.getName())
           .append("\n");
-      String currentPlaceName = getPlaceByNumber(player.getPlayerCurrentPlaceNumber()).getName();
       output.append("Player current place: ")
           .append(getPlaceByNumber(player.getPlayerCurrentPlaceNumber()).getName())
           .append("\n");
@@ -313,13 +442,46 @@ public class TownModel implements Town {
   }
 
   @Override
-  public void showPlayerCurrentInfo() throws IOException {
-    if (players.isEmpty()) {
-      output.append("No players in the game.\n");
-      return;
+  public void showBasicLocationInfo() throws IOException {
+    Player currentPlayer = players.get(currentPlayerIndex);
+    Place currentPlace = getPlaceByNumber(currentPlayer.getPlayerCurrentPlaceNumber());
+
+    // Show current place name
+    output.append("\nHi ").append(currentPlayer.getName()).append(", you are in ")
+        .append(currentPlace.getName())
+        .append("\n");
+
+    // Show other players in the same room
+    List<Player> currentPlacePlayers = new ArrayList<>();
+    for (Player p : players) {
+      Place currentPlaceOfP = getPlaceByNumber(p.getPlayerCurrentPlaceNumber());
+      if (currentPlaceOfP.equals(currentPlace) && !p.equals(currentPlayer)) {
+        currentPlacePlayers.add(p);
+      }
     }
-    String playerName = players.get(currentPlayerIndex).getName();
-    getPlayerByName(playerName);
+    if (!currentPlacePlayers.isEmpty()) {
+      output.append("Players in this place:\n");
+      if (currentPlacePlayers.size() == 1) {
+        output.append(" - ").append(currentPlacePlayers.get(0).getName()).append("\n");
+      } else {
+        for (Player player : currentPlacePlayers) {
+          output.append(player.getName()).append(", ");
+        }
+        output.append("\n");
+      }
+    }
+
+    // show target current place
+    output.append("Target is in ").append(targetCharacter.getCurrentPlace().getName()).append("\n");
+
+    // Show available items
+    if (!currentPlace.getItems().isEmpty()) {
+      for (Item item : currentPlace.getItems()) {
+        output.append("Item in this place: \n");
+        output.append(" - ").append(item.getName()).append(" (Damage: ")
+            .append(String.valueOf(item.getDamage())).append(")\n");
+      }
+    }
   }
 
   @Override
@@ -366,12 +528,12 @@ public class TownModel implements Town {
     // First show current place name
     output.append("Current place: ").append(currentPlace.getName()).append("\n");
     // Show items in current place
-    List<Item> items = currentPlace.getItems();
+    List<Item> currentPlaceItems = currentPlace.getItems();
     output.append("Items in ").append(currentPlace.getName()).append(":\n");
-    if (items.isEmpty()) {
+    if (currentPlaceItems.isEmpty()) {
       output.append("No items found.\n");
     } else {
-      for (Item item : items) {
+      for (Item item : currentPlaceItems) {
         output.append(item.getName()).append(" (Damage: ")
             .append(String.valueOf(item.getDamage()))
             .append(")\n");
@@ -380,8 +542,8 @@ public class TownModel implements Town {
     // Show players in current place
     List<Player> currentPlacePlayers = new ArrayList<>();
     for (Player p : players) {
-      Place pCurrentPlace = getPlaceByNumber(p.getPlayerCurrentPlaceNumber());
-      if (pCurrentPlace.equals(currentPlace) && !p.equals(currentPlayer)) {
+      Place currentPlaceOfP = getPlaceByNumber(p.getPlayerCurrentPlaceNumber());
+      if (currentPlaceOfP.equals(currentPlace) && !p.equals(currentPlayer)) {
         currentPlacePlayers.add(p);
       }
     }
@@ -429,8 +591,8 @@ public class TownModel implements Town {
         // Show players in visible neighbors
         List<Player> neighborPlayers = new ArrayList<>();
         for (Player p : players) {
-          Place pCurrentPlace = getPlaceByNumber(p.getPlayerCurrentPlaceNumber());
-          if (pCurrentPlace.equals(neighbor)) {
+          Place currentPlaceOfP = getPlaceByNumber(p.getPlayerCurrentPlaceNumber());
+          if (currentPlaceOfP.equals(neighbor)) {
             neighborPlayers.add(p);
           }
         }
@@ -463,7 +625,7 @@ public class TownModel implements Town {
     }
 
     if (currentPlayer.isComputerControlled()) {
-      handleComputerPlayerMove(currentPlayer, currentPlace, neighbors);
+      handleComputerPlayerMove(currentPlayer, neighbors);
     } else {
       handleHumanPlayerMove(currentPlayer, currentPlace, neighbors);
     }
@@ -474,7 +636,7 @@ public class TownModel implements Town {
   /**
    * Handles movement logic for computer-controlled player.
    */
-  private void handleComputerPlayerMove(Player player, Place currentPlace, List<Place> neighbors)
+  private void handleComputerPlayerMove(Player player, List<Place> neighbors)
       throws IOException {
     // First try to move towards target if visible
     Place targetPlace = getTarget().getCurrentPlace();
@@ -532,29 +694,31 @@ public class TownModel implements Town {
   public void pickUpItem() throws IOException {
     Player currentPlayer = this.players.get(currentPlayerIndex);
     Place currentPlace = getPlaceByNumber(currentPlayer.getPlayerCurrentPlaceNumber());
-    List<Item> items = currentPlace.getItems();
-    if (items.isEmpty()) {
+    List<Item> currentItems = currentPlace.getItems();
+    if (currentItems.isEmpty()) {
       output.append("No items found.\n");
       return;
     } else {
       if (currentPlayer.isComputerControlled()) {
-        Item item = items.get(new Random().nextInt(items.size()));
+        Item item = currentItems.get(new Random().nextInt(currentItems.size()));
         currentPlayer.pickUpItem(item);
         currentPlace.removeItem(item);
         output.append("Picked up ").append(item.getName()).append(".\n");
       } else {
         output.append("Items in ").append(currentPlace.getName()).append(":\n");
-        for (int i = 0; i < items.size(); i++) {
+        for (int i = 0; i < currentItems.size(); i++) {
           int currentIndex = i + 1;
-          output.append(String.valueOf(currentIndex)).append(". ").append(items.get(i).getName())
-              .append(" (Damage: ").append(String.valueOf(items.get(i).getDamage())).append(")\n");
+          output.append(String.valueOf(currentIndex)).append(". ")
+              .append(currentItems.get(i).getName())
+              .append(" (Damage: ").append(String.valueOf(currentItems.get(i).getDamage()))
+              .append(")\n");
         }
         output.append("Enter the item number to pick up:\n");
         int itemNumber = Integer.parseInt(scanner.nextLine());
-        if (itemNumber < 1 || itemNumber > items.size()) {
+        if (itemNumber < 1 || itemNumber > currentItems.size()) {
           output.append("Invalid item number.\n");
         } else {
-          Item item = items.get(itemNumber - 1);
+          Item item = currentItems.get(itemNumber - 1);
           currentPlayer.pickUpItem(item);
           currentPlace.removeItem(item);
           output.append("Picked up ").append(item.getName()).append(".\n");
@@ -569,10 +733,24 @@ public class TownModel implements Town {
     if (players.size() <= 1) {
       return;
     }
+
+    // Save previous player for reference
+    Player previousPlayer = players.get(currentPlayerIndex);
+
+    // Update player index and turn counter
     currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
     if (currentPlayerIndex == 0) {
       currentTurn++;
+      // Move target when we complete a full round
+      moveTarget();
     }
+
+    // Notify about turn change
+    Player currentPlayer = players.get(currentPlayerIndex);
+    output.append("\nTurn changed from ").append(previousPlayer.getName())
+        .append(" to ").append(currentPlayer.getName())
+        .append(" (Turn ").append(String.valueOf(currentTurn))
+        .append(")\n");
   }
 
   @Override
@@ -611,7 +789,9 @@ public class TownModel implements Town {
     for (Player otherPlayer : players) {
       if (otherPlayer != player) {
         Place otherPlace = getPlaceByNumber(otherPlayer.getPlayerCurrentPlaceNumber());
-        if (playerPlace.equals(otherPlace) || playerPlace.isNeighbor(otherPlace)) {
+        Place petPlace = getPlaceByNumber(pet.getPetCurrentPlaceNumber());
+        if ((playerPlace.equals(otherPlace)
+            || (playerPlace.isNeighbor(otherPlace) && !petPlace.equals(playerPlace)))) {
           return true;
         }
       }
@@ -689,12 +869,14 @@ public class TownModel implements Town {
     }
 
     // Execute attack (always successful if not seen)
-    boolean targetDefeated = targetCharacter.takeDamage(item.getDamage());
+    final boolean targetDefeated = targetCharacter.takeDamage(item.getDamage());
 
     // Remove used item from player's inventory
     player.getCurrentCarriedItems().remove(item);
     output.append("Attack successful with ").append(item.getName())
         .append(" for ").append(String.valueOf(item.getDamage())).append(" damage!\n");
+    output.append("Target health: ").append(String.valueOf(targetCharacter.getHealth()))
+        .append("\n");
 
     if (targetDefeated) {
       output.append(player.getName()).append(" has eliminated the target!\n");
@@ -729,7 +911,9 @@ public class TownModel implements Town {
 
     // Poke attack (always successful if not seen)
     boolean targetDefeated = targetCharacter.takeDamage(1);
-    output.append("Successfully poked the target in the eye for 1 damage!\n");
+    output.append("Successfully poked the target in the eye for 1 damage! \n");
+    output.append("Target health: ").append(String.valueOf(targetCharacter.getHealth()))
+        .append("\n");
 
     if (targetDefeated) {
       output.append(player.getName())
@@ -751,15 +935,15 @@ public class TownModel implements Town {
     }
 
     // Computer always attempts to attack if in the same room as target
-    List<Item> items = player.getCurrentCarriedItems();
+    List<Item> computerItems = player.getCurrentCarriedItems();
 
-    if (items.isEmpty()) {
+    if (computerItems.isEmpty()) {
       executePoke(player);
       return;
     }
 
     // Find and use item with highest damage
-    Item bestItem = items.stream()
+    Item bestItem = computerItems.stream()
         .max((i1, i2) -> Integer.compare(i1.getDamage(), i2.getDamage()))
         .get();
 
@@ -779,13 +963,13 @@ public class TownModel implements Town {
       throw new IllegalArgumentException("Player must be a non-null human player");
     }
 
-    List<Item> items = player.getCurrentCarriedItems();
+    List<Item> humanItems = player.getCurrentCarriedItems();
 
     output.append("\nChoose your attack:\n");
     output.append("0. Poke in the eye (1 damage)\n");
 
-    for (int i = 0; i < items.size(); i++) {
-      Item item = items.get(i);
+    for (int i = 0; i < humanItems.size(); i++) {
+      Item item = humanItems.get(i);
       output.append(String.valueOf(i + 1)).append(". Use ")
           .append(item.getName())
           .append(" (").append(String.valueOf(item.getDamage())).append(" damage)\n");
@@ -795,8 +979,8 @@ public class TownModel implements Town {
       int choice = Integer.parseInt(scanner.nextLine());
       if (choice == 0) {
         executePoke(player);
-      } else if (choice >= 1 && choice <= items.size()) {
-        executeItemAttack(player, items.get(choice - 1));
+      } else if (choice >= 1 && choice <= humanItems.size()) {
+        executeItemAttack(player, humanItems.get(choice - 1));
       } else {
         output.append("Invalid choice. Attack cancelled.\n");
       }

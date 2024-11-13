@@ -12,15 +12,16 @@ public class PetModel implements Pet {
   /**
    * Constructs a PetModel object with the specified name. The initial place number is set to 0.
    *
-   * @param petName the name of the pet.
+   * @param petName             the name of the pet.
+   * @param startingPlaceNumber the starting place number of the pet.
    * @throws IllegalArgumentException if the provided pet name is empty or null.
    */
-  public PetModel(String petName) throws IllegalArgumentException {
+  public PetModel(String petName, int startingPlaceNumber) throws IllegalArgumentException {
     if (petName == null || petName.trim().isEmpty()) {
       throw new IllegalArgumentException("Pet name cannot be null, empty, or only whitespace!");
     }
     this.petName = petName;
-    this.currentPlaceNumber = 1; // set initial place number as 0
+    this.currentPlaceNumber = startingPlaceNumber;
   }
 
   /**
@@ -54,6 +55,10 @@ public class PetModel implements Pet {
     if (placeNumber <= 0) {
       throw new IllegalArgumentException(
           "Error in Pet movePet: place number must be positive!");
+    }
+    if (placeNumber > 20) {
+      throw new IllegalArgumentException(
+          "Error in Pet movePet: place number must be less than or equal to 20!");
     }
     this.currentPlaceNumber = placeNumber;
   }

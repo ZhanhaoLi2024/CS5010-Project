@@ -1,4 +1,5 @@
 /bin/
+out/
 
 *.class
 
@@ -9,3 +10,6 @@
 
 .DS_Store
 
+.classpath
+.project
+*.iml

@@ -5,6 +5,10 @@ import java.util.Scanner;
 import model.place.Place;
 import model.town.Town;
 
+/**
+ * Command to handle a player's attempt to move the pet to a different place.
+ * Implements the Command interface as part of the Command pattern.
+ */
 public class MovePetCommand implements Command {
   private final Town town;
   private final Appendable output;
@@ -13,16 +17,21 @@ public class MovePetCommand implements Command {
   /**
    * Constructs a new MovePetCommand.
    *
-   * @param town    the town where the pet is located
-   * @param output  the output stream to write messages to
-   * @param scanner the scanner to get user input
+   * @param gameTown    the town where the pet is located
+   * @param gameOutput  the output stream to write messages to
+   * @param gameScanner the scanner to get user input
    */
-  public MovePetCommand(Town town, Appendable output, Scanner scanner) {
-    this.town = town;
-    this.output = output;
-    this.scanner = scanner;
+  public MovePetCommand(Town gameTown, Appendable gameOutput, Scanner gameScanner) {
+    this.town = gameTown;
+    this.output = gameOutput;
+    this.scanner = gameScanner;
   }
 
+  /**
+   * Executes the command to move the pet to a different place.
+   *
+   * @throws IOException if an IO error occurs
+   */
   @Override
   public void execute() throws IOException {
     // Display all available places

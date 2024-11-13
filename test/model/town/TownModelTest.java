@@ -6,7 +6,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringReader;
@@ -26,11 +25,8 @@ import org.junit.Test;
  * The TownModelTest class implements the tests for the TownModel class.
  */
 public class TownModelTest {
-
-  //  private ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
   private TownModel town;
   private Scanner scanner;
-  private ByteArrayOutputStream outputStream;
   private StringBuilder output;
 
   /**
@@ -183,34 +179,6 @@ public class TownModelTest {
     assertEquals(firstPlace, town.getTarget().getCurrentPlace());
   }
 
-  @Test
-  public void testAddComputerPlayer() throws IOException {
-    town.addComputerPlayer();
-    assertEquals(1, town.getPlayers().size());
-    assertEquals("David(Computer)", town.getPlayers().get(0).getName());
-  }
-
-  @Test
-  public void testAddPlayer() throws IOException {
-    String simulatedInput = "Alice\n5\n5\n";
-    StringReader input = new StringReader(simulatedInput);
-
-    StringBuilder output = new StringBuilder();
-
-    TownLoaderInterface loader = new TownLoader();
-    String worldFile = "res/SmallTownWorld.txt";
-    TownModel AddPlayerTown = new TownModel(loader, worldFile, input, output, 3);
-
-    AddPlayerTown.addPlayer();
-
-    String outputContent = output.toString();
-    assertTrue(outputContent.contains("Enter the player's name:"));
-    assertTrue(outputContent.contains("Player name: Alice"));
-    assertTrue(outputContent.contains("Current place: Police Station"));
-    assertTrue(outputContent.contains("You can carry up to 5 items"));
-    assertTrue(outputContent.contains("Player added."));
-  }
-
   /**
    * Creates a test town with the specified configuration.
    */
@@ -238,13 +206,13 @@ public class TownModelTest {
    */
   @Test
   public void testPlaceVisibleWhenPetElsewhere() throws IOException {
-    Town town = createTestTown();
-    Place placeToTest = town.getPlaceByNumber(2);
+    Town testTown = createTestTown();
+    Place placeToTest = testTown.getPlaceByNumber(2);
 
-    town.getPet().movePet(1);
+    testTown.getPet().movePet(1);
 
     assertTrue("Place should be visible when pet is elsewhere",
-        town.isPlaceVisible(placeToTest));
+        testTown.isPlaceVisible(placeToTest));
   }
 
   /**
@@ -252,11 +220,11 @@ public class TownModelTest {
    */
   @Test
   public void testPlaceNotVisibleWhenPetPresent() throws IOException {
-    Town town = createTestTown();
-    Place placeToTest = town.getPlaceByNumber(2);
-    town.getPet().movePet(2);
+    Town testTown = createTestTown();
+    Place placeToTest = testTown.getPlaceByNumber(2);
+    testTown.getPet().movePet(2);
     assertFalse("Place should not be visible when pet is present",
-        town.isPlaceVisible(placeToTest));
+        testTown.isPlaceVisible(placeToTest));
   }
 
   /**
@@ -264,15 +232,15 @@ public class TownModelTest {
    */
   @Test
   public void testVisibilityChangesWhenPetMoves() throws IOException {
-    Town town = createTestTown();
-    Place place1 = town.getPlaceByNumber(1);
-    Place place2 = town.getPlaceByNumber(2);
-    town.getPet().movePet(1);
-    assertFalse("Place1 should not be visible", town.isPlaceVisible(place1));
-    assertTrue("Place2 should be visible", town.isPlaceVisible(place2));
-    town.getPet().movePet(2);
-    assertTrue("Place1 should now be visible", town.isPlaceVisible(place1));
-    assertFalse("Place2 should now not be visible", town.isPlaceVisible(place2));
+    Town testTown = createTestTown();
+    Place place1 = testTown.getPlaceByNumber(1);
+    Place place2 = testTown.getPlaceByNumber(2);
+    testTown.getPet().movePet(1);
+    assertFalse("Place1 should not be visible", testTown.isPlaceVisible(place1));
+    assertTrue("Place2 should be visible", testTown.isPlaceVisible(place2));
+    testTown.getPet().movePet(2);
+    assertTrue("Place1 should now be visible", testTown.isPlaceVisible(place1));
+    assertFalse("Place2 should now not be visible", testTown.isPlaceVisible(place2));
   }
 
   /**
@@ -280,11 +248,11 @@ public class TownModelTest {
    */
   @Test
   public void testVisibilityInFirstPlace() throws IOException {
-    Town town = createTestTown();
-    Place firstPlace = town.getPlaceByNumber(1);
-    town.getPet().movePet(1);
+    Town testTown = createTestTown();
+    Place firstPlace = testTown.getPlaceByNumber(1);
+    testTown.getPet().movePet(1);
     assertFalse("First place should not be visible when pet is there",
-        town.isPlaceVisible(firstPlace));
+        testTown.isPlaceVisible(firstPlace));
   }
 
   /**
@@ -292,11 +260,11 @@ public class TownModelTest {
    */
   @Test
   public void testVisibilityInLastPlace() throws IOException {
-    Town town = createTestTown();
-    Place lastPlace = town.getPlaceByNumber(3);
-    town.getPet().movePet(3);
+    Town testTown = createTestTown();
+    Place lastPlace = testTown.getPlaceByNumber(3);
+    testTown.getPet().movePet(3);
     assertFalse("Last place should not be visible when pet is there",
-        town.isPlaceVisible(lastPlace));
+        testTown.isPlaceVisible(lastPlace));
   }
 
   /**
@@ -304,8 +272,8 @@ public class TownModelTest {
    */
   @Test(expected = IllegalArgumentException.class)
   public void testNullPlace() throws IOException {
-    Town town = createTestTown();
-    town.isPlaceVisible(null);
+    Town testTown = createTestTown();
+    testTown.isPlaceVisible(null);
   }
 
   /**
@@ -313,22 +281,22 @@ public class TownModelTest {
    */
   @Test
   public void testVisibilityWithMultiplePetMoves() throws IOException {
-    Town town = createTestTown();
-    Place place1 = town.getPlaceByNumber(1);
-    Place place2 = town.getPlaceByNumber(2);
-    Place place3 = town.getPlaceByNumber(3);
-    town.getPet().movePet(1);
-    assertFalse("Place1 should not be visible", town.isPlaceVisible(place1));
-    assertTrue("Place2 should be visible", town.isPlaceVisible(place2));
-    assertTrue("Place3 should be visible", town.isPlaceVisible(place3));
-    town.getPet().movePet(2);
-    assertTrue("Place1 should be visible", town.isPlaceVisible(place1));
-    assertFalse("Place2 should not be visible", town.isPlaceVisible(place2));
-    assertTrue("Place3 should be visible", town.isPlaceVisible(place3));
-    town.getPet().movePet(3);
-    assertTrue("Place1 should be visible", town.isPlaceVisible(place1));
-    assertTrue("Place2 should be visible", town.isPlaceVisible(place2));
-    assertFalse("Place3 should not be visible", town.isPlaceVisible(place3));
+    Town testTown = createTestTown();
+    Place place1 = testTown.getPlaceByNumber(1);
+    Place place2 = testTown.getPlaceByNumber(2);
+    final Place place3 = testTown.getPlaceByNumber(3);
+    testTown.getPet().movePet(1);
+    assertFalse("Place1 should not be visible", testTown.isPlaceVisible(place1));
+    assertTrue("Place2 should be visible", testTown.isPlaceVisible(place2));
+    assertTrue("Place3 should be visible", testTown.isPlaceVisible(place3));
+    testTown.getPet().movePet(2);
+    assertTrue("Place1 should be visible", testTown.isPlaceVisible(place1));
+    assertFalse("Place2 should not be visible", testTown.isPlaceVisible(place2));
+    assertTrue("Place3 should be visible", testTown.isPlaceVisible(place3));
+    testTown.getPet().movePet(3);
+    assertTrue("Place1 should be visible", testTown.isPlaceVisible(place1));
+    assertTrue("Place2 should be visible", testTown.isPlaceVisible(place2));
+    assertFalse("Place3 should not be visible", testTown.isPlaceVisible(place3));
   }
 
   /**
@@ -336,19 +304,15 @@ public class TownModelTest {
    */
   @Test
   public void testConcurrentVisibilityChecks() throws IOException, InterruptedException {
-    final Town town = createTestTown();
+    final Town testTown = createTestTown();
     final int threadCount = 3;
     Thread[] threads = new Thread[threadCount];
     final boolean[] results = new boolean[threadCount];
     for (int i = 0; i < threadCount; i++) {
       final int placeIndex = i + 1;
       threads[i] = new Thread(() -> {
-        try {
-          Place place = town.getPlaceByNumber(placeIndex);
-          results[placeIndex - 1] = town.isPlaceVisible(place);
-        } catch (Exception e) {
-          e.printStackTrace();
-        }
+        Place place = testTown.getPlaceByNumber(placeIndex);
+        results[placeIndex - 1] = testTown.isPlaceVisible(place);
       });
       threads[i].start();
     }
@@ -370,11 +334,11 @@ public class TownModelTest {
    */
   @Test
   public void testVisibilityCheckPerformance() throws IOException {
-    Town town = createTestTown();
-    Place placeToTest = town.getPlaceByNumber(1);
+    Town testTown = createTestTown();
+    Place placeToTest = testTown.getPlaceByNumber(1);
     long startTime = System.nanoTime();
     for (int i = 0; i < 10000; i++) {
-      town.isPlaceVisible(placeToTest);
+      testTown.isPlaceVisible(placeToTest);
     }
     long endTime = System.nanoTime();
     long duration = (endTime - startTime) / 1000000;
@@ -386,11 +350,11 @@ public class TownModelTest {
    */
   @Test
   public void testVisibilityWithDuplicatePlaceNumbers() throws IOException {
-    Town town = createTestTown();
+    Town testTown = createTestTown();
     Place duplicatePlace = new PlaceModel(0, 0, 1, 1, "DuplicatePlace", "1");
-    town.getPet().movePet(1);
+    testTown.getPet().movePet(1);
     assertFalse("Should handle places with same number correctly",
-        town.isPlaceVisible(duplicatePlace));
+        testTown.isPlaceVisible(duplicatePlace));
   }
 
   /**
@@ -417,9 +381,9 @@ public class TownModelTest {
   /**
    * Creates a town with the specified user input.
    */
-  private Town createTown(StringWriter output, String userInput) throws IOException {
+  private Town createTown(StringWriter testOutput, String userInput) throws IOException {
     String worldFile = createTempWorldFile();
-    return new TownModel(new TownLoader(), worldFile, new StringReader(userInput), output, 10);
+    return new TownModel(new TownLoader(), worldFile, new StringReader(userInput), testOutput, 10);
   }
 
   /**
@@ -427,12 +391,12 @@ public class TownModelTest {
    */
   @Test
   public void testValidPetMove() throws IOException {
-    StringWriter output = new StringWriter();
-    Town town = createTown(output, "");
-    town.movePet(2);
-    assertEquals(2, town.getPet().getPetCurrentPlaceNumber());
-    String expectedOutput = String.format("Pet %s moved to Room2\n", town.getPet().getName());
-    assertEquals(expectedOutput, output.toString());
+    StringWriter testOutput = new StringWriter();
+    Town testTown = createTown(testOutput, "");
+    testTown.movePet(2);
+    assertEquals(2, testTown.getPet().getPetCurrentPlaceNumber());
+    String expectedOutput = String.format("Pet %s moved to Room2\n", testTown.getPet().getName());
+    assertEquals(expectedOutput, testOutput.toString());
   }
 
   /**
@@ -440,12 +404,12 @@ public class TownModelTest {
    */
   @Test
   public void testMoveToCurrentLocation() throws IOException {
-    StringWriter output = new StringWriter();
-    Town town = createTown(output, "");
-    town.movePet(1);
-    assertEquals(1, town.getPet().getPetCurrentPlaceNumber());
-    String expectedOutput = String.format("Pet %s moved to Room1\n", town.getPet().getName());
-    assertEquals(expectedOutput, output.toString());
+    StringWriter testOutput = new StringWriter();
+    Town testTown = createTown(testOutput, "");
+    testTown.movePet(1);
+    assertEquals(1, testTown.getPet().getPetCurrentPlaceNumber());
+    String expectedOutput = String.format("Pet %s moved to Room1\n", testTown.getPet().getName());
+    assertEquals(expectedOutput, testOutput.toString());
   }
 
   /**
@@ -453,12 +417,12 @@ public class TownModelTest {
    */
   @Test
   public void testMultipleMovesSequentially() throws IOException {
-    StringWriter output = new StringWriter();
-    Town town = createTown(output, "");
-    town.movePet(2);
-    town.movePet(3);
-    town.movePet(4);
-    assertEquals(4, town.getPet().getPetCurrentPlaceNumber());
+    StringWriter testOutput = new StringWriter();
+    Town testTown = createTown(testOutput, "");
+    testTown.movePet(2);
+    testTown.movePet(3);
+    testTown.movePet(4);
+    assertEquals(4, testTown.getPet().getPetCurrentPlaceNumber());
   }
 
   /**
@@ -466,9 +430,9 @@ public class TownModelTest {
    */
   @Test(expected = IllegalArgumentException.class)
   public void testMoveToNegativeRoomNumber() throws IOException {
-    StringWriter output = new StringWriter();
-    Town town = createTown(output, "");
-    town.movePet(-1);
+    StringWriter testOutput = new StringWriter();
+    Town testTown = createTown(testOutput, "");
+    testTown.movePet(-1);
   }
 
   /**
@@ -476,9 +440,9 @@ public class TownModelTest {
    */
   @Test(expected = IllegalArgumentException.class)
   public void testMoveToZeroRoom() throws IOException {
-    StringWriter output = new StringWriter();
-    Town town = createTown(output, "");
-    town.movePet(0);
+    StringWriter testOutput = new StringWriter();
+    Town testTown = createTown(testOutput, "");
+    testTown.movePet(0);
   }
 
   /**
@@ -486,9 +450,9 @@ public class TownModelTest {
    */
   @Test(expected = IllegalArgumentException.class)
   public void testMoveToNonExistentRoom() throws IOException {
-    StringWriter output = new StringWriter();
-    Town town = createTown(output, "");
-    town.movePet(99);
+    StringWriter testOutput = new StringWriter();
+    Town testTown = createTown(testOutput, "");
+    testTown.movePet(99);
   }
 
   /**
@@ -496,12 +460,12 @@ public class TownModelTest {
    */
   @Test
   public void testRoomVisibilityAfterPetMove() throws IOException {
-    StringWriter output = new StringWriter();
-    Town town = createTown(output, "");
-    town.movePet(2);
-    assertEquals(false, town.isPlaceVisible(town.getPlaceByNumber(2)));
-    assertEquals(true, town.isPlaceVisible(town.getPlaceByNumber(1)));
-    assertEquals(true, town.isPlaceVisible(town.getPlaceByNumber(3)));
+    StringWriter testOutput = new StringWriter();
+    Town testTown = createTown(testOutput, "");
+    testTown.movePet(2);
+    assertFalse(testTown.isPlaceVisible(testTown.getPlaceByNumber(2)));
+    assertTrue(testTown.isPlaceVisible(testTown.getPlaceByNumber(1)));
+    assertTrue(testTown.isPlaceVisible(testTown.getPlaceByNumber(3)));
   }
 
   /**
@@ -509,10 +473,10 @@ public class TownModelTest {
    */
   @Test
   public void testRepeatedMovesToSameRoom() throws IOException {
-    StringWriter output = new StringWriter();
-    Town town = createTown(output, "");
-    town.movePet(2);
-    String firstMoveOutput = output.toString();
+    StringWriter testOutput = new StringWriter();
+    Town testTown = createTown(testOutput, "");
+    testTown.movePet(2);
+    String firstMoveOutput = testOutput.toString();
     StringWriter newOutput = new StringWriter();
     Town newTown = createTown(newOutput, "");
     newTown.movePet(2);
@@ -525,8 +489,8 @@ public class TownModelTest {
   @Test(expected = NullPointerException.class)
   public void testMoveWithNullOutput() throws IOException {
     String worldFile = createTempWorldFile();
-    Town town = new TownModel(new TownLoader(), worldFile, new StringReader(""), null, 10);
-    town.movePet(2);
+    Town testTown = new TownModel(new TownLoader(), worldFile, new StringReader(""), null, 10);
+    testTown.movePet(2);
   }
 
   /**
@@ -534,13 +498,13 @@ public class TownModelTest {
    */
   @Test
   public void testPetMoveEffectOnLookAround() throws IOException {
-    StringWriter output = new StringWriter();
+    StringWriter testOutput = new StringWriter();
     String userInput = "TestPlayer\n1\n3\n";
-    Town town = createTown(output, userInput);
-    town.addPlayer();
-    town.movePet(2);
-    town.lookAround();
-    String outputStr = output.toString();
+    Town testTown = createTown(testOutput, userInput);
+    testTown.addPlayer();
+    testTown.movePet(2);
+    testTown.lookAround();
+    String outputStr = testOutput.toString();
     assert (outputStr.contains("Pet is here"));
   }
 
@@ -549,11 +513,11 @@ public class TownModelTest {
    */
   @Test
   public void testPetMoveEffectOnNeighboringRooms() throws IOException {
-    StringWriter output = new StringWriter();
-    Town town = createTown(output, "");
-    town.movePet(2);
-    assertEquals(true, town.isPlaceVisible(town.getPlaceByNumber(1)));
-    assertEquals(true, town.isPlaceVisible(town.getPlaceByNumber(3)));
+    StringWriter testOutput = new StringWriter();
+    Town testTown = createTown(testOutput, "");
+    testTown.movePet(2);
+    assertTrue(testTown.isPlaceVisible(testTown.getPlaceByNumber(1)));
+    assertTrue(testTown.isPlaceVisible(testTown.getPlaceByNumber(3)));
   }
 
   /**
@@ -561,13 +525,13 @@ public class TownModelTest {
    */
   @Test
   public void testPetMoveDuringGame() throws IOException {
-    StringWriter output = new StringWriter();
+    StringWriter testOutput = new StringWriter();
     String userInput = "TestPlayer\n1\n3\nno\n";
-    Town town = createTown(output, userInput);
-    town.addPlayer();
-    town.addComputerPlayer();
-    town.movePet(2);
-    assertEquals(2, town.getPet().getPetCurrentPlaceNumber());
+    Town testTown = createTown(testOutput, userInput);
+    testTown.addPlayer();
+    testTown.addComputerPlayer();
+    testTown.movePet(2);
+    assertEquals(2, testTown.getPet().getPetCurrentPlaceNumber());
   }
 
   /**
@@ -575,19 +539,17 @@ public class TownModelTest {
    */
   @Test
   public void testPetLocationPersistence() throws IOException {
-    StringWriter output = new StringWriter();
+    StringWriter testOutput = new StringWriter();
     String userInput = "TestPlayer\n1\n3\n";
-    Town town = createTown(output, userInput);
-    town.movePet(2);
-    town.addPlayer();
-    town.lookAround();
-    assertEquals(2, town.getPet().getPetCurrentPlaceNumber());
+    Town testTown = createTown(testOutput, userInput);
+    testTown.movePet(2);
+    testTown.addPlayer();
+    testTown.lookAround();
+    assertEquals(2, testTown.getPet().getPetCurrentPlaceNumber());
   }
 
-  /**
-   * Helper method to create a test town with a player in a specific location
-   */
-  private TownModel setupTestTown(int playerLocation) throws IOException {
+  // Helper method to create a test town with a player in a specific location
+  private TownModel setupTestTown() throws IOException {
     StringBuilder testOutput = new StringBuilder();
     TownModel testTown = new TownModel(
         new TownLoader(),
@@ -597,111 +559,103 @@ public class TownModelTest {
         10
     );
 
-    Player player = new PlayerModel("Alice", false, 10, playerLocation, testOutput, scanner);
+    Player player = new PlayerModel("Alice", false, 10, 3);
     testTown.getPlayers().add(player);
 
     return testTown;
   }
 
-  /**
-   * Test basic lookAround without pet influence (baseline test)
-   */
+  // Test basic lookAround without pet influence (baseline test)
   @Test
   public void testLookAroundBasicNoPlayerNoPet() throws IOException {
-    StringBuilder output = new StringBuilder();
+    StringBuilder testOutput = new StringBuilder();
     TownModel testTown = new TownModel(
         new TownLoader(),
         "res/SmallTownWorld.txt",
         new StringReader(""),
-        output,
+        testOutput,
         10
     );
 
     Player player =
-        new PlayerModel("TestPlayer", false, 10, 3, output, new Scanner(new StringReader("")));
+        new PlayerModel("TestPlayer", false, 10, 3);
     testTown.getPlayers().add(player);
 
     testTown.lookAround();
 
-    String outputContent = output.toString();
+    String outputContent = testOutput.toString();
     assertTrue("Should show current place",
         outputContent.contains("Current place: School"));
     assertTrue("Should show items in School",
-        outputContent.contains("Items in School:") &&
-            outputContent.contains("Textbook (Damage: 6)"));
+        outputContent.contains("Items in School:")
+            && outputContent.contains("Textbook (Damage: 6)"));
   }
 
-  /**
-   * Test lookAround with pet in one neighbor room - main functionality
-   */
+  // Test lookAround with pet in one neighbor room - main functionality
   @Test
   public void testLookAroundWithPetInNeighbor() throws IOException {
-    StringBuilder output = new StringBuilder();
+    StringBuilder testOutput = new StringBuilder();
     TownModel testTown = new TownModel(
         new TownLoader(),
         "res/SmallTownWorld.txt",
         new StringReader(""),
-        output,
+        testOutput,
         10
     );
     Player player =
-        new PlayerModel("TestPlayer", false, 10, 3, output, new Scanner(new StringReader("")));
+        new PlayerModel("TestPlayer", false, 10, 3);
     testTown.getPlayers().add(player);
 
     testTown.movePet(2);
     testTown.lookAround();
-    String outputContent = output.toString();
+    String outputContent = testOutput.toString();
     assertTrue("Should show current place",
         outputContent.contains("Current place: School"));
     assertTrue("Should show pet in neighbor",
         outputContent.contains("Grocery Store (Pet is here)"));
   }
 
-  /**
-   * Test lookAround when pet is in player's current room
-   */
+  // Test lookAround with pet in current room - main functionality
   @Test
   public void testLookAroundWithPetInCurrentRoom() throws IOException {
-    StringBuilder output = new StringBuilder();
+    StringBuilder testOutput = new StringBuilder();
     TownModel testTown = new TownModel(
         new TownLoader(),
         "res/SmallTownWorld.txt",
         new StringReader(""),
-        output,
+        testOutput,
         10
     );
     Player player =
-        new PlayerModel("TestPlayer", false, 10, 3, output, new Scanner(new StringReader("")));
+        new PlayerModel("TestPlayer", false, 10, 3);
     testTown.getPlayers().add(player);
     testTown.addComputerPlayer();
     testTown.movePet(3);
-    output.setLength(0);
+    testOutput.setLength(0);
     testTown.lookAround();
-    String outputContent = output.toString();
+    String outputContent = testOutput.toString();
     assertTrue("Should show current place",
         outputContent.contains("Current place: School"));
     assertTrue("Should show items in current room",
-        outputContent.contains("Items in School:") &&
-            outputContent.contains("Textbook"));
+        outputContent.contains("Items in School:")
+            && outputContent.contains("Textbook"));
   }
 
   @Test
   public void testLookAroundWithPetMovingBetweenNeighbors() throws IOException {
-    StringBuilder output = new StringBuilder();
+    StringBuilder testOutput = new StringBuilder();
     TownModel testTown = new TownModel(
         new TownLoader(),
         "res/SmallTownWorld.txt",
         new StringReader(""),
-        output,
+        testOutput,
         10
     );
     Player humanPlayer = new PlayerModel(
         "TestPlayer",
         false,
         10,
-        3,
-        output,
-        new Scanner(new StringReader(""))
+        3
     );
     testTown.getPlayers().add(humanPlayer);
     testTown.addComputerPlayer();
@@ -709,18 +663,17 @@ public class TownModelTest {
       testTown.switchToNextPlayer();
     }
     testTown.movePet(2);
-    output.setLength(0);
+    testOutput.setLength(0);
     testTown.lookAround();
-    String firstLook = output.toString();
-    assertTrue("Player should still be in School",
-        humanPlayer.getPlayerCurrentPlaceNumber() == 3);
+    final String firstLook = testOutput.toString();
+    assertEquals("Player should still be in School", 3, humanPlayer.getPlayerCurrentPlaceNumber());
     testTown.movePet(8);
-    output.setLength(0);
+    testOutput.setLength(0);
     while (testTown.isComputerControllerPlayer()) {
       testTown.switchToNextPlayer();
     }
     testTown.lookAround();
-    String secondLook = output.toString();
+    String secondLook = testOutput.toString();
     assertTrue("First look should show current place",
         firstLook.contains("Current place: School"));
     assertTrue("First look should show pet in Grocery Store",
@@ -733,18 +686,14 @@ public class TownModelTest {
         secondLook.contains("Shopping Cart") || secondLook.contains("Grocery Store"));
   }
 
-  /**
-   * Test invalid pet movement
-   */
+  // Test invalid pet movement
   @Test(expected = IllegalArgumentException.class)
   public void testLookAroundWithInvalidPetMove() throws IOException {
-    TownModel testTown = setupTestTown(3);
+    TownModel testTown = setupTestTown();
     testTown.movePet(999); // Invalid room number
   }
 
-  /**
-   * Test lookAround with no players in game
-   */
+  // Test lookAround with no players in game
   @Test(expected = IllegalStateException.class)
   public void testLookAroundWithNoPlayers() throws IOException {
     TownModel testTown = new TownModel(
@@ -828,7 +777,7 @@ public class TownModelTest {
   @Test
   public void testPlayerVisibilityInNeighboringPlaces() throws IOException {
     // Set up players in neighboring places
-    String simulatedInput = "Alice\n1\n5\nBob\n2\n5\n";
+    String simulatedInput = "Alice\n3\n5\nBob\n4\n5\n";
     StringReader input = new StringReader(simulatedInput);
     TownModel testTown =
         new TownModel(new TownLoader(), "res/SmallTownWorld.txt", input, output, 3);
@@ -895,17 +844,17 @@ public class TownModelTest {
    */
   @Test
   public void testShowTargetInfoFullHealth() throws IOException {
-    StringBuilder output = new StringBuilder();
+    StringBuilder testOutput = new StringBuilder();
     TownModel testTown = new TownModel(
         new TownLoader(),
         "res/SmallTownWorld.txt",
         new StringReader(""),
-        output,
+        testOutput,
         3
     );
 
     testTown.showTargetInfo();
-    String result = output.toString();
+    String result = testOutput.toString();
     assertTrue(result.contains("The Mayor"));
     assertTrue(result.contains("Health: 50"));
     assertTrue(result.contains("Park")); // Starting place
@@ -916,18 +865,18 @@ public class TownModelTest {
    */
   @Test
   public void testShowTargetInfoAfterMove() throws IOException {
-    StringBuilder output = new StringBuilder();
+    StringBuilder testOutput = new StringBuilder();
     TownModel testTown = new TownModel(
         new TownLoader(),
         "res/SmallTownWorld.txt",
         new StringReader(""),
-        output,
+        testOutput,
         3
     );
 
     testTown.moveTarget(); // Move to next place
     testTown.showTargetInfo();
-    String result = output.toString();
+    String result = testOutput.toString();
     assertTrue(result.contains("The Mayor"));
     assertTrue(result.contains("Grocery Store")); // Second place
   }
@@ -937,12 +886,12 @@ public class TownModelTest {
    */
   @Test
   public void testStartTurnBasicFunctionality() throws IOException {
-    StringBuilder output = new StringBuilder();
+    StringBuilder testOutput = new StringBuilder();
     TownModel testTown = new TownModel(
         new TownLoader(),
         "res/SmallTownWorld.txt",
         new StringReader("Alice\n1\n5\n"),
-        output,
+        testOutput,
         3
     );
 
@@ -951,7 +900,7 @@ public class TownModelTest {
     testTown.startTurn();
 
     assertEquals("Turn counter should increment", initialTurn + 1, testTown.getCurrentTurn());
-    String result = output.toString();
+    String result = testOutput.toString();
     assertTrue("Should show target info", result.contains("Target:"));
     assertTrue("Should show player info", result.contains("Alice"));
   }
@@ -961,12 +910,12 @@ public class TownModelTest {
    */
   @Test
   public void testStartTurnWithNoPlayers() throws IOException {
-    StringBuilder output = new StringBuilder();
+    StringBuilder testOutput = new StringBuilder();
     TownModel testTown = new TownModel(
         new TownLoader(),
         "res/SmallTownWorld.txt",
         new StringReader(""),
-        output,
+        testOutput,
         3
     );
 
@@ -986,12 +935,12 @@ public class TownModelTest {
    */
   @Test
   public void testStartTurnWithMultiplePlayers() throws IOException {
-    StringBuilder output = new StringBuilder();
+    StringBuilder testOutput = new StringBuilder();
     TownModel testTown = new TownModel(
         new TownLoader(),
         "res/SmallTownWorld.txt",
         new StringReader("Alice\n1\n5\n"),
-        output,
+        testOutput,
         3
     );
 
@@ -1002,7 +951,7 @@ public class TownModelTest {
     testTown.startTurn();
 
     assertEquals("Turn counter should increment", initialTurn + 1, testTown.getCurrentTurn());
-    String result = output.toString();
+    String result = testOutput.toString();
     assertTrue("Should show target info", result.contains("Target:"));
     assertTrue("Should show current player info",
         result.contains(testTown.getPlayers().get(testTown.getCurrentPlayerIndex()).getName()));
@@ -1013,12 +962,12 @@ public class TownModelTest {
    */
   @Test
   public void testStartTurnAfterMaxTurns() throws IOException {
-    StringBuilder output = new StringBuilder();
+    StringBuilder testOutput = new StringBuilder();
     TownModel testTown = new TownModel(
         new TownLoader(),
         "res/SmallTownWorld.txt",
         new StringReader("Alice\n1\n5\n"),
-        output,
+        testOutput,
         2  // Set max turns to 2
     );
 

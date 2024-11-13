@@ -12,11 +12,10 @@ public class LookAroundCommand implements Command {
   /**
    * Constructs a new LookAroundCommand.
    *
-   * @param output the output stream to write messages to.
-   * @param town   the town where the player is located
+   * @param gameTown the town where the player is located
    */
-  public LookAroundCommand(Appendable output, Town town) {
-    this.town = town;
+  public LookAroundCommand(Town gameTown) {
+    this.town = gameTown;
   }
 
   @Override

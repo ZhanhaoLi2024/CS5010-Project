@@ -35,19 +35,18 @@ public class GameController implements Controller {
   /**
    * Creates a new game controller with the given town, input, output, and maximum turns.
    *
-   * @param town     The town where the game takes place.
-   * @param input    The input source for the game.
-   * @param output   The output destination for the game.
-   * @param maxTurns The maximum number of turns for the game.
+   * @param gameTown     The town where the game takes place.
+   * @param input        The input source for the game.
+   * @param gameOutput   The output destination for the game.
+   * @param gameMaxTurns The maximum number of turns for the game.
    */
-  public GameController(Town town, Readable input, Appendable output, int maxTurns) {
-    this.town = town;
+  public GameController(Town gameTown, Readable input, Appendable gameOutput, int gameMaxTurns) {
+    this.town = gameTown;
     this.scanner = new Scanner(input);
-    this.output = output;
-    this.maxTurns = maxTurns;
+    this.output = gameOutput;
+    this.maxTurns = gameMaxTurns;
     this.currentTurn = 1;
     this.quitGame = false;
-    this.continueGame = true;
   }
 
   /**
@@ -60,8 +59,6 @@ public class GameController implements Controller {
     output.append("++++++++++++++++++++\n");
     this.output.append("Welcome to the game! You have ").append(String.valueOf(maxTurns))
         .append(" turns.\n");
-    // Add Computer-controlled player
-    new AddPlayerCommand(town, output, scanner, true).execute();
     while (!quitGame) {
       this.displayMainMenu();
     }
@@ -75,11 +72,12 @@ public class GameController implements Controller {
   private void displayMainMenu() throws IOException {
     output.append("Please choose an option:\n");
     output.append("1. Show the Map Information\n");
-    output.append("2. Add the player\n");
-    output.append("3. Display the player's information\n");
-    output.append("4. Display the Place's information\n");
-    output.append("5. Start the game\n");
-    output.append("6. Print the map\n");
+    output.append("2. Add the Human-controller player\n");
+    output.append("3. Add the Computer-controller player\n");
+    output.append("4. Display the player's information\n");
+    output.append("5. Display the Place's information\n");
+    output.append("6. Start the game\n");
+    output.append("7. Print the map\n");
     output.append("0. Exit\n");
     int choice = 0;
     try {
@@ -95,15 +93,18 @@ public class GameController implements Controller {
         new AddPlayerCommand(town, output, scanner, false).execute();
         break;
       case 3:
-        new DisplayPlayerInfoCommand(town, output, scanner).execute();
+        new AddPlayerCommand(town, output, scanner, true).execute();
         break;
       case 4:
-        new DisplayPlaceInfoCommand(town, output, scanner).execute();
+        new DisplayPlayerInfoCommand(town, output, scanner).execute();
         break;
       case 5:
-        takeTurn();
+        new DisplayPlaceInfoCommand(town, output, scanner).execute();
         break;
       case 6:
+        takeTurn();
+        break;
+      case 7:
         printMap();
         break;
       case 0:
@@ -165,16 +166,16 @@ public class GameController implements Controller {
 
     switch (choice) {
       case 1:
-        new MovePlayerCommand(town, output, scanner).execute();
+        new MovePlayerCommand(town).execute();
         break;
       case 2:
-        new PickUpItemCommand(town, output, scanner).execute();
+        new PickUpItemCommand(town).execute();
         break;
       case 3:
-        new LookAroundCommand(output, town).execute();
+        new LookAroundCommand(town).execute();
         break;
       case 4:
-        new AttackTargetCommand(town, output, scanner).execute();
+        new AttackTargetCommand(town, output).execute();
         break;
       case 5:
         new MovePetCommand(town, output, scanner).execute();
@@ -222,7 +223,7 @@ public class GameController implements Controller {
         town.getTarget().getCurrentPlace().getPlaceNumber())
         && !town.isPlayerVisible(computerPlayer)) {
       output.append("Computer player attempts to attack the target.\n");
-      new AttackTargetCommand(town, output, scanner).execute();
+      new AttackTargetCommand(town, output).execute();
       return;
     }
 
@@ -230,20 +231,20 @@ public class GameController implements Controller {
     if (!currentPlace.getItems().isEmpty()
         && computerPlayer.getCurrentCarriedItems().size() < computerPlayer.getCarryLimit()) {
       output.append("Computer player picks up an item.\n");
-      new PickUpItemCommand(town, output, scanner).execute();
+      new PickUpItemCommand(town).execute();
       return;
     }
 
     // Third priority: Move towards target if carrying items
     if (!computerPlayer.getCurrentCarriedItems().isEmpty()) {
       output.append("Computer player moves to find the target.\n");
-      new MovePlayerCommand(town, output, scanner).execute();
+      new MovePlayerCommand(town).execute();
       return;
     }
 
     // Fourth priority: Look around to gather information
     output.append("Computer player looks around.\n");
-    new LookAroundCommand(output, town).execute();
+    new LookAroundCommand(town).execute();
   }
 
   /**
@@ -252,23 +253,31 @@ public class GameController implements Controller {
    * maximum number of turns is reached or the game ends due to a player winning or quitting.
    * <p>
    * The method displays the current turn number, player information, and prompts the current player
-   * to take their turn. It checks if the game is over after each turn and ends the game if necessary.
+   * to take their turn. It checks if the game is over after each turn and ends the game
+   * if necessary.
    * The game loop continues until the game is over or the player quits.
    *
    * @throws IOException if there is an error in reading input or writing output
    */
   @Override
   public void takeTurn() throws IOException {
-    if (town.getPlayers().size() == 1) {
-      output.append("You have to add at least one player\n");
+    if (town.getPlayers().size() < 2) {
+      output.append("You have to add at least two player\n");
       continueGame = false;
+    } else {
+      continueGame = true;
     }
+    output.append("Game started!\n");
+    output.append("Target: ").append(town.getTargetName()).append(" (Health: ")
+        .append(String.valueOf(town.getTargetHealth())).append(") in ")
+        .append(town.getTarget().getCurrentPlace().getName()).append("\n");
+    town.showPetCurrentInfo();
     while (continueGame) {
       output.append("\n");
       output.append(String.valueOf(town.getCurrentTurn())).append(" of ")
           .append(String.valueOf(maxTurns))
           .append("\n");
-      town.showPlayerCurrentInfo();
+      town.showBasicLocationInfo();
       this.takeTurnForPlayer();
       boolean isGameOver = town.isGameOver();
       if (isGameOver) {
@@ -285,12 +294,18 @@ public class GameController implements Controller {
   @Override
   public void endGame() throws IOException {
     continueGame = false;
-    output.append("Game over.\n");
+    if (town.getTarget().isDefeated()) {
+      Player currentPlayer = town.getPlayers().get(town.getCurrentPlayerIndex());
+      output.append("Game Over! ").append(currentPlayer.getName())
+          .append(" has successfully eliminated the target and won the game!\n");
+    } else if (town.getCurrentTurn() > town.getMaxTurns()) {
+      output.append("Game Over! The target has escaped and nobody wins!\n");
+    }
     output.append("++++++++++++++++++++\n");
     output.append("\n");
     this.currentTurn = 1;
     this.quitGame = false;
-    this.startGame();
+    town.resetGameState();
   }
 
   /**

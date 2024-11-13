@@ -3,7 +3,6 @@ package model.player;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Scanner;
 import model.item.Item;
 
 
@@ -16,38 +15,34 @@ public class PlayerModel implements Player {
   private final boolean isComputerControlled;
   private final int carryLimit;
   private final List<Item> items;
-  private final Scanner scanner;
   private int currentPlaceNumber;
-  private Appendable output;
 
   /**
-   * Constructs a new PlayerModel with the specified name, initial place, whether it is controlled by a computer,
-   * and the carrying limit.
+   * Constructs a new PlayerModel with the specified name, initial place,
+   * whether it is controlled by a computer, and the carrying limit.
    *
-   * @param name                 the name of the player.
-   * @param isComputerControlled whether the player is controlled by a computer.
-   * @param carryLimit           the maximum number of items the player can carry.
-   * @param currentPlaceNumber   the starting Place of the player.
+   * @param playerName          the name of the player.
+   * @param isComputer          whether the player is controlled by a computer.
+   * @param playerCarryLimit    the maximum number of items the player can carry.
+   * @param playerStartingPlace the starting Place of the player.
    */
-  public PlayerModel(String name, boolean isComputerControlled, int carryLimit,
-                     int currentPlaceNumber, Appendable output, Scanner scanner) {
-    if (name == null || name.trim().isEmpty()) {
+  public PlayerModel(String playerName, boolean isComputer, int playerCarryLimit,
+                     int playerStartingPlace) {
+    if (playerName == null || playerName.trim().isEmpty()) {
       throw new IllegalArgumentException("Player name cannot be null or empty.");
     }
-    if (carryLimit <= 0) {
+    if (playerCarryLimit <= 0) {
       throw new IllegalArgumentException("Carry limit must be positive.");
     }
-    if (currentPlaceNumber == 0) {
+    if (playerStartingPlace == 0) {
       throw new IllegalArgumentException("Initial place cannot be null.");
     }
 
-    this.name = name;
-    this.isComputerControlled = isComputerControlled;
-    this.carryLimit = carryLimit;
-    this.currentPlaceNumber = currentPlaceNumber;
+    this.name = playerName;
+    this.isComputerControlled = isComputer;
+    this.carryLimit = playerCarryLimit;
+    this.currentPlaceNumber = playerStartingPlace;
     this.items = new ArrayList<>();
-    this.output = output;
-    this.scanner = scanner;
   }
 
   @Override
@@ -101,12 +96,12 @@ public class PlayerModel implements Player {
       return false;
     }
     PlayerModel other = (PlayerModel) obj;
-    return Objects.equals(this.name, other.name) &&
-        this.isComputerControlled == other.isComputerControlled;
+    return Objects.equals(this.name, other.name)
+        && this.isComputerControlled == other.isComputerControlled;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.name, this.isComputerControlled);
+    return Objects.hash(name, isComputerControlled);
   }
 }

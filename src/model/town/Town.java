@@ -14,14 +14,6 @@ import model.target.Target;
  * between different places.
  */
 public interface Town {
-
-  /**
-   * Displays the information of the specified place.
-   *
-   * @param place the place to display the information of
-   */
-  void getPlaceInfo(Place place);
-
   /**
    * Retrieves the place number by name.
    *
@@ -29,6 +21,11 @@ public interface Town {
    * @return the place number
    */
   int getPlaceNumberByName(String placeName) throws IOException;
+
+  /**
+   * Shows the current information about the pet.
+   */
+  void showPetCurrentInfo() throws IOException;
 
   /**
    * Retrieves the place by number.
@@ -186,11 +183,18 @@ public interface Town {
   void switchToNextPlayer() throws IOException;
 
   /**
-   * Shows the current information of the player.
+   * Shows the basic location information.
    *
    * @throws IOException if there is an issue with I/O operations
    */
-  void showPlayerCurrentInfo() throws IOException;
+  void showBasicLocationInfo() throws IOException;
+
+  /**
+   * Resets the game state to the initial configuration.
+   *
+   * @throws IOException if there is an issue with I/O operations.
+   */
+  void resetGameState() throws IOException;
 
   /**
    * Checks if the game is over.
@@ -206,6 +210,11 @@ public interface Town {
    */
   Boolean isComputerControllerPlayer();
 
+  /**
+   * Retrieves the current turn number.
+   *
+   * @return the current turn number
+   */
   int getCurrentTurn();
 
   /**
@@ -245,6 +254,11 @@ public interface Town {
    */
   void showTargetInfo() throws IOException;
 
+  /**
+   * Displays the current state of the pet.
+   *
+   * @throws IOException if there is an error writing output
+   */
   void startTurn() throws IOException;
 
   /**

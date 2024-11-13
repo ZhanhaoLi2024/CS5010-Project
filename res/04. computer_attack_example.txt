@@ -1,0 +1,118 @@
+This run shows that the computer-controlled player initiates an attack on the target.
+
+I set the game to 1000 turns and added two computer-controlled players. By the 4th turn, computer-1 used an item to attack the target, dealing 20 points of damage to the target.
+
+
+(base) zhanhaoli@ZhanhaotekiMacBook-Pro cs5010-project % java -cp bin Driver res/SmallTownWorld.txt 1000;
+
+++++++++++++++++++++
+Welcome to the game! You have 1000 turns.
+Please choose an option:
+1. Show the Map Information
+2. Add the Human-controller player
+3. Add the Computer-controller player
+4. Display the player's information
+5. Display the Place's information
+6. Start the game
+7. Print the map
+0. Exit
+3
+Computer player 'Computer-1' added at Police Station.
+Please choose an option:
+1. Show the Map Information
+2. Add the Human-controller player
+3. Add the Computer-controller player
+4. Display the player's information
+5. Display the Place's information
+6. Start the game
+7. Print the map
+0. Exit
+3
+Computer player 'Computer-2' added at Bus Stop.
+Please choose an option:
+1. Show the Map Information
+2. Add the Human-controller player
+3. Add the Computer-controller player
+4. Display the player's information
+5. Display the Place's information
+6. Start the game
+7. Print the map
+0. Exit
+6
+
+1 of 1000
+
+Hi Computer-1, you are in Police Station
+Target is in Park
+Item in this place: 
+ - Handcuffs (Damage: 20)
+Computer player's turn.
+Computer player picks up an item.
+Picked up Handcuffs.
+
+Turn changed from Computer-1 to Computer-2 (Turn 1)
+
+1 of 1000
+
+Hi Computer-2, you are in Bus Stop
+Target is in Park
+Item in this place: 
+ - Bus Ticket (Damage: 7)
+Computer player's turn.
+Computer player picks up an item.
+Picked up Bus Ticket.
+
+Turn changed from Computer-2 to Computer-1 (Turn 2)
+
+2 of 1000
+
+Hi Computer-1, you are in Police Station
+Target is in Grocery Store
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Post Office
+
+Turn changed from Computer-1 to Computer-2 (Turn 2)
+
+2 of 1000
+
+Hi Computer-2, you are in Bus Stop
+Target is in Grocery Store
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Coffee Shop
+
+Turn changed from Computer-2 to Computer-1 (Turn 3)
+
+3 of 1000
+
+Hi Computer-1, you are in Post Office
+Target is in School
+Item in this place: 
+ - Envelope (Damage: 8)
+Computer player's turn.
+Computer player picks up an item.
+Picked up Envelope.
+
+Turn changed from Computer-1 to Computer-2 (Turn 3)
+
+3 of 1000
+
+Hi Computer-2, you are in Coffee Shop
+Target is in School
+Item in this place: 
+ - Coffee Mug (Damage: 10)
+Computer player's turn.
+Computer player picks up an item.
+Picked up Coffee Mug.
+
+Turn changed from Computer-2 to Computer-1 (Turn 4)
+
+4 of 1000
+
+Hi Computer-1, you are in Post Office
+Target is in Post Office
+Computer player's turn.
+Computer player attempts to attack the target.
+Attack successful with Handcuffs for 20 damage!
+Target health: 30

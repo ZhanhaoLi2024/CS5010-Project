@@ -1,0 +1,3515 @@
+This run shows that the computer-controlled player initiates an attack on the target and successfully kills the target.
+
+I set the game to 1000 turns and added two computer-controlled players. By the 148th turn, computer-1 used an item to attack the target, dealing 15 points of damage and killing the target, thus winning the game.
+
+(base) zhanhaoli@ZhanhaotekiMacBook-Pro cs5010-project % java -cp bin Driver res/SmallTownWorld.txt 1000;
+
+++++++++++++++++++++
+Welcome to the game! You have 1000 turns.
+Please choose an option:
+1. Show the Map Information
+2. Add the Human-controller player
+3. Add the Computer-controller player
+4. Display the player's information
+5. Display the Place's information
+6. Start the game
+7. Print the map
+0. Exit
+3
+Computer player 'Computer-1' added at Police Station.
+Please choose an option:
+1. Show the Map Information
+2. Add the Human-controller player
+3. Add the Computer-controller player
+4. Display the player's information
+5. Display the Place's information
+6. Start the game
+7. Print the map
+0. Exit
+3
+Computer player 'Computer-2' added at Bus Stop.
+Please choose an option:
+1. Show the Map Information
+2. Add the Human-controller player
+3. Add the Computer-controller player
+4. Display the player's information
+5. Display the Place's information
+6. Start the game
+7. Print the map
+0. Exit
+6
+
+1 of 1000
+
+Hi Computer-1, you are in Police Station
+Target is in Park
+Item in this place: 
+ - Handcuffs (Damage: 20)
+Computer player's turn.
+Computer player picks up an item.
+Picked up Handcuffs.
+
+Turn changed from Computer-1 to Computer-2 (Turn 1)
+
+1 of 1000
+
+Hi Computer-2, you are in Bus Stop
+Target is in Park
+Item in this place: 
+ - Bus Ticket (Damage: 7)
+Computer player's turn.
+Computer player picks up an item.
+Picked up Bus Ticket.
+
+Turn changed from Computer-2 to Computer-1 (Turn 2)
+
+2 of 1000
+
+Hi Computer-1, you are in Police Station
+Target is in Grocery Store
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Post Office
+
+Turn changed from Computer-1 to Computer-2 (Turn 2)
+
+2 of 1000
+
+Hi Computer-2, you are in Bus Stop
+Target is in Grocery Store
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Coffee Shop
+
+Turn changed from Computer-2 to Computer-1 (Turn 3)
+
+3 of 1000
+
+Hi Computer-1, you are in Post Office
+Target is in School
+Item in this place: 
+ - Envelope (Damage: 8)
+Computer player's turn.
+Computer player picks up an item.
+Picked up Envelope.
+
+Turn changed from Computer-1 to Computer-2 (Turn 3)
+
+3 of 1000
+
+Hi Computer-2, you are in Coffee Shop
+Target is in School
+Item in this place: 
+ - Coffee Mug (Damage: 10)
+Computer player's turn.
+Computer player picks up an item.
+Picked up Coffee Mug.
+
+Turn changed from Computer-2 to Computer-1 (Turn 4)
+
+4 of 1000
+
+Hi Computer-1, you are in Post Office
+Target is in Post Office
+Computer player's turn.
+Computer player attempts to attack the target.
+Attack successful with Handcuffs for 20 damage!
+Target health: 30
+
+Turn changed from Computer-1 to Computer-2 (Turn 4)
+
+4 of 1000
+
+Hi Computer-2, you are in Coffee Shop
+Target is in Post Office
+Computer player's turn.
+Computer player moves to find the target.
+Moved to House #1
+
+Turn changed from Computer-2 to Computer-1 (Turn 5)
+
+5 of 1000
+
+Hi Computer-1, you are in Post Office
+Target is in Police Station
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Police Station
+
+Turn changed from Computer-1 to Computer-2 (Turn 5)
+
+5 of 1000
+
+Hi Computer-2, you are in House #1
+Target is in Police Station
+Item in this place: 
+ - House Key (Damage: 15)
+Computer player's turn.
+Computer player picks up an item.
+Picked up House Key.
+
+Turn changed from Computer-2 to Computer-1 (Turn 6)
+
+6 of 1000
+
+Hi Computer-1, you are in Police Station
+Target is in Fire Station
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Fire Station
+
+Turn changed from Computer-1 to Computer-2 (Turn 6)
+
+6 of 1000
+
+Hi Computer-2, you are in House #1
+Target is in Fire Station
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Hospital
+
+Turn changed from Computer-2 to Computer-1 (Turn 7)
+
+7 of 1000
+
+Hi Computer-1, you are in Fire Station
+Target is in Library
+Item in this place: 
+ - Fire Hose (Damage: 15)
+Computer player's turn.
+Computer player picks up an item.
+Picked up Fire Hose.
+
+Turn changed from Computer-1 to Computer-2 (Turn 7)
+
+7 of 1000
+
+Hi Computer-2, you are in Hospital
+Target is in Library
+Item in this place: 
+ - Medical Kit (Damage: 18)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Library
+
+Turn changed from Computer-2 to Computer-1 (Turn 8)
+
+8 of 1000
+
+Hi Computer-1, you are in Fire Station
+Target is in Hospital
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Gym
+
+Turn changed from Computer-1 to Computer-2 (Turn 8)
+
+8 of 1000
+
+Hi Computer-2, you are in Library
+Target is in Hospital
+Item in this place: 
+ - Storybook (Damage: 10)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Hospital
+
+Turn changed from Computer-2 to Computer-1 (Turn 9)
+
+9 of 1000
+
+Hi Computer-1, you are in Gym
+Target is in Restaurant
+Item in this place: 
+ - Dumbbells (Damage: 12)
+Computer player's turn.
+Computer player picks up an item.
+Picked up Dumbbells.
+
+Turn changed from Computer-1 to Computer-2 (Turn 9)
+
+9 of 1000
+
+Hi Computer-2, you are in Hospital
+Target is in Restaurant
+Item in this place: 
+ - Medical Kit (Damage: 18)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Restaurant
+
+Turn changed from Computer-2 to Computer-1 (Turn 10)
+
+10 of 1000
+
+Hi Computer-1, you are in Gym
+Target is in Playground
+Computer player's turn.
+Computer player moves to find the target.
+Moved to House #2
+
+Turn changed from Computer-1 to Computer-2 (Turn 10)
+
+10 of 1000
+
+Hi Computer-2, you are in Restaurant
+Target is in Playground
+Item in this place: 
+ - Menu (Damage: 22)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Playground
+
+Turn changed from Computer-2 to Computer-1 (Turn 11)
+
+11 of 1000
+
+Hi Computer-1, you are in House #2
+Target is in Bakery
+Item in this place: 
+ - Mailbox Key (Damage: 14)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to House #1
+
+Turn changed from Computer-1 to Computer-2 (Turn 11)
+
+11 of 1000
+
+Hi Computer-2, you are in Playground
+Target is in Bakery
+Item in this place: 
+ - Slide (Damage: 6)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Bakery
+
+Turn changed from Computer-2 to Computer-1 (Turn 12)
+
+12 of 1000
+
+Hi Computer-1, you are in House #1
+Target is in Gas Station
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Gas Station
+
+Turn changed from Computer-1 to Computer-2 (Turn 12)
+
+12 of 1000
+
+Hi Computer-2, you are in Bakery
+Target is in Gas Station
+Item in this place: 
+ - Cake (Damage: 10)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Gas Station
+
+Turn changed from Computer-2 to Computer-1 (Turn 13)
+
+13 of 1000
+
+Hi Computer-1, you are in Gas Station
+Players in this place:
+ - Computer-2
+Target is in House #1
+Item in this place: 
+ - Gas Can (Damage: 8)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to House #1
+
+Turn changed from Computer-1 to Computer-2 (Turn 13)
+
+13 of 1000
+
+Hi Computer-2, you are in Gas Station
+Target is in House #1
+Item in this place: 
+ - Gas Can (Damage: 8)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to House #1
+
+Turn changed from Computer-2 to Computer-1 (Turn 14)
+
+14 of 1000
+
+Hi Computer-1, you are in House #1
+Players in this place:
+ - Computer-2
+Target is in House #2
+Computer player's turn.
+Computer player moves to find the target.
+Moved to House #2
+
+Turn changed from Computer-1 to Computer-2 (Turn 14)
+
+14 of 1000
+
+Hi Computer-2, you are in House #1
+Target is in House #2
+Computer player's turn.
+Computer player moves to find the target.
+Moved to House #2
+
+Turn changed from Computer-2 to Computer-1 (Turn 15)
+
+15 of 1000
+
+Hi Computer-1, you are in House #2
+Players in this place:
+ - Computer-2
+Target is in Gym
+Item in this place: 
+ - Mailbox Key (Damage: 14)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Gym
+
+Turn changed from Computer-1 to Computer-2 (Turn 15)
+
+15 of 1000
+
+Hi Computer-2, you are in House #2
+Target is in Gym
+Item in this place: 
+ - Mailbox Key (Damage: 14)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Gym
+
+Turn changed from Computer-2 to Computer-1 (Turn 16)
+
+16 of 1000
+
+Hi Computer-1, you are in Gym
+Players in this place:
+ - Computer-2
+Target is in Pharmacy
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Pharmacy
+
+Turn changed from Computer-1 to Computer-2 (Turn 16)
+
+16 of 1000
+
+Hi Computer-2, you are in Gym
+Target is in Pharmacy
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Pharmacy
+
+Turn changed from Computer-2 to Computer-1 (Turn 17)
+
+17 of 1000
+
+Hi Computer-1, you are in Pharmacy
+Players in this place:
+ - Computer-2
+Target is in Barber Shop
+Item in this place: 
+ - Medicine Bottle (Damage: 7)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Barber Shop
+
+Turn changed from Computer-1 to Computer-2 (Turn 17)
+
+17 of 1000
+
+Hi Computer-2, you are in Pharmacy
+Target is in Barber Shop
+Item in this place: 
+ - Medicine Bottle (Damage: 7)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Barber Shop
+
+Turn changed from Computer-2 to Computer-1 (Turn 18)
+
+18 of 1000
+
+Hi Computer-1, you are in Barber Shop
+Players in this place:
+ - Computer-2
+Target is in Coffee Shop
+Item in this place: 
+ - Scissors (Damage: 5)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to House #1
+
+Turn changed from Computer-1 to Computer-2 (Turn 18)
+
+18 of 1000
+
+Hi Computer-2, you are in Barber Shop
+Target is in Coffee Shop
+Item in this place: 
+ - Scissors (Damage: 5)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Community Center
+
+Turn changed from Computer-2 to Computer-1 (Turn 19)
+
+19 of 1000
+
+Hi Computer-1, you are in House #1
+Target is in Bus Stop
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Coffee Shop
+
+Turn changed from Computer-1 to Computer-2 (Turn 19)
+
+19 of 1000
+
+Hi Computer-2, you are in Community Center
+Target is in Bus Stop
+Item in this place: 
+ - Community Badge (Damage: 20)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Barber Shop
+
+Turn changed from Computer-2 to Computer-1 (Turn 20)
+
+20 of 1000
+
+Hi Computer-1, you are in Coffee Shop
+Target is in Community Center
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Bus Stop
+
+Turn changed from Computer-1 to Computer-2 (Turn 20)
+
+20 of 1000
+
+Hi Computer-2, you are in Barber Shop
+Target is in Community Center
+Item in this place: 
+ - Scissors (Damage: 5)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Community Center
+
+Turn changed from Computer-2 to Computer-1 (Turn 21)
+
+21 of 1000
+
+Hi Computer-1, you are in Bus Stop
+Target is in Park
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Coffee Shop
+
+Turn changed from Computer-1 to Computer-2 (Turn 21)
+
+21 of 1000
+
+Hi Computer-2, you are in Community Center
+Target is in Park
+Item in this place: 
+ - Community Badge (Damage: 20)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Pharmacy
+
+Turn changed from Computer-2 to Computer-1 (Turn 22)
+
+22 of 1000
+
+Hi Computer-1, you are in Coffee Shop
+Target is in Grocery Store
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Gas Station
+
+Turn changed from Computer-1 to Computer-2 (Turn 22)
+
+22 of 1000
+
+Hi Computer-2, you are in Pharmacy
+Target is in Grocery Store
+Item in this place: 
+ - Medicine Bottle (Damage: 7)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to House #2
+
+Turn changed from Computer-2 to Computer-1 (Turn 23)
+
+23 of 1000
+
+Hi Computer-1, you are in Gas Station
+Target is in School
+Item in this place: 
+ - Gas Can (Damage: 8)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to House #1
+
+Turn changed from Computer-1 to Computer-2 (Turn 23)
+
+23 of 1000
+
+Hi Computer-2, you are in House #2
+Target is in School
+Item in this place: 
+ - Mailbox Key (Damage: 14)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Library
+
+Turn changed from Computer-2 to Computer-1 (Turn 24)
+
+24 of 1000
+
+Hi Computer-1, you are in House #1
+Target is in Post Office
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Coffee Shop
+
+Turn changed from Computer-1 to Computer-2 (Turn 24)
+
+24 of 1000
+
+Hi Computer-2, you are in Library
+Target is in Post Office
+Item in this place: 
+ - Storybook (Damage: 10)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Post Office
+
+Turn changed from Computer-2 to Computer-1 (Turn 25)
+
+25 of 1000
+
+Hi Computer-1, you are in Coffee Shop
+Target is in Police Station
+Computer player's turn.
+Computer player moves to find the target.
+Moved to House #1
+
+Turn changed from Computer-1 to Computer-2 (Turn 25)
+
+25 of 1000
+
+Hi Computer-2, you are in Post Office
+Target is in Police Station
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Police Station
+
+Turn changed from Computer-2 to Computer-1 (Turn 26)
+
+26 of 1000
+
+Hi Computer-1, you are in House #1
+Target is in Fire Station
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Gas Station
+
+Turn changed from Computer-1 to Computer-2 (Turn 26)
+
+26 of 1000
+
+Hi Computer-2, you are in Police Station
+Target is in Fire Station
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Fire Station
+
+Turn changed from Computer-2 to Computer-1 (Turn 27)
+
+27 of 1000
+
+Hi Computer-1, you are in Gas Station
+Target is in Library
+Item in this place: 
+ - Gas Can (Damage: 8)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Hospital
+
+Turn changed from Computer-1 to Computer-2 (Turn 27)
+
+27 of 1000
+
+Hi Computer-2, you are in Fire Station
+Target is in Library
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Library
+
+Turn changed from Computer-2 to Computer-1 (Turn 28)
+
+28 of 1000
+
+Hi Computer-1, you are in Hospital
+Target is in Hospital
+Item in this place: 
+ - Medical Kit (Damage: 18)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Post Office
+
+Turn changed from Computer-1 to Computer-2 (Turn 28)
+
+28 of 1000
+
+Hi Computer-2, you are in Library
+Target is in Hospital
+Item in this place: 
+ - Storybook (Damage: 10)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Hospital
+
+Turn changed from Computer-2 to Computer-1 (Turn 29)
+
+29 of 1000
+
+Hi Computer-1, you are in Post Office
+Target is in Restaurant
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Police Station
+
+Turn changed from Computer-1 to Computer-2 (Turn 29)
+
+29 of 1000
+
+Hi Computer-2, you are in Hospital
+Target is in Restaurant
+Item in this place: 
+ - Medical Kit (Damage: 18)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Restaurant
+
+Turn changed from Computer-2 to Computer-1 (Turn 30)
+
+30 of 1000
+
+Hi Computer-1, you are in Police Station
+Target is in Playground
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Post Office
+
+Turn changed from Computer-1 to Computer-2 (Turn 30)
+
+30 of 1000
+
+Hi Computer-2, you are in Restaurant
+Target is in Playground
+Item in this place: 
+ - Menu (Damage: 22)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Playground
+
+Turn changed from Computer-2 to Computer-1 (Turn 31)
+
+31 of 1000
+
+Hi Computer-1, you are in Post Office
+Target is in Bakery
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Police Station
+
+Turn changed from Computer-1 to Computer-2 (Turn 31)
+
+31 of 1000
+
+Hi Computer-2, you are in Playground
+Target is in Bakery
+Item in this place: 
+ - Slide (Damage: 6)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Bakery
+
+Turn changed from Computer-2 to Computer-1 (Turn 32)
+
+32 of 1000
+
+Hi Computer-1, you are in Police Station
+Target is in Gas Station
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Post Office
+
+Turn changed from Computer-1 to Computer-2 (Turn 32)
+
+32 of 1000
+
+Hi Computer-2, you are in Bakery
+Target is in Gas Station
+Item in this place: 
+ - Cake (Damage: 10)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Gas Station
+
+Turn changed from Computer-2 to Computer-1 (Turn 33)
+
+33 of 1000
+
+Hi Computer-1, you are in Post Office
+Target is in House #1
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Hospital
+
+Turn changed from Computer-1 to Computer-2 (Turn 33)
+
+33 of 1000
+
+Hi Computer-2, you are in Gas Station
+Target is in House #1
+Item in this place: 
+ - Gas Can (Damage: 8)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to House #1
+
+Turn changed from Computer-2 to Computer-1 (Turn 34)
+
+34 of 1000
+
+Hi Computer-1, you are in Hospital
+Target is in House #2
+Item in this place: 
+ - Medical Kit (Damage: 18)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to House #2
+
+Turn changed from Computer-1 to Computer-2 (Turn 34)
+
+34 of 1000
+
+Hi Computer-2, you are in House #1
+Target is in House #2
+Computer player's turn.
+Computer player moves to find the target.
+Moved to House #2
+
+Turn changed from Computer-2 to Computer-1 (Turn 35)
+
+35 of 1000
+
+Hi Computer-1, you are in House #2
+Players in this place:
+ - Computer-2
+Target is in Gym
+Item in this place: 
+ - Mailbox Key (Damage: 14)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Gym
+
+Turn changed from Computer-1 to Computer-2 (Turn 35)
+
+35 of 1000
+
+Hi Computer-2, you are in House #2
+Target is in Gym
+Item in this place: 
+ - Mailbox Key (Damage: 14)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Gym
+
+Turn changed from Computer-2 to Computer-1 (Turn 36)
+
+36 of 1000
+
+Hi Computer-1, you are in Gym
+Players in this place:
+ - Computer-2
+Target is in Pharmacy
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Pharmacy
+
+Turn changed from Computer-1 to Computer-2 (Turn 36)
+
+36 of 1000
+
+Hi Computer-2, you are in Gym
+Target is in Pharmacy
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Pharmacy
+
+Turn changed from Computer-2 to Computer-1 (Turn 37)
+
+37 of 1000
+
+Hi Computer-1, you are in Pharmacy
+Players in this place:
+ - Computer-2
+Target is in Barber Shop
+Item in this place: 
+ - Medicine Bottle (Damage: 7)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Barber Shop
+
+Turn changed from Computer-1 to Computer-2 (Turn 37)
+
+37 of 1000
+
+Hi Computer-2, you are in Pharmacy
+Target is in Barber Shop
+Item in this place: 
+ - Medicine Bottle (Damage: 7)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Barber Shop
+
+Turn changed from Computer-2 to Computer-1 (Turn 38)
+
+38 of 1000
+
+Hi Computer-1, you are in Barber Shop
+Players in this place:
+ - Computer-2
+Target is in Coffee Shop
+Item in this place: 
+ - Scissors (Damage: 5)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Pharmacy
+
+Turn changed from Computer-1 to Computer-2 (Turn 38)
+
+38 of 1000
+
+Hi Computer-2, you are in Barber Shop
+Target is in Coffee Shop
+Item in this place: 
+ - Scissors (Damage: 5)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to House #2
+
+Turn changed from Computer-2 to Computer-1 (Turn 39)
+
+39 of 1000
+
+Hi Computer-1, you are in Pharmacy
+Target is in Bus Stop
+Item in this place: 
+ - Medicine Bottle (Damage: 7)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Barber Shop
+
+Turn changed from Computer-1 to Computer-2 (Turn 39)
+
+39 of 1000
+
+Hi Computer-2, you are in House #2
+Target is in Bus Stop
+Item in this place: 
+ - Mailbox Key (Damage: 14)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Pharmacy
+
+Turn changed from Computer-2 to Computer-1 (Turn 40)
+
+40 of 1000
+
+Hi Computer-1, you are in Barber Shop
+Target is in Community Center
+Item in this place: 
+ - Scissors (Damage: 5)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Community Center
+
+Turn changed from Computer-1 to Computer-2 (Turn 40)
+
+40 of 1000
+
+Hi Computer-2, you are in Pharmacy
+Target is in Community Center
+Item in this place: 
+ - Medicine Bottle (Damage: 7)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Community Center
+
+Turn changed from Computer-2 to Computer-1 (Turn 41)
+
+41 of 1000
+
+Hi Computer-1, you are in Community Center
+Players in this place:
+ - Computer-2
+Target is in Park
+Item in this place: 
+ - Community Badge (Damage: 20)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Pharmacy
+
+Turn changed from Computer-1 to Computer-2 (Turn 41)
+
+41 of 1000
+
+Hi Computer-2, you are in Community Center
+Target is in Park
+Item in this place: 
+ - Community Badge (Damage: 20)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to House #1
+
+Turn changed from Computer-2 to Computer-1 (Turn 42)
+
+42 of 1000
+
+Hi Computer-1, you are in Pharmacy
+Target is in Grocery Store
+Item in this place: 
+ - Medicine Bottle (Damage: 7)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Fire Station
+
+Turn changed from Computer-1 to Computer-2 (Turn 42)
+
+42 of 1000
+
+Hi Computer-2, you are in House #1
+Target is in Grocery Store
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Community Center
+
+Turn changed from Computer-2 to Computer-1 (Turn 43)
+
+43 of 1000
+
+Hi Computer-1, you are in Fire Station
+Target is in School
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Library
+
+Turn changed from Computer-1 to Computer-2 (Turn 43)
+
+43 of 1000
+
+Hi Computer-2, you are in Community Center
+Target is in School
+Item in this place: 
+ - Community Badge (Damage: 20)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to House #1
+
+Turn changed from Computer-2 to Computer-1 (Turn 44)
+
+44 of 1000
+
+Hi Computer-1, you are in Library
+Target is in Post Office
+Item in this place: 
+ - Storybook (Damage: 10)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Post Office
+
+Turn changed from Computer-1 to Computer-2 (Turn 44)
+
+44 of 1000
+
+Hi Computer-2, you are in House #1
+Target is in Post Office
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Hospital
+
+Turn changed from Computer-2 to Computer-1 (Turn 45)
+
+45 of 1000
+
+Hi Computer-1, you are in Post Office
+Target is in Police Station
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Police Station
+
+Turn changed from Computer-1 to Computer-2 (Turn 45)
+
+45 of 1000
+
+Hi Computer-2, you are in Hospital
+Target is in Police Station
+Item in this place: 
+ - Medical Kit (Damage: 18)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to House #2
+
+Turn changed from Computer-2 to Computer-1 (Turn 46)
+
+46 of 1000
+
+Hi Computer-1, you are in Police Station
+Target is in Fire Station
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Fire Station
+
+Turn changed from Computer-1 to Computer-2 (Turn 46)
+
+46 of 1000
+
+Hi Computer-2, you are in House #2
+Target is in Fire Station
+Item in this place: 
+ - Mailbox Key (Damage: 14)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Barber Shop
+
+Turn changed from Computer-2 to Computer-1 (Turn 47)
+
+47 of 1000
+
+Hi Computer-1, you are in Fire Station
+Target is in Library
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Library
+
+Turn changed from Computer-1 to Computer-2 (Turn 47)
+
+47 of 1000
+
+Hi Computer-2, you are in Barber Shop
+Target is in Library
+Item in this place: 
+ - Scissors (Damage: 5)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Pharmacy
+
+Turn changed from Computer-2 to Computer-1 (Turn 48)
+
+48 of 1000
+
+Hi Computer-1, you are in Library
+Target is in Hospital
+Item in this place: 
+ - Storybook (Damage: 10)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Hospital
+
+Turn changed from Computer-1 to Computer-2 (Turn 48)
+
+48 of 1000
+
+Hi Computer-2, you are in Pharmacy
+Target is in Hospital
+Item in this place: 
+ - Medicine Bottle (Damage: 7)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Community Center
+
+Turn changed from Computer-2 to Computer-1 (Turn 49)
+
+49 of 1000
+
+Hi Computer-1, you are in Hospital
+Target is in Restaurant
+Item in this place: 
+ - Medical Kit (Damage: 18)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Restaurant
+
+Turn changed from Computer-1 to Computer-2 (Turn 49)
+
+49 of 1000
+
+Hi Computer-2, you are in Community Center
+Target is in Restaurant
+Item in this place: 
+ - Community Badge (Damage: 20)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Pharmacy
+
+Turn changed from Computer-2 to Computer-1 (Turn 50)
+
+50 of 1000
+
+Hi Computer-1, you are in Restaurant
+Target is in Playground
+Item in this place: 
+ - Menu (Damage: 22)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Playground
+
+Turn changed from Computer-1 to Computer-2 (Turn 50)
+
+50 of 1000
+
+Hi Computer-2, you are in Pharmacy
+Target is in Playground
+Item in this place: 
+ - Medicine Bottle (Damage: 7)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Barber Shop
+
+Turn changed from Computer-2 to Computer-1 (Turn 51)
+
+51 of 1000
+
+Hi Computer-1, you are in Playground
+Target is in Bakery
+Item in this place: 
+ - Slide (Damage: 6)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Bakery
+
+Turn changed from Computer-1 to Computer-2 (Turn 51)
+
+51 of 1000
+
+Hi Computer-2, you are in Barber Shop
+Target is in Bakery
+Item in this place: 
+ - Scissors (Damage: 5)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Community Center
+
+Turn changed from Computer-2 to Computer-1 (Turn 52)
+
+52 of 1000
+
+Hi Computer-1, you are in Bakery
+Target is in Gas Station
+Item in this place: 
+ - Cake (Damage: 10)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Gas Station
+
+Turn changed from Computer-1 to Computer-2 (Turn 52)
+
+52 of 1000
+
+Hi Computer-2, you are in Community Center
+Target is in Gas Station
+Item in this place: 
+ - Community Badge (Damage: 20)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to House #1
+
+Turn changed from Computer-2 to Computer-1 (Turn 53)
+
+53 of 1000
+
+Hi Computer-1, you are in Gas Station
+Target is in House #1
+Item in this place: 
+ - Gas Can (Damage: 8)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to House #1
+
+Turn changed from Computer-1 to Computer-2 (Turn 53)
+
+53 of 1000
+
+Hi Computer-2, you are in House #1
+Players in this place:
+ - Computer-1
+Target is in House #1
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Community Center
+
+Turn changed from Computer-2 to Computer-1 (Turn 54)
+
+54 of 1000
+
+Hi Computer-1, you are in House #1
+Target is in House #2
+Computer player's turn.
+Computer player moves to find the target.
+Moved to House #2
+
+Turn changed from Computer-1 to Computer-2 (Turn 54)
+
+54 of 1000
+
+Hi Computer-2, you are in Community Center
+Target is in House #2
+Item in this place: 
+ - Community Badge (Damage: 20)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Barber Shop
+
+Turn changed from Computer-2 to Computer-1 (Turn 55)
+
+55 of 1000
+
+Hi Computer-1, you are in House #2
+Target is in Gym
+Item in this place: 
+ - Mailbox Key (Damage: 14)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Gym
+
+Turn changed from Computer-1 to Computer-2 (Turn 55)
+
+55 of 1000
+
+Hi Computer-2, you are in Barber Shop
+Target is in Gym
+Item in this place: 
+ - Scissors (Damage: 5)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Community Center
+
+Turn changed from Computer-2 to Computer-1 (Turn 56)
+
+56 of 1000
+
+Hi Computer-1, you are in Gym
+Target is in Pharmacy
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Pharmacy
+
+Turn changed from Computer-1 to Computer-2 (Turn 56)
+
+56 of 1000
+
+Hi Computer-2, you are in Community Center
+Target is in Pharmacy
+Item in this place: 
+ - Community Badge (Damage: 20)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Pharmacy
+
+Turn changed from Computer-2 to Computer-1 (Turn 57)
+
+57 of 1000
+
+Hi Computer-1, you are in Pharmacy
+Players in this place:
+ - Computer-2
+Target is in Barber Shop
+Item in this place: 
+ - Medicine Bottle (Damage: 7)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Barber Shop
+
+Turn changed from Computer-1 to Computer-2 (Turn 57)
+
+57 of 1000
+
+Hi Computer-2, you are in Pharmacy
+Target is in Barber Shop
+Item in this place: 
+ - Medicine Bottle (Damage: 7)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Barber Shop
+
+Turn changed from Computer-2 to Computer-1 (Turn 58)
+
+58 of 1000
+
+Hi Computer-1, you are in Barber Shop
+Players in this place:
+ - Computer-2
+Target is in Coffee Shop
+Item in this place: 
+ - Scissors (Damage: 5)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to House #2
+
+Turn changed from Computer-1 to Computer-2 (Turn 58)
+
+58 of 1000
+
+Hi Computer-2, you are in Barber Shop
+Target is in Coffee Shop
+Item in this place: 
+ - Scissors (Damage: 5)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to House #1
+
+Turn changed from Computer-2 to Computer-1 (Turn 59)
+
+59 of 1000
+
+Hi Computer-1, you are in House #2
+Target is in Bus Stop
+Item in this place: 
+ - Mailbox Key (Damage: 14)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Pharmacy
+
+Turn changed from Computer-1 to Computer-2 (Turn 59)
+
+59 of 1000
+
+Hi Computer-2, you are in House #1
+Target is in Bus Stop
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Community Center
+
+Turn changed from Computer-2 to Computer-1 (Turn 60)
+
+60 of 1000
+
+Hi Computer-1, you are in Pharmacy
+Target is in Community Center
+Item in this place: 
+ - Medicine Bottle (Damage: 7)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Community Center
+
+Turn changed from Computer-1 to Computer-2 (Turn 60)
+
+60 of 1000
+
+Hi Computer-2, you are in Community Center
+Players in this place:
+ - Computer-1
+Target is in Community Center
+Item in this place: 
+ - Community Badge (Damage: 20)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Pharmacy
+
+Turn changed from Computer-2 to Computer-1 (Turn 61)
+
+61 of 1000
+
+Hi Computer-1, you are in Community Center
+Target is in Park
+Item in this place: 
+ - Community Badge (Damage: 20)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Barber Shop
+
+Turn changed from Computer-1 to Computer-2 (Turn 61)
+
+61 of 1000
+
+Hi Computer-2, you are in Pharmacy
+Target is in Park
+Item in this place: 
+ - Medicine Bottle (Damage: 7)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to House #2
+
+Turn changed from Computer-2 to Computer-1 (Turn 62)
+
+62 of 1000
+
+Hi Computer-1, you are in Barber Shop
+Target is in Grocery Store
+Item in this place: 
+ - Scissors (Damage: 5)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Community Center
+
+Turn changed from Computer-1 to Computer-2 (Turn 62)
+
+62 of 1000
+
+Hi Computer-2, you are in House #2
+Target is in Grocery Store
+Item in this place: 
+ - Mailbox Key (Damage: 14)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Library
+
+Turn changed from Computer-2 to Computer-1 (Turn 63)
+
+63 of 1000
+
+Hi Computer-1, you are in Community Center
+Target is in School
+Item in this place: 
+ - Community Badge (Damage: 20)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Barber Shop
+
+Turn changed from Computer-1 to Computer-2 (Turn 63)
+
+63 of 1000
+
+Hi Computer-2, you are in Library
+Target is in School
+Item in this place: 
+ - Storybook (Damage: 10)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Fire Station
+
+Turn changed from Computer-2 to Computer-1 (Turn 64)
+
+64 of 1000
+
+Hi Computer-1, you are in Barber Shop
+Target is in Post Office
+Item in this place: 
+ - Scissors (Damage: 5)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Community Center
+
+Turn changed from Computer-1 to Computer-2 (Turn 64)
+
+64 of 1000
+
+Hi Computer-2, you are in Fire Station
+Target is in Post Office
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Pharmacy
+
+Turn changed from Computer-2 to Computer-1 (Turn 65)
+
+65 of 1000
+
+Hi Computer-1, you are in Community Center
+Target is in Police Station
+Item in this place: 
+ - Community Badge (Damage: 20)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Barber Shop
+
+Turn changed from Computer-1 to Computer-2 (Turn 65)
+
+65 of 1000
+
+Hi Computer-2, you are in Pharmacy
+Target is in Police Station
+Item in this place: 
+ - Medicine Bottle (Damage: 7)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Gym
+
+Turn changed from Computer-2 to Computer-1 (Turn 66)
+
+66 of 1000
+
+Hi Computer-1, you are in Barber Shop
+Target is in Fire Station
+Item in this place: 
+ - Scissors (Damage: 5)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Community Center
+
+Turn changed from Computer-1 to Computer-2 (Turn 66)
+
+66 of 1000
+
+Hi Computer-2, you are in Gym
+Target is in Fire Station
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Fire Station
+
+Turn changed from Computer-2 to Computer-1 (Turn 67)
+
+67 of 1000
+
+Hi Computer-1, you are in Community Center
+Target is in Library
+Item in this place: 
+ - Community Badge (Damage: 20)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to House #1
+
+Turn changed from Computer-1 to Computer-2 (Turn 67)
+
+67 of 1000
+
+Hi Computer-2, you are in Fire Station
+Target is in Library
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Library
+
+Turn changed from Computer-2 to Computer-1 (Turn 68)
+
+68 of 1000
+
+Hi Computer-1, you are in House #1
+Target is in Hospital
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Hospital
+
+Turn changed from Computer-1 to Computer-2 (Turn 68)
+
+68 of 1000
+
+Hi Computer-2, you are in Library
+Target is in Hospital
+Item in this place: 
+ - Storybook (Damage: 10)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Hospital
+
+Turn changed from Computer-2 to Computer-1 (Turn 69)
+
+69 of 1000
+
+Hi Computer-1, you are in Hospital
+Players in this place:
+ - Computer-2
+Target is in Restaurant
+Item in this place: 
+ - Medical Kit (Damage: 18)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Restaurant
+
+Turn changed from Computer-1 to Computer-2 (Turn 69)
+
+69 of 1000
+
+Hi Computer-2, you are in Hospital
+Target is in Restaurant
+Item in this place: 
+ - Medical Kit (Damage: 18)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Restaurant
+
+Turn changed from Computer-2 to Computer-1 (Turn 70)
+
+70 of 1000
+
+Hi Computer-1, you are in Restaurant
+Players in this place:
+ - Computer-2
+Target is in Playground
+Item in this place: 
+ - Menu (Damage: 22)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Playground
+
+Turn changed from Computer-1 to Computer-2 (Turn 70)
+
+70 of 1000
+
+Hi Computer-2, you are in Restaurant
+Target is in Playground
+Item in this place: 
+ - Menu (Damage: 22)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Playground
+
+Turn changed from Computer-2 to Computer-1 (Turn 71)
+
+71 of 1000
+
+Hi Computer-1, you are in Playground
+Players in this place:
+ - Computer-2
+Target is in Bakery
+Item in this place: 
+ - Slide (Damage: 6)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Bakery
+
+Turn changed from Computer-1 to Computer-2 (Turn 71)
+
+71 of 1000
+
+Hi Computer-2, you are in Playground
+Target is in Bakery
+Item in this place: 
+ - Slide (Damage: 6)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Bakery
+
+Turn changed from Computer-2 to Computer-1 (Turn 72)
+
+72 of 1000
+
+Hi Computer-1, you are in Bakery
+Players in this place:
+ - Computer-2
+Target is in Gas Station
+Item in this place: 
+ - Cake (Damage: 10)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Gas Station
+
+Turn changed from Computer-1 to Computer-2 (Turn 72)
+
+72 of 1000
+
+Hi Computer-2, you are in Bakery
+Target is in Gas Station
+Item in this place: 
+ - Cake (Damage: 10)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Gas Station
+
+Turn changed from Computer-2 to Computer-1 (Turn 73)
+
+73 of 1000
+
+Hi Computer-1, you are in Gas Station
+Players in this place:
+ - Computer-2
+Target is in House #1
+Item in this place: 
+ - Gas Can (Damage: 8)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to House #1
+
+Turn changed from Computer-1 to Computer-2 (Turn 73)
+
+73 of 1000
+
+Hi Computer-2, you are in Gas Station
+Target is in House #1
+Item in this place: 
+ - Gas Can (Damage: 8)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to House #1
+
+Turn changed from Computer-2 to Computer-1 (Turn 74)
+
+74 of 1000
+
+Hi Computer-1, you are in House #1
+Players in this place:
+ - Computer-2
+Target is in House #2
+Computer player's turn.
+Computer player moves to find the target.
+Moved to House #2
+
+Turn changed from Computer-1 to Computer-2 (Turn 74)
+
+74 of 1000
+
+Hi Computer-2, you are in House #1
+Target is in House #2
+Computer player's turn.
+Computer player moves to find the target.
+Moved to House #2
+
+Turn changed from Computer-2 to Computer-1 (Turn 75)
+
+75 of 1000
+
+Hi Computer-1, you are in House #2
+Players in this place:
+ - Computer-2
+Target is in Gym
+Item in this place: 
+ - Mailbox Key (Damage: 14)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Gym
+
+Turn changed from Computer-1 to Computer-2 (Turn 75)
+
+75 of 1000
+
+Hi Computer-2, you are in House #2
+Target is in Gym
+Item in this place: 
+ - Mailbox Key (Damage: 14)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Gym
+
+Turn changed from Computer-2 to Computer-1 (Turn 76)
+
+76 of 1000
+
+Hi Computer-1, you are in Gym
+Players in this place:
+ - Computer-2
+Target is in Pharmacy
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Pharmacy
+
+Turn changed from Computer-1 to Computer-2 (Turn 76)
+
+76 of 1000
+
+Hi Computer-2, you are in Gym
+Target is in Pharmacy
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Pharmacy
+
+Turn changed from Computer-2 to Computer-1 (Turn 77)
+
+77 of 1000
+
+Hi Computer-1, you are in Pharmacy
+Players in this place:
+ - Computer-2
+Target is in Barber Shop
+Item in this place: 
+ - Medicine Bottle (Damage: 7)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Barber Shop
+
+Turn changed from Computer-1 to Computer-2 (Turn 77)
+
+77 of 1000
+
+Hi Computer-2, you are in Pharmacy
+Target is in Barber Shop
+Item in this place: 
+ - Medicine Bottle (Damage: 7)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Barber Shop
+
+Turn changed from Computer-2 to Computer-1 (Turn 78)
+
+78 of 1000
+
+Hi Computer-1, you are in Barber Shop
+Players in this place:
+ - Computer-2
+Target is in Coffee Shop
+Item in this place: 
+ - Scissors (Damage: 5)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to House #1
+
+Turn changed from Computer-1 to Computer-2 (Turn 78)
+
+78 of 1000
+
+Hi Computer-2, you are in Barber Shop
+Target is in Coffee Shop
+Item in this place: 
+ - Scissors (Damage: 5)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Community Center
+
+Turn changed from Computer-2 to Computer-1 (Turn 79)
+
+79 of 1000
+
+Hi Computer-1, you are in House #1
+Target is in Bus Stop
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Barber Shop
+
+Turn changed from Computer-1 to Computer-2 (Turn 79)
+
+79 of 1000
+
+Hi Computer-2, you are in Community Center
+Target is in Bus Stop
+Item in this place: 
+ - Community Badge (Damage: 20)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to House #1
+
+Turn changed from Computer-2 to Computer-1 (Turn 80)
+
+80 of 1000
+
+Hi Computer-1, you are in Barber Shop
+Target is in Community Center
+Item in this place: 
+ - Scissors (Damage: 5)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Community Center
+
+Turn changed from Computer-1 to Computer-2 (Turn 80)
+
+80 of 1000
+
+Hi Computer-2, you are in House #1
+Target is in Community Center
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Community Center
+
+Turn changed from Computer-2 to Computer-1 (Turn 81)
+
+81 of 1000
+
+Hi Computer-1, you are in Community Center
+Players in this place:
+ - Computer-2
+Target is in Park
+Item in this place: 
+ - Community Badge (Damage: 20)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to House #1
+
+Turn changed from Computer-1 to Computer-2 (Turn 81)
+
+81 of 1000
+
+Hi Computer-2, you are in Community Center
+Target is in Park
+Item in this place: 
+ - Community Badge (Damage: 20)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Barber Shop
+
+Turn changed from Computer-2 to Computer-1 (Turn 82)
+
+82 of 1000
+
+Hi Computer-1, you are in House #1
+Target is in Grocery Store
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Hospital
+
+Turn changed from Computer-1 to Computer-2 (Turn 82)
+
+82 of 1000
+
+Hi Computer-2, you are in Barber Shop
+Target is in Grocery Store
+Item in this place: 
+ - Scissors (Damage: 5)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to House #2
+
+Turn changed from Computer-2 to Computer-1 (Turn 83)
+
+83 of 1000
+
+Hi Computer-1, you are in Hospital
+Target is in School
+Item in this place: 
+ - Medical Kit (Damage: 18)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to School
+
+Turn changed from Computer-1 to Computer-2 (Turn 83)
+
+83 of 1000
+
+Hi Computer-2, you are in House #2
+Target is in School
+Item in this place: 
+ - Mailbox Key (Damage: 14)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Hospital
+
+Turn changed from Computer-2 to Computer-1 (Turn 84)
+
+84 of 1000
+
+Hi Computer-1, you are in School
+Target is in Post Office
+Item in this place: 
+ - Textbook (Damage: 6)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Post Office
+
+Turn changed from Computer-1 to Computer-2 (Turn 84)
+
+84 of 1000
+
+Hi Computer-2, you are in Hospital
+Target is in Post Office
+Item in this place: 
+ - Medical Kit (Damage: 18)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Post Office
+
+Turn changed from Computer-2 to Computer-1 (Turn 85)
+
+85 of 1000
+
+Hi Computer-1, you are in Post Office
+Players in this place:
+ - Computer-2
+Target is in Police Station
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Police Station
+
+Turn changed from Computer-1 to Computer-2 (Turn 85)
+
+85 of 1000
+
+Hi Computer-2, you are in Post Office
+Target is in Police Station
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Police Station
+
+Turn changed from Computer-2 to Computer-1 (Turn 86)
+
+86 of 1000
+
+Hi Computer-1, you are in Police Station
+Players in this place:
+ - Computer-2
+Target is in Fire Station
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Fire Station
+
+Turn changed from Computer-1 to Computer-2 (Turn 86)
+
+86 of 1000
+
+Hi Computer-2, you are in Police Station
+Target is in Fire Station
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Fire Station
+
+Turn changed from Computer-2 to Computer-1 (Turn 87)
+
+87 of 1000
+
+Hi Computer-1, you are in Fire Station
+Players in this place:
+ - Computer-2
+Target is in Library
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Library
+
+Turn changed from Computer-1 to Computer-2 (Turn 87)
+
+87 of 1000
+
+Hi Computer-2, you are in Fire Station
+Target is in Library
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Library
+
+Turn changed from Computer-2 to Computer-1 (Turn 88)
+
+88 of 1000
+
+Hi Computer-1, you are in Library
+Players in this place:
+ - Computer-2
+Target is in Hospital
+Item in this place: 
+ - Storybook (Damage: 10)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Hospital
+
+Turn changed from Computer-1 to Computer-2 (Turn 88)
+
+88 of 1000
+
+Hi Computer-2, you are in Library
+Target is in Hospital
+Item in this place: 
+ - Storybook (Damage: 10)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Hospital
+
+Turn changed from Computer-2 to Computer-1 (Turn 89)
+
+89 of 1000
+
+Hi Computer-1, you are in Hospital
+Players in this place:
+ - Computer-2
+Target is in Restaurant
+Item in this place: 
+ - Medical Kit (Damage: 18)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Restaurant
+
+Turn changed from Computer-1 to Computer-2 (Turn 89)
+
+89 of 1000
+
+Hi Computer-2, you are in Hospital
+Target is in Restaurant
+Item in this place: 
+ - Medical Kit (Damage: 18)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Restaurant
+
+Turn changed from Computer-2 to Computer-1 (Turn 90)
+
+90 of 1000
+
+Hi Computer-1, you are in Restaurant
+Players in this place:
+ - Computer-2
+Target is in Playground
+Item in this place: 
+ - Menu (Damage: 22)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Playground
+
+Turn changed from Computer-1 to Computer-2 (Turn 90)
+
+90 of 1000
+
+Hi Computer-2, you are in Restaurant
+Target is in Playground
+Item in this place: 
+ - Menu (Damage: 22)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Playground
+
+Turn changed from Computer-2 to Computer-1 (Turn 91)
+
+91 of 1000
+
+Hi Computer-1, you are in Playground
+Players in this place:
+ - Computer-2
+Target is in Bakery
+Item in this place: 
+ - Slide (Damage: 6)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Bakery
+
+Turn changed from Computer-1 to Computer-2 (Turn 91)
+
+91 of 1000
+
+Hi Computer-2, you are in Playground
+Target is in Bakery
+Item in this place: 
+ - Slide (Damage: 6)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Bakery
+
+Turn changed from Computer-2 to Computer-1 (Turn 92)
+
+92 of 1000
+
+Hi Computer-1, you are in Bakery
+Players in this place:
+ - Computer-2
+Target is in Gas Station
+Item in this place: 
+ - Cake (Damage: 10)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Gas Station
+
+Turn changed from Computer-1 to Computer-2 (Turn 92)
+
+92 of 1000
+
+Hi Computer-2, you are in Bakery
+Target is in Gas Station
+Item in this place: 
+ - Cake (Damage: 10)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Gas Station
+
+Turn changed from Computer-2 to Computer-1 (Turn 93)
+
+93 of 1000
+
+Hi Computer-1, you are in Gas Station
+Players in this place:
+ - Computer-2
+Target is in House #1
+Item in this place: 
+ - Gas Can (Damage: 8)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to House #1
+
+Turn changed from Computer-1 to Computer-2 (Turn 93)
+
+93 of 1000
+
+Hi Computer-2, you are in Gas Station
+Target is in House #1
+Item in this place: 
+ - Gas Can (Damage: 8)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to House #1
+
+Turn changed from Computer-2 to Computer-1 (Turn 94)
+
+94 of 1000
+
+Hi Computer-1, you are in House #1
+Players in this place:
+ - Computer-2
+Target is in House #2
+Computer player's turn.
+Computer player moves to find the target.
+Moved to House #2
+
+Turn changed from Computer-1 to Computer-2 (Turn 94)
+
+94 of 1000
+
+Hi Computer-2, you are in House #1
+Target is in House #2
+Computer player's turn.
+Computer player moves to find the target.
+Moved to House #2
+
+Turn changed from Computer-2 to Computer-1 (Turn 95)
+
+95 of 1000
+
+Hi Computer-1, you are in House #2
+Players in this place:
+ - Computer-2
+Target is in Gym
+Item in this place: 
+ - Mailbox Key (Damage: 14)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Gym
+
+Turn changed from Computer-1 to Computer-2 (Turn 95)
+
+95 of 1000
+
+Hi Computer-2, you are in House #2
+Target is in Gym
+Item in this place: 
+ - Mailbox Key (Damage: 14)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Gym
+
+Turn changed from Computer-2 to Computer-1 (Turn 96)
+
+96 of 1000
+
+Hi Computer-1, you are in Gym
+Players in this place:
+ - Computer-2
+Target is in Pharmacy
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Pharmacy
+
+Turn changed from Computer-1 to Computer-2 (Turn 96)
+
+96 of 1000
+
+Hi Computer-2, you are in Gym
+Target is in Pharmacy
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Pharmacy
+
+Turn changed from Computer-2 to Computer-1 (Turn 97)
+
+97 of 1000
+
+Hi Computer-1, you are in Pharmacy
+Players in this place:
+ - Computer-2
+Target is in Barber Shop
+Item in this place: 
+ - Medicine Bottle (Damage: 7)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Barber Shop
+
+Turn changed from Computer-1 to Computer-2 (Turn 97)
+
+97 of 1000
+
+Hi Computer-2, you are in Pharmacy
+Target is in Barber Shop
+Item in this place: 
+ - Medicine Bottle (Damage: 7)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Barber Shop
+
+Turn changed from Computer-2 to Computer-1 (Turn 98)
+
+98 of 1000
+
+Hi Computer-1, you are in Barber Shop
+Players in this place:
+ - Computer-2
+Target is in Coffee Shop
+Item in this place: 
+ - Scissors (Damage: 5)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Community Center
+
+Turn changed from Computer-1 to Computer-2 (Turn 98)
+
+98 of 1000
+
+Hi Computer-2, you are in Barber Shop
+Target is in Coffee Shop
+Item in this place: 
+ - Scissors (Damage: 5)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to House #1
+
+Turn changed from Computer-2 to Computer-1 (Turn 99)
+
+99 of 1000
+
+Hi Computer-1, you are in Community Center
+Target is in Bus Stop
+Item in this place: 
+ - Community Badge (Damage: 20)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Pharmacy
+
+Turn changed from Computer-1 to Computer-2 (Turn 99)
+
+99 of 1000
+
+Hi Computer-2, you are in House #1
+Target is in Bus Stop
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Coffee Shop
+
+Turn changed from Computer-2 to Computer-1 (Turn 100)
+
+100 of 1000
+
+Hi Computer-1, you are in Pharmacy
+Target is in Community Center
+Item in this place: 
+ - Medicine Bottle (Damage: 7)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Community Center
+
+Turn changed from Computer-1 to Computer-2 (Turn 100)
+
+100 of 1000
+
+Hi Computer-2, you are in Coffee Shop
+Target is in Community Center
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Bus Stop
+
+Turn changed from Computer-2 to Computer-1 (Turn 101)
+
+101 of 1000
+
+Hi Computer-1, you are in Community Center
+Target is in Park
+Item in this place: 
+ - Community Badge (Damage: 20)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Barber Shop
+
+Turn changed from Computer-1 to Computer-2 (Turn 101)
+
+101 of 1000
+
+Hi Computer-2, you are in Bus Stop
+Target is in Park
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Coffee Shop
+
+Turn changed from Computer-2 to Computer-1 (Turn 102)
+
+102 of 1000
+
+Hi Computer-1, you are in Barber Shop
+Target is in Grocery Store
+Item in this place: 
+ - Scissors (Damage: 5)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to House #1
+
+Turn changed from Computer-1 to Computer-2 (Turn 102)
+
+102 of 1000
+
+Hi Computer-2, you are in Coffee Shop
+Target is in Grocery Store
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Bus Stop
+
+Turn changed from Computer-2 to Computer-1 (Turn 103)
+
+103 of 1000
+
+Hi Computer-1, you are in House #1
+Target is in School
+Computer player's turn.
+Computer player moves to find the target.
+Moved to House #2
+
+Turn changed from Computer-1 to Computer-2 (Turn 103)
+
+103 of 1000
+
+Hi Computer-2, you are in Bus Stop
+Target is in School
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Gas Station
+
+Turn changed from Computer-2 to Computer-1 (Turn 104)
+
+104 of 1000
+
+Hi Computer-1, you are in House #2
+Target is in Post Office
+Item in this place: 
+ - Mailbox Key (Damage: 14)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Gym
+
+Turn changed from Computer-1 to Computer-2 (Turn 104)
+
+104 of 1000
+
+Hi Computer-2, you are in Gas Station
+Target is in Post Office
+Item in this place: 
+ - Gas Can (Damage: 8)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Playground
+
+Turn changed from Computer-2 to Computer-1 (Turn 105)
+
+105 of 1000
+
+Hi Computer-1, you are in Gym
+Target is in Police Station
+Computer player's turn.
+Computer player moves to find the target.
+Moved to House #2
+
+Turn changed from Computer-1 to Computer-2 (Turn 105)
+
+105 of 1000
+
+Hi Computer-2, you are in Playground
+Target is in Police Station
+Item in this place: 
+ - Slide (Damage: 6)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Bakery
+
+Turn changed from Computer-2 to Computer-1 (Turn 106)
+
+106 of 1000
+
+Hi Computer-1, you are in House #2
+Target is in Fire Station
+Item in this place: 
+ - Mailbox Key (Damage: 14)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Pharmacy
+
+Turn changed from Computer-1 to Computer-2 (Turn 106)
+
+106 of 1000
+
+Hi Computer-2, you are in Bakery
+Target is in Fire Station
+Item in this place: 
+ - Cake (Damage: 10)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Restaurant
+
+Turn changed from Computer-2 to Computer-1 (Turn 107)
+
+107 of 1000
+
+Hi Computer-1, you are in Pharmacy
+Target is in Library
+Item in this place: 
+ - Medicine Bottle (Damage: 7)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Barber Shop
+
+Turn changed from Computer-1 to Computer-2 (Turn 107)
+
+107 of 1000
+
+Hi Computer-2, you are in Restaurant
+Target is in Library
+Item in this place: 
+ - Menu (Damage: 22)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Park
+
+Turn changed from Computer-2 to Computer-1 (Turn 108)
+
+108 of 1000
+
+Hi Computer-1, you are in Barber Shop
+Target is in Hospital
+Item in this place: 
+ - Scissors (Damage: 5)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to House #2
+
+Turn changed from Computer-1 to Computer-2 (Turn 108)
+
+108 of 1000
+
+Hi Computer-2, you are in Park
+Target is in Hospital
+Item in this place: 
+ - Toy Ball (Damage: 8)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Restaurant
+
+Turn changed from Computer-2 to Computer-1 (Turn 109)
+
+109 of 1000
+
+Hi Computer-1, you are in House #2
+Target is in Restaurant
+Item in this place: 
+ - Mailbox Key (Damage: 14)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to House #1
+
+Turn changed from Computer-1 to Computer-2 (Turn 109)
+
+109 of 1000
+
+Hi Computer-2, you are in Restaurant
+Target is in Restaurant
+Item in this place: 
+ - Menu (Damage: 22)
+Computer player's turn.
+Computer player attempts to attack the target.
+Attack successful with House Key for 15 damage!
+Target health: 15
+
+Turn changed from Computer-2 to Computer-1 (Turn 110)
+
+110 of 1000
+
+Hi Computer-1, you are in House #1
+Target is in Playground
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Barber Shop
+
+Turn changed from Computer-1 to Computer-2 (Turn 110)
+
+110 of 1000
+
+Hi Computer-2, you are in Restaurant
+Target is in Playground
+Item in this place: 
+ - Menu (Damage: 22)
+Computer player's turn.
+Computer player picks up an item.
+Picked up Menu.
+
+Turn changed from Computer-2 to Computer-1 (Turn 111)
+
+111 of 1000
+
+Hi Computer-1, you are in Barber Shop
+Target is in Bakery
+Item in this place: 
+ - Scissors (Damage: 5)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Community Center
+
+Turn changed from Computer-1 to Computer-2 (Turn 111)
+
+111 of 1000
+
+Hi Computer-2, you are in Restaurant
+Target is in Bakery
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Bakery
+
+Turn changed from Computer-2 to Computer-1 (Turn 112)
+
+112 of 1000
+
+Hi Computer-1, you are in Community Center
+Target is in Gas Station
+Item in this place: 
+ - Community Badge (Damage: 20)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Pharmacy
+
+Turn changed from Computer-1 to Computer-2 (Turn 112)
+
+112 of 1000
+
+Hi Computer-2, you are in Bakery
+Target is in Gas Station
+Item in this place: 
+ - Cake (Damage: 10)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Gas Station
+
+Turn changed from Computer-2 to Computer-1 (Turn 113)
+
+113 of 1000
+
+Hi Computer-1, you are in Pharmacy
+Target is in House #1
+Item in this place: 
+ - Medicine Bottle (Damage: 7)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Community Center
+
+Turn changed from Computer-1 to Computer-2 (Turn 113)
+
+113 of 1000
+
+Hi Computer-2, you are in Gas Station
+Target is in House #1
+Item in this place: 
+ - Gas Can (Damage: 8)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to House #1
+
+Turn changed from Computer-2 to Computer-1 (Turn 114)
+
+114 of 1000
+
+Hi Computer-1, you are in Community Center
+Target is in House #2
+Item in this place: 
+ - Community Badge (Damage: 20)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Pharmacy
+
+Turn changed from Computer-1 to Computer-2 (Turn 114)
+
+114 of 1000
+
+Hi Computer-2, you are in House #1
+Target is in House #2
+Computer player's turn.
+Computer player moves to find the target.
+Moved to House #2
+
+Turn changed from Computer-2 to Computer-1 (Turn 115)
+
+115 of 1000
+
+Hi Computer-1, you are in Pharmacy
+Target is in Gym
+Item in this place: 
+ - Medicine Bottle (Damage: 7)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Gym
+
+Turn changed from Computer-1 to Computer-2 (Turn 115)
+
+115 of 1000
+
+Hi Computer-2, you are in House #2
+Target is in Gym
+Item in this place: 
+ - Mailbox Key (Damage: 14)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Gym
+
+Turn changed from Computer-2 to Computer-1 (Turn 116)
+
+116 of 1000
+
+Hi Computer-1, you are in Gym
+Players in this place:
+ - Computer-2
+Target is in Pharmacy
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Pharmacy
+
+Turn changed from Computer-1 to Computer-2 (Turn 116)
+
+116 of 1000
+
+Hi Computer-2, you are in Gym
+Target is in Pharmacy
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Pharmacy
+
+Turn changed from Computer-2 to Computer-1 (Turn 117)
+
+117 of 1000
+
+Hi Computer-1, you are in Pharmacy
+Players in this place:
+ - Computer-2
+Target is in Barber Shop
+Item in this place: 
+ - Medicine Bottle (Damage: 7)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Barber Shop
+
+Turn changed from Computer-1 to Computer-2 (Turn 117)
+
+117 of 1000
+
+Hi Computer-2, you are in Pharmacy
+Target is in Barber Shop
+Item in this place: 
+ - Medicine Bottle (Damage: 7)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Barber Shop
+
+Turn changed from Computer-2 to Computer-1 (Turn 118)
+
+118 of 1000
+
+Hi Computer-1, you are in Barber Shop
+Players in this place:
+ - Computer-2
+Target is in Coffee Shop
+Item in this place: 
+ - Scissors (Damage: 5)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to House #1
+
+Turn changed from Computer-1 to Computer-2 (Turn 118)
+
+118 of 1000
+
+Hi Computer-2, you are in Barber Shop
+Target is in Coffee Shop
+Item in this place: 
+ - Scissors (Damage: 5)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Community Center
+
+Turn changed from Computer-2 to Computer-1 (Turn 119)
+
+119 of 1000
+
+Hi Computer-1, you are in House #1
+Target is in Bus Stop
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Hospital
+
+Turn changed from Computer-1 to Computer-2 (Turn 119)
+
+119 of 1000
+
+Hi Computer-2, you are in Community Center
+Target is in Bus Stop
+Item in this place: 
+ - Community Badge (Damage: 20)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to House #1
+
+Turn changed from Computer-2 to Computer-1 (Turn 120)
+
+120 of 1000
+
+Hi Computer-1, you are in Hospital
+Target is in Community Center
+Item in this place: 
+ - Medical Kit (Damage: 18)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Library
+
+Turn changed from Computer-1 to Computer-2 (Turn 120)
+
+120 of 1000
+
+Hi Computer-2, you are in House #1
+Target is in Community Center
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Community Center
+
+Turn changed from Computer-2 to Computer-1 (Turn 121)
+
+121 of 1000
+
+Hi Computer-1, you are in Library
+Target is in Park
+Item in this place: 
+ - Storybook (Damage: 10)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Hospital
+
+Turn changed from Computer-1 to Computer-2 (Turn 121)
+
+121 of 1000
+
+Hi Computer-2, you are in Community Center
+Target is in Park
+Item in this place: 
+ - Community Badge (Damage: 20)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to House #1
+
+Turn changed from Computer-2 to Computer-1 (Turn 122)
+
+122 of 1000
+
+Hi Computer-1, you are in Hospital
+Target is in Grocery Store
+Item in this place: 
+ - Medical Kit (Damage: 18)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Library
+
+Turn changed from Computer-1 to Computer-2 (Turn 122)
+
+122 of 1000
+
+Hi Computer-2, you are in House #1
+Target is in Grocery Store
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Hospital
+
+Turn changed from Computer-2 to Computer-1 (Turn 123)
+
+123 of 1000
+
+Hi Computer-1, you are in Library
+Target is in School
+Item in this place: 
+ - Storybook (Damage: 10)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Hospital
+
+Turn changed from Computer-1 to Computer-2 (Turn 123)
+
+123 of 1000
+
+Hi Computer-2, you are in Hospital
+Players in this place:
+ - Computer-1
+Target is in School
+Item in this place: 
+ - Medical Kit (Damage: 18)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to School
+
+Turn changed from Computer-2 to Computer-1 (Turn 124)
+
+124 of 1000
+
+Hi Computer-1, you are in Hospital
+Target is in Post Office
+Item in this place: 
+ - Medical Kit (Damage: 18)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Post Office
+
+Turn changed from Computer-1 to Computer-2 (Turn 124)
+
+124 of 1000
+
+Hi Computer-2, you are in School
+Target is in Post Office
+Item in this place: 
+ - Textbook (Damage: 6)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Post Office
+
+Turn changed from Computer-2 to Computer-1 (Turn 125)
+
+125 of 1000
+
+Hi Computer-1, you are in Post Office
+Players in this place:
+ - Computer-2
+Target is in Police Station
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Police Station
+
+Turn changed from Computer-1 to Computer-2 (Turn 125)
+
+125 of 1000
+
+Hi Computer-2, you are in Post Office
+Target is in Police Station
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Police Station
+
+Turn changed from Computer-2 to Computer-1 (Turn 126)
+
+126 of 1000
+
+Hi Computer-1, you are in Police Station
+Players in this place:
+ - Computer-2
+Target is in Fire Station
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Fire Station
+
+Turn changed from Computer-1 to Computer-2 (Turn 126)
+
+126 of 1000
+
+Hi Computer-2, you are in Police Station
+Target is in Fire Station
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Fire Station
+
+Turn changed from Computer-2 to Computer-1 (Turn 127)
+
+127 of 1000
+
+Hi Computer-1, you are in Fire Station
+Players in this place:
+ - Computer-2
+Target is in Library
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Library
+
+Turn changed from Computer-1 to Computer-2 (Turn 127)
+
+127 of 1000
+
+Hi Computer-2, you are in Fire Station
+Target is in Library
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Library
+
+Turn changed from Computer-2 to Computer-1 (Turn 128)
+
+128 of 1000
+
+Hi Computer-1, you are in Library
+Players in this place:
+ - Computer-2
+Target is in Hospital
+Item in this place: 
+ - Storybook (Damage: 10)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Hospital
+
+Turn changed from Computer-1 to Computer-2 (Turn 128)
+
+128 of 1000
+
+Hi Computer-2, you are in Library
+Target is in Hospital
+Item in this place: 
+ - Storybook (Damage: 10)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Hospital
+
+Turn changed from Computer-2 to Computer-1 (Turn 129)
+
+129 of 1000
+
+Hi Computer-1, you are in Hospital
+Players in this place:
+ - Computer-2
+Target is in Restaurant
+Item in this place: 
+ - Medical Kit (Damage: 18)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Restaurant
+
+Turn changed from Computer-1 to Computer-2 (Turn 129)
+
+129 of 1000
+
+Hi Computer-2, you are in Hospital
+Target is in Restaurant
+Item in this place: 
+ - Medical Kit (Damage: 18)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Restaurant
+
+Turn changed from Computer-2 to Computer-1 (Turn 130)
+
+130 of 1000
+
+Hi Computer-1, you are in Restaurant
+Players in this place:
+ - Computer-2
+Target is in Playground
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Playground
+
+Turn changed from Computer-1 to Computer-2 (Turn 130)
+
+130 of 1000
+
+Hi Computer-2, you are in Restaurant
+Target is in Playground
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Playground
+
+Turn changed from Computer-2 to Computer-1 (Turn 131)
+
+131 of 1000
+
+Hi Computer-1, you are in Playground
+Players in this place:
+ - Computer-2
+Target is in Bakery
+Item in this place: 
+ - Slide (Damage: 6)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Bakery
+
+Turn changed from Computer-1 to Computer-2 (Turn 131)
+
+131 of 1000
+
+Hi Computer-2, you are in Playground
+Target is in Bakery
+Item in this place: 
+ - Slide (Damage: 6)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Bakery
+
+Turn changed from Computer-2 to Computer-1 (Turn 132)
+
+132 of 1000
+
+Hi Computer-1, you are in Bakery
+Players in this place:
+ - Computer-2
+Target is in Gas Station
+Item in this place: 
+ - Cake (Damage: 10)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Gas Station
+
+Turn changed from Computer-1 to Computer-2 (Turn 132)
+
+132 of 1000
+
+Hi Computer-2, you are in Bakery
+Target is in Gas Station
+Item in this place: 
+ - Cake (Damage: 10)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Gas Station
+
+Turn changed from Computer-2 to Computer-1 (Turn 133)
+
+133 of 1000
+
+Hi Computer-1, you are in Gas Station
+Players in this place:
+ - Computer-2
+Target is in House #1
+Item in this place: 
+ - Gas Can (Damage: 8)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to House #1
+
+Turn changed from Computer-1 to Computer-2 (Turn 133)
+
+133 of 1000
+
+Hi Computer-2, you are in Gas Station
+Target is in House #1
+Item in this place: 
+ - Gas Can (Damage: 8)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to House #1
+
+Turn changed from Computer-2 to Computer-1 (Turn 134)
+
+134 of 1000
+
+Hi Computer-1, you are in House #1
+Players in this place:
+ - Computer-2
+Target is in House #2
+Computer player's turn.
+Computer player moves to find the target.
+Moved to House #2
+
+Turn changed from Computer-1 to Computer-2 (Turn 134)
+
+134 of 1000
+
+Hi Computer-2, you are in House #1
+Target is in House #2
+Computer player's turn.
+Computer player moves to find the target.
+Moved to House #2
+
+Turn changed from Computer-2 to Computer-1 (Turn 135)
+
+135 of 1000
+
+Hi Computer-1, you are in House #2
+Players in this place:
+ - Computer-2
+Target is in Gym
+Item in this place: 
+ - Mailbox Key (Damage: 14)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Gym
+
+Turn changed from Computer-1 to Computer-2 (Turn 135)
+
+135 of 1000
+
+Hi Computer-2, you are in House #2
+Target is in Gym
+Item in this place: 
+ - Mailbox Key (Damage: 14)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Gym
+
+Turn changed from Computer-2 to Computer-1 (Turn 136)
+
+136 of 1000
+
+Hi Computer-1, you are in Gym
+Players in this place:
+ - Computer-2
+Target is in Pharmacy
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Pharmacy
+
+Turn changed from Computer-1 to Computer-2 (Turn 136)
+
+136 of 1000
+
+Hi Computer-2, you are in Gym
+Target is in Pharmacy
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Pharmacy
+
+Turn changed from Computer-2 to Computer-1 (Turn 137)
+
+137 of 1000
+
+Hi Computer-1, you are in Pharmacy
+Players in this place:
+ - Computer-2
+Target is in Barber Shop
+Item in this place: 
+ - Medicine Bottle (Damage: 7)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Barber Shop
+
+Turn changed from Computer-1 to Computer-2 (Turn 137)
+
+137 of 1000
+
+Hi Computer-2, you are in Pharmacy
+Target is in Barber Shop
+Item in this place: 
+ - Medicine Bottle (Damage: 7)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Barber Shop
+
+Turn changed from Computer-2 to Computer-1 (Turn 138)
+
+138 of 1000
+
+Hi Computer-1, you are in Barber Shop
+Players in this place:
+ - Computer-2
+Target is in Coffee Shop
+Item in this place: 
+ - Scissors (Damage: 5)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to House #2
+
+Turn changed from Computer-1 to Computer-2 (Turn 138)
+
+138 of 1000
+
+Hi Computer-2, you are in Barber Shop
+Target is in Coffee Shop
+Item in this place: 
+ - Scissors (Damage: 5)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Community Center
+
+Turn changed from Computer-2 to Computer-1 (Turn 139)
+
+139 of 1000
+
+Hi Computer-1, you are in House #2
+Target is in Bus Stop
+Item in this place: 
+ - Mailbox Key (Damage: 14)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Pharmacy
+
+Turn changed from Computer-1 to Computer-2 (Turn 139)
+
+139 of 1000
+
+Hi Computer-2, you are in Community Center
+Target is in Bus Stop
+Item in this place: 
+ - Community Badge (Damage: 20)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Pharmacy
+
+Turn changed from Computer-2 to Computer-1 (Turn 140)
+
+140 of 1000
+
+Hi Computer-1, you are in Pharmacy
+Players in this place:
+ - Computer-2
+Target is in Community Center
+Item in this place: 
+ - Medicine Bottle (Damage: 7)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Community Center
+
+Turn changed from Computer-1 to Computer-2 (Turn 140)
+
+140 of 1000
+
+Hi Computer-2, you are in Pharmacy
+Target is in Community Center
+Item in this place: 
+ - Medicine Bottle (Damage: 7)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Community Center
+
+Turn changed from Computer-2 to Computer-1 (Turn 141)
+
+141 of 1000
+
+Hi Computer-1, you are in Community Center
+Players in this place:
+ - Computer-2
+Target is in Park
+Item in this place: 
+ - Community Badge (Damage: 20)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to House #1
+
+Turn changed from Computer-1 to Computer-2 (Turn 141)
+
+141 of 1000
+
+Hi Computer-2, you are in Community Center
+Target is in Park
+Item in this place: 
+ - Community Badge (Damage: 20)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Pharmacy
+
+Turn changed from Computer-2 to Computer-1 (Turn 142)
+
+142 of 1000
+
+Hi Computer-1, you are in House #1
+Target is in Grocery Store
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Coffee Shop
+
+Turn changed from Computer-1 to Computer-2 (Turn 142)
+
+142 of 1000
+
+Hi Computer-2, you are in Pharmacy
+Target is in Grocery Store
+Item in this place: 
+ - Medicine Bottle (Damage: 7)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Community Center
+
+Turn changed from Computer-2 to Computer-1 (Turn 143)
+
+143 of 1000
+
+Hi Computer-1, you are in Coffee Shop
+Target is in School
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Gas Station
+
+Turn changed from Computer-1 to Computer-2 (Turn 143)
+
+143 of 1000
+
+Hi Computer-2, you are in Community Center
+Target is in School
+Item in this place: 
+ - Community Badge (Damage: 20)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Pharmacy
+
+Turn changed from Computer-2 to Computer-1 (Turn 144)
+
+144 of 1000
+
+Hi Computer-1, you are in Gas Station
+Target is in Post Office
+Item in this place: 
+ - Gas Can (Damage: 8)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Coffee Shop
+
+Turn changed from Computer-1 to Computer-2 (Turn 144)
+
+144 of 1000
+
+Hi Computer-2, you are in Pharmacy
+Target is in Post Office
+Item in this place: 
+ - Medicine Bottle (Damage: 7)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Community Center
+
+Turn changed from Computer-2 to Computer-1 (Turn 145)
+
+145 of 1000
+
+Hi Computer-1, you are in Coffee Shop
+Target is in Police Station
+Computer player's turn.
+Computer player moves to find the target.
+Moved to House #1
+
+Turn changed from Computer-1 to Computer-2 (Turn 145)
+
+145 of 1000
+
+Hi Computer-2, you are in Community Center
+Target is in Police Station
+Item in this place: 
+ - Community Badge (Damage: 20)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Barber Shop
+
+Turn changed from Computer-2 to Computer-1 (Turn 146)
+
+146 of 1000
+
+Hi Computer-1, you are in House #1
+Target is in Fire Station
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Gas Station
+
+Turn changed from Computer-1 to Computer-2 (Turn 146)
+
+146 of 1000
+
+Hi Computer-2, you are in Barber Shop
+Target is in Fire Station
+Item in this place: 
+ - Scissors (Damage: 5)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to House #1
+
+Turn changed from Computer-2 to Computer-1 (Turn 147)
+
+147 of 1000
+
+Hi Computer-1, you are in Gas Station
+Target is in Library
+Item in this place: 
+ - Gas Can (Damage: 8)
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Hospital
+
+Turn changed from Computer-1 to Computer-2 (Turn 147)
+
+147 of 1000
+
+Hi Computer-2, you are in House #1
+Target is in Library
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Community Center
+
+Turn changed from Computer-2 to Computer-1 (Turn 148)
+
+148 of 1000
+
+Hi Computer-1, you are in Hospital
+Target is in Hospital
+Item in this place: 
+ - Medical Kit (Damage: 18)
+Computer player's turn.
+Computer player attempts to attack the target.
+Attack successful with Fire Hose for 15 damage!
+Target health: 0
+Computer-1 has eliminated the target!
+Congratulations! You have defeated the target!
+Game Over! Computer-1 has successfully eliminated the target and won the game!
+++++++++++++++++++++

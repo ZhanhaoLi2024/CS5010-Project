@@ -3,39 +3,40 @@ package controller;
 import java.io.IOException;
 
 /**
- * The Controller interface defines the contract for a game controller.
- * It handles the user input and controls the flow of the game.
+ * The Controller interface defines the contract for managing game flow and user interactions.
+ * It coordinates communication between the model and view components following the MVC pattern.
  */
 public interface Controller {
-
   /**
-   * Starts the game loop, where the controller receives input, processes it, and interacts with the model.
+   * Initializes and starts the game, setting up initial game state and beginning gameplay.
    *
-   * @throws IOException if there is an issue with I/O operations.
+   * @throws IOException if there is an error during game initialization or I/O operations
    */
   void startGame() throws IOException;
 
   /**
-   * Prints the map of the town.
+   * Generates and displays a graphical representation of the game map.
+   *
+   * @throws IOException if there is an error during map generation or display
    */
   void printMap() throws IOException;
 
   /**
-   * Displays the map information.
+   * Displays detailed information about the current state of the game map.
    */
   void displayMapInfo();
 
   /**
-   * Allows a player to take a turn.
+   * Processes a single turn in the game, handling player actions and game state updates.
    *
-   * @throws IOException if there is an issue with I/O operations.
+   * @throws IOException if there is an error during turn processing
    */
   void takeTurn() throws IOException;
 
   /**
-   * Ends the game.
+   * Concludes the game session and performs necessary cleanup operations.
    *
-   * @throws IOException if there is an issue with I/O operations.
+   * @throws IOException if there is an error during game termination
    */
   void endGame() throws IOException;
 }

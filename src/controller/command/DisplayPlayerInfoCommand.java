@@ -15,14 +15,14 @@ public class DisplayPlayerInfoCommand implements Command {
   /**
    * Constructs a new DisplayPlayerInfoCommand.
    *
-   * @param town    the town where the players are located
-   * @param output  the output stream to write messages to
-   * @param scanner the scanner to get user input
+   * @param gameTown    the town where the players are located
+   * @param gameOutput  the output stream to write messages to
+   * @param gameScanner the scanner to get user input
    */
-  public DisplayPlayerInfoCommand(Town town, Appendable output, Scanner scanner) {
-    this.output = output;
-    this.scanner = scanner;
-    this.town = town;
+  public DisplayPlayerInfoCommand(Town gameTown, Appendable gameOutput, Scanner gameScanner) {
+    this.output = gameOutput;
+    this.scanner = gameScanner;
+    this.town = gameTown;
   }
 
   @Override

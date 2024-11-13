@@ -1,21 +1,21 @@
 package model.item;
 
 /**
- * The Item interface defines the basic behaviors and attributes of an item in a
- * game. An item has a name and a damage value.
+ * The Item interface defines the contract for items that can be found and used in the game.
+ * Each item has a name and associated damage value for use in gameplay mechanics.
  */
 public interface Item {
   /**
-   * Retrieves the name of the item.
+   * Retrieves the name of this item.
    *
-   * @return the name of the item as a String.
+   * @return the name of the item as a String
    */
   String getName();
 
   /**
-   * Retrieves the damage value of the item.
+   * Retrieves the damage value this item can inflict when used.
    *
-   * @return the damage value of the item as an integer.
+   * @return the damage value as an integer
    */
   int getDamage();
 }

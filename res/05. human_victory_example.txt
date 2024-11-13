@@ -1,0 +1,117 @@
+This run shows that the human-controlled player initiates an attack on the target and successfully kills the target.
+
+I set the target’s health to 10 (so the target would die with a single attack from a player using an item). Player 1 picked up the Shopping Cart (which deals 12 damage) on the first turn and, with no one nearby on the second turn, attacked the target, successfully killing it.
+
+(base) zhanhaoli@ZhanhaotekiMacBook-Pro cs5010-project % java -cp bin Driver res/SmallTownWorld.txt 10;
+
+++++++++++++++++++++
+Welcome to the game! You have 10 turns.
+Please choose an option:
+1. Show the Map Information
+2. Add the Human-controller player
+3. Add the Computer-controller player
+4. Display the player's information
+5. Display the Place's information
+6. Start the game
+7. Print the map
+0. Exit
+2
+Enter the player's name:
+Ivan
+Enter your starting place number (1-20):
+2
+Enter your limit of carrying items (1-10):
+3
+Player added successfully:
+Name: Ivan
+Location: Grocery Store
+Carry limit: 3
+Do you want to add another player? (yes/no)
+yes
+Enter the player's name:
+Steven
+Enter your starting place number (1-20):
+4
+Enter your limit of carrying items (1-10):
+3
+Player added successfully:
+Name: Steven
+Location: Post Office
+Carry limit: 3
+Do you want to add another player? (yes/no)
+no
+Please choose an option:
+1. Show the Map Information
+2. Add the Human-controller player
+3. Add the Computer-controller player
+4. Display the player's information
+5. Display the Place's information
+6. Start the game
+7. Print the map
+0. Exit
+6
+
+1 of 10
+
+Hi Ivan, you are in Grocery Store
+Target is in Park
+Item in this place: 
+ - Shopping Cart (Damage: 12)
+Please choose an option:
+1. Move player
+2. Pick up item
+3. Look around
+4. Attack target
+5. Move pet
+2
+Items in Grocery Store:
+1. Shopping Cart (Damage: 12)
+Enter the item number to pick up:
+1
+Picked up Shopping Cart.
+
+Turn changed from Ivan to Steven (Turn 1)
+
+1 of 10
+
+Hi Steven, you are in Post Office
+Target is in Park
+Item in this place: 
+ - Envelope (Damage: 8)
+Please choose an option:
+1. Move player
+2. Pick up item
+3. Look around
+4. Attack target
+5. Move pet
+2
+Items in Post Office:
+1. Envelope (Damage: 8)
+Enter the item number to pick up:
+1
+Picked up Envelope.
+
+Turn changed from Steven to Ivan (Turn 2)
+
+2 of 10
+
+Hi Ivan, you are in Grocery Store
+Target is in Grocery Store
+Please choose an option:
+1. Move player
+2. Pick up item
+3. Look around
+4. Attack target
+5. Move pet
+4
+
+Choose your attack:
+0. Poke in the eye (1 damage)
+1. Use Shopping Cart (12 damage)
+1
+Attack successful with Shopping Cart for 12 damage!
+Target health: 0
+Ivan has eliminated the target!
+Congratulations! You have defeated the target!
+Game Over! Ivan has successfully eliminated the target and won the game!
+++++++++++++++++++++
