@@ -58,31 +58,43 @@ to eliminate a target character while avoiding detection by other players.
 
 ### Prerequisites
 
-- Java 11 or higher
+- Java 8 or higher
 - Command line interface
 
-### Compilation
+### Using JAR File
+
+The game must be run from the project's root directory:
+
+#### 1. Navigate to project root directory:
 
 ```bash
-javac -d bin src/**/*.java
+cd path/to/CS5010-Project
 ```
 
-### Execution
+#### 2. Execute the JAR:
 
 ```bash
-java -cp bin Driver <world-file> <max-turns>
+java -jar res/cs5010-project-kill-doctor-lucky.jar <world-file> <max-turns>
 ```
 
 Example:
 
 ```bash
-java -cp bin Driver res/SmallTownWorld.txt 50
+java -jar res/cs5010-project-kill-doctor-lucky.jar res/SmallTownWorld.txt 50
 ```
 
 ### Command Line Arguments
 
-1. `world-file`: Path to world specification file
+1. `world-file`: Path to world specification file (relative to project root)
 2. `max-turns`: Maximum number of turns before target escapes
+
+### Important Notes
+
+- **Project Root Directory**: The game MUST be executed from the project's root directory to ensure proper file path
+  resolution
+- The JAR file is located in the `res/` directory
+- World specification files should be in the `res/` directory
+- The max-turns parameter must be a positive integer
 
 ## Example Gameplay
 
