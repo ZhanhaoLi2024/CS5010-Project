@@ -267,6 +267,11 @@ public class GameController implements Controller {
     } else {
       continueGame = true;
     }
+    output.append("Game started!\n");
+    output.append("Target: ").append(town.getTargetName()).append(" (Health: ")
+        .append(String.valueOf(town.getTargetHealth())).append(") in ")
+        .append(town.getTarget().getCurrentPlace().getName()).append("\n");
+    town.showPetCurrentInfo();
     while (continueGame) {
       output.append("\n");
       output.append(String.valueOf(town.getCurrentTurn())).append(" of ")

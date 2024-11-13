@@ -55,10 +55,12 @@ public class TownModel implements Town {
     this.townName = townData.getTownName();
     this.targetName = townData.getTargetName();
     this.targetHealth = townData.getTargetHealth();
-    this.pet = new PetModel(townData.getPetName());
     this.places = townData.getPlaces();
     this.items = townData.getItems();
     this.targetCharacter = new TargetModel(targetName, targetHealth, places.get(0), places);
+    int targetCurrentPlaceNumber =
+        Integer.parseInt(targetCharacter.getCurrentPlace().getPlaceNumber());
+    this.pet = new PetModel(townData.getPetName(), targetCurrentPlaceNumber);
     this.players = new ArrayList<>();
     this.currentPlayerIndex = 0;
     this.scanner = new Scanner(townScanner);
@@ -79,7 +81,9 @@ public class TownModel implements Town {
     this.targetName = townData.getTargetName();
     this.targetHealth = townData.getTargetHealth();
     this.targetCharacter = new TargetModel(targetName, targetHealth, places.get(0), places);
-    this.pet = new PetModel(townData.getPetName());
+    int targetCurrentPlaceNumber =
+        Integer.parseInt(targetCharacter.getCurrentPlace().getPlaceNumber());
+    this.pet = new PetModel(townData.getPetName(), targetCurrentPlaceNumber);
     this.items = townData.getItems();
     this.places = townData.getPlaces();
     this.currentTurn = 1;
@@ -89,6 +93,12 @@ public class TownModel implements Town {
   @Override
   public boolean isGameOver() {
     return currentTurn > maxTurns || targetCharacter.isDefeated();
+  }
+
+  @Override
+  public void showPetCurrentInfo() throws IOException {
+    output.append("Pet info: ").append(pet.getName()).append("is in ")
+        .append(getPlaceByNumber(pet.getPetCurrentPlaceNumber()).getName()).append("\n");
   }
 
   @Override
@@ -161,6 +171,7 @@ public class TownModel implements Town {
         getPlaceByNumber(placeNumber).getName()));
   }
 
+  @Override
   public List<Place> getPlaces() {
     return places;
   }

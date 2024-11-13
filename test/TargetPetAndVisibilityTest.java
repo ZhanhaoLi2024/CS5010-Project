@@ -83,7 +83,7 @@ public class TargetPetAndVisibilityTest {
    */
   @Test(expected = IllegalArgumentException.class)
   public void testPetInitializationWithInvalidName() {
-    new PetModel("");  // Should throw exception for empty name
+    new PetModel("", 1);  // Should throw exception for empty name
   }
 
   /**
@@ -94,7 +94,7 @@ public class TargetPetAndVisibilityTest {
    */
   @Test(expected = IllegalArgumentException.class)
   public void testPetInitializationWithNullName() {
-    new PetModel(null);  // Should throw exception for null name
+    new PetModel(null, 1);  // Should throw exception for null name
   }
 
   // Pet Movement Tests
@@ -314,7 +314,7 @@ public class TargetPetAndVisibilityTest {
    * @throws IOException if there is an error during test execution
    */
   @Test
-  public void testPetMovementConsumesATurn() throws IOException {
+  public void testPetMovementConsumesOneTurn() throws IOException {
     town.addComputerPlayer();
 
     int initialPetPosition = town.getPet().getPetCurrentPlaceNumber();

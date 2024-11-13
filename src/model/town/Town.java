@@ -23,6 +23,11 @@ public interface Town {
   int getPlaceNumberByName(String placeName) throws IOException;
 
   /**
+   * Shows the current information about the pet.
+   */
+  void showPetCurrentInfo() throws IOException;
+
+  /**
    * Retrieves the place by number.
    *
    * @param placeNumber the number of the place
