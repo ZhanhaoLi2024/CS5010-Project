@@ -982,10 +982,6 @@ public class TownModelTest {
     assertTrue("Game should be over", testTown.isGameOver());
   }
 
-  public StringBuilder getOutput() {
-    return this.output;
-  }
-
   /**
    * Tests showing the basic location information.
    */
