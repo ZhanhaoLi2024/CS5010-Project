@@ -986,6 +986,9 @@ public class TownModelTest {
     return this.output;
   }
 
+  /**
+   * Tests showing the basic location information.
+   */
   @Test
   public void testShowBasicLocationInfo()
       throws IOException, NoSuchFieldException, IllegalAccessException {
@@ -1008,7 +1011,7 @@ public class TownModelTest {
     Field outputField = townModel.getClass().getDeclaredField("output");
     outputField.setAccessible(true);
     StringBuilder localOutput = (StringBuilder) outputField.get(townModel);
-    
+
     assertTrue(localOutput.toString().contains("Hi Player 1, you are in Park"));
     assertTrue(localOutput.toString().contains("Target is in Park"));
     assertTrue(localOutput.toString().contains("Pet is in Park"));
@@ -1016,6 +1019,9 @@ public class TownModelTest {
     assertTrue(localOutput.toString().contains("Toy Ball (Damage: 8)"));
   }
 
+  /**
+   * Tests showing the basic location information with other players.
+   */
   @Test
   public void testShowBasicLocationInfoWithOther()
       throws IOException, NoSuchFieldException, IllegalAccessException {
@@ -1049,6 +1055,9 @@ public class TownModelTest {
     assertTrue(localOutput.toString().contains("Toy Ball (Damage: 8)"));
   }
 
+  /**
+   * Tests showing the basic location information without items.
+   */
   @Test
   public void testShowBasicLocationInfoWithoutItem()
       throws IOException, NoSuchFieldException, IllegalAccessException {
@@ -1085,6 +1094,9 @@ public class TownModelTest {
     assertTrue(localOutput.toString().contains("Pet is in Park"));
   }
 
+  /**
+   * Tests showing the basic location information with pet in other place.
+   */
   @Test
   public void testShowBasicLocationInfoPetInOtherPlace()
       throws IOException, NoSuchFieldException, IllegalAccessException {
