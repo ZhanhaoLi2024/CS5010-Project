@@ -27,6 +27,11 @@ public class MovePetCommand implements Command {
     this.scanner = gameScanner;
   }
 
+  /**
+   * Executes the command to move the pet to a different place.
+   *
+   * @throws IOException if an IO error occurs
+   */
   @Override
   public void execute() throws IOException {
     // Display all available places

@@ -23,6 +23,11 @@ public class AttackTargetCommand implements Command {
     this.output = gameOutput;
   }
 
+  /**
+   * Executes the command to attack the target character.
+   *
+   * @throws IOException if an IO error occurs
+   */
   @Override
   public void execute() throws IOException {
     Player currentPlayer = town.getPlayers().get(town.getCurrentPlayerIndex());
