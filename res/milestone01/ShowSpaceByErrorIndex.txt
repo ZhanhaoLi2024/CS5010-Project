@@ -1,0 +1,12 @@
+Please choose an option:
+1. Move 'The Mayor' to the next place
+2. Show target's current space
+3. Show neighbors of target's space
+4. Show space by index
+5. Show neighbors by index
+6. Print the map
+0. Exit
+4
+Enter the index of the space (1 to 20):
+88
+Invalid number.
