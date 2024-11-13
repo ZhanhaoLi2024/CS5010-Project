@@ -38,7 +38,6 @@ public class AttackTargetCommand implements Command {
     if (town.isGameOver()) {
       output.append("Congratulations! You have defeated the target!\n");
     } else {
-
       town.switchToNextPlayer();
     }
   }

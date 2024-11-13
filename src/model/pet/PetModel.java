@@ -1,7 +1,5 @@
 package model.pet;
 
-import model.target.Target;
-
 /**
  * The PetModel class represents a pet that can move between different places.
  * Implementing classes should provide the necessary functionality for retrieving the pet's name,
@@ -10,7 +8,6 @@ import model.target.Target;
 public class PetModel implements Pet {
   private final String petName;
   private int currentPlaceNumber;
-  private Target gameTarget;
 
   /**
    * Constructs a PetModel object with the specified name. The initial place number is set to 0.
