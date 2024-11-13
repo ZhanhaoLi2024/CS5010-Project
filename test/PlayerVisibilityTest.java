@@ -6,7 +6,6 @@ import static org.junit.Assert.fail;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.util.Scanner;
 import model.place.Place;
 import model.player.Player;
 import model.player.PlayerModel;
@@ -55,12 +54,9 @@ public class PlayerVisibilityTest {
       );
 
       // Initialize players with different starting positions
-      player1 = new PlayerModel("Player1", false, 5, 1, output,
-          new Scanner(new StringReader("")));
-      player2 = new PlayerModel("Player2", false, 5, 2, output,
-          new Scanner(new StringReader("")));
-      player3 = new PlayerModel("Player3", false, 5, 4, output,
-          new Scanner(new StringReader("")));
+      player1 = new PlayerModel("Player1", false, 5, 1);
+      player2 = new PlayerModel("Player2", false, 5, 2);
+      player3 = new PlayerModel("Player3", false, 5, 4);
 
       // Add players to the town
       town.getPlayers().add(player1);
@@ -109,11 +105,16 @@ public class PlayerVisibilityTest {
       player1.moveToPlaceNumber(1);
       player2.moveToPlaceNumber(2);
 
+      town.movePet(4); // Move pet to a non-adjacent space
+
+      System.out.println(player1.getPlayerCurrentPlaceNumber());
+      System.out.println(player2.getPlayerCurrentPlaceNumber());
+
       assertTrue("Players in neighboring spaces should be visible to each other",
           town.isPlayerVisible(player1));
       assertTrue("Players in neighboring spaces should be visible to each other",
           town.isPlayerVisible(player2));
-    } catch (IllegalStateException e) {
+    } catch (IllegalStateException | IOException e) {
       fail("Test failed: " + e.getMessage());
     }
   }
@@ -245,13 +246,15 @@ public class PlayerVisibilityTest {
       player2.moveToPlaceNumber(2);
       player3.moveToPlaceNumber(2);
 
+      town.movePet(4); // Move pet to a non-adjacent space
+
       assertTrue("Player in space with multiple players should be visible",
           town.isPlayerVisible(player2));
       assertTrue("Player in space with multiple players should be visible",
           town.isPlayerVisible(player3));
       assertTrue("Player visible to multiple players should be visible",
           town.isPlayerVisible(player1));
-    } catch (IllegalStateException e) {
+    } catch (IllegalStateException | IOException e) {
       fail("Test failed: " + e.getMessage());
     }
   }
@@ -284,9 +287,7 @@ public class PlayerVisibilityTest {
         Player validPlayer = new PlayerModel("ValidPlayer",
             false,
             5,
-            1,  // valid location
-            output,
-            new Scanner(new StringReader("")));
+            1);
 
         town.getPlayers().add(validPlayer);
         assertFalse("Single player should not be visible to others",
@@ -300,9 +301,7 @@ public class PlayerVisibilityTest {
         Player boundaryPlayer = new PlayerModel("BoundaryPlayer",
             false,
             5,
-            town.getPlaces().size(),  // last valid space
-            output,
-            new Scanner(new StringReader("")));
+            town.getPlaces().size());
 
         town.getPlayers().clear();
         town.getPlayers().add(boundaryPlayer);
@@ -317,9 +316,7 @@ public class PlayerVisibilityTest {
         Player unlistedPlayer = new PlayerModel("UnlistedPlayer",
             false,
             5,
-            1,
-            output,
-            new Scanner(new StringReader("")));
+            1);
 
         // Don't add to players list
         assertFalse("Unlisted player should not be visible",
@@ -343,6 +340,7 @@ public class PlayerVisibilityTest {
   @Test
   public void testVisibilityWithPlayerMovement() {
     try {
+      town.movePet(5);
       // Initial setup - players are neighbors
       player1.moveToPlaceNumber(1);
       player2.moveToPlaceNumber(2);
@@ -358,7 +356,7 @@ public class PlayerVisibilityTest {
       player2.moveToPlaceNumber(1);
       assertTrue("Players should be visible after moving to same space",
           town.isPlayerVisible(player1));
-    } catch (IllegalStateException e) {
+    } catch (IllegalStateException | IOException e) {
       fail("Test failed: " + e.getMessage());
     }
   }
@@ -453,13 +451,12 @@ public class PlayerVisibilityTest {
       player3.moveToPlaceNumber(3);  // Another neighboring space
 
       // Add more players to surround the center
-      Player player4 = new PlayerModel("Player4", false, 5, 4, output,
-          new Scanner(new StringReader("")));
+      Player player4 = new PlayerModel("Player4", false, 5, 4);
       town.getPlayers().add(player4);
 
       assertTrue("Player should be visible when surrounded",
           town.isPlayerVisible(player1));
-      assertTrue("Players around should all be visible",
+      assertFalse("Players around should not be visible",
           town.isPlayerVisible(player2) && town.isPlayerVisible(player3));
     } catch (IllegalStateException e) {
       fail("Test failed: " + e.getMessage());
@@ -477,10 +474,8 @@ public class PlayerVisibilityTest {
   public void testComputerPlayerVisibility() {
     try {
       // Create computer and human players
-      Player computerPlayer = new PlayerModel("Computer", true, 5, 1, output,
-          new Scanner(new StringReader("")));
-      Player humanPlayer = new PlayerModel("Human", false, 5, 2, output,
-          new Scanner(new StringReader("")));
+      Player computerPlayer = new PlayerModel("Computer", true, 5, 3);
+      Player humanPlayer = new PlayerModel("Human", false, 5, 4);
 
       town.getPlayers().clear();
       town.getPlayers().add(computerPlayer);
@@ -507,6 +502,7 @@ public class PlayerVisibilityTest {
       town.getPlayers().clear();
       town.getPlayers().add(player1);
       town.getPlayers().add(player2);
+      town.movePet(4);
 
       // Set up players in adjacent spaces
       player1.moveToPlaceNumber(1); // Park
@@ -632,6 +628,7 @@ public class PlayerVisibilityTest {
       town.getPlayers().clear();
       town.getPlayers().add(player1);
       town.getPlayers().add(player2);
+      town.movePet(4);
 
       // Setup players in adjacent spaces
       player1.moveToPlaceNumber(1);  // Park

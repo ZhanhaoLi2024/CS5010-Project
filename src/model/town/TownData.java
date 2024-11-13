@@ -19,21 +19,23 @@ public class TownData {
    * Constructs a new TownData with the specified town name, target name, target health, list of
    * places, and list of items.
    *
-   * @param townName     the name of the town
-   * @param targetName   the name of the target character
-   * @param targetHealth the health status of the target character
-   * @param places       the list of places in the town
-   * @param items        the list of items in the town
+   * @param townNameString   the name of the town
+   * @param targetNameString the name of the target character
+   * @param petNameString    the name of the pet character
+   * @param targetHealthInt  the health status of the target character
+   * @param townPlaces       the list of places in the town
+   * @param townItems        the list of items in the town
    */
-  public TownData(String townName, String targetName, String petName, int targetHealth,
-                  List<Place> places,
-                  List<Item> items) {
-    this.townName = townName;
-    this.targetName = targetName;
-    this.petName = petName;
-    this.targetHealth = targetHealth;
-    this.places = places;
-    this.items = items;
+  public TownData(String townNameString, String targetNameString, String petNameString,
+                  int targetHealthInt,
+                  List<Place> townPlaces,
+                  List<Item> townItems) {
+    this.townName = townNameString;
+    this.targetName = targetNameString;
+    this.petName = petNameString;
+    this.targetHealth = targetHealthInt;
+    this.places = townPlaces;
+    this.items = townItems;
   }
 
   /**

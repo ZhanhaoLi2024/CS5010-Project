@@ -7,7 +7,6 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 import model.item.Item;
 import model.item.ItemModel;
 import model.place.Place;
@@ -63,9 +62,9 @@ public class AttackMechanismTest {
 
     // Create test players
     humanPlayer =
-        new PlayerModel("TestHuman", false, 5, 1, output, new Scanner(new StringReader("")));
+        new PlayerModel("TestHuman", false, 5, 1);
     computerPlayer =
-        new PlayerModel("TestComputer", true, 5, 1, output, new Scanner(new StringReader("")));
+        new PlayerModel("TestComputer", true, 5, 1);
   }
 
   /**
@@ -103,7 +102,7 @@ public class AttackMechanismTest {
   public void testAttackVisibilityConditions() throws IOException {
     // Prepare input data for adding players
     String inputs =
-        "Player1\n1\n5\nPlayer2\n1\n5\n";
+        "Player1\n1\n5\nPlayer2\n2\n5\n";
     Town testTown = new TownModel(
         new TownLoader(),
         "res/SmallTownWorld.txt",
@@ -137,6 +136,263 @@ public class AttackMechanismTest {
             || outputStr.contains("Attack failed"));
     assertEquals("Target health should be unchanged",
         50, testTown.getTarget().getHealth());
+  }
+
+  /**
+   * Tests that invisible players can successfully attack the target.
+   * Verifies that a player can attack the target when no other players are present
+   * to witness the attack.
+   *
+   * @throws IOException if there is an error executing the attack
+   */
+  @Test
+  public void testItemAttackTargetInvisible() throws IOException {
+    // Prepare input data for adding players
+    String inputs =
+        "attacker\n1\n5\nwitness\n2\n5\n";
+    Town testTown = new TownModel(
+        new TownLoader(),
+        "res/SmallTownWorld.txt",
+        new StringReader(inputs),
+        output,
+        20
+    );
+
+    // Add players with prepared input data
+    testTown.addPlayer(); // Add human player
+    testTown.addPlayer(); // Add another player to witness
+
+    Player attacker = testTown.getPlayers().get(0);
+    Player witness = testTown.getPlayers().get(1);
+    System.out.println(attacker.getPlayerCurrentPlaceNumber());
+    System.out.println(witness.getPlayerCurrentPlaceNumber());
+    System.out.println(town.getPet().getPetCurrentPlaceNumber());
+
+    // Give weapon to attacker
+    ((PlayerModel) attacker).pickUpItem(weapon);
+    System.out.println(weapon.getDamage());
+
+    // Attempt attack
+    testTown.executeItemAttack(attacker, weapon);
+
+    // Verify attack failed due to witness
+    String outputStr = output.toString();
+    assertFalse("Attack should fail due to witness",
+        outputStr.contains("witnessed your attempt")
+            || outputStr.contains("Attack failed"));
+    assertEquals("Target health should be changed",
+        40, testTown.getTarget().getHealth());
+  }
+
+  @Test
+  public void testItemKillTargetInvisible() throws IOException {
+    // Prepare input data for adding players
+    String inputs =
+        "attacker\n1\n5\nwitness\n2\n5\n";
+    Town testTown = new TownModel(
+        new TownLoader(),
+        "res/SmallTownWorld.txt",
+        new StringReader(inputs),
+        output,
+        20
+    );
+
+    // Add players with prepared input data
+    testTown.addPlayer(); // Add human player
+    testTown.addPlayer(); // Add another player to witness
+
+    Player attacker = testTown.getPlayers().get(0);
+
+    // Give weapon to attacker
+    ((PlayerModel) attacker).pickUpItem(weapon);
+
+    // Attempt attack
+    testTown.executeItemAttack(attacker, weapon);
+    testTown.executeItemAttack(attacker, weapon);
+    testTown.executeItemAttack(attacker, weapon);
+    testTown.executeItemAttack(attacker, weapon);
+    testTown.executeItemAttack(attacker, weapon);
+
+    // Verify attack failed due to witness
+    String outputStr = output.toString();
+    assertTrue(outputStr.contains("attacker has eliminated the target!"));
+  }
+
+  @Test
+  public void testPokeKillTargetInvisible() throws IOException {
+    // Prepare input data for adding players
+    String inputs =
+        "attacker\n1\n5\nwitness\n2\n5\n";
+    Town testTown = new TownModel(
+        new TownLoader(),
+        "res/SmallTownWorld.txt",
+        new StringReader(inputs),
+        output,
+        20
+    );
+
+    // Add players with prepared input data
+    testTown.addPlayer(); // Add human player
+    testTown.addPlayer(); // Add another player to witness
+
+    Player attacker = testTown.getPlayers().get(0);
+
+    // Give weapon to attacker
+    ((PlayerModel) attacker).pickUpItem(weapon);
+
+    // Attempt attack
+    int i = 0;
+    while (i < 50) {
+      testTown.executePoke(attacker);
+      i++;
+    }
+
+
+    // Verify attack failed due to witness
+    String outputStr = output.toString();
+    System.out.println(outputStr);
+    assertTrue(outputStr.contains("attacker has eliminated the target"));
+  }
+
+  @Test
+  public void testPokeAttackTargetInvisible() throws IOException {
+    // Prepare input data for adding players
+    String inputs =
+        "attacker\n1\n5\nwitness\n2\n5\n";
+    Town testTown = new TownModel(
+        new TownLoader(),
+        "res/SmallTownWorld.txt",
+        new StringReader(inputs),
+        output,
+        20
+    );
+
+    // Add players with prepared input data
+    testTown.addPlayer(); // Add human player
+    testTown.addPlayer(); // Add another player to witness
+
+    Player attacker = testTown.getPlayers().get(0);
+
+    // Attempt attack
+    testTown.executePoke(attacker);
+
+    // Verify attack failed due to witness
+    String outputStr = output.toString();
+    assertFalse("Attack should fail due to witness",
+        outputStr.contains("witnessed your attempt")
+            || outputStr.contains("Attack failed"));
+    assertEquals("Target health should be changed",
+        49, testTown.getTarget().getHealth());
+  }
+
+  @Test
+  public void testItemAttackTargetVisible() throws IOException {
+    // Prepare input data for adding players
+    String inputs =
+        "attacker\n1\n5\nwitness\n2\n5\n";
+    Town testTown = new TownModel(
+        new TownLoader(),
+        "res/SmallTownWorld.txt",
+        new StringReader(inputs),
+        output,
+        20
+    );
+
+    // Add players with prepared input data
+    testTown.addPlayer(); // Add human player
+    testTown.addPlayer(); // Add another player to witness
+
+    Player attacker = testTown.getPlayers().get(0);
+
+    // Move the pet location
+    testTown.movePet(4);
+
+    // Give weapon to attacker
+    ((PlayerModel) attacker).pickUpItem(weapon);
+
+    // Attempt attack
+    testTown.executeItemAttack(attacker, weapon);
+
+    // Verify attack failed due to witness
+    String outputStr = output.toString();
+    assertTrue("Attack should fail due to witness",
+        outputStr.contains("witnessed your attempt")
+            || outputStr.contains("Attack failed"));
+    assertEquals("Target health should be unchanged",
+        50, testTown.getTarget().getHealth());
+  }
+
+  @Test
+  public void testPokeAttackTargetInvisibleWithNoPet() throws IOException {
+    // Prepare input data for adding players
+    String inputs =
+        "attacker\n1\n5\nwitness\n3\n5\n";
+    Town testTown = new TownModel(
+        new TownLoader(),
+        "res/SmallTownWorld.txt",
+        new StringReader(inputs),
+        output,
+        20
+    );
+
+    // Add players with prepared input data
+    testTown.addPlayer(); // Add human player
+    testTown.addPlayer(); // Add another player to witness
+
+    Player attacker = testTown.getPlayers().get(0);
+
+    // Move the pet location
+    testTown.movePet(4);
+
+    // Attempt attack
+    testTown.executePoke(attacker);
+
+    // Verify attack failed due to witness
+    String outputStr = output.toString();
+    assertFalse("Attack should fail due to witness",
+        outputStr.contains("witnessed your attempt")
+            || outputStr.contains("Attack failed"));
+    assertEquals("Target health should be unchanged",
+        49, testTown.getTarget().getHealth());
+  }
+
+  @Test
+  public void testItemAttackTargetInvisibleWithNoPet() throws IOException {
+    // Prepare input data for adding players
+    String inputs =
+        "attacker\n5\n5\nwitness\n8\n5\n";
+    Town testTown = new TownModel(
+        new TownLoader(),
+        "res/SmallTownWorld.txt",
+        new StringReader(inputs),
+        output,
+        20
+    );
+
+    // Add players with prepared input data
+    testTown.addPlayer(); // Add human player
+    testTown.addPlayer(); // Add another player to witness
+
+    Player attacker = testTown.getPlayers().get(0);
+
+    // move target to place 5
+    while (!testTown.getTarget().getCurrentPlace().getPlaceNumber().equals("5")) {
+      testTown.moveTarget();
+    }
+
+    // Give weapon to attacker
+    ((PlayerModel) attacker).pickUpItem(weapon);
+
+    // Attempt attack
+    testTown.executeItemAttack(attacker, weapon);
+
+    // Verify attack failed due to witness
+    String outputStr = output.toString();
+    assertFalse("Attack should fail due to witness",
+        outputStr.contains("witnessed your attempt")
+            || outputStr.contains("Attack failed"));
+    assertEquals("Target health should be unchanged",
+        40, testTown.getTarget().getHealth());
   }
 
   /**

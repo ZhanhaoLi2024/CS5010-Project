@@ -10,6 +10,11 @@ import model.player.Player;
  * places.
  */
 public interface Place {
+  /**
+   * Retrieves the unique identifier for this place.
+   *
+   * @return the place's identifier as a String
+   */
   String getPlaceNumber();
 
   /**
@@ -105,6 +110,11 @@ public interface Place {
    */
   List<Player> getCurrentPlacePlayers();
 
+  /**
+   * Removes an item from the place.
+   *
+   * @param item the item to be removed from the place
+   */
   void removeItem(Item item);
 
 }

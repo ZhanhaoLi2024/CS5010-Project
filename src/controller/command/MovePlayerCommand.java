@@ -1,7 +1,6 @@
 package controller.command;
 
 import java.io.IOException;
-import java.util.Scanner;
 import model.town.Town;
 
 /**
@@ -13,12 +12,10 @@ public class MovePlayerCommand implements Command {
   /**
    * Constructs a new MovePlayerCommand.
    *
-   * @param town    the town where the player is located
-   * @param output  the output stream to write messages to
-   * @param scanner the scanner to get user input
+   * @param gameTown the town where the player is located
    */
-  public MovePlayerCommand(Town town, Appendable output, Scanner scanner) {
-    this.town = town;
+  public MovePlayerCommand(Town gameTown) {
+    this.town = gameTown;
   }
 
   @Override

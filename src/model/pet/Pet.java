@@ -1,29 +1,30 @@
 package model.pet;
 
 /**
- * The Pet interface represents a pet in a game world.
- * Pets have various attributes and can move to different places.
+ * The Pet interface defines the behavior of a pet in the game world.
+ * Pets can move between places and affect gameplay by blocking visibility
+ * between spaces.
  */
 public interface Pet {
   /**
-   * Gets the name of the pet.
+   * Retrieves the name of the pet.
    *
-   * @return The name of the pet.
+   * @return the name of the pet as a String
    */
   String getName();
 
   /**
-   * Gets the current place number where the pet is located.
+   * Retrieves the current location of the pet.
    *
-   * @return The current place number.
+   * @return the current place identifier
    */
   int getPetCurrentPlaceNumber();
 
   /**
-   * Moves the pet to a specified neighboring place.
+   * Moves the pet to a specified location in the game world.
    *
-   * @param placeNumber The number of the place to move to.
-   * @throws IllegalArgumentException If the place is not a valid neighbor.
+   * @param placeNumber the identifier of the destination place
+   * @throws IllegalArgumentException if the place number is invalid
    */
   void movePet(int placeNumber);
 }

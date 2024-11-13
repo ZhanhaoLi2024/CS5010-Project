@@ -3,14 +3,16 @@ package controller.command;
 import java.io.IOException;
 
 /**
- * The Command interface for executing actions in the game.
+ * The Command interface defines the contract for actions that can be executed in the game.
+ * It follows the Command pattern to encapsulate different game operations and allows for
+ * uniform execution of varied game actions.
  */
 public interface Command {
-
   /**
-   * Executes the command.
+   * Executes the command's specific action in the game.
+   * Each implementation defines its own game behavior.
    *
-   * @throws IOException if there is an issue with I/O operations.
+   * @throws IOException if there is an error during command execution involving I/O operations
    */
   void execute() throws IOException;
 }

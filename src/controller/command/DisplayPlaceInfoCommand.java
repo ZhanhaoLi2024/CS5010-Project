@@ -1,9 +1,7 @@
 package controller.command;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Scanner;
-import model.player.Player;
 import model.town.Town;
 
 /**
@@ -13,21 +11,19 @@ public class DisplayPlaceInfoCommand implements Command {
   private final Town town;
   private final Appendable output;
   private final Scanner scanner;
-  private List<Player> players;
 
   /**
    * Constructs a new DisplayPlaceInfoCommand.
    *
-   * @param town    the town to display information about
-   * @param output  the output stream to write messages to
-   * @param scanner the scanner to get user input
+   * @param gameTown    the town to display information about
+   * @param gameOutput  the output stream to write messages to
+   * @param gameScanner the scanner to get user input
    */
-  public DisplayPlaceInfoCommand(Town town, Appendable output,
-                                 Scanner scanner) {
-    this.town = town;
-    this.output = output;
-    this.scanner = scanner;
-    this.players = players;
+  public DisplayPlaceInfoCommand(Town gameTown, Appendable gameOutput,
+                                 Scanner gameScanner) {
+    this.town = gameTown;
+    this.output = gameOutput;
+    this.scanner = gameScanner;
   }
 
   @Override

@@ -6,7 +6,6 @@ import static org.junit.Assert.fail;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.util.Scanner;
 import model.item.Item;
 import model.item.ItemModel;
 import model.player.Player;
@@ -61,8 +60,7 @@ public class GameEndingConditionsTest {
   @Test
   public void testVictoryByKillingTarget() throws IOException {
     // Add a player
-    Player player = new PlayerModel("TestPlayer", false, 5, 1, output,
-        new Scanner(new StringReader("")));
+    Player player = new PlayerModel("TestPlayer", false, 5, 1);
     town.getPlayers().add(player);
 
     // Create powerful weapon
@@ -123,10 +121,8 @@ public class GameEndingConditionsTest {
   @Test
   public void testUnsuccessfulAttacks() throws IOException {
     // Add two players
-    Player attacker = new PlayerModel("Attacker", false, 5, 1, output,
-        new Scanner(new StringReader("")));
-    Player witness = new PlayerModel("Witness", false, 5, 1, output,
-        new Scanner(new StringReader("")));
+    Player attacker = new PlayerModel("Attacker", false, 5, 1);
+    Player witness = new PlayerModel("Witness", false, 5, 1);
     town.getPlayers().add(attacker);
     town.getPlayers().add(witness);
 
@@ -156,8 +152,7 @@ public class GameEndingConditionsTest {
   @Test
   public void testMultipleAttackAttempts() throws IOException {
     // Add player
-    Player player = new PlayerModel("TestPlayer", false, 5, 1, output,
-        new Scanner(new StringReader("")));
+    Player player = new PlayerModel("TestPlayer", false, 5, 1);
     town.getPlayers().add(player);
 
     // Create weak weapon
@@ -308,10 +303,8 @@ public class GameEndingConditionsTest {
   @Test
   public void testInterruptedKillingBlow() throws IOException {
     // Setup players
-    Player attacker = new PlayerModel("Attacker", false, 5, 1, output,
-        new Scanner(new StringReader("")));
-    Player witness = new PlayerModel("Witness", false, 5, 1, output,
-        new Scanner(new StringReader("")));
+    Player attacker = new PlayerModel("Attacker", false, 5, 1);
+    Player witness = new PlayerModel("Witness", false, 5, 1);
     town.getPlayers().add(attacker);
     town.getPlayers().add(witness);
 
@@ -344,8 +337,7 @@ public class GameEndingConditionsTest {
    */
   @Test
   public void testVictoryMessageAndRecognition() throws IOException {
-    Player player = new PlayerModel("VictoriousPlayer", false, 5, 1, output,
-        new Scanner(new StringReader("")));
+    Player player = new PlayerModel("VictoriousPlayer", false, 5, 1);
     town.getPlayers().add(player);
     Item weapon = new ItemModel("DeadlyWeapon", 50);
     player.pickUpItem(weapon);
@@ -423,8 +415,7 @@ public class GameEndingConditionsTest {
   @Test
   public void testZeroHealthVictoryConditions() throws IOException {
 
-    Player attacker = new PlayerModel("Attacker", false, 5, 1, output,
-        new Scanner(new StringReader("")));
+    Player attacker = new PlayerModel("Attacker", false, 5, 1);
     town.getPlayers().add(attacker);
     Item weapon = new ItemModel("PowerfulWeapon", 50);
     attacker.pickUpItem(weapon);

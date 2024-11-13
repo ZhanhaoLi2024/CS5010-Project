@@ -16,16 +16,17 @@ public class AddPlayerCommand implements Command {
   /**
    * Constructs a new AddHumanPlayerCommand.
    *
-   * @param output  the output stream to write messages to
-   * @param town    the town where the players are located
-   * @param scanner the scanner to get user input
+   * @param gameOutput  the output stream to write messages to
+   * @param gameTown    the town where the players are located
+   * @param gameScanner the scanner to get user input
+   * @param playerType  whether the player is a computer player
    */
-  public AddPlayerCommand(Town town, Appendable output,
-                          Scanner scanner, boolean isComputerPlayer) {
-    this.output = output;
-    this.town = town;
-    this.scanner = scanner;
-    this.isComputerPlayer = isComputerPlayer;
+  public AddPlayerCommand(Town gameTown, Appendable gameOutput,
+                          Scanner gameScanner, boolean playerType) {
+    this.output = gameOutput;
+    this.town = gameTown;
+    this.scanner = gameScanner;
+    this.isComputerPlayer = playerType;
   }
 
   @Override

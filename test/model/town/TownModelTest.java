@@ -559,7 +559,7 @@ public class TownModelTest {
         10
     );
 
-    Player player = new PlayerModel("Alice", false, 10, 3, testOutput, scanner);
+    Player player = new PlayerModel("Alice", false, 10, 3);
     testTown.getPlayers().add(player);
 
     return testTown;
@@ -578,7 +578,7 @@ public class TownModelTest {
     );
 
     Player player =
-        new PlayerModel("TestPlayer", false, 10, 3, output, new Scanner(new StringReader("")));
+        new PlayerModel("TestPlayer", false, 10, 3);
     testTown.getPlayers().add(player);
 
     testTown.lookAround();
@@ -603,7 +603,7 @@ public class TownModelTest {
         10
     );
     Player player =
-        new PlayerModel("TestPlayer", false, 10, 3, testOutput, new Scanner(new StringReader("")));
+        new PlayerModel("TestPlayer", false, 10, 3);
     testTown.getPlayers().add(player);
 
     testTown.movePet(2);
@@ -627,7 +627,7 @@ public class TownModelTest {
         10
     );
     Player player =
-        new PlayerModel("TestPlayer", false, 10, 3, testOutput, new Scanner(new StringReader("")));
+        new PlayerModel("TestPlayer", false, 10, 3);
     testTown.getPlayers().add(player);
     testTown.addComputerPlayer();
     testTown.movePet(3);
@@ -655,9 +655,7 @@ public class TownModelTest {
         "TestPlayer",
         false,
         10,
-        3,
-        testOutput,
-        new Scanner(new StringReader(""))
+        3
     );
     testTown.getPlayers().add(humanPlayer);
     testTown.addComputerPlayer();
@@ -779,7 +777,7 @@ public class TownModelTest {
   @Test
   public void testPlayerVisibilityInNeighboringPlaces() throws IOException {
     // Set up players in neighboring places
-    String simulatedInput = "Alice\n1\n5\nBob\n2\n5\n";
+    String simulatedInput = "Alice\n3\n5\nBob\n4\n5\n";
     StringReader input = new StringReader(simulatedInput);
     TownModel testTown =
         new TownModel(new TownLoader(), "res/SmallTownWorld.txt", input, output, 3);

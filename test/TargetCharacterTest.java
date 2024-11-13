@@ -10,7 +10,6 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 import model.place.Place;
 import model.place.PlaceModel;
 import model.player.Player;
@@ -277,8 +276,7 @@ public class TargetCharacterTest {
   @Test
   public void testTargetInfoDuringCombat() throws IOException, IllegalArgumentException {
     // Add a player in the same room as target
-    Player player = new PlayerModel("TestPlayer", false, 5, 1, output,
-        new Scanner(new StringReader("")));
+    Player player = new PlayerModel("TestPlayer", false, 5, 1);
 
     // Record target's initial health
     int initialHealth = town.getTarget().getHealth();

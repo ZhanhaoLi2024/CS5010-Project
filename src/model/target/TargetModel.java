@@ -16,18 +16,18 @@ public class TargetModel implements Target {
   /**
    * Creates a new target with the specified name, health, starting place, and list of places.
    *
-   * @param name       the name of the target
-   * @param health     the initial health value of the target
-   * @param startPlace the starting place of the target
-   * @param places     the list of places the target can move to
+   * @param targetName   the name of the target
+   * @param targetHealth the initial health value of the target
+   * @param startPlace   the starting place of the target
+   * @param places       the list of places the target can move to
    * @throws IllegalArgumentException if name is null or empty, health is negative,
    *                                  startPlace is null, or places is null/empty
    */
-  public TargetModel(String name, int health, Place startPlace, List<Place> places) {
-    if (name == null || name.trim().isEmpty()) {
+  public TargetModel(String targetName, int targetHealth, Place startPlace, List<Place> places) {
+    if (targetName == null || targetName.trim().isEmpty()) {
       throw new IllegalArgumentException("Target name cannot be null or empty");
     }
-    if (health < 0) {
+    if (targetHealth < 0) {
       throw new IllegalArgumentException("Health cannot be negative");
     }
     if (startPlace == null) {
@@ -37,8 +37,8 @@ public class TargetModel implements Target {
       throw new IllegalArgumentException("Places list cannot be null or empty");
     }
 
-    this.name = name;
-    this.health = health;
+    this.name = targetName;
+    this.health = targetHealth;
     this.currentPlace = startPlace;
     this.places = places;
   }
