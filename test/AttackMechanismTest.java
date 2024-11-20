@@ -70,6 +70,7 @@ public class AttackMechanismTest {
   /**
    * Tests that attacks can only be executed when the player is in the same space as the target.
    * A player in a different space should not be able to attack the target.
+   * 和Target不在一个place
    *
    * @throws IOException if there is an error executing the attack
    */
@@ -95,6 +96,7 @@ public class AttackMechanismTest {
    * Tests that attacks fail when they can be witnessed by other players.
    * Verifies that a player cannot successfully attack the target when another player
    * is in the same space.
+   * 相邻有其他player
    *
    * @throws IOException if there is an error executing the attack
    */
@@ -102,7 +104,7 @@ public class AttackMechanismTest {
   public void testAttackVisibilityConditions() throws IOException {
     // Prepare input data for adding players
     String inputs =
-        "Player1\n1\n5\nPlayer2\n2\n5\n";
+        "Player1\n2\n5\nPlayer2\n3\n5\n";
     Town testTown = new TownModel(
         new TownLoader(),
         "res/SmallTownWorld.txt",
@@ -142,6 +144,7 @@ public class AttackMechanismTest {
    * Tests that invisible players can successfully attack the target.
    * Verifies that a player can attack the target when no other players are present
    * to witness the attack.
+   * 相邻有其他player，但当前位置有pet
    *
    * @throws IOException if there is an error executing the attack
    */
@@ -184,6 +187,14 @@ public class AttackMechanismTest {
         40, testTown.getTarget().getHealth());
   }
 
+  /**
+   * Tests that invisible players can successfully attack the target.
+   * Verifies that a player can attack the target when no other players are present
+   * to witness the attack.
+   * 用Item攻击target
+   *
+   * @throws IOException if there is an error executing the attack
+   */
   @Test
   public void testItemKillTargetInvisible() throws IOException {
     // Prepare input data for adding players
@@ -218,6 +229,14 @@ public class AttackMechanismTest {
     assertTrue(outputStr.contains("attacker has eliminated the target!"));
   }
 
+  /**
+   * Tests that invisible players can successfully attack the target.
+   * Verifies that a player can attack the target when no other players are present
+   * to witness the attack.
+   * 用poke攻击target
+   *
+   * @throws IOException if there is an error executing the attack
+   */
   @Test
   public void testPokeKillTargetInvisible() throws IOException {
     // Prepare input data for adding players
@@ -322,6 +341,11 @@ public class AttackMechanismTest {
         50, testTown.getTarget().getHealth());
   }
 
+  /**
+   * 相邻位置没人的时候攻击target.
+   *
+   * @throws IOException if there is an error executing the attack
+   */
   @Test
   public void testPokeAttackTargetInvisibleWithNoPet() throws IOException {
     // Prepare input data for adding players
@@ -443,6 +467,7 @@ public class AttackMechanismTest {
    * Tests the attack behavior of computer-controlled players.
    * Verifies that computer players always choose their strongest weapon for attacks
    * and that the weapon is properly consumed after use.
+   * Computer-controller 玩家有多个weapon的时候，选择最强的weapon
    *
    * @throws IOException if there is an error executing the attack
    */
@@ -462,7 +487,7 @@ public class AttackMechanismTest {
     town.executeComputerAttack(computerPlayer);
 
     // Verify computer used the strongest weapon
-    assertEquals(35, town.getTarget().getHealth()); // Damage from strongest weapon
+    assertEquals(35, town.getTarget().getHealth()); // Damage from the strongest weapon
     assertFalse(
         computerPlayer.getCurrentCarriedItems().contains(strongWeapon)); // Strong weapon consumed
     assertTrue(
@@ -472,6 +497,7 @@ public class AttackMechanismTest {
   /**
    * Tests that computer players use poke attack when they have no items.
    * Verifies that the poke attack deals the correct amount of damage.
+   * Computer-controller 玩家没有weapon的时候，使用poke攻击
    *
    * @throws IOException if there is an error executing the attack
    */
@@ -501,6 +527,7 @@ public class AttackMechanismTest {
 
   /**
    * Tests that an IllegalArgumentException is thrown when attempting to attack with a null item.
+   * 当玩家没有item时无法用item攻击
    *
    * @throws IOException if there is an error executing the attack
    */
@@ -538,6 +565,7 @@ public class AttackMechanismTest {
    * Tests the execution of multiple consecutive attacks.
    * Verifies that damage is properly accumulated and health is correctly reduced
    * over multiple successful attacks.
+   * 连续攻击
    *
    * @throws IOException if there is an error executing the attacks
    */
@@ -588,6 +616,7 @@ public class AttackMechanismTest {
   /**
    * Tests that items are properly removed from player inventory after a successful attack.
    * Verifies that used items are consumed and removed from the player's possession.
+   * 使用item攻击后，item被消耗
    *
    * @throws IOException if there is an error executing the attack
    */
@@ -613,6 +642,7 @@ public class AttackMechanismTest {
    * Tests the game end conditions after a successful fatal attack.
    * Verifies that the game properly ends when the target is eliminated and
    * the correct winning conditions are met.
+   * 成功杀死target后游戏结束
    *
    * @throws IOException if there is an error executing the attack
    */

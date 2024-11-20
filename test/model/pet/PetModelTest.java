@@ -121,6 +121,7 @@ public class PetModelTest {
 
   /**
    * Tests the movePet method.
+   * Move the pet to a place that is not in the town.
    */
   @Test(expected = IllegalArgumentException.class)
   public void testMovePet2() {
