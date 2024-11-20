@@ -946,7 +946,7 @@ public class TownModel implements Town {
       return;
     }
 
-    // Find and use item with highest damage
+    // Find and use item with the highest damage
     Item bestItem = computerItems.stream()
         .max((i1, i2) -> Integer.compare(i1.getDamage(), i2.getDamage()))
         .get();
@@ -971,7 +971,7 @@ public class TownModel implements Town {
 
     output.append("\nChoose your attack:\n");
     output.append("0. Poke in the eye (1 damage)\n");
-
+    // Show item options
     for (int i = 0; i < humanItems.size(); i++) {
       Item item = humanItems.get(i);
       output.append(String.valueOf(i + 1)).append(". Use ")

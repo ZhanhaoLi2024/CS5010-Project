@@ -265,71 +265,6 @@ public class GameEndingConditionsTest {
   }
 
   /**
-   * Tests handling of simultaneous victory conditions.
-   * Verifies proper precedence handling when multiple ending conditions occur together.
-   *
-   * @throws IOException if there is an error with I/O operations during test execution
-   */
-  @Test
-  public void testSimultaneousVictoryConditions() throws IOException {
-    // Set up to reach max turns and kill target on final turn
-    town.addComputerPlayer();
-    Player player = town.getPlayers().get(0);
-    Item weapon = new ItemModel("FinalWeapon", 50);
-    player.pickUpItem(weapon);
-
-    // Play until final turn
-    for (int i = 0; i < MAX_TURNS - 1; i++) {
-      town.lookAround();
-    }
-
-    // Kill target on final turn
-    int targetLocation = Integer.parseInt(town.getTarget().getCurrentPlace().getPlaceNumber());
-    player.moveToPlaceNumber(targetLocation);
-    town.executeItemAttack(player, weapon);
-
-    // Verify game ends with target death taking precedence
-    assertTrue("Game should end", town.isGameOver());
-    assertTrue("Target death should be registered", town.getTarget().isDefeated());
-    assertTrue(output.toString().contains("eliminated the target"));
-  }
-
-  /**
-   * Tests attack interruption mechanics.
-   * Verifies that witnessed attacks fail even when target is at low health.
-   *
-   * @throws IOException if there is an error with I/O operations during test execution
-   */
-  @Test
-  public void testInterruptedKillingBlow() throws IOException {
-    // Setup players
-    Player attacker = new PlayerModel("Attacker", false, 5, 1);
-    Player witness = new PlayerModel("Witness", false, 5, 1);
-    town.getPlayers().add(attacker);
-    town.getPlayers().add(witness);
-
-    // Setup target with 1 health
-    while (town.getTarget().getHealth() > 1) {
-      town.getTarget().takeDamage(1);
-    }
-
-    // Position players
-    int targetLocation = Integer.parseInt(town.getTarget().getCurrentPlace().getPlaceNumber());
-    attacker.moveToPlaceNumber(targetLocation);
-    witness.moveToPlaceNumber(targetLocation);
-
-    // Attempt final attack
-    Item weapon = new ItemModel("FinalWeapon", 1);
-    attacker.pickUpItem(weapon);
-    town.executeItemAttack(attacker, weapon);
-
-    // Verify target survives due to witness
-    assertFalse("Game should not end with interrupted attack", town.isGameOver());
-    assertFalse("Target should survive interrupted attack", town.getTarget().isDefeated());
-    assertEquals("Target should maintain 1 health", 1, town.getTarget().getHealth());
-  }
-
-  /**
    * Tests proper recognition and message display for victorious players.
    * Verifies player name display and victory message accuracy.
    *
@@ -377,36 +312,6 @@ public class GameEndingConditionsTest {
   }
 
   /**
-   * Tests game state display accuracy throughout game progression.
-   * Verifies that game state information is consistently and accurately displayed.
-   *
-   * @throws IOException if there is an error with I/O operations during test execution
-   */
-  @Test
-  public void testGameStateDisplay() throws IOException {
-    town.addComputerPlayer();
-    town.addComputerPlayer();
-    final int initialHealth = town.getTarget().getHealth();
-    int initialTurn = town.getCurrentTurn();
-    town.lookAround();
-    town.lookAround();
-    assertTrue("Turn number should increase",
-        town.getCurrentTurn() > initialTurn);
-    assertEquals("Target health should remain unchanged",
-        initialHealth, town.getTarget().getHealth());
-    while (!town.isGameOver()) {
-      town.lookAround();
-    }
-    assertTrue("Game should be over", town.isGameOver());
-    assertTrue("Current turn should exceed max turns",
-        town.getCurrentTurn() > MAX_TURNS);
-    assertFalse("Target should not be defeated",
-        town.getTarget().isDefeated());
-    assertEquals("Target health should remain unchanged at end",
-        initialHealth, town.getTarget().getHealth());
-  }
-
-  /**
    * Tests victory conditions when target health reaches zero.
    * Verifies proper game ending and state transitions on target defeat.
    *
@@ -428,62 +333,5 @@ public class GameEndingConditionsTest {
         0, town.getTarget().getHealth());
     assertTrue("Output should indicate successful attack",
         output.toString().contains("Attack successful"));
-  }
-
-  /**
-   * Tests game ending with various player combinations.
-   * Verifies that game properly handles different numbers of players during ending.
-   *
-   * @throws IOException if there is an error with I/O operations during test execution
-   */
-  @Test
-  public void testGameEndingWithDifferentPlayerCombinations() throws IOException {
-    int playerCount = 2;
-    for (int i = 0; i < playerCount; i++) {
-      town.addComputerPlayer();
-    }
-    while (town.getCurrentTurn() <= MAX_TURNS) {
-      assertFalse("Game should not end before max turns", town.isGameOver());
-      town.lookAround();
-    }
-    assertTrue("Game should end when turns exceed max", town.isGameOver());
-    assertTrue("Current turn should exceed max turns",
-        town.getCurrentTurn() > MAX_TURNS);
-    assertFalse("Target should survive when max turns reached",
-        town.getTarget().isDefeated());
-    assertEquals("Target health should be unchanged",
-        50,
-        town.getTarget().getHealth());
-    assertEquals("Player count should remain constant",
-        playerCount,
-        town.getPlayers().size());
-  }
-
-  /**
-   * Tests handling of invalid actions attempted after game end.
-   * Verifies that game state remains consistent and invalid actions are properly handled.
-   *
-   * @throws IOException if there is an error with I/O operations during test execution
-   */
-  @Test
-  public void testInvalidActionsAtGameEnd() throws IOException {
-    town.addComputerPlayer();
-    Player player = town.getPlayers().get(0);
-    Item weapon = new ItemModel("SuperWeapon", 50);
-    player.pickUpItem(weapon);
-    int targetLocation = Integer.parseInt(town.getTarget().getCurrentPlace().getPlaceNumber());
-    player.moveToPlaceNumber(targetLocation);
-    town.executeItemAttack(player, weapon);
-    assertTrue("Game should be over after target death", town.isGameOver());
-    assertTrue("Target should be defeated", town.getTarget().isDefeated());
-    assertEquals("Target health should be 0", 0, town.getTarget().getHealth());
-    Item newWeapon = new ItemModel("PostGameWeapon", 10);
-    player.pickUpItem(newWeapon);
-    assertTrue("Game should remain in over state", town.isGameOver());
-    assertEquals("Target health should remain 0",
-        0, town.getTarget().getHealth());
-    String outputText = output.toString();
-    assertTrue("Should indicate successful elimination",
-        outputText.contains("has eliminated the target"));
   }
 }

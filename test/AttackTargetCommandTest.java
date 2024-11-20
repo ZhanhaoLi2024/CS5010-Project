@@ -67,6 +67,7 @@ public class AttackTargetCommandTest {
 
   /**
    * Tests mixed human and computer players attack scenario.
+   * 有人和电脑玩家攻击的情况。
    */
   @Test
   public void testMixedPlayersAttack() throws IOException {
@@ -230,6 +231,7 @@ public class AttackTargetCommandTest {
 
   /**
    * Tests successful attack that defeats the target.
+   * Human-controller杀死目标的情况。
    */
   @Test
   public void testSuccessfulAttackDefeatTarget() throws IOException {
@@ -295,6 +297,7 @@ public class AttackTargetCommandTest {
 
   /**
    * Tests unsuccessful attack that doesn't defeat target.
+   * target被攻击但还没死
    */
   @Test
   public void testUnsuccessfulAttackContinueGame() throws IOException {
@@ -359,6 +362,7 @@ public class AttackTargetCommandTest {
 
   /**
    * Tests attack when player is not in same room as target.
+   * target和玩家不在一个place中
    */
   @Test
   public void testAttackFromDifferentRoom() throws IOException {
@@ -422,6 +426,7 @@ public class AttackTargetCommandTest {
 
   /**
    * Tests attack when player is visible to others.
+   * 攻击被其他玩家看到的情况 - same place
    */
   @Test
   public void testVisiblePlayerAttack() throws IOException {
@@ -494,6 +499,7 @@ public class AttackTargetCommandTest {
 
   /**
    * Test computer-only players successfully kill target.
+   * 电脑玩家杀死目标的情况。
    */
   @Test
   public void testComputerOnlyPlayersKillTarget() throws IOException {
@@ -548,6 +554,7 @@ public class AttackTargetCommandTest {
 
   /**
    * Test computer-only players fail to kill target before turns end.
+   * 电脑玩家在回合结束前未杀死目标的情况。
    */
   @Test
   public void testComputerOnlyPlayersTimeOut() throws IOException {
@@ -616,6 +623,7 @@ public class AttackTargetCommandTest {
 
   /**
    * Test human-only players successfully kill target.
+   * 人类玩家杀死目标的情况。
    */
   @Test
   public void testHumanOnlyPlayersKillTarget() throws IOException {
@@ -670,6 +678,7 @@ public class AttackTargetCommandTest {
 
   /**
    * Tests human-only players fail to kill target before turns end.
+   * 人类玩家在回合结束前未杀死目标的情况。
    */
   @Test
   public void testHumanOnlyPlayersTimeOut() throws IOException {
@@ -742,6 +751,7 @@ public class AttackTargetCommandTest {
 
   /**
    * Test mixed players successfully kill target.
+   * human-controller和computer-controller杀死target
    */
   @Test
   public void testMixedPlayersKillTarget() throws IOException {
@@ -796,6 +806,7 @@ public class AttackTargetCommandTest {
 
   /**
    * Test mixed players fail to kill target before turns end.
+   * human-controller和computer-controller在回合结束前未杀死target
    */
   @Test
   public void testMixedPlayersTimeOut() throws IOException {

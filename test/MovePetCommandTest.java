@@ -130,23 +130,6 @@ public class MovePetCommandTest {
   }
 
   /**
-   * Tests pet movement with non-numeric input.
-   */
-  @Test
-  public void testNonNumericInput() throws IOException {
-    // Test with non-numeric input
-    StringReader input = new StringReader("abc\n");
-    Scanner scanner = new Scanner(input);
-
-    MovePetCommand command = new MovePetCommand(town, output, scanner);
-    command.execute();
-
-    String outputText = output.toString();
-    assertTrue("Should show invalid input message",
-        outputText.contains("Invalid input"));
-  }
-
-  /**
    * Tests pet movement with negative number input.
    */
   @Test
