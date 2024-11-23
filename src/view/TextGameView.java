@@ -28,12 +28,14 @@ public class TextGameView implements GameView {
 
   @Override
   public void initialize() throws IOException {
-    // Placeholder for initialization logic
+    output.append("Welcome to Kill Doctor Lucky Game!\n");
   }
 
   @Override
   public void showWelcomeScreen() throws IOException {
-    // Placeholder for welcome screen logic
+      output.append("\n=== Kill Doctor Lucky ===\n")
+        .append("Created by Zhanhao Li\n")
+        .append("CS 5010 Project\n\n");
   }
 
   @Override
