@@ -1,104 +1,79 @@
 package view;
 
+import java.awt.Image;
 import java.io.IOException;
 import java.util.List;
+import model.item.Item;
+import model.place.Place;
+import model.player.Player;
+import model.target.Target;
 
 /**
- * The GameView interface defines all view-related operations for the game.
- * It handles all user interface aspects without directly depending on the model.
+ * The GameView interface defines the contract for game view implementations.
+ * Supports both text-based and graphical user interfaces.
  */
 public interface GameView {
   /**
-   * Display the main menu of the game.
+   * Initializes the view components.
    */
-  void displayMainMenu() throws IOException;
+  void initialize() throws IOException;
 
   /**
-   * Display information about the world/map.
-   *
-   * @param worldName    the name of the world
-   * @param targetName   the name of the target
-   * @param targetHealth the health of the target
-   * @param placesInfo   list of place information to display
+   * Shows the welcome/about screen.
    */
-  void displayMapInfo(String worldName, String targetName, int targetHealth,
-                      List<String> placesInfo) throws IOException;
+  void showWelcomeScreen() throws IOException;
 
   /**
-   * Display information about all players or a specific player.
-   *
-   * @param playerInfo the player information to display
+   * Updates the game map display.
+   * @param places List of places in the world
+   * @param players List of all players
+   * @param target Target character
+   * @param mapImage Generated map image
    */
-  void displayPlayerInfo(List<String> playerInfo) throws IOException;
+  void updateMap(List<Place> places, List<Player> players, Target target, Image mapImage);
 
   /**
-   * Display information about places in the game.
-   *
-   * @param placeInfo the place information to display
+   * Updates player information display.
+   * @param player Current player
+   * @param currentPlace Current player's location
    */
-  void displayPlaceInfo(List<String> placeInfo) throws IOException;
+  void updatePlayerInfo(Player player, Place currentPlace) throws IOException;
 
   /**
-   * Display the current game state during a turn.
-   *
-   * @param currentTurn       the current turn number
-   * @param maxTurns          the maximum number of turns
-   * @param currentPlayerInfo information about the current player
+   * Shows a message to the user.
+   * @param message Message to display
    */
-  void displayGameState(int currentTurn, int maxTurns,
-                        List<String> currentPlayerInfo) throws IOException;
+  void showMessage(String message) throws IOException;
 
   /**
-   * Display the movement options for a player.
-   *
-   * @param neighbors list of neighboring places that can be moved to
+   * Shows available move options and gets user's choice.
+   * @param neighbors Neighboring places
+   * @return Selected place number
    */
-  void displayMoveOptions(List<String> neighbors) throws IOException;
+  int getMoveInput(List<Place> neighbors) throws IOException;
 
   /**
-   * Display items that can be picked up in the current location.
-   *
-   * @param items list of available items
+   * Shows available items and gets user's pickup choice.
+   * @param items Available items
+   * @return Selected item index
    */
-  void displayItems(List<String> items) throws IOException;
+  int getPickupInput(List<Item> items) throws IOException;
 
   /**
-   * Display the results of looking around the current location.
-   *
-   * @param lookAroundInfo information about what the player sees
+   * Gets user's attack input.
+   * @param carriedItems Items carried by player
+   * @return Selected attack option (0 for poke, 1+ for items)
    */
-  void displayLookAroundInfo(List<String> lookAroundInfo) throws IOException;
+  int getAttackInput(List<Item> carriedItems) throws IOException;
 
   /**
-   * Display attack options and results.
-   *
-   * @param attackInfo information about available attacks and results
+   * Displays the main menu and gets user selection.
+   * @return Selected menu option
    */
-  void displayAttackInfo(List<String> attackInfo) throws IOException;
+  int displayMainMenu() throws IOException;
 
   /**
-   * Display pet movement options and results.
-   *
-   * @param petInfo information about pet movement options
-   */
-  void displayPetInfo(List<String> petInfo) throws IOException;
-
-  /**
-   * Display a message to the user.
-   *
-   * @param message the message to display
-   */
-  void displayMessage(String message) throws IOException;
-
-  /**
-   * Get input from the user.
-   *
-   * @return the user's input as a String
-   */
-  String getInput() throws IOException;
-
-  /**
-   * Clear any resources used by the view.
+   * Clean up and close the view.
    */
   void close() throws IOException;
 }
