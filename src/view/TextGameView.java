@@ -45,7 +45,11 @@ public class TextGameView implements GameView {
 
   @Override
   public void updatePlayerInfo(Player player, Place currentPlace) throws IOException {
-    // Placeholder for player info update logic
+      output.append("\nCurrent Player: ").append(player.getName())
+        .append("\nLocation: ").append(currentPlace.getName())
+        .append("\nItems carried: ").append(String.valueOf(player.getCurrentCarriedItems().size()))
+        .append("/").append(String.valueOf(player.getCarryLimit()))
+        .append("\n");
   }
 
   @Override
