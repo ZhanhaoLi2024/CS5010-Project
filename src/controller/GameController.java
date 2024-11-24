@@ -87,15 +87,12 @@ public class GameController implements Controller {
     switch (choice) {
       case 1:
         displayMapInfo();
-        updateGameView();
         break;
       case 2:
         new AddPlayerCommand(town, view, false).execute();
-        updateGameView();
         break;
       case 3:
         new AddPlayerCommand(town, view, true).execute();
-        updateGameView();
         break;
       case 4:
         new DisplayPlayerInfoCommand(town, view).execute();
@@ -142,6 +139,11 @@ public class GameController implements Controller {
   }
 
   @Override
+  public boolean hasEnoughPlayers() {
+    return town.getPlayers().size() >= 2;
+  }
+
+  @Override
   public void handleDisplayPlayerInfo() throws IOException {
 //    new DisplayPlayerInfoCommand(town, view).execute();
   }
@@ -162,14 +164,8 @@ public class GameController implements Controller {
    * Handles a turn for a human player.
    */
   private void handleHumanTurn() throws IOException {
-    view.showMessage("Please choose an option:\n"
-        + "1. Move player\n"
-        + "2. Pick up item\n"
-        + "3. Look around\n"
-        + "4. Attack target\n"
-        + "5. Move pet");
 
-    int choice = view.displayMainMenu();
+    int choice = view.humanTurnChoice();
     switch (choice) {
       case 1:
         new MovePlayerCommand(town).execute();

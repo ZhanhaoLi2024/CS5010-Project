@@ -79,6 +79,8 @@ public interface GameView {
    */
   int displayMainMenu() throws IOException;
 
+  int humanTurnChoice() throws IOException;
+
   /**
    * Clean up and close the view.
    */

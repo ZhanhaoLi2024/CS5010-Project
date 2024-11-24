@@ -198,6 +198,17 @@ public class TextGameView implements GameView {
   }
 
   @Override
+  public int humanTurnChoice() throws IOException {
+    output.append("Please choose an option:\n"
+        + "1. Move player\n"
+        + "2. Pick up item\n"
+        + "3. Look around\n"
+        + "4. Attack target\n"
+        + "5. Move pet\n");
+    return Integer.parseInt(scanner.nextLine());
+  }
+
+  @Override
   public void close() throws IOException {
     output.append("Exiting the game...\n");
   }

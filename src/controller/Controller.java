@@ -34,6 +34,8 @@ public interface Controller {
 
   Town getTown();
 
+  boolean hasEnoughPlayers();
+
   void handleDisplayPlayerInfo() throws IOException;
 
   /**

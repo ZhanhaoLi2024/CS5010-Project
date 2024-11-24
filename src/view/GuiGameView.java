@@ -339,7 +339,22 @@ public class GuiGameView implements GameView {
         }
         break;
       case 4: // Start Game
+        if (!controller.hasEnoughPlayers()) {
+          JOptionPane.showMessageDialog(
+              mainFrame,
+              "At least two players are required to start the game. "
+                  + "Please add more players.",
+              "Not Enough Players",
+              JOptionPane.WARNING_MESSAGE
+          );
+          return;
+        }
         cardLayout.show(mainPanel, "GAME");
+        try {
+          controller.takeTurn();
+        } catch (IOException ex) {
+          showMessage("Error starting game: " + ex.getMessage());
+        }
         break;
       default:
         notifyMenuChoice(choice);
@@ -489,5 +504,11 @@ public class GuiGameView implements GameView {
     SwingUtilities.invokeLater(() -> {
       mainFrame.dispose();
     });
+  }
+
+  @Override
+  public int humanTurnChoice() {
+    // This method will be used by the controller to handle human player turn choices
+    return 0; // Placeholder return
   }
 }
