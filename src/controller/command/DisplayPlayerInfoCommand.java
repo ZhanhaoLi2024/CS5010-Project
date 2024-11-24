@@ -30,10 +30,10 @@ public class DisplayPlayerInfoCommand implements Command {
   private void showThePlayerInfo() throws IOException {
     boolean showPlayerInfo = true;
     while (showPlayerInfo) {
-      view.showMessage("Please choose an option:\n" +
-          "1. Show All Players Info\n" +
-          "2. Show Specific Player Info\n" +
-          "0. Exit");
+      view.showMessage("Please choose an option:\n"
+          + "1. Show All Players Info\n"
+          + "2. Show Specific Player Info\n"
+          + "0. Exit");
 
       int choice = view.displayMainMenu();
 

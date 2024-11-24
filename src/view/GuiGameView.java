@@ -166,18 +166,15 @@ public class GuiGameView implements GameView {
   }
 
   private void showAddPlayerDialog() {
-    // 创建对话框
     JDialog dialog = new JDialog(mainFrame, "Add Human Player", true);
     dialog.setLayout(new BorderLayout());
     dialog.setSize(400, 300);
     dialog.setLocationRelativeTo(mainFrame);
 
-    // 创建表单面板
     JPanel formPanel = new JPanel();
     formPanel.setLayout(new BoxLayout(formPanel, BoxLayout.Y_AXIS));
     formPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-    // 玩家名称输入
     JPanel namePanel = new JPanel(new BorderLayout());
     namePanel.add(new JLabel("Player Name:"), BorderLayout.NORTH);
     JTextField nameField = new JTextField(20);
@@ -185,7 +182,6 @@ public class GuiGameView implements GameView {
     formPanel.add(namePanel);
     formPanel.add(Box.createRigidArea(new Dimension(0, 10)));
 
-    // 起始位置输入
     JPanel placePanel = new JPanel(new BorderLayout());
     placePanel.add(new JLabel("Starting Place (1-20):"), BorderLayout.NORTH);
     JSpinner placeSpinner = new JSpinner(new SpinnerNumberModel(1, 1, 20, 1));
@@ -193,19 +189,16 @@ public class GuiGameView implements GameView {
     formPanel.add(placePanel);
     formPanel.add(Box.createRigidArea(new Dimension(0, 10)));
 
-    // 携带限制输入
     JPanel limitPanel = new JPanel(new BorderLayout());
     limitPanel.add(new JLabel("Carry Limit (1-10):"), BorderLayout.NORTH);
     JSpinner limitSpinner = new JSpinner(new SpinnerNumberModel(5, 1, 10, 1));
     limitPanel.add(limitSpinner, BorderLayout.CENTER);
     formPanel.add(limitPanel);
 
-    // 创建按钮面板
     JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
     JButton cancelButton = new JButton("Cancel");
     JButton addButton = new JButton("Add Player");
 
-    // 添加按钮事件
     cancelButton.addActionListener(e -> dialog.dispose());
     addButton.addActionListener(e -> {
       String name = nameField.getText().trim();
@@ -220,7 +213,6 @@ public class GuiGameView implements GameView {
         return;
       }
 
-      // 保存玩家信息并关闭对话框
       playerInfo = new String[] {name, String.valueOf(place), String.valueOf(limit)};
       dialog.dispose();
     });
@@ -228,12 +220,15 @@ public class GuiGameView implements GameView {
     buttonPanel.add(cancelButton);
     buttonPanel.add(addButton);
 
-    // 将所有组件添加到对话框
     dialog.add(formPanel, BorderLayout.CENTER);
     dialog.add(buttonPanel, BorderLayout.SOUTH);
 
-    // 显示对话框
     dialog.setVisible(true);
+  }
+
+  private void showSuccessMessage() {
+    JOptionPane.showMessageDialog(mainFrame, "Computer-controller player added successfully!");
+
   }
 
   private void createGamePanel() {
@@ -270,13 +265,20 @@ public class GuiGameView implements GameView {
           String name = playerInfo[0];
           int place = Integer.parseInt(playerInfo[1]);
           int limit = Integer.parseInt(playerInfo[2]);
-          // 这里通过Command添加玩家
           try {
             controller.handleAddHumanPlayer(name, place, limit);
           } catch (IOException ex) {
             showMessage("Error adding player: " + ex.getMessage());
           }
-          playerInfo = null; // 清除已使用的数据
+          playerInfo = null;
+        }
+        break;
+      case 2: // Add Computer Player
+        try {
+          controller.handleAddComputerPlayer();
+          showSuccessMessage();
+        } catch (IOException ex) {
+          showMessage("Error adding player: " + ex.getMessage());
         }
         break;
       case 6: // Start Game

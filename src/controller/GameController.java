@@ -131,6 +131,11 @@ public class GameController implements Controller {
     new AddPlayerCommand(town, view, false, name, startingPlace, carryLimit).execute();
   }
 
+  @Override
+  public void handleAddComputerPlayer() throws IOException {
+    new AddPlayerCommand(town, view, true, "Computer Player", 1, 1).execute();
+  }
+
   /**
    * Handles a turn for the current player.
    */
