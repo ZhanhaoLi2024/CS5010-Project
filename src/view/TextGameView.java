@@ -167,4 +167,46 @@ public class TextGameView implements GameView {
       return getNumberInput();
     }
   }
+
+  @Override
+  public String getValidPlayerName() throws IOException {
+    while (true) {
+      output.append("Enter the player's name:\n");
+      String playerName = scanner.nextLine().trim();
+
+      if (playerName.isEmpty()) {
+        output.append("Name cannot be empty. Please try again.\n");
+        continue;
+      }
+
+      return playerName;
+    }
+  }
+
+  @Override
+  public int getValidPlaceNumber() throws IOException {
+    while (true) {
+      try {
+        output.append("Enter the place number:\n");
+        int placeNumber = Integer.parseInt(scanner.nextLine().trim());
+
+        if (placeNumber < 0) {
+          output.append("Place number cannot be negative. Please try again.\n");
+          continue;
+        }
+
+        if (placeNumber > 20) {
+          output.append("Place number cannot be greater than 20. Please try again.\n");
+          continue;
+        }
+
+        return placeNumber;
+      } catch (NumberFormatException e) {
+        output.append("Invalid input. Please enter a valid number.\n");
+      }
+    }
+  }
+
+  @Override
+  
 }

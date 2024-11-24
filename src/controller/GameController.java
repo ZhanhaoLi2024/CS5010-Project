@@ -51,8 +51,27 @@ public class GameController implements Controller {
   public void startGame() throws IOException {
     view.initialize();
     view.showMessage("Welcome to the game! You have " + maxTurns + " turns.");
+
+    updateGameView();
+
     while (!quitGame) {
       displayMainMenu();
+    }
+  }
+
+  private void updateGameView() throws IOException {
+    view.updateMap(
+        town.getPlaces(),
+        town.getPlayers(),
+        town.getTarget(),
+        null  // 我们不再需要传递BufferedImage，因为MapPanel自己处理绘制
+    );
+
+    // 如果有当前玩家，也更新玩家信息
+    if (!town.getPlayers().isEmpty()) {
+      Player currentPlayer = town.getPlayers().get(town.getCurrentPlayerIndex());
+      Place currentPlace = town.getPlaceByNumber(currentPlayer.getPlayerCurrentPlaceNumber());
+      view.updatePlayerInfo(currentPlayer, currentPlace);
     }
   }
 
@@ -65,12 +84,15 @@ public class GameController implements Controller {
     switch (choice) {
       case 1:
         displayMapInfo();
+        updateGameView();
         break;
       case 2:
         new AddPlayerCommand(town, view, false).execute();
+        updateGameView();
         break;
       case 3:
         new AddPlayerCommand(town, view, true).execute();
+        updateGameView();
         break;
       case 4:
         new DisplayPlayerInfoCommand(town, view).execute();
@@ -91,6 +113,11 @@ public class GameController implements Controller {
       default:
         view.showMessage("Invalid choice, please try again.");
     }
+  }
+
+  public void handleAddHumanPlayer(String name, int startingPlace, int carryLimit)
+      throws IOException {
+    new AddPlayerCommand(town, view, false, name, startingPlace, carryLimit).execute();
   }
 
   /**
@@ -180,6 +207,7 @@ public class GameController implements Controller {
       continueGame = true;
     }
     view.showMessage("Game started!");
+    updateGameView();
     view.showMessage(String.format("Target: %s (Health: %d) in %s",
         town.getTargetName(),
         town.getTargetHealth(),
@@ -191,6 +219,7 @@ public class GameController implements Controller {
       view.showMessage("\nTurn " + town.getCurrentTurn() + " of " + maxTurns);
       town.showBasicLocationInfo();
       takeTurnForPlayer();
+      updateGameView();
 
       boolean isGameOver = town.isGameOver();
       if (isGameOver) {
