@@ -10,9 +10,8 @@ import java.io.IOException;
 public interface Command {
   /**
    * Executes the command's specific action in the game.
-   * Each implementation defines its own game behavior.
    *
-   * @throws IOException if there is an error during command execution involving I/O operations
+   * @throws IOException if there is an error during command execution
    */
   void execute() throws IOException;
 }

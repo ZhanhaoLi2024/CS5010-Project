@@ -12,7 +12,7 @@ public class LookAroundCommand implements Command {
   /**
    * Constructs a new LookAroundCommand.
    *
-   * @param gameTown the town where the player is located
+   * @param gameTown the town model
    */
   public LookAroundCommand(Town gameTown) {
     this.town = gameTown;

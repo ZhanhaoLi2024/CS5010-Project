@@ -12,7 +12,7 @@ public class PickUpItemCommand implements Command {
   /**
    * Constructs a new PickUpItemCommand.
    *
-   * @param gameTown the town where the player is located.
+   * @param gameTown the town model
    */
   public PickUpItemCommand(Town gameTown) {
     this.town = gameTown;

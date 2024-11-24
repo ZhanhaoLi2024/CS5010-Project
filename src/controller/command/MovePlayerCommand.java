@@ -12,7 +12,7 @@ public class MovePlayerCommand implements Command {
   /**
    * Constructs a new MovePlayerCommand.
    *
-   * @param gameTown the town where the player is located
+   * @param gameTown the town model
    */
   public MovePlayerCommand(Town gameTown) {
     this.town = gameTown;

@@ -1,7 +1,6 @@
 package controller;
 
 import java.io.IOException;
-import view.GameView;
 
 /**
  * The Controller interface defines the contract for managing game flow and user interactions.
@@ -9,35 +8,33 @@ import view.GameView;
  */
 public interface Controller {
   /**
-   * Starts the game and initializes necessary components.
+   * Initializes and starts the game, setting up initial game state and beginning gameplay.
    *
-   * @throws IOException if there is an error during game initialization
+   * @throws IOException if there is an error during game initialization or I/O operations
    */
   void startGame() throws IOException;
 
   /**
-   * Processes a game turn for the current player.
+   * Generates and displays a graphical representation of the game map.
+   *
+   * @throws IOException if there is an error during map generation or display
+   */
+  void printMap() throws IOException;
+
+  /**
+   * Displays detailed information about the current state of the game map.
+   */
+  void displayMapInfo();
+
+  /**
+   * Processes a single turn in the game, handling player actions and game state updates.
    *
    * @throws IOException if there is an error during turn processing
    */
-  void processTurn() throws IOException;
+  void takeTurn() throws IOException;
 
   /**
-   * Displays the game map.
-   *
-   * @throws IOException if there is an error generating or displaying the map
-   */
-  void displayMap() throws IOException;
-
-  /**
-   * Gets the view component associated with this controller.
-   *
-   * @return the game view
-   */
-  GameView getView();
-
-  /**
-   * Ends the current game session.
+   * Concludes the game session and performs necessary cleanup operations.
    *
    * @throws IOException if there is an error during game termination
    */

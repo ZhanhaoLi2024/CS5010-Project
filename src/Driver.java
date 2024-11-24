@@ -4,6 +4,8 @@ import java.io.InputStreamReader;
 import model.town.Town;
 import model.town.TownLoader;
 import model.town.TownModel;
+import view.GameView;
+import view.TextGameView;
 
 /**
  * The Driver class to launch the game and handle command-line arguments.
@@ -36,8 +38,10 @@ public class Driver {
     Town town =
         new TownModel(loader, worldFile, new InputStreamReader(System.in), System.out, maxTurns);
 
-    GameController controller =
-        new GameController(town, new InputStreamReader(System.in), System.out, maxTurns);
+    // Initialize view
+    GameView view = new TextGameView(new InputStreamReader(System.in), System.out);
+    // Initialize controller
+    GameController controller = new GameController(town, view, maxTurns);
     controller.startGame();
   }
 }

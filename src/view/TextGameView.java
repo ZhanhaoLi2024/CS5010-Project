@@ -15,6 +15,7 @@ import model.target.Target;
 public class TextGameView implements GameView {
   private final Readable input;
   private final Appendable output;
+  private final Scanner scanner;
 
   /**
    * Constructs a TextGameView object.
@@ -25,11 +26,14 @@ public class TextGameView implements GameView {
   public TextGameView(Readable gameInput, Appendable gameOutput) {
     this.input = gameInput;
     this.output = gameOutput;
+    this.scanner = new Scanner(input);
   }
 
   @Override
   public void initialize() throws IOException {
-    output.append("Welcome to Kill Doctor Lucky Game!\n");
+    output.append("\n");
+    output.append("++++++++++++++++++++\n");
+    output.append("Welcome to the game!\n");
   }
 
   @Override
@@ -41,7 +45,7 @@ public class TextGameView implements GameView {
 
   @Override
   public void updateMap(List<Place> places, List<Player> players, Target target, Image mapImage) {
-    // Placeholder for map update logic
+    // Text view doesn't use graphical map
   }
 
   @Override
@@ -66,7 +70,7 @@ public class TextGameView implements GameView {
           .append(neighbors.get(i).getName()).append("\n");
     }
     output.append("Enter your choice (1-").append(String.valueOf(neighbors.size())).append("): ");
-    return Integer.parseInt(new Scanner(input).nextLine());
+    return Integer.parseInt(scanner.nextLine());
   }
 
   @Override
@@ -83,7 +87,7 @@ public class TextGameView implements GameView {
           .append(" (Damage: ").append(String.valueOf(items.get(i).getDamage())).append(")\n");
     }
     output.append("Enter item number to pick up: ");
-    return Integer.parseInt(new Scanner(input).nextLine());
+    return Integer.parseInt(scanner.nextLine());
   }
 
   @Override
@@ -97,27 +101,70 @@ public class TextGameView implements GameView {
           .append(" (").append(String.valueOf(item.getDamage())).append(" damage)\n");
     }
     output.append("Enter your choice: ");
-    return Integer.parseInt(new Scanner(input).nextLine());
+    return Integer.parseInt(scanner.nextLine());
   }
 
   @Override
   public int displayMainMenu() throws IOException {
-    output.append("\nMain Menu:\n")
-        .append("1. Show Map Information\n")
-        .append("2. Add Human Player\n")
-        .append("3. Add Computer Player\n")
-        .append("4. Display Player Information\n")
-        .append("5. Display Place Information\n")
-        .append("6. Start Game\n")
-        .append("7. Print Map\n")
-        .append("0. Exit\n")
-        .append("Enter your choice: ");
+    output.append("Please choose an option:\n");
+    output.append("1. Show the Map Information\n");
+    output.append("2. Add the Human-controller player\n");
+    output.append("3. Add the Computer-controller player\n");
+    output.append("4. Display the player's information\n");
+    output.append("5. Display the Place's information\n");
+    output.append("6. Start the game\n");
+    output.append("7. Print the map\n");
+    output.append("0. Exit\n");
 
-    return Integer.parseInt(new Scanner(input).nextLine());
+    try {
+      return Integer.parseInt(scanner.nextLine());
+    } catch (NumberFormatException e) {
+      output.append("Invalid input. Please enter a number.\n");
+      return -1;
+    }
   }
 
   @Override
   public void close() throws IOException {
-    output.append("Thank you for playing Kill Doctor Lucky!\n");
+    output.append("Exiting the game...\n");
+  }
+
+  /**
+   * Gets generic user input as string.
+   * A wrapper around scanner.nextLine() that handles possible errors.
+   *
+   * @return user input string
+   * @throws IOException if there is an error reading input
+   */
+  @Override
+  public String getUserInput() throws IOException {
+    String userInput = scanner.nextLine().trim();
+    if (userInput.isEmpty()) {
+      output.append("Input cannot be empty. Please try again.\n");
+      return getUserInput();
+    }
+    return userInput;
+  }
+
+  /**
+   * Gets numeric input from user.
+   * Handles format checking and validation.
+   *
+   * @return numeric value entered by user
+   * @throws IOException if there is an error reading input
+   */
+  @Override
+  public int getNumberInput() throws IOException {
+    try {
+      String userInput = scanner.nextLine().trim();
+      if (userInput.isEmpty()) {
+        output.append("Input cannot be empty. Please enter a number.\n");
+        return getNumberInput();
+      }
+      return Integer.parseInt(userInput);
+    } catch (NumberFormatException e) {
+      output.append("Invalid input. Please enter a valid number.\n");
+      return getNumberInput();
+    }
   }
 }

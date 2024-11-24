@@ -25,28 +25,32 @@ public interface GameView {
 
   /**
    * Updates the game map display.
-   * @param places List of places in the world
-   * @param players List of all players
-   * @param target Target character
+   *
+   * @param places   List of places in the world
+   * @param players  List of all players
+   * @param target   Target character
    * @param mapImage Generated map image
    */
   void updateMap(List<Place> places, List<Player> players, Target target, Image mapImage);
 
   /**
    * Updates player information display.
-   * @param player Current player
+   *
+   * @param player       Current player
    * @param currentPlace Current player's location
    */
   void updatePlayerInfo(Player player, Place currentPlace) throws IOException;
 
   /**
    * Shows a message to the user.
+   *
    * @param message Message to display
    */
   void showMessage(String message) throws IOException;
 
   /**
    * Shows available move options and gets user's choice.
+   *
    * @param neighbors Neighboring places
    * @return Selected place number
    */
@@ -54,6 +58,7 @@ public interface GameView {
 
   /**
    * Shows available items and gets user's pickup choice.
+   *
    * @param items Available items
    * @return Selected item index
    */
@@ -61,6 +66,7 @@ public interface GameView {
 
   /**
    * Gets user's attack input.
+   *
    * @param carriedItems Items carried by player
    * @return Selected attack option (0 for poke, 1+ for items)
    */
@@ -68,6 +74,7 @@ public interface GameView {
 
   /**
    * Displays the main menu and gets user selection.
+   *
    * @return Selected menu option
    */
   int displayMainMenu() throws IOException;
@@ -76,4 +83,18 @@ public interface GameView {
    * Clean up and close the view.
    */
   void close() throws IOException;
+
+  /**
+   * Gets generic user input as string.
+   *
+   * @return user input string
+   */
+  String getUserInput() throws IOException;
+
+  /**
+   * Gets numeric input from user.
+   *
+   * @return numeric value entered by user
+   */
+  int getNumberInput() throws IOException;
 }
