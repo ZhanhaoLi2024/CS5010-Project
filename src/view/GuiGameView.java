@@ -14,6 +14,7 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -21,6 +22,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
+import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
@@ -137,6 +139,7 @@ public class GuiGameView implements GameView {
     String[] menuOptions = {
         "Add Human Player",
         "Add Computer Player",
+        "Display Player Information",
         "Start Game",
     };
 
@@ -167,37 +170,78 @@ public class GuiGameView implements GameView {
 
   private void showAddPlayerDialog() {
     JDialog dialog = new JDialog(mainFrame, "Add Human Player", true);
-    dialog.setLayout(new BorderLayout());
-    dialog.setSize(400, 300);
+    dialog.setLayout(new BorderLayout(10, 10));
+    dialog.setSize(900, 600);
     dialog.setLocationRelativeTo(mainFrame);
 
+    // Left panel (Map) remains exactly the same
+    JPanel leftPanel = new JPanel(new BorderLayout(5, 5));
+    leftPanel.setBorder(BorderFactory.createTitledBorder(
+        BorderFactory.createEtchedBorder(),
+        "Game Map"
+    ));
+    MapPanel mapPanel = new MapPanel(controller.getTown().getPlaces());
+    mapPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+    leftPanel.add(mapPanel, BorderLayout.CENTER);
+
+    // Form panel
     JPanel formPanel = new JPanel();
     formPanel.setLayout(new BoxLayout(formPanel, BoxLayout.Y_AXIS));
     formPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-    JPanel namePanel = new JPanel(new BorderLayout());
-    namePanel.add(new JLabel("Player Name:"), BorderLayout.NORTH);
-    JTextField nameField = new JTextField(20);
-    namePanel.add(nameField, BorderLayout.CENTER);
+    // Common dimensions for all input fields
+    Dimension inputSize = new Dimension(200, 25);
+    Font labelFont = new Font("Dialog", Font.PLAIN, 12);
+
+    // Player Name input
+    JPanel namePanel = new JPanel(new BorderLayout(10, 5));
+    namePanel.setMaximumSize(new Dimension(350, 50));
+    JLabel nameLabel = new JLabel("Player Name:");
+    nameLabel.setFont(labelFont);
+    JTextField nameField = new JTextField();
+    nameField.setPreferredSize(inputSize);
+    nameField.setHorizontalAlignment(JTextField.RIGHT);
+    namePanel.add(nameLabel, BorderLayout.WEST);
+    namePanel.add(nameField, BorderLayout.EAST);
+
+    // Starting Place input
+    JPanel placePanel = new JPanel(new BorderLayout(10, 5));
+    placePanel.setMaximumSize(new Dimension(350, 50));
+    JLabel placeLabel = new JLabel("Starting Place (1-20):");
+    placeLabel.setFont(labelFont);
+    JSpinner placeSpinner = new JSpinner(new SpinnerNumberModel(1, 1, 20, 1));
+    placeSpinner.setPreferredSize(inputSize);
+    JComponent placeEditor = placeSpinner.getEditor();
+    ((JSpinner.DefaultEditor) placeEditor).getTextField().setHorizontalAlignment(JTextField.RIGHT);
+    placePanel.add(placeLabel, BorderLayout.WEST);
+    placePanel.add(placeSpinner, BorderLayout.EAST);
+
+    // Carry Limit input
+    JPanel limitPanel = new JPanel(new BorderLayout(10, 5));
+    limitPanel.setMaximumSize(new Dimension(350, 50));
+    JLabel limitLabel = new JLabel("Carry Limit (1-10):");
+    limitLabel.setFont(labelFont);
+    JSpinner limitSpinner = new JSpinner(new SpinnerNumberModel(5, 1, 10, 1));
+    limitSpinner.setPreferredSize(inputSize);
+    JComponent limitEditor = limitSpinner.getEditor();
+    ((JSpinner.DefaultEditor) limitEditor).getTextField().setHorizontalAlignment(JTextField.RIGHT);
+    limitPanel.add(limitLabel, BorderLayout.WEST);
+    limitPanel.add(limitSpinner, BorderLayout.EAST);
+
+    // Add components to form panel with proper spacing
     formPanel.add(namePanel);
     formPanel.add(Box.createRigidArea(new Dimension(0, 10)));
-
-    JPanel placePanel = new JPanel(new BorderLayout());
-    placePanel.add(new JLabel("Starting Place (1-20):"), BorderLayout.NORTH);
-    JSpinner placeSpinner = new JSpinner(new SpinnerNumberModel(1, 1, 20, 1));
-    placePanel.add(placeSpinner, BorderLayout.CENTER);
     formPanel.add(placePanel);
     formPanel.add(Box.createRigidArea(new Dimension(0, 10)));
-
-    JPanel limitPanel = new JPanel(new BorderLayout());
-    limitPanel.add(new JLabel("Carry Limit (1-10):"), BorderLayout.NORTH);
-    JSpinner limitSpinner = new JSpinner(new SpinnerNumberModel(5, 1, 10, 1));
-    limitPanel.add(limitSpinner, BorderLayout.CENTER);
     formPanel.add(limitPanel);
+    formPanel.add(Box.createVerticalGlue());
 
+    // Button panel remains the same
     JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
     JButton cancelButton = new JButton("Cancel");
     JButton addButton = new JButton("Add Player");
+    buttonPanel.add(cancelButton);
+    buttonPanel.add(addButton);
 
     cancelButton.addActionListener(e -> dialog.dispose());
     addButton.addActionListener(e -> {
@@ -217,10 +261,16 @@ public class GuiGameView implements GameView {
       dialog.dispose();
     });
 
-    buttonPanel.add(cancelButton);
-    buttonPanel.add(addButton);
+    // Split pane
+    JSplitPane splitPane = new JSplitPane(
+        JSplitPane.HORIZONTAL_SPLIT,
+        leftPanel,
+        formPanel
+    );
+    splitPane.setDividerLocation(450);
+    splitPane.setResizeWeight(0.5);
 
-    dialog.add(formPanel, BorderLayout.CENTER);
+    dialog.add(splitPane, BorderLayout.CENTER);
     dialog.add(buttonPanel, BorderLayout.SOUTH);
 
     dialog.setVisible(true);
@@ -281,7 +331,14 @@ public class GuiGameView implements GameView {
           showMessage("Error adding player: " + ex.getMessage());
         }
         break;
-      case 6: // Start Game
+      case 3: // Display Player Information
+        try {
+          controller.handleDisplayPlayerInfo();
+        } catch (IOException ex) {
+          showMessage("Error displaying player information: " + ex.getMessage());
+        }
+        break;
+      case 4: // Start Game
         cardLayout.show(mainPanel, "GAME");
         break;
       default:

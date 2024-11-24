@@ -136,6 +136,16 @@ public class GameController implements Controller {
     new AddPlayerCommand(town, view, true, "Computer Player", 1, 1).execute();
   }
 
+  @Override
+  public Town getTown() {
+    return this.town;
+  }
+
+  @Override
+  public void handleDisplayPlayerInfo() throws IOException {
+//    new DisplayPlayerInfoCommand(town, view).execute();
+  }
+
   /**
    * Handles a turn for the current player.
    */

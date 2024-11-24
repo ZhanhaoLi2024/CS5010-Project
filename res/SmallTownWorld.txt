@@ -14,8 +14,8 @@ Fortune the Cat
 0 3 2 8 Playground
 2 4 4 7 Bakery
 2 7 5 10 Gas Station
-5 7 6 12 House #1
-6 5 8 9 House #2
+5 7 6 12 House
+6 5 8 9 Apartment
 8 5 9 7 Gym
 8 7 11 11 Pharmacy
 6 9 8 11 Barber Shop

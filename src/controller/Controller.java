@@ -1,6 +1,7 @@
 package controller;
 
 import java.io.IOException;
+import model.town.Town;
 
 /**
  * The Controller interface defines the contract for managing game flow and user interactions.
@@ -30,6 +31,10 @@ public interface Controller {
       throws IOException;
 
   void handleAddComputerPlayer() throws IOException;
+
+  Town getTown();
+
+  void handleDisplayPlayerInfo() throws IOException;
 
   /**
    * Processes a single turn in the game, handling player actions and game state updates.
