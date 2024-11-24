@@ -102,11 +102,19 @@ public class TextGameView implements GameView {
 
   @Override
   public int displayMainMenu() throws IOException {
-    return 0; // Placeholder for main menu logic
+    output.append("\nMain Menu:\n")
+        .append("1. Show Map Information\n")
+        .append("2. Add Human Player\n")
+        .append("3. Add Computer Player\n")
+        .append("4. Display Player Information\n")
+        .append("5. Display Place Information\n")
+        .append("6. Quit\n")
+        .append("Enter your choice: ");
+    return Integer.parseInt(new Scanner(input).nextLine());
   }
 
   @Override
   public void close() throws IOException {
-    // Placeholder for close logic
+    output.append("Thank you for playing Kill Doctor Lucky!\n");
   }
 }
