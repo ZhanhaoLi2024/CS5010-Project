@@ -3,6 +3,7 @@ package view;
 import java.awt.Image;
 import java.io.IOException;
 import java.util.List;
+import java.util.Scanner;
 import model.item.Item;
 import model.place.Place;
 import model.player.Player;
@@ -33,7 +34,7 @@ public class TextGameView implements GameView {
 
   @Override
   public void showWelcomeScreen() throws IOException {
-      output.append("\n=== Kill Doctor Lucky ===\n")
+    output.append("\n=== Kill Doctor Lucky ===\n")
         .append("Created by Zhanhao Li\n")
         .append("CS 5010 Project\n\n");
   }
@@ -45,7 +46,7 @@ public class TextGameView implements GameView {
 
   @Override
   public void updatePlayerInfo(Player player, Place currentPlace) throws IOException {
-      output.append("\nCurrent Player: ").append(player.getName())
+    output.append("\nCurrent Player: ").append(player.getName())
         .append("\nLocation: ").append(currentPlace.getName())
         .append("\nItems carried: ").append(String.valueOf(player.getCurrentCarriedItems().size()))
         .append("/").append(String.valueOf(player.getCarryLimit()))
@@ -59,17 +60,44 @@ public class TextGameView implements GameView {
 
   @Override
   public int getMoveInput(List<Place> neighbors) throws IOException {
-    return 0; // Placeholder for move input logic
+    output.append("Available moves:\n");
+    for (int i = 0; i < neighbors.size(); i++) {
+      output.append(String.valueOf(i + 1)).append(". ")
+          .append(neighbors.get(i).getName()).append("\n");
+    }
+    output.append("Enter your choice (1-").append(String.valueOf(neighbors.size())).append("): ");
+    return Integer.parseInt(new Scanner(input).nextLine());
   }
 
   @Override
   public int getPickupInput(List<Item> items) throws IOException {
-    return 0; // Placeholder for pickup input logic
+    if (items.isEmpty()) {
+      output.append("No items available to pick up.\n");
+      return -1;
+    }
+
+    output.append("Available items:\n");
+    for (int i = 0; i < items.size(); i++) {
+      output.append(String.valueOf(i + 1)).append(". ")
+          .append(items.get(i).getName())
+          .append(" (Damage: ").append(String.valueOf(items.get(i).getDamage())).append(")\n");
+    }
+    output.append("Enter item number to pick up: ");
+    return Integer.parseInt(new Scanner(input).nextLine());
   }
 
   @Override
   public int getAttackInput(List<Item> carriedItems) throws IOException {
-    return 0; // Placeholder for attack input logic
+    output.append("\nChoose your attack:\n");
+    output.append("0. Poke in the eye (1 damage)\n");
+    for (int i = 0; i < carriedItems.size(); i++) {
+      Item item = carriedItems.get(i);
+      output.append(String.valueOf(i + 1)).append(". Use ")
+          .append(item.getName())
+          .append(" (").append(String.valueOf(item.getDamage())).append(" damage)\n");
+    }
+    output.append("Enter your choice: ");
+    return Integer.parseInt(new Scanner(input).nextLine());
   }
 
   @Override
