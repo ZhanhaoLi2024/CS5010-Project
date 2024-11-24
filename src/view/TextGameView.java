@@ -17,14 +17,14 @@ public class TextGameView implements GameView {
   private final Appendable output;
 
   /**
-   * Constructs a new TextGameView object.
+   * Constructs a TextGameView object.
    *
-   * @param input  the input stream
-   * @param output the output stream
+   * @param gameInput  Readable input source
+   * @param gameOutput Appendable output destination
    */
-  public TextGameView(Readable input, Appendable output) {
-    this.input = input;
-    this.output = output;
+  public TextGameView(Readable gameInput, Appendable gameOutput) {
+    this.input = gameInput;
+    this.output = gameOutput;
   }
 
   @Override
@@ -55,7 +55,7 @@ public class TextGameView implements GameView {
 
   @Override
   public void showMessage(String message) throws IOException {
-    // Placeholder for showing messages
+    output.append(message).append("\n");
   }
 
   @Override
@@ -108,8 +108,11 @@ public class TextGameView implements GameView {
         .append("3. Add Computer Player\n")
         .append("4. Display Player Information\n")
         .append("5. Display Place Information\n")
-        .append("6. Quit\n")
+        .append("6. Start Game\n")
+        .append("7. Print Map\n")
+        .append("0. Exit\n")
         .append("Enter your choice: ");
+
     return Integer.parseInt(new Scanner(input).nextLine());
   }
 
