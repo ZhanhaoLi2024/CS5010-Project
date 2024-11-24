@@ -97,8 +97,4 @@ public interface GameView {
    * @return numeric value entered by user
    */
   int getNumberInput() throws IOException;
-
-  String getValidPlayerName() throws IOException;
-
-  int getValidPlaceNumber() throws IOException;
 }

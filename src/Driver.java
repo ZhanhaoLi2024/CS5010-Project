@@ -32,16 +32,52 @@ public class Driver {
       return;
     }
 
-    TownLoader loader = new TownLoader();
-    Town town =
-        new TownModel(loader, worldFile, new InputStreamReader(System.in), System.out, maxTurns);
+//    TownLoader loader = new TownLoader();
+//    Town town =
+//        new TownModel(loader, worldFile, new InputStreamReader(System.in), System.out, maxTurns);
+//
+//    // Initialize view based on command line argument
+//    GameView view =
+//        useGui ? new GuiGameView() : new TextGameView(new InputStreamReader(System.in), System.out);
+//
+//    // Initialize controller
+//    GameController controller = new GameController(town, view, maxTurns);
+//    controller.startGame();
 
-    // Initialize view based on command line argument
-    GameView view =
-        useGui ? new GuiGameView() : new TextGameView(new InputStreamReader(System.in), System.out);
+    try {
+      // Initialize MVC components in the correct order
+      // 1. Create the Model
+      TownLoader loader = new TownLoader();
+      Town town = new TownModel(
+          loader,
+          worldFile,
+          new InputStreamReader(System.in),
+          System.out,
+          maxTurns
+      );
 
-    // Initialize controller
-    GameController controller = new GameController(town, view, maxTurns);
-    controller.startGame();
+      // 2. Create the Controller
+      GameController controller = new GameController(town, null, maxTurns);
+
+      // 3. Create the View and connect it to the Controller
+      GameView view;
+      if (useGui) {
+        view = new GuiGameView(controller);
+      } else {
+        view = new TextGameView(new InputStreamReader(System.in), System.out);
+      }
+
+      // 4. Connect the View to the Controller
+      controller.setView(view);
+
+      // 5. Start the game
+      controller.startGame();
+
+    } catch (IOException e) {
+      System.err.println("Error starting game: " + e.getMessage());
+      throw e;
+    } catch (IllegalArgumentException e) {
+      System.err.println("Invalid game configuration: " + e.getMessage());
+    }
   }
 }

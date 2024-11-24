@@ -312,10 +312,14 @@ public class TownModel implements Town {
   }
 
   @Override
-  public void addPlayer() throws IOException {
-    String playerName = getValidPlayerName();
-    int placeNumber = getValidPlaceNumber();
-    int carryLimit = getValidCarryLimit();
+  public void addPlayer(String playerName, int placeNumber, int carryLimit)
+      throws IOException {
+//    String playerName = getValidPlayerName();
+//    int placeNumber = getValidPlaceNumber();
+//    int carryLimit = getValidCarryLimit();
+
+    output.append("Adding player...\n");
+    output.append("Player name: ").append(playerName).append("\n");
 
     Place startingPlace = places.get(placeNumber - 1);
     Player player = new PlayerModel(playerName, false, carryLimit, placeNumber);

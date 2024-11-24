@@ -13,9 +13,9 @@ import model.target.Target;
  * Implementation of GameView for text-based interface.
  */
 public class TextGameView implements GameView {
+  private static Appendable output;
+  private static Scanner scanner;
   private final Readable input;
-  private final Appendable output;
-  private final Scanner scanner;
 
   /**
    * Constructs a TextGameView object.
@@ -25,8 +25,81 @@ public class TextGameView implements GameView {
    */
   public TextGameView(Readable gameInput, Appendable gameOutput) {
     this.input = gameInput;
-    this.output = gameOutput;
-    this.scanner = new Scanner(input);
+    output = gameOutput;
+    scanner = new Scanner(input);
+  }
+
+  /**
+   * Shows the player name input prompt and returns the user's input.
+   *
+   * @return the player name entered by the user
+   * @throws IOException if there is an error reading input
+   */
+  public static String showAddNewPlayerName() throws IOException {
+    while (true) {
+      output.append("Enter the player's name:\n");
+      String playerName = scanner.nextLine().trim();
+
+      if (playerName.isEmpty()) {
+        output.append("Name cannot be empty. Please try again.\n");
+        continue;
+      }
+
+      return playerName;
+    }
+  }
+
+  /**
+   * Shows the starting place input prompt and returns the user's input.
+   *
+   * @return the starting place entered by the user
+   * @throws IOException if there is an error reading input
+   */
+  public static int showAddNewPlayerStartingPlaceNumber() throws IOException {
+    while (true) {
+      try {
+        output.append("Enter the place number:\n");
+        int placeNumber = Integer.parseInt(scanner.nextLine().trim());
+
+        if (placeNumber < 0) {
+          output.append("Place number cannot be negative. Please try again.\n");
+          continue;
+        }
+
+        if (placeNumber > 20) {
+          output.append("Place number cannot be greater than 20. Please try again.\n");
+          continue;
+        }
+
+        return placeNumber;
+      } catch (NumberFormatException e) {
+        output.append("Invalid input. Please enter a valid number.\n");
+      }
+    }
+  }
+
+  /**
+   * Shows the carry limit input prompt and returns the user's input.
+   *
+   * @return the carry limit entered by the user
+   * @throws IOException if there is an error reading input
+   */
+  public static int showNewPlayerCarryLimit() throws IOException {
+    while (true) {
+      try {
+        output.append("Enter the carry limit (1-5):\n");
+        int carryLimit = Integer.parseInt(scanner.nextLine().trim());
+
+        if (carryLimit < 1 || carryLimit > 5) {
+          output.append("Carry limit must be between 1 and 5. Please try again.\n");
+          continue;
+        }
+
+        return carryLimit;
+      } catch (NumberFormatException e) {
+        output.append("Invalid input. Please enter a valid number.\n");
+      }
+    }
   }
 
   @Override
@@ -167,46 +240,4 @@ public class TextGameView implements GameView {
       return getNumberInput();
     }
   }
-
-  @Override
-  public String getValidPlayerName() throws IOException {
-    while (true) {
-      output.append("Enter the player's name:\n");
-      String playerName = scanner.nextLine().trim();
-
-      if (playerName.isEmpty()) {
-        output.append("Name cannot be empty. Please try again.\n");
-        continue;
-      }
-
-      return playerName;
-    }
-  }
-
-  @Override
-  public int getValidPlaceNumber() throws IOException {
-    while (true) {
-      try {
-        output.append("Enter the place number:\n");
-        int placeNumber = Integer.parseInt(scanner.nextLine().trim());
-
-        if (placeNumber < 0) {
-          output.append("Place number cannot be negative. Please try again.\n");
-          continue;
-        }
-
-        if (placeNumber > 20) {
-          output.append("Place number cannot be greater than 20. Please try again.\n");
-          continue;
-        }
-
-        return placeNumber;
-      } catch (NumberFormatException e) {
-        output.append("Invalid input. Please enter a valid number.\n");
-      }
-    }
-  }
-
-  @Override
-  
 }

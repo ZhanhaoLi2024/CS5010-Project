@@ -26,6 +26,9 @@ public interface Controller {
    */
   void displayMapInfo();
 
+  void handleAddHumanPlayer(String name, int startingPlace, int carryLimit)
+      throws IOException;
+
   /**
    * Processes a single turn in the game, handling player actions and game state updates.
    *

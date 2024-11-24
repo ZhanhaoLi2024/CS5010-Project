@@ -26,8 +26,8 @@ import view.GameView;
 public class GameController implements Controller {
   private static final int CELL_SIZE = 90;
   private final Town town;
-  private final GameView view;
   private final int maxTurns;
+  private GameView view;
   private int currentTurn;
   private boolean quitGame;
   private boolean continueGame;
@@ -49,6 +49,9 @@ public class GameController implements Controller {
 
   @Override
   public void startGame() throws IOException {
+    if (view == null) {
+      throw new IllegalStateException("View is not set");
+    }
     view.initialize();
     view.showMessage("Welcome to the game! You have " + maxTurns + " turns.");
 
@@ -115,6 +118,14 @@ public class GameController implements Controller {
     }
   }
 
+  public void setView(GameView gameView) {
+    if (this.view != null) {
+      throw new IllegalStateException("View is already set");
+    }
+    this.view = gameView;
+  }
+
+  @Override
   public void handleAddHumanPlayer(String name, int startingPlace, int carryLimit)
       throws IOException {
     new AddPlayerCommand(town, view, false, name, startingPlace, carryLimit).execute();

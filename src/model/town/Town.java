@@ -128,18 +128,22 @@ public interface Town {
   List<Place> getCurrentPlaceNeighbors(Place place);
 
   /**
+   * Adds a player to the town.
+   *
+   * @param newPlayerName       the name of the new player
+   * @param newPlayerPlace      the starting place of the new player
+   * @param newPlayerCarryLimit the carry limit of the new player
+   * @throws IOException if there is an issue with I/O operations
+   */
+  void addPlayer(String newPlayerName, int newPlayerPlace, int newPlayerCarryLimit)
+      throws IOException;
+
+  /**
    * Adds a computer player to the town.
    *
    * @throws IOException if an I/O error occurs
    */
   void addComputerPlayer() throws IOException;
-
-  /**
-   * Adds a player to the town.
-   *
-   * @throws IOException if an I/O error occurs
-   */
-  void addPlayer() throws IOException;
 
   /**
    * Shows information about all places.

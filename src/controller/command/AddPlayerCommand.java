@@ -3,6 +3,7 @@ package controller.command;
 import java.io.IOException;
 import model.town.Town;
 import view.GameView;
+import view.TextGameView;
 
 /**
  * Command to add a human player or computer player to the game.
@@ -11,9 +12,9 @@ public class AddPlayerCommand implements Command {
   private final Town town;
   private final GameView view;
   private final boolean isComputerPlayer;
-  private final String playerName;
-  private final int startingPlace;
-  private final int carryLimit;
+  private final String guiPlayerName;
+  private final int guiStartingPlace;
+  private final int guiCarryLimit;
 
   /**
    * Constructs a new AddPlayerCommand. GUI version.
@@ -30,9 +31,9 @@ public class AddPlayerCommand implements Command {
     this.town = gameTown;
     this.view = gameView;
     this.isComputerPlayer = playerType;
-    this.playerName = name;
-    this.startingPlace = place;
-    this.carryLimit = limit;
+    this.guiPlayerName = name;
+    this.guiStartingPlace = place;
+    this.guiCarryLimit = limit;
   }
 
 
@@ -52,12 +53,9 @@ public class AddPlayerCommand implements Command {
     if (isComputerPlayer) {
       town.addComputerPlayer();
     } else {
-//      addPlayerMenu();
-      if (playerName == null) {
-        // 文本界面的处理逻辑
+      if (guiPlayerName == null) {
         addPlayerMenu();
       } else {
-        // GUI界面的处理逻辑
         addGuiPlayer();
       }
     }
@@ -65,12 +63,18 @@ public class AddPlayerCommand implements Command {
 
   private void addPlayerMenu() throws IOException {
     boolean addPlayerContinue = true;
-    town.addPlayer();
+    String firstPlayerName = TextGameView.showAddNewPlayerName();
+    int firstPlaceNumber = TextGameView.showAddNewPlayerStartingPlaceNumber();
+    int firstCarryLimit = TextGameView.showNewPlayerCarryLimit();
+    town.addPlayer(firstPlayerName, firstPlaceNumber, firstCarryLimit);
     while (addPlayerContinue) {
       view.showMessage("Do you want to add another player? (yes/no)");
       String choice = view.getUserInput();
       if ("yes".equalsIgnoreCase(choice)) {
-        town.addPlayer();
+        String humanPlayerName = TextGameView.showAddNewPlayerName();
+        int humanPlaceNumber = TextGameView.showAddNewPlayerStartingPlaceNumber();
+        int humanCarryLimit = TextGameView.showNewPlayerCarryLimit();
+        town.addPlayer(humanPlayerName, humanPlaceNumber, humanCarryLimit);
       } else if ("no".equalsIgnoreCase(choice)) {
         addPlayerContinue = false;
       } else {
@@ -80,23 +84,17 @@ public class AddPlayerCommand implements Command {
   }
 
   private void addGuiPlayer() throws IOException {
-    if (playerName == null || playerName.trim().isEmpty()) {
+    if (guiPlayerName == null || guiPlayerName.trim().isEmpty()) {
       throw new IllegalArgumentException("Player name cannot be empty");
     }
-    if (startingPlace < 1 || startingPlace > town.getPlaces().size()) {
+    if (guiStartingPlace < 1 || guiStartingPlace > town.getPlaces().size()) {
       throw new IllegalArgumentException("Invalid starting place");
     }
-    if (carryLimit < 1 || carryLimit > 10) {
+    if (guiCarryLimit < 1 || guiCarryLimit > 10) {
       throw new IllegalArgumentException("Invalid carry limit");
     }
 
-    // 创建新玩家
-    Player player = new PlayerModel(playerName, false, carryLimit, startingPlace);
+    town.addPlayer(guiPlayerName, guiStartingPlace, guiCarryLimit);
 
-    // 添加到游戏中
-    town.getPlayers().add(player);
-
-    // 通知视图
-    view.showMessage("Player " + playerName + " added successfully!");
   }
 }

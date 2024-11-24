@@ -1,6 +1,6 @@
 package view;
 
-import controller.command.AddPlayerCommand;
+import controller.Controller;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
@@ -31,6 +31,7 @@ import model.player.Player;
 import model.target.Target;
 
 public class GuiGameView implements GameView {
+  private final Controller controller;
   private JFrame mainFrame;
   private JPanel mainPanel;
   private CardLayout cardLayout;
@@ -42,7 +43,8 @@ public class GuiGameView implements GameView {
   private JPanel infoPanel;
   private String[] playerInfo;
 
-  public GuiGameView() {
+  public GuiGameView(Controller gameController) {
+    this.controller = gameController;
     SwingUtilities.invokeLater(this::createAndShowGUI);
   }
 
@@ -270,7 +272,7 @@ public class GuiGameView implements GameView {
           int limit = Integer.parseInt(playerInfo[2]);
           // 这里通过Command添加玩家
           try {
-            new AddPlayerCommand(town, this, false).execute();
+            controller.handleAddHumanPlayer(name, place, limit);
           } catch (IOException ex) {
             showMessage("Error adding player: " + ex.getMessage());
           }
