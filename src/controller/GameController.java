@@ -2,8 +2,6 @@ package controller;
 
 import controller.command.AddPlayerCommand;
 import controller.command.AttackTargetCommand;
-import controller.command.DisplayPlaceInfoCommand;
-import controller.command.DisplayPlayerInfoCommand;
 import controller.command.LookAroundCommand;
 import controller.command.MovePetCommand;
 import controller.command.MovePlayerCommand;
@@ -31,6 +29,7 @@ public class GameController implements Controller {
   private int currentTurn;
   private boolean quitGame;
   private boolean continueGame;
+  private boolean isGui;
 
   /**
    * Creates a new game controller with the given town, view and maximum turns.
@@ -83,29 +82,36 @@ public class GameController implements Controller {
    */
   private void displayMainMenu() throws IOException {
     int choice = view.displayMainMenu();
+    System.out.println("choice: " + choice);
 
     switch (choice) {
       case 1:
-        displayMapInfo();
-        break;
-      case 2:
-        new AddPlayerCommand(town, view, false).execute();
+        view.showAddPlayerMessage();
         break;
       case 3:
-        new AddPlayerCommand(town, view, true).execute();
+        view.showPlayersInfo();
         break;
-      case 4:
-        new DisplayPlayerInfoCommand(town, view).execute();
-        break;
-      case 5:
-        new DisplayPlaceInfoCommand(town, view).execute();
-        break;
-      case 6:
-        takeTurn();
-        break;
-      case 7:
-        printMap();
-        break;
+//      case 1:
+//        displayMapInfo();
+//        break;
+//      case 2:
+//        new AddPlayerCommand(town, view, false).execute();
+//        break;
+//      case 3:
+//        new AddPlayerCommand(town, view, true).execute();
+//        break;
+//      case 4:
+//        new DisplayPlayerInfoCommand(town, view).execute();
+//        break;
+//      case 5:
+//        new DisplayPlaceInfoCommand(town, view).execute();
+//        break;
+//      case 6:
+//        takeTurn();
+//        break;
+//      case 7:
+//        printMap();
+//        break;
       case 0:
         view.showMessage("Exiting...");
         this.quitGame = true;
@@ -115,22 +121,33 @@ public class GameController implements Controller {
     }
   }
 
-  public void setView(GameView gameView) {
+  @Override
+  public void setView(GameView gameView, boolean gui) {
     if (this.view != null) {
       throw new IllegalStateException("View is already set");
     }
     this.view = gameView;
+    this.isGui = gui;
   }
 
   @Override
   public void handleAddHumanPlayer(String name, int startingPlace, int carryLimit)
       throws IOException {
-    new AddPlayerCommand(town, view, false, name, startingPlace, carryLimit).execute();
+    new AddPlayerCommand(town, false, name, startingPlace, carryLimit).execute();
   }
 
   @Override
   public void handleAddComputerPlayer() throws IOException {
-    new AddPlayerCommand(town, view, true, "Computer Player", 1, 1).execute();
+    new AddPlayerCommand(town, true, "Computer Player", 1, 1).execute();
+  }
+
+  @Override
+  public void handleShowPlayersInfo(Boolean isAll) throws IOException {
+    if (isAll) {
+      view.showMessage("Showing all players info:");
+    } else {
+      view.showMessage("Showing specific player info:");
+    }
   }
 
   @Override

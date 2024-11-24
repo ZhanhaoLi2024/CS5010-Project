@@ -13,6 +13,8 @@ import model.target.Target;
  * Supports both text-based and graphical user interfaces.
  */
 public interface GameView {
+  void showAddPlayerMessage() throws IOException;
+
   /**
    * Initializes the view components.
    */
@@ -99,4 +101,6 @@ public interface GameView {
    * @return numeric value entered by user
    */
   int getNumberInput() throws IOException;
+
+  void showPlayersInfo() throws IOException;
 }

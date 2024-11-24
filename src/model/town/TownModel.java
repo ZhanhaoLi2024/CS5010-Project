@@ -226,9 +226,6 @@ public class TownModel implements Town {
   @Override
   public void addPlayer(String playerName, int placeNumber, int carryLimit)
       throws IOException {
-//    String playerName = getValidPlayerName();
-//    int placeNumber = getValidPlaceNumber();
-//    int carryLimit = getValidCarryLimit();
 
     output.append("Adding player...\n");
     output.append("Player name: ").append(playerName).append("\n");

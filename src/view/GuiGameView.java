@@ -63,7 +63,8 @@ public class GuiGameView implements GameView {
 
     // Create all panels
     createWelcomePanel();
-    createMainMenuPanel();
+//    createMainMenuPanel();
+    displayMainMenu();
     createGamePanel();
 
     // Add panels to main panel
@@ -152,7 +153,13 @@ public class GuiGameView implements GameView {
       menuButton.setAlignmentX(JButton.CENTER_ALIGNMENT);
       menuButton.setMaximumSize(new Dimension(300, 40));
       final int choice = i + 1;
-      menuButton.addActionListener(e -> handleMenuChoice(choice));
+      menuButton.addActionListener(e -> {
+        try {
+          handleMenuChoice(choice);
+        } catch (IOException ex) {
+          throw new RuntimeException(ex);
+        }
+      });
       mainMenuPanel.add(menuButton);
       mainMenuPanel.add(Box.createRigidArea(new Dimension(0, 10)));
     }
@@ -168,7 +175,9 @@ public class GuiGameView implements GameView {
     mainMenuPanel.add(exitButton);
   }
 
-  private void showAddPlayerDialog() {
+
+  @Override
+  public void showAddPlayerMessage() throws IOException {
     JDialog dialog = new JDialog(mainFrame, "Add Human Player", true);
     dialog.setLayout(new BorderLayout(10, 10));
     dialog.setSize(900, 600);
@@ -257,7 +266,11 @@ public class GuiGameView implements GameView {
         return;
       }
 
-      playerInfo = new String[] {name, String.valueOf(place), String.valueOf(limit)};
+      try {
+        controller.handleAddHumanPlayer(name, place, limit);
+      } catch (IOException ex) {
+        showMessage("Error adding player: " + ex.getMessage());
+      }
       dialog.dispose();
     });
 
@@ -307,10 +320,10 @@ public class GuiGameView implements GameView {
     gamePanel.add(infoPanel, BorderLayout.SOUTH);
   }
 
-  private void handleMenuChoice(int choice) {
+  private void handleMenuChoice(int choice) throws IOException {
     switch (choice) {
       case 1: // Add Human Player
-        showAddPlayerDialog();
+        showAddPlayerMessage();
         if (playerInfo != null) {
           String name = playerInfo[0];
           int place = Integer.parseInt(playerInfo[1]);
@@ -476,14 +489,6 @@ public class GuiGameView implements GameView {
   }
 
   @Override
-  public int displayMainMenu() {
-    cardLayout.show(mainPanel, "MENU");
-    // Wait for user input through button clicks
-    // The actual menu choice will be handled through action listeners
-    return -1; // Placeholder return
-  }
-
-  @Override
   public String getUserInput() {
     return JOptionPane.showInputDialog(mainFrame, "Enter your input:");
   }
@@ -510,5 +515,65 @@ public class GuiGameView implements GameView {
   public int humanTurnChoice() {
     // This method will be used by the controller to handle human player turn choices
     return 0; // Placeholder return
+  }
+
+  @Override
+  public int displayMainMenu() {
+    mainMenuPanel = new JPanel();
+    mainMenuPanel.setLayout(new BoxLayout(mainMenuPanel, BoxLayout.Y_AXIS));
+    mainMenuPanel.setBackground(new Color(245, 245, 245));
+    mainMenuPanel.setBorder(BorderFactory.createEmptyBorder(30, 50, 30, 50));
+
+    // Title
+    JLabel menuTitle = new JLabel("Main Menu");
+    menuTitle.setFont(new Font("Arial", Font.BOLD, 36));
+    menuTitle.setAlignmentX(JLabel.CENTER_ALIGNMENT);
+
+    // Create menu buttons
+    String[] menuOptions = {
+        "Add Human Player",
+        "Add Computer Player",
+        "Display Player Information",
+        "Start Game",
+    };
+
+    mainMenuPanel.add(menuTitle);
+    mainMenuPanel.add(Box.createRigidArea(new Dimension(0, 30)));
+
+    int choice = -1;
+    for (int i = 0; i < menuOptions.length; i++) {
+      JButton menuButton = new JButton(menuOptions[i]);
+      menuButton.setFont(new Font("Arial", Font.PLAIN, 18));
+      menuButton.setAlignmentX(JButton.CENTER_ALIGNMENT);
+      menuButton.setMaximumSize(new Dimension(300, 40));
+      choice = i + 1;
+      final int finalChoice = choice;
+      menuButton.addActionListener(e -> {
+        try {
+          handleMenuChoice(finalChoice);
+        } catch (IOException ex) {
+          throw new RuntimeException(ex);
+        }
+      });
+      mainMenuPanel.add(menuButton);
+      mainMenuPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+    }
+
+    // Exit button
+    JButton exitButton = new JButton("Exit Game");
+    exitButton.setFont(new Font("Arial", Font.PLAIN, 18));
+    exitButton.setAlignmentX(JButton.CENTER_ALIGNMENT);
+    exitButton.setMaximumSize(new Dimension(300, 40));
+    exitButton.addActionListener(e -> System.exit(0));
+
+    mainMenuPanel.add(Box.createRigidArea(new Dimension(0, 20)));
+    mainMenuPanel.add(exitButton);
+
+    return choice;
+  }
+
+  @Override
+  public void showPlayersInfo() {
+    // This method will be used by the controller to display player information
   }
 }

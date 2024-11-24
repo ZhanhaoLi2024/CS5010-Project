@@ -1,5 +1,6 @@
 package view;
 
+import controller.Controller;
 import java.awt.Image;
 import java.io.IOException;
 import java.util.List;
@@ -16,6 +17,7 @@ public class TextGameView implements GameView {
   private static Appendable output;
   private static Scanner scanner;
   private final Readable input;
+  private final Controller controller;
 
   /**
    * Constructs a TextGameView object.
@@ -23,10 +25,11 @@ public class TextGameView implements GameView {
    * @param gameInput  Readable input source
    * @param gameOutput Appendable output destination
    */
-  public TextGameView(Readable gameInput, Appendable gameOutput) {
+  public TextGameView(Controller gameController, Readable gameInput, Appendable gameOutput) {
     this.input = gameInput;
     output = gameOutput;
     scanner = new Scanner(input);
+    this.controller = gameController;
   }
 
   /**
@@ -180,13 +183,18 @@ public class TextGameView implements GameView {
   @Override
   public int displayMainMenu() throws IOException {
     output.append("Please choose an option:\n");
-    output.append("1. Show the Map Information\n");
-    output.append("2. Add the Human-controller player\n");
-    output.append("3. Add the Computer-controller player\n");
-    output.append("4. Display the player's information\n");
-    output.append("5. Display the Place's information\n");
-    output.append("6. Start the game\n");
-    output.append("7. Print the map\n");
+    output.append("1. Add the Human-controller player\n");
+    output.append("2. Add the Computer-controller player\n");
+    output.append("3. Display the player's information\n");
+    output.append("4. Start the game\n");
+    output.append("5. Show the Map Information\n");
+//    output.append("1. Show the Map Information\n");
+//    output.append("2. Add the Human-controller player\n");
+//    output.append("3. Add the Computer-controller player\n");
+//    output.append("4. Display the player's information\n");
+//    output.append("5. Display the Place's information\n");
+//    output.append("6. Start the game\n");
+//    output.append("7. Print the map\n");
     output.append("0. Exit\n");
 
     try {
@@ -249,6 +257,71 @@ public class TextGameView implements GameView {
     } catch (NumberFormatException e) {
       output.append("Invalid input. Please enter a valid number.\n");
       return getNumberInput();
+    }
+  }
+
+  @Override
+  public void showAddPlayerMessage() throws IOException {
+    boolean addPlayerContinue = true;
+    String firstPlayerName = showAddNewPlayerName();
+    int firstPlaceNumber = showAddNewPlayerStartingPlaceNumber();
+    int firstCarryLimit = showNewPlayerCarryLimit();
+    try {
+      controller.handleAddHumanPlayer(firstPlayerName, firstPlaceNumber, firstCarryLimit);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    while (addPlayerContinue) {
+      showMessage("Do you want to add another player? (yes/no)");
+      String choice = getUserInput();
+      if ("yes".equalsIgnoreCase(choice)) {
+        String humanPlayerName = TextGameView.showAddNewPlayerName();
+        int humanPlaceNumber = TextGameView.showAddNewPlayerStartingPlaceNumber();
+        int humanCarryLimit = TextGameView.showNewPlayerCarryLimit();
+        try {
+          controller.handleAddHumanPlayer(humanPlayerName, humanPlaceNumber, humanCarryLimit);
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
+      } else if ("no".equalsIgnoreCase(choice)) {
+        addPlayerContinue = false;
+      } else {
+        showMessage("Invalid input. Please enter 'yes' or 'no'.");
+      }
+    }
+  }
+
+  @Override
+  public void showPlayersInfo() throws IOException {
+//    controller.handleDisplayPlayerInfo();
+    boolean showPlayerInfo = true;
+    while (showPlayerInfo) {
+      output.append("Please choose an option:\n");
+      output.append("1. Show All Players Info\n");
+      output.append("2. Show Specific Player Info\n");
+      output.append("0. Exit\n");
+
+      int choice = 0;
+      try {
+        choice = Integer.parseInt(scanner.nextLine());
+      } catch (NumberFormatException e) {
+        output.append("Invalid input. Please enter a number.\n");
+      }
+
+      switch (choice) {
+        case 1:
+          controller.handleShowPlayersInfo(true);
+          break;
+        case 2:
+          controller.handleShowPlayersInfo(false);
+          break;
+        case 0:
+          output.append("Exiting...\n");
+          showPlayerInfo = false;
+          break;
+        default:
+          output.append("Invalid choice, please try again.\n");
+      }
     }
   }
 }

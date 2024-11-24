@@ -2,6 +2,7 @@ package controller;
 
 import java.io.IOException;
 import model.town.Town;
+import view.GameView;
 
 /**
  * The Controller interface defines the contract for managing game flow and user interactions.
@@ -27,10 +28,14 @@ public interface Controller {
    */
   void displayMapInfo();
 
+  void setView(GameView gameView, boolean gui);
+
   void handleAddHumanPlayer(String name, int startingPlace, int carryLimit)
       throws IOException;
 
   void handleAddComputerPlayer() throws IOException;
+
+  void handleShowPlayersInfo(Boolean isAll) throws IOException;
 
   Town getTown();
 

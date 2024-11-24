@@ -32,18 +32,6 @@ public class Driver {
       return;
     }
 
-//    TownLoader loader = new TownLoader();
-//    Town town =
-//        new TownModel(loader, worldFile, new InputStreamReader(System.in), System.out, maxTurns);
-//
-//    // Initialize view based on command line argument
-//    GameView view =
-//        useGui ? new GuiGameView() : new TextGameView(new InputStreamReader(System.in), System.out);
-//
-//    // Initialize controller
-//    GameController controller = new GameController(town, view, maxTurns);
-//    controller.startGame();
-
     try {
       // Initialize MVC components in the correct order
       // 1. Create the Model
@@ -64,11 +52,11 @@ public class Driver {
       if (useGui) {
         view = new GuiGameView(controller);
       } else {
-        view = new TextGameView(new InputStreamReader(System.in), System.out);
+        view = new TextGameView(controller, new InputStreamReader(System.in), System.out);
       }
 
       // 4. Connect the View to the Controller
-      controller.setView(view);
+      controller.setView(view, useGui);
 
       // 5. Start the game
       controller.startGame();
