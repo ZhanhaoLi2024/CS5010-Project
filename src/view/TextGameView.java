@@ -41,8 +41,7 @@ public class TextGameView implements GameView {
         .append("Created by Zhanhao Li\n")
         .append("CS 5010 Project\n\n");
   }
-
-
+  
   @Override
   public void updatePlayerInfo(Player player, Place currentPlace) throws IOException {
     output.append("\nCurrent Player: ").append(player.getName())
@@ -56,7 +55,6 @@ public class TextGameView implements GameView {
   public void showMessage(String message) throws IOException {
     output.append(message).append("\n");
   }
-
 
   @Override
   public void close() throws IOException {
@@ -101,6 +99,4 @@ public class TextGameView implements GameView {
       return getNumberInput();
     }
   }
-
-
 }

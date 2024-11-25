@@ -52,7 +52,7 @@ public class Driver {
       Controller controller;
       GameView view;
       if (useGui) {
-        controller = new GuiController(town, null, maxTurns);
+        controller = new GuiController(town, maxTurns);
         view = new GuiGameView(controller);
         controller.setView(view, true);
       } else {

@@ -189,4 +189,14 @@ public class TextController implements Controller {
       }
     }
   }
+
+  @Override
+  public Town getTown() {
+    return this.town;
+  }
+
+  @Override
+  public void executeCommand(String command) throws IOException {
+    // TODO Auto-generated method stub
+  }
 }

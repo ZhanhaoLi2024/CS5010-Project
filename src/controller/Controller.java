@@ -1,6 +1,7 @@
 package controller;
 
 import java.io.IOException;
+import model.town.Town;
 import view.GameView;
 
 /**
@@ -17,4 +18,7 @@ public interface Controller {
    */
   void startGame() throws IOException;
 
+  Town getTown();
+
+  void executeCommand(String command) throws IOException;
 }

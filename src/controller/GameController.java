@@ -150,6 +150,11 @@ public class GameController implements Controller {
     return this.town;
   }
 
+  @Override
+  public void executeCommand(String command) {
+
+  }
+
   public boolean hasEnoughPlayers() {
     return town.getPlayers().size() >= 2;
   }
