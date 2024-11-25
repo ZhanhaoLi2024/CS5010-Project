@@ -2,6 +2,7 @@ package controller;
 
 import controller.command.AddPlayerCommand;
 import java.io.IOException;
+import java.util.List;
 import model.town.Town;
 import view.GameView;
 
@@ -84,7 +85,7 @@ public class TextController implements Controller {
       int choice = view.getNumberInput();
       switch (choice) {
         case 1:
-          town.showAllPlayersInfo();
+          showAllPlayersInfo();
           break;
         case 2:
           showSpecificPlayerInfo();
@@ -98,10 +99,27 @@ public class TextController implements Controller {
     }
   }
 
+  private void showAllPlayersInfo() throws IOException {
+    List<String> players = town.getAllPlayersInfo();
+    if (players.isEmpty()) {
+      view.showMessage("There are no players in the town.");
+    } else {
+      view.showMessage("--------------------");
+      view.showMessage("All players info:");
+      for (String player : players) {
+        String[] parts = player.split(",");
+        view.showMessage(parts[0] + " is at " + parts[1] + " with carry limit " + parts[2]);
+        view.showMessage("--------------------");
+      }
+    }
+  }
+
   private void showSpecificPlayerInfo() throws IOException {
     view.showMessage("Enter the player's name:");
     String playerName = view.getStringInput();
-    town.getPlayerByName(playerName);
+    String playerInfo = town.getPlayerByName(playerName);
+    String[] parts = playerInfo.split(",");
+    view.showMessage(parts[0] + " is at " + parts[1] + " with carry limit " + parts[2]);
   }
 
   private void addComputerPlayer() throws IOException {

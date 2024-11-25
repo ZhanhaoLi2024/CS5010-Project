@@ -70,6 +70,21 @@ public class TownModel implements Town {
     this.worldFile = filename;
   }
 
+  @Override
+  public List<String> getAllPlayersInfo() {
+    List<String> playerInfo = new ArrayList<>();
+    if (players.isEmpty()) {
+      return playerInfo;
+    }
+    for (Player player : players) {
+      System.out.println(player.getName());
+      playerInfo.add(
+          player.getName() + "," + getPlaceByNumber(player.getPlayerCurrentPlaceNumber()).getName()
+              + "," + player.getCarryLimit() + ";");
+    }
+    return playerInfo;
+  }
+
   /**
    * Resets the game state to the initial state.
    */
@@ -333,28 +348,6 @@ public class TownModel implements Town {
   }
 
   @Override
-  public void showAllPlayersInfo() throws IOException {
-    if (players.isEmpty()) {
-      output.append("No players found.\n");
-      return;
-    }
-    output.append("All players info:\n");
-    int index = 1;
-    output.append("--------------------\n");
-    for (Player player : players) {
-      output.append(String.valueOf(index)).append(". Player name: ").append(player.getName())
-          .append("\n");
-      output.append("Player current place: ")
-          .append(getPlaceByNumber(player.getPlayerCurrentPlaceNumber()).getName())
-          .append("\n");
-      output.append("This player can carry up to ").append(String.valueOf(player.getCarryLimit()))
-          .append(" items.\n");
-      output.append("--------------------\n");
-      index++;
-    }
-  }
-
-  @Override
   public void showBasicLocationInfo() throws IOException {
     Player currentPlayer = players.get(currentPlayerIndex);
     Place currentPlace = getPlaceByNumber(currentPlayer.getPlayerCurrentPlaceNumber());
@@ -402,33 +395,23 @@ public class TownModel implements Town {
   }
 
   @Override
-  public void getPlayerByName(String playerName) throws IOException {
+  public String getPlayerByName(String playerName) throws IOException {
+    String playerInfo = "";
     if (players.isEmpty()) {
       output.append("No players found.\n");
-      return;
+      return playerInfo;
     }
     Player player = players.stream()
         .filter(p -> p.getName().equals(playerName))
         .findFirst()
         .orElse(null);
     if (player != null) {
-      output.append("Player name: ").append(player.getName()).append("\n");
-      output.append("Player current place: ")
-          .append(getPlaceByNumber(player.getPlayerCurrentPlaceNumber()).getName())
-          .append("\n");
-      output.append("This player can carry up to ").append(String.valueOf(player.getCarryLimit()))
-          .append(" items.\n");
-      if (player.getCurrentCarriedItems().isEmpty()) {
-        output.append("Player is not carrying any items.\n");
-      } else {
-        output.append("Player is carrying the following items:\n");
-        for (Item item : player.getCurrentCarriedItems()) {
-          output.append("- ").append(item.getName()).append(" (Damage: ")
-              .append(String.valueOf(item.getDamage())).append(")\n");
-        }
-      }
+      playerInfo =
+          player.getName() + "," + getPlaceByNumber(player.getPlayerCurrentPlaceNumber()).getName()
+              + "," + player.getCarryLimit();
+      return playerInfo;
     } else {
-      output.append("Player not found.\n");
+      return playerInfo;
     }
   }
 

@@ -160,19 +160,8 @@ public interface Town {
    */
   void getPlaceByName(String placeName) throws IOException;
 
-  /**
-   * Shows information about all places.
-   *
-   * @throws IOException if there is an issue with I/O operations.
-   */
-  void showAllPlayersInfo() throws IOException;
 
-  /**
-   * Shows information about a specific player.
-   *
-   * @throws IOException if there is an issue with I/O operations.
-   */
-  void getPlayerByName(String playerName) throws IOException;
+  String getPlayerByName(String playerName) throws IOException;
 
   /**
    * Allows the player to look around the current place.
@@ -192,6 +181,8 @@ public interface Town {
    * @throws IOException if there is an issue with I/O operations
    */
   void showBasicLocationInfo() throws IOException;
+
+  List<String> getAllPlayersInfo();
 
   /**
    * Resets the game state to the initial configuration.

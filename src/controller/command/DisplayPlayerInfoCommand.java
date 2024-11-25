@@ -52,7 +52,7 @@ public class DisplayPlayerInfoCommand implements Command {
 
       switch (choice) {
         case 1:
-          town.showAllPlayersInfo();
+//          town.showAllPlayersInfo();
           break;
         case 2:
           showSpecificPlayerInfo();
@@ -70,6 +70,6 @@ public class DisplayPlayerInfoCommand implements Command {
   private void showSpecificPlayerInfo() throws IOException {
     output.append("Enter the player's name:\n");
     String playerName = scanner.nextLine();
-    town.getPlayerByName(playerName);
+//    town.getPlayerByName(playerName);
   }
 }
