@@ -1,4 +1,6 @@
-import controller.GameController;
+import controller.Controller;
+import controller.GuiController;
+import controller.TextController;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import model.town.Town;
@@ -45,18 +47,19 @@ public class Driver {
       );
 
       // 2. Create the Controller
-      GameController controller = new GameController(town, null, maxTurns);
-
       // 3. Create the View and connect it to the Controller
+      // 4. Connect the View to the Controller
+      Controller controller;
       GameView view;
       if (useGui) {
+        controller = new GuiController(town, null, maxTurns);
         view = new GuiGameView(controller);
+        controller.setView(view, true);
       } else {
+        controller = new TextController(town, null, maxTurns);
         view = new TextGameView(controller, new InputStreamReader(System.in), System.out);
+        controller.setView(view, false);
       }
-
-      // 4. Connect the View to the Controller
-      controller.setView(view, useGui);
 
       // 5. Start the game
       controller.startGame();

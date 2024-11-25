@@ -35,28 +35,28 @@ public class DisplayPlaceInfoCommand implements Command {
           "2. Show Specific Place Info\n" +
           "0. Exit");
 
-      int choice = view.displayMainMenu();
-
-      switch (choice) {
-        case 1:
-          town.showAllPlacesInfo();
-          break;
-        case 2:
-          showSpecificPlaceInfo();
-          break;
-        case 0:
-          view.showMessage("Exiting...");
-          showPlaceInfo = false;
-          break;
-        default:
-          view.showMessage("Invalid choice, please try again.");
-      }
+//      int choice = Integer.parseInt(scanner.nextLine());
+//
+//      switch (choice) {
+//        case 1:
+//          town.showAllPlacesInfo();
+//          break;
+//        case 2:
+//          showSpecificPlaceInfo();
+//          break;
+//        case 0:
+//          view.showMessage("Exiting...");
+//          showPlaceInfo = false;
+//          break;
+//        default:
+//          view.showMessage("Invalid choice, please try again.");
+//      }
     }
   }
 
   private void showSpecificPlaceInfo() throws IOException {
     view.showMessage("Enter the place name:");
-    String placeName = view.getUserInput();
+    String placeName = view.getStringInput();
     town.getPlaceByName(placeName);
   }
 }

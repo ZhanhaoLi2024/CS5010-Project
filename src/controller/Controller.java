@@ -1,7 +1,6 @@
 package controller;
 
 import java.io.IOException;
-import model.town.Town;
 import view.GameView;
 
 /**
@@ -9,6 +8,8 @@ import view.GameView;
  * It coordinates communication between the model and view components following the MVC pattern.
  */
 public interface Controller {
+  void setView(GameView gameView, boolean gui);
+
   /**
    * Initializes and starts the game, setting up initial game state and beginning gameplay.
    *
@@ -16,44 +17,4 @@ public interface Controller {
    */
   void startGame() throws IOException;
 
-  /**
-   * Generates and displays a graphical representation of the game map.
-   *
-   * @throws IOException if there is an error during map generation or display
-   */
-  void printMap() throws IOException;
-
-  /**
-   * Displays detailed information about the current state of the game map.
-   */
-  void displayMapInfo();
-
-  void setView(GameView gameView, boolean gui);
-
-  void handleAddHumanPlayer(String name, int startingPlace, int carryLimit)
-      throws IOException;
-
-  void handleAddComputerPlayer() throws IOException;
-
-  void handleShowPlayersInfo(Boolean isAll) throws IOException;
-
-  Town getTown();
-
-  boolean hasEnoughPlayers();
-
-  void handleDisplayPlayerInfo() throws IOException;
-
-  /**
-   * Processes a single turn in the game, handling player actions and game state updates.
-   *
-   * @throws IOException if there is an error during turn processing
-   */
-  void takeTurn() throws IOException;
-
-  /**
-   * Concludes the game session and performs necessary cleanup operations.
-   *
-   * @throws IOException if there is an error during game termination
-   */
-  void endGame() throws IOException;
 }

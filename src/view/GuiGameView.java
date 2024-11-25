@@ -5,7 +5,6 @@ import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Image;
 import java.io.IOException;
@@ -14,18 +13,12 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JSpinner;
-import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingUtilities;
 import model.item.Item;
 import model.place.Place;
@@ -176,118 +169,117 @@ public class GuiGameView implements GameView {
   }
 
 
-  @Override
-  public void showAddPlayerMessage() throws IOException {
-    JDialog dialog = new JDialog(mainFrame, "Add Human Player", true);
-    dialog.setLayout(new BorderLayout(10, 10));
-    dialog.setSize(900, 600);
-    dialog.setLocationRelativeTo(mainFrame);
-
-    // Left panel (Map) remains exactly the same
-    JPanel leftPanel = new JPanel(new BorderLayout(5, 5));
-    leftPanel.setBorder(BorderFactory.createTitledBorder(
-        BorderFactory.createEtchedBorder(),
-        "Game Map"
-    ));
-    MapPanel mapPanel = new MapPanel(controller.getTown().getPlaces());
-    mapPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-    leftPanel.add(mapPanel, BorderLayout.CENTER);
-
-    // Form panel
-    JPanel formPanel = new JPanel();
-    formPanel.setLayout(new BoxLayout(formPanel, BoxLayout.Y_AXIS));
-    formPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-
-    // Common dimensions for all input fields
-    Dimension inputSize = new Dimension(200, 25);
-    Font labelFont = new Font("Dialog", Font.PLAIN, 12);
-
-    // Player Name input
-    JPanel namePanel = new JPanel(new BorderLayout(10, 5));
-    namePanel.setMaximumSize(new Dimension(350, 50));
-    JLabel nameLabel = new JLabel("Player Name:");
-    nameLabel.setFont(labelFont);
-    JTextField nameField = new JTextField();
-    nameField.setPreferredSize(inputSize);
-    nameField.setHorizontalAlignment(JTextField.RIGHT);
-    namePanel.add(nameLabel, BorderLayout.WEST);
-    namePanel.add(nameField, BorderLayout.EAST);
-
-    // Starting Place input
-    JPanel placePanel = new JPanel(new BorderLayout(10, 5));
-    placePanel.setMaximumSize(new Dimension(350, 50));
-    JLabel placeLabel = new JLabel("Starting Place (1-20):");
-    placeLabel.setFont(labelFont);
-    JSpinner placeSpinner = new JSpinner(new SpinnerNumberModel(1, 1, 20, 1));
-    placeSpinner.setPreferredSize(inputSize);
-    JComponent placeEditor = placeSpinner.getEditor();
-    ((JSpinner.DefaultEditor) placeEditor).getTextField().setHorizontalAlignment(JTextField.RIGHT);
-    placePanel.add(placeLabel, BorderLayout.WEST);
-    placePanel.add(placeSpinner, BorderLayout.EAST);
-
-    // Carry Limit input
-    JPanel limitPanel = new JPanel(new BorderLayout(10, 5));
-    limitPanel.setMaximumSize(new Dimension(350, 50));
-    JLabel limitLabel = new JLabel("Carry Limit (1-10):");
-    limitLabel.setFont(labelFont);
-    JSpinner limitSpinner = new JSpinner(new SpinnerNumberModel(5, 1, 10, 1));
-    limitSpinner.setPreferredSize(inputSize);
-    JComponent limitEditor = limitSpinner.getEditor();
-    ((JSpinner.DefaultEditor) limitEditor).getTextField().setHorizontalAlignment(JTextField.RIGHT);
-    limitPanel.add(limitLabel, BorderLayout.WEST);
-    limitPanel.add(limitSpinner, BorderLayout.EAST);
-
-    // Add components to form panel with proper spacing
-    formPanel.add(namePanel);
-    formPanel.add(Box.createRigidArea(new Dimension(0, 10)));
-    formPanel.add(placePanel);
-    formPanel.add(Box.createRigidArea(new Dimension(0, 10)));
-    formPanel.add(limitPanel);
-    formPanel.add(Box.createVerticalGlue());
-
-    // Button panel remains the same
-    JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-    JButton cancelButton = new JButton("Cancel");
-    JButton addButton = new JButton("Add Player");
-    buttonPanel.add(cancelButton);
-    buttonPanel.add(addButton);
-
-    cancelButton.addActionListener(e -> dialog.dispose());
-    addButton.addActionListener(e -> {
-      String name = nameField.getText().trim();
-      int place = (Integer) placeSpinner.getValue();
-      int limit = (Integer) limitSpinner.getValue();
-
-      if (name.isEmpty()) {
-        JOptionPane.showMessageDialog(dialog,
-            "Player name cannot be empty!",
-            "Error",
-            JOptionPane.ERROR_MESSAGE);
-        return;
-      }
-
-      try {
-        controller.handleAddHumanPlayer(name, place, limit);
-      } catch (IOException ex) {
-        showMessage("Error adding player: " + ex.getMessage());
-      }
-      dialog.dispose();
-    });
-
-    // Split pane
-    JSplitPane splitPane = new JSplitPane(
-        JSplitPane.HORIZONTAL_SPLIT,
-        leftPanel,
-        formPanel
-    );
-    splitPane.setDividerLocation(450);
-    splitPane.setResizeWeight(0.5);
-
-    dialog.add(splitPane, BorderLayout.CENTER);
-    dialog.add(buttonPanel, BorderLayout.SOUTH);
-
-    dialog.setVisible(true);
-  }
+//  public void showAddPlayerMessage() throws IOException {
+//    JDialog dialog = new JDialog(mainFrame, "Add Human Player", true);
+//    dialog.setLayout(new BorderLayout(10, 10));
+//    dialog.setSize(900, 600);
+//    dialog.setLocationRelativeTo(mainFrame);
+//
+//    // Left panel (Map) remains exactly the same
+//    JPanel leftPanel = new JPanel(new BorderLayout(5, 5));
+//    leftPanel.setBorder(BorderFactory.createTitledBorder(
+//        BorderFactory.createEtchedBorder(),
+//        "Game Map"
+//    ));
+//    MapPanel mapPanel = new MapPanel(controller.getTown().getPlaces());
+//    mapPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+//    leftPanel.add(mapPanel, BorderLayout.CENTER);
+//
+//    // Form panel
+//    JPanel formPanel = new JPanel();
+//    formPanel.setLayout(new BoxLayout(formPanel, BoxLayout.Y_AXIS));
+//    formPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+//
+//    // Common dimensions for all input fields
+//    Dimension inputSize = new Dimension(200, 25);
+//    Font labelFont = new Font("Dialog", Font.PLAIN, 12);
+//
+//    // Player Name input
+//    JPanel namePanel = new JPanel(new BorderLayout(10, 5));
+//    namePanel.setMaximumSize(new Dimension(350, 50));
+//    JLabel nameLabel = new JLabel("Player Name:");
+//    nameLabel.setFont(labelFont);
+//    JTextField nameField = new JTextField();
+//    nameField.setPreferredSize(inputSize);
+//    nameField.setHorizontalAlignment(JTextField.RIGHT);
+//    namePanel.add(nameLabel, BorderLayout.WEST);
+//    namePanel.add(nameField, BorderLayout.EAST);
+//
+//    // Starting Place input
+//    JPanel placePanel = new JPanel(new BorderLayout(10, 5));
+//    placePanel.setMaximumSize(new Dimension(350, 50));
+//    JLabel placeLabel = new JLabel("Starting Place (1-20):");
+//    placeLabel.setFont(labelFont);
+//    JSpinner placeSpinner = new JSpinner(new SpinnerNumberModel(1, 1, 20, 1));
+//    placeSpinner.setPreferredSize(inputSize);
+//    JComponent placeEditor = placeSpinner.getEditor();
+//    ((JSpinner.DefaultEditor) placeEditor).getTextField().setHorizontalAlignment(JTextField.RIGHT);
+//    placePanel.add(placeLabel, BorderLayout.WEST);
+//    placePanel.add(placeSpinner, BorderLayout.EAST);
+//
+//    // Carry Limit input
+//    JPanel limitPanel = new JPanel(new BorderLayout(10, 5));
+//    limitPanel.setMaximumSize(new Dimension(350, 50));
+//    JLabel limitLabel = new JLabel("Carry Limit (1-10):");
+//    limitLabel.setFont(labelFont);
+//    JSpinner limitSpinner = new JSpinner(new SpinnerNumberModel(5, 1, 10, 1));
+//    limitSpinner.setPreferredSize(inputSize);
+//    JComponent limitEditor = limitSpinner.getEditor();
+//    ((JSpinner.DefaultEditor) limitEditor).getTextField().setHorizontalAlignment(JTextField.RIGHT);
+//    limitPanel.add(limitLabel, BorderLayout.WEST);
+//    limitPanel.add(limitSpinner, BorderLayout.EAST);
+//
+//    // Add components to form panel with proper spacing
+//    formPanel.add(namePanel);
+//    formPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+//    formPanel.add(placePanel);
+//    formPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+//    formPanel.add(limitPanel);
+//    formPanel.add(Box.createVerticalGlue());
+//
+//    // Button panel remains the same
+//    JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+//    JButton cancelButton = new JButton("Cancel");
+//    JButton addButton = new JButton("Add Player");
+//    buttonPanel.add(cancelButton);
+//    buttonPanel.add(addButton);
+//
+//    cancelButton.addActionListener(e -> dialog.dispose());
+//    addButton.addActionListener(e -> {
+//      String name = nameField.getText().trim();
+//      int place = (Integer) placeSpinner.getValue();
+//      int limit = (Integer) limitSpinner.getValue();
+//
+//      if (name.isEmpty()) {
+//        JOptionPane.showMessageDialog(dialog,
+//            "Player name cannot be empty!",
+//            "Error",
+//            JOptionPane.ERROR_MESSAGE);
+//        return;
+//      }
+//
+////      try {
+////        controller.handleAddHumanPlayer(name, place, limit);
+////      } catch (IOException ex) {
+////        showMessage("Error adding player: " + ex.getMessage());
+////      }
+//      dialog.dispose();
+//    });
+//
+//    // Split pane
+//    JSplitPane splitPane = new JSplitPane(
+//        JSplitPane.HORIZONTAL_SPLIT,
+//        leftPanel,
+//        formPanel
+//    );
+//    splitPane.setDividerLocation(450);
+//    splitPane.setResizeWeight(0.5);
+//
+//    dialog.add(splitPane, BorderLayout.CENTER);
+//    dialog.add(buttonPanel, BorderLayout.SOUTH);
+//
+//    dialog.setVisible(true);
+//  }
 
   private void showSuccessMessage() {
     JOptionPane.showMessageDialog(mainFrame, "Computer-controller player added successfully!");
@@ -323,51 +315,51 @@ public class GuiGameView implements GameView {
   private void handleMenuChoice(int choice) throws IOException {
     switch (choice) {
       case 1: // Add Human Player
-        showAddPlayerMessage();
+//        showAddPlayerMessage();
         if (playerInfo != null) {
           String name = playerInfo[0];
           int place = Integer.parseInt(playerInfo[1]);
           int limit = Integer.parseInt(playerInfo[2]);
-          try {
-            controller.handleAddHumanPlayer(name, place, limit);
-          } catch (IOException ex) {
-            showMessage("Error adding player: " + ex.getMessage());
-          }
+//          try {
+//            controller.handleAddHumanPlayer(name, place, limit);
+//          } catch (IOException ex) {
+//            showMessage("Error adding player: " + ex.getMessage());
+//          }
           playerInfo = null;
         }
         break;
       case 2: // Add Computer Player
-        try {
-          controller.handleAddComputerPlayer();
-          showSuccessMessage();
-        } catch (IOException ex) {
-          showMessage("Error adding player: " + ex.getMessage());
-        }
+//        try {
+//          controller.handleAddComputerPlayer();
+//          showSuccessMessage();
+//        } catch (IOException ex) {
+//          showMessage("Error adding player: " + ex.getMessage());
+//        }
         break;
       case 3: // Display Player Information
-        try {
-          controller.handleDisplayPlayerInfo();
-        } catch (IOException ex) {
-          showMessage("Error displaying player information: " + ex.getMessage());
-        }
+//        try {
+//          controller.handleDisplayPlayerInfo();
+//        } catch (IOException ex) {
+//          showMessage("Error displaying player information: " + ex.getMessage());
+//        }
         break;
       case 4: // Start Game
-        if (!controller.hasEnoughPlayers()) {
-          JOptionPane.showMessageDialog(
-              mainFrame,
-              "At least two players are required to start the game. "
-                  + "Please add more players.",
-              "Not Enough Players",
-              JOptionPane.WARNING_MESSAGE
-          );
-          return;
-        }
+//        if (!controller.hasEnoughPlayers()) {
+//          JOptionPane.showMessageDialog(
+//              mainFrame,
+//              "At least two players are required to start the game. "
+//                  + "Please add more players.",
+//              "Not Enough Players",
+//              JOptionPane.WARNING_MESSAGE
+//          );
+//          return;
+//        }
         cardLayout.show(mainPanel, "GAME");
-        try {
-          controller.takeTurn();
-        } catch (IOException ex) {
-          showMessage("Error starting game: " + ex.getMessage());
-        }
+//        try {
+//          controller.takeTurn();
+//        } catch (IOException ex) {
+//          showMessage("Error starting game: " + ex.getMessage());
+//        }
         break;
       default:
         notifyMenuChoice(choice);
@@ -392,7 +384,6 @@ public class GuiGameView implements GameView {
     SwingUtilities.invokeLater(() -> cardLayout.show(mainPanel, "WELCOME"));
   }
 
-  @Override
   public void updateMap(List<Place> places, List<Player> players, Target target, Image mapImage) {
     SwingUtilities.invokeLater(() -> {
       if (mapImage != null) {
@@ -421,7 +412,6 @@ public class GuiGameView implements GameView {
     });
   }
 
-  @Override
   public int getMoveInput(List<Place> neighbors) {
     String[] options = new String[neighbors.size()];
     for (int i = 0; i < neighbors.size(); i++) {
@@ -440,7 +430,6 @@ public class GuiGameView implements GameView {
     return choice + 1;
   }
 
-  @Override
   public int getPickupInput(List<Item> items) {
     if (items.isEmpty()) {
       JOptionPane.showMessageDialog(mainFrame, "No items available to pick up.");
@@ -465,7 +454,6 @@ public class GuiGameView implements GameView {
     return choice + 1;
   }
 
-  @Override
   public int getAttackInput(List<Item> carriedItems) {
     String[] options = new String[carriedItems.size() + 1];
     options[0] = "Poke in the eye (1 damage)";
@@ -489,7 +477,7 @@ public class GuiGameView implements GameView {
   }
 
   @Override
-  public String getUserInput() {
+  public String getStringInput() {
     return JOptionPane.showInputDialog(mainFrame, "Enter your input:");
   }
 
@@ -511,13 +499,11 @@ public class GuiGameView implements GameView {
     });
   }
 
-  @Override
   public int humanTurnChoice() {
     // This method will be used by the controller to handle human player turn choices
     return 0; // Placeholder return
   }
 
-  @Override
   public int displayMainMenu() {
     mainMenuPanel = new JPanel();
     mainMenuPanel.setLayout(new BoxLayout(mainMenuPanel, BoxLayout.Y_AXIS));
@@ -572,7 +558,6 @@ public class GuiGameView implements GameView {
     return choice;
   }
 
-  @Override
   public void showPlayersInfo() {
     // This method will be used by the controller to display player information
   }

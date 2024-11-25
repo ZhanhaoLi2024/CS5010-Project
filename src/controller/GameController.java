@@ -11,6 +11,7 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import javax.imageio.ImageIO;
 import model.place.Place;
 import model.player.Player;
@@ -62,12 +63,12 @@ public class GameController implements Controller {
   }
 
   private void updateGameView() throws IOException {
-    view.updateMap(
-        town.getPlaces(),
-        town.getPlayers(),
-        town.getTarget(),
-        null  // 我们不再需要传递BufferedImage，因为MapPanel自己处理绘制
-    );
+//    view.updateMap(
+//        town.getPlaces(),
+//        town.getPlayers(),
+//        town.getTarget(),
+//        null  // 我们不再需要传递BufferedImage，因为MapPanel自己处理绘制
+//    );
 
     // 如果有当前玩家，也更新玩家信息
     if (!town.getPlayers().isEmpty()) {
@@ -81,15 +82,14 @@ public class GameController implements Controller {
    * Displays the main menu and handles user input.
    */
   private void displayMainMenu() throws IOException {
-    int choice = view.displayMainMenu();
-    System.out.println("choice: " + choice);
+    int choice = 1;
 
     switch (choice) {
       case 1:
-        view.showAddPlayerMessage();
+//        view.showAddPlayerMessage();
         break;
       case 3:
-        view.showPlayersInfo();
+//        view.showPlayersInfo();
         break;
 //      case 1:
 //        displayMapInfo();
@@ -121,7 +121,6 @@ public class GameController implements Controller {
     }
   }
 
-  @Override
   public void setView(GameView gameView, boolean gui) {
     if (this.view != null) {
       throw new IllegalStateException("View is already set");
@@ -130,37 +129,31 @@ public class GameController implements Controller {
     this.isGui = gui;
   }
 
-  @Override
   public void handleAddHumanPlayer(String name, int startingPlace, int carryLimit)
       throws IOException {
     new AddPlayerCommand(town, false, name, startingPlace, carryLimit).execute();
   }
 
-  @Override
   public void handleAddComputerPlayer() throws IOException {
     new AddPlayerCommand(town, true, "Computer Player", 1, 1).execute();
   }
 
-  @Override
-  public void handleShowPlayersInfo(Boolean isAll) throws IOException {
-    if (isAll) {
-      view.showMessage("Showing all players info:");
-    } else {
-      view.showMessage("Showing specific player info:");
-    }
+  public List<Player> getPlayers() {
+    return this.town.getPlayers();
   }
 
-  @Override
+  public Place getPlaceByNumber(int placeNumber) {
+    return this.town.getPlaceByNumber(placeNumber);
+  }
+
   public Town getTown() {
     return this.town;
   }
 
-  @Override
   public boolean hasEnoughPlayers() {
     return town.getPlayers().size() >= 2;
   }
 
-  @Override
   public void handleDisplayPlayerInfo() throws IOException {
 //    new DisplayPlayerInfoCommand(town, view).execute();
   }
@@ -182,7 +175,7 @@ public class GameController implements Controller {
    */
   private void handleHumanTurn() throws IOException {
 
-    int choice = view.humanTurnChoice();
+    int choice = 1;
     switch (choice) {
       case 1:
         new MovePlayerCommand(town).execute();
@@ -237,7 +230,6 @@ public class GameController implements Controller {
     new LookAroundCommand(town).execute();
   }
 
-  @Override
   public void takeTurn() throws IOException {
     if (town.getPlayers().size() < 2) {
       view.showMessage("You have to add at least two player");
@@ -267,7 +259,6 @@ public class GameController implements Controller {
     }
   }
 
-  @Override
   public void endGame() throws IOException {
     continueGame = false;
     if (town.getTarget().isDefeated()) {
@@ -283,7 +274,6 @@ public class GameController implements Controller {
     town.resetGameState();
   }
 
-  @Override
   public void displayMapInfo() {
     System.out.println("=== Map Information ===");
     System.out.println("Town: " + town.getTownName());
@@ -302,7 +292,7 @@ public class GameController implements Controller {
     }
   }
 
-  @Override
+
   public void printMap() throws IOException {
     view.showMessage("Printing the map...");
 
