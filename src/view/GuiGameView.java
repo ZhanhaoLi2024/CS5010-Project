@@ -23,6 +23,7 @@ import javax.swing.SwingUtilities;
 import model.place.Place;
 import model.player.Player;
 import view.dialog.AddPlayerDialog;
+import view.dialog.PlayerInfoDialog;
 import view.panel.MapPanel;
 
 /**
@@ -84,10 +85,10 @@ public class GuiGameView implements GameView {
     JLabel titleLabel = createStyledLabel("Kill Doctor Lucky", 48, Font.BOLD);
 
     // Author
-    JLabel authorLabel = createStyledLabel("Created by Zhanhao Li", 24, Font.PLAIN);
+    JLabel authorLabel = createStyledLabel("Created by Li,Zhanhao", 24, Font.PLAIN);
 
     // Course Info
-    JLabel courseLabel = createStyledLabel("CS 5010 Project", 20, Font.PLAIN);
+    JLabel courseLabel = createStyledLabel("CS5010 Project", 20, Font.PLAIN);
 
     // Start Button
     JButton startButton = new JButton("Start Game");
@@ -230,11 +231,12 @@ public class GuiGameView implements GameView {
       } else if (command.equals("ADD_COMPUTER_PLAYER")) {
         controller.executeCommand("ADD_COMPUTER");
       } else if (command.equals("SHOW_PLAYER_INFO")) {
-        controller.executeCommand("SHOW_PLAYER_INFO");
+        PlayerInfoDialog dialog = new PlayerInfoDialog(this);
+        dialog.setVisible(true);
       } else if (command.equals("START_TURNS")) {
         controller.executeCommand("START_TURNS");
       } else if (command.equals("QUIT")) {
-        controller.executeCommand("QUIT");
+        close();
       } else {
         System.out.println("Executing command: " + command);
       }

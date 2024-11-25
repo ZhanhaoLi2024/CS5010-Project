@@ -7,8 +7,8 @@ import model.town.Town;
 import view.GameView;
 
 public class TextController implements Controller {
-  private Town town;
-  private int maxTurns;
+  private final Town town;
+  private final int maxTurns;
   private GameView view;
   private int currentTurn;
   private boolean quitGame;
