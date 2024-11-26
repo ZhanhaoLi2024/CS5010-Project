@@ -1,6 +1,7 @@
 package controller;
 
 import controller.command.AddPlayerCommand;
+import controller.command.LookAroundCommand;
 import controller.command.MovePlayerCommand;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -109,7 +110,6 @@ public class TextController implements Controller {
       for (int i = 0; i < items.length; i++) {
         String item = items[i].replace("[", "").replace("]", "");
         String[] parts = item.split(",");
-        view.showMessage(item);
 
         if (i == 0 && parts.length >= 2) {
           playerName = parts[0].trim();
@@ -191,6 +191,7 @@ public class TextController implements Controller {
         movePlayer();
         break;
       case 2:
+        pickUpItem();
 //        new PickUpItemCommand(town).execute();
         break;
       case 3:
@@ -207,12 +208,107 @@ public class TextController implements Controller {
     }
   }
 
+  private void pickUpItem() throws IOException {
+    int currentPlayerIndex = town.getCurrentPlayerIndex();
+    int currentPlaceNumber = town.getPlayerCurrPlaceNumber(currentPlayerIndex);
+    String currentPlace = town.getCurrentPlaceInfo(currentPlaceNumber);
+    String[] parts = currentPlace.split(";");
+    view.showMessage("Current place: " + parts[1]);
+    String currentItem = parts[1].replace("[", "").replace("]", "").trim();
+    if (currentItem.isEmpty()) {
+      view.showMessage("No item in this place.");
+    } else {
+      String itemName = currentItem.split("-")[0].trim();
+      String itemDamage = currentItem.split("-")[1].trim();
+      view.showMessage("Current place item: " + itemName + " (Damage: " + itemDamage + ")");
+//      new PickUpItemCommand(town).execute();
+    }
+  }
+
   private void lookAround() throws IOException {
     view.showMessage("Looking around...");
     int currentPlayerIndex = town.getCurrentPlayerIndex();
+    int currentPlayerPlaceNumber = town.getPlayerCurrPlaceNumber(currentPlayerIndex);
 
-    new MovePlayerCommand(town, currentPlayerIndex,
-        town.getPlayerCurrPlaceNumber(currentPlayerIndex)).execute();
+    String currentPlace = town.getCurrentPlaceInfo(currentPlayerPlaceNumber);
+    view.showMessage("Current place: "
+        + currentPlace); // Current place: Grocery Store,[Shopping Cart12],[Steven]
+    String neighbors = town.getCurrentPlaceNeighborsInfo(
+        currentPlayerPlaceNumber); // Neighbors: [[Park,1,[Toy Ball8],[Ivan],true,true], [School,3,[Textbook6],[],false,false], [Restaurant,9,[Menu22],[],false,false]]
+    view.showMessage("Neighbors: " + neighbors);
+
+    // show the current place Info: name, items, players
+    view.showMessage("----------");
+    String[] parts = currentPlace.split(";");
+    String currentPlaceName = parts[0];
+    view.showMessage("Current place: " + currentPlaceName);
+    String itemName = "";
+    String itemDamage = "";
+    String currentItem = "";
+    if (parts[1].isEmpty()) {
+      currentItem = "";
+    } else {
+      currentItem = parts[1].replace("[", "").replace("]", "").trim();
+      itemName = currentItem.split("-")[0].trim();
+      itemDamage = currentItem.split("-")[1].trim();
+    }
+    String currentPlayers = "";
+    if (parts[2].isEmpty()) {
+      currentPlayers = "No other player in this place";
+    } else {
+      currentPlayers = parts[2].replace("[", "").replace("]", "").trim();
+    }
+    view.showMessage("Current place: " + currentPlaceName);
+    if (currentItem.isEmpty()) {
+      view.showMessage("No item in this place.");
+    } else {
+      view.showMessage("Current place item: " + itemName + " (Damage: " + itemDamage + ")");
+    }
+    view.showMessage("Current place players: " + currentPlayers);
+    view.showMessage("----------");
+
+    // show the neighbors Info: name, items, players
+    neighbors = neighbors.replace("[[", "").replace("]]", "");
+    String[] neighborParts = neighbors.split("\\], \\[");
+    for (String neighbor : neighborParts) {
+      String[] neighborInfo = neighbor.split(";");
+
+      String neighborName = neighborInfo[0].trim();
+      String neighborNumber = neighborInfo[1].trim();
+      String neighborItem = "";
+      String neighborItemName = "";
+      String neighborItemDamage = "";
+      if (neighborInfo[2].isEmpty()) {
+        neighborItem = "No item in this place.";
+      } else {
+        neighborItem = neighborInfo[2].replace("[", "").replace("]", "").trim();
+        neighborItemName = neighborItem.split("-")[0].trim();
+        neighborItemDamage = neighborItem.split("-")[1].trim();
+        neighborItem = neighborItemName + " (Damage: " + neighborItemDamage + ")";
+      }
+      String neighborPlayers = "";
+      if (neighborInfo[3].isEmpty()) {
+        neighborPlayers = "No other player in this place";
+      } else {
+        neighborPlayers = neighborInfo[3].replace("[", "").replace("]", "").trim();
+      }
+      if (neighborInfo[5].equals("true")) {
+        view.showMessage("Neighboring place: " + neighborName);
+        view.showMessage("Pet is in this place.");
+      } else {
+        view.showMessage("Neighbor: " + neighborName + " (Place Number: " + neighborNumber + ")");
+        view.showMessage("Item: " + neighborItem);
+        view.showMessage("Players: " + neighborPlayers);
+        if (neighborInfo[4].equals("true")) {
+          view.showMessage("Target is in this place.");
+        }
+      }
+      view.showMessage("-----");
+    }
+    view.showMessage("----------");
+
+
+    new LookAroundCommand(town).execute();
   }
 
   private void handleComputerMove(int currentPlayerIndex, int currentPlaceNumber)
@@ -228,7 +324,7 @@ public class TextController implements Controller {
     for (String place : places) {
       place = place.replace("[", "").replace("]", "");
 
-      String[] parts = place.split(",", 5);
+      String[] parts = place.split(";", 5);
       Integer placeNumber = Integer.parseInt(parts[1].trim());
       neighborNumber.add(placeNumber);
       if (parts[4].equals("true")) {
@@ -263,12 +359,11 @@ public class TextController implements Controller {
     String currentPlaceNeighbour = town.getCurrentPlaceNeighborsInfo(currentPlaceNumber);
     currentPlaceNeighbour = currentPlaceNeighbour.substring(1, currentPlaceNeighbour.length() - 1);
     String[] places = currentPlaceNeighbour.split("\\], \\[");
-    view.showMessage("Current place's Neighbor:(PlaceName - PlaceNumber)");
     HashSet<Integer> neighborNumber = new HashSet<>();
     for (String place : places) {
       place = place.replace("[", "").replace("]", "");
 
-      String[] parts = place.split(",", 5);
+      String[] parts = place.split(";", 5);
       String placeName = parts[0].trim();
       Integer placeNumber = Integer.parseInt(parts[1].trim());
       neighborNumber.add(placeNumber);

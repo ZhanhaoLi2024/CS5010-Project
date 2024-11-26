@@ -229,15 +229,16 @@ public class TownModel implements Town {
   @Override
   public String getCurrentPlaceInfo(int placeNumber) throws IOException {
     Place place = getPlaceByNumber(placeNumber);
+    List<String> currentPlace = new ArrayList<>();
     List<String> items = new ArrayList<>();
     for (Item item : place.getItems()) {
-      items.add(item.getName() + item.getDamage());
+      items.add(item.getName() + "-" + item.getDamage());
     }
     List<String> players = new ArrayList<>();
     for (Player player : place.getCurrentPlacePlayers()) {
       players.add(player.getName());
     }
-    return place.getName() + "," + items + "," + players;
+    return place.getName() + ";" + items + ";" + players;
   }
 
   @Override
@@ -250,15 +251,15 @@ public class TownModel implements Town {
       if (!p.equals(place) && place.isNeighbor(p)) {
         List<String> items = new ArrayList<>();
         for (Item item : p.getItems()) {
-          items.add(item.getName() + item.getDamage());
+          items.add(item.getName() + "-" + item.getDamage());
         }
         List<String> neighborPlayers = new ArrayList<>();
         for (Player player : p.getCurrentPlacePlayers()) {
           neighborPlayers.add(player.getName());
         }
         neighbors.add(Collections.singletonList(
-            p.getName() + "," + p.getPlaceNumber() + "," + items + "," + neighborPlayers + ","
-                + isTarget + "," + isPet));
+            p.getName() + ";" + p.getPlaceNumber() + ";" + items + ";" + neighborPlayers + ";"
+                + isTarget + ";" + isPet));
       }
     }
     return neighbors.toString();
@@ -456,101 +457,6 @@ public class TownModel implements Town {
 
   @Override
   public void lookAround() throws IOException {
-    if (players.isEmpty()) {
-      throw new IllegalStateException("Cannot look around: No players in the game");
-    }
-
-    Player currentPlayer = this.players.get(currentPlayerIndex);
-    Place currentPlace = getPlaceByNumber(currentPlayer.getPlayerCurrentPlaceNumber());
-
-    // Current Place Info: name, items, players
-    // First show current place name
-    output.append("Current place: ").append(currentPlace.getName()).append("\n");
-    // Show items in current place
-    List<Item> currentPlaceItems = currentPlace.getItems();
-    output.append("Items in ").append(currentPlace.getName()).append(":\n");
-    if (currentPlaceItems.isEmpty()) {
-      output.append("No items found.\n");
-    } else {
-      for (Item item : currentPlaceItems) {
-        output.append(item.getName()).append(" (Damage: ")
-            .append(String.valueOf(item.getDamage()))
-            .append(")\n");
-      }
-    }
-    // Show players in current place
-    List<Player> currentPlacePlayers = new ArrayList<>();
-    for (Player p : players) {
-      Place currentPlaceOfP = getPlaceByNumber(p.getPlayerCurrentPlaceNumber());
-      if (currentPlaceOfP.equals(currentPlace) && !p.equals(currentPlayer)) {
-        currentPlacePlayers.add(p);
-      }
-    }
-    if (!currentPlacePlayers.isEmpty()) {
-      output.append("Players in this place:");
-      if (currentPlacePlayers.size() == 1) {
-        output.append(currentPlacePlayers.get(0).getName()).append("\n");
-      } else {
-        for (Player player : currentPlacePlayers) {
-          output.append(player.getName()).append(", ");
-        }
-        output.append("\n");
-      }
-    }
-
-    // Current Place Neighbors Info: name, items, players
-    // Show neighbors
-    List<Place> neighbors = currentPlace.getNeighbors();
-    if (neighbors.isEmpty()) {
-      output.append("No neighbors found.\n");
-    } else {
-      output.append("Neighbors of ").append(currentPlace.getName())
-          .append(":\n");
-      for (Place neighbor : neighbors) {
-        output.append(" - ").append(neighbor.getName());
-
-        // Check if pet is in this neighbor
-        if (!isPlaceVisible(neighbor)) {
-          output.append(" (Pet is here)\n");
-          continue; // Skip showing items and players for spaces with pet
-        }
-        output.append("\n");
-
-        // Show items in visible neighbors
-        List<Item> neighborItems = neighbor.getItems();
-        if (!neighborItems.isEmpty()) {
-          output.append("   Items in ").append(neighbor.getName()).append(":");
-          for (Item item : neighborItems) {
-            output.append(item.getName()).append(" (Damage: ")
-                .append(String.valueOf(item.getDamage()))
-                .append(")\n");
-          }
-        }
-
-        // Show players in visible neighbors
-        List<Player> neighborPlayers = new ArrayList<>();
-        for (Player p : players) {
-          Place currentPlaceOfP = getPlaceByNumber(p.getPlayerCurrentPlaceNumber());
-          if (currentPlaceOfP.equals(neighbor)) {
-            neighborPlayers.add(p);
-          }
-        }
-        if (!neighborPlayers.isEmpty()) {
-          output.append("   Players in this place:");
-          if (neighborPlayers.size() == 1) {
-            output.append(neighborPlayers.get(0).getName()).append("\n");
-          } else {
-            for (Player player : neighborPlayers) {
-              output.append(player.getName()).append(", ");
-            }
-            output.append("\n");
-          }
-        }
-      }
-    }
-    output.append("\n");
-
-
     this.switchToNextPlayer();
   }
 
