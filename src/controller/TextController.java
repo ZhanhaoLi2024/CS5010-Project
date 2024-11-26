@@ -3,8 +3,10 @@ package controller;
 import controller.command.AddPlayerCommand;
 import controller.command.LookAroundCommand;
 import controller.command.MovePlayerCommand;
+import controller.command.PickUpItemCommand;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
@@ -26,6 +28,21 @@ public class TextController implements Controller {
     this.maxTurns = gameMaxTurns;
     this.currentTurn = 1;
     this.quitGame = false;
+  }
+
+  private static List<String> convertStringToList(String input) {
+    if (input == null || input.equals("[]")) {
+      return new ArrayList<>();
+    }
+
+    input = input.substring(1, input.length() - 1);
+
+    String[] parts = input.split(",\\s*");
+
+    List<String> resultList = new ArrayList<>();
+    Collections.addAll(resultList, parts);
+
+    return resultList;
   }
 
   @Override
@@ -124,8 +141,14 @@ public class TextController implements Controller {
         } else if (i == 3 && parts.length >= 2) {
           petPlace = parts[1].trim();
         } else if (i == 4 && parts.length == 2) {
-          itemName = parts[0].trim();
-          itemDamage = parts[1].trim();
+          if (parts[1].isEmpty()) {
+            itemName = "";
+            itemDamage = "";
+          } else {
+            itemName = parts[0].trim();
+            itemDamage = parts[1].trim();
+          }
+
         }
       }
       view.showMessage("Hi " + playerName + ", you Current place: " + playerPlace);
@@ -136,8 +159,11 @@ public class TextController implements Controller {
       }
       view.showMessage("Target Current place: " + targetPlace + " (Health: " + targetHealth + ")");
       view.showMessage("Pet Current place: " + petPlace);
-      view.showMessage("Current place item: " + itemName + " (Damage: " + itemDamage + ")");
-
+      if (itemName.isEmpty()) {
+        view.showMessage("No item in this place.");
+      } else {
+        view.showMessage("Current place item: " + itemName + " (Damage: " + itemDamage + ")");
+      }
       takeTurnForPlayer();
       boolean isGameOver = town.isGameOver();
       if (isGameOver) {
@@ -192,7 +218,6 @@ public class TextController implements Controller {
         break;
       case 2:
         pickUpItem();
-//        new PickUpItemCommand(town).execute();
         break;
       case 3:
         lookAround();
@@ -213,15 +238,31 @@ public class TextController implements Controller {
     int currentPlaceNumber = town.getPlayerCurrPlaceNumber(currentPlayerIndex);
     String currentPlace = town.getCurrentPlaceInfo(currentPlaceNumber);
     String[] parts = currentPlace.split(";");
+    String itemName = "";
     view.showMessage("Current place: " + parts[1]);
-    String currentItem = parts[1].replace("[", "").replace("]", "").trim();
-    if (currentItem.isEmpty()) {
+    List<String> items = convertStringToList(parts[1]);
+    if (items.isEmpty()) {
       view.showMessage("No item in this place.");
     } else {
-      String itemName = currentItem.split("-")[0].trim();
-      String itemDamage = currentItem.split("-")[1].trim();
-      view.showMessage("Current place item: " + itemName + " (Damage: " + itemDamage + ")");
-//      new PickUpItemCommand(town).execute();
+      view.showMessage("Items in this place:");
+      int i = 1;
+      for (String item : items) {
+        itemName = item.split("-")[0].trim();
+        String itemDamage = item.split("-")[1].trim();
+        view.showMessage(i + ". " + itemName + " (Damage: " + itemDamage + ")");
+      }
+      view.showMessage("Enter the number of the item you want to pick up:");
+      int itemNumber = view.getNumberInput();
+      boolean enterRightNumber = false;
+      while (!enterRightNumber) {
+        if (itemNumber < 1 || itemNumber > items.size()) {
+          view.showMessage("Invalid item number. Please enter a valid item number: ");
+          itemNumber = view.getNumberInput();
+        } else {
+          enterRightNumber = true;
+        }
+      }
+      new PickUpItemCommand(town, itemName).execute();
     }
   }
 
@@ -278,7 +319,8 @@ public class TextController implements Controller {
       String neighborItem = "";
       String neighborItemName = "";
       String neighborItemDamage = "";
-      if (neighborInfo[2].isEmpty()) {
+      List<String> items = convertStringToList(neighborInfo[2]);
+      if (items.isEmpty()) {
         neighborItem = "No item in this place.";
       } else {
         neighborItem = neighborInfo[2].replace("[", "").replace("]", "").trim();
@@ -287,7 +329,8 @@ public class TextController implements Controller {
         neighborItem = neighborItemName + " (Damage: " + neighborItemDamage + ")";
       }
       String neighborPlayers = "";
-      if (neighborInfo[3].isEmpty()) {
+      List<String> players = convertStringToList(neighborInfo[3]);
+      if (players.isEmpty()) {
         neighborPlayers = "No other player in this place";
       } else {
         neighborPlayers = neighborInfo[3].replace("[", "").replace("]", "").trim();

@@ -219,7 +219,7 @@ public interface Town {
    *
    * @throws IllegalStateException if the player cannot carry any more items.
    */
-  void pickUpItem() throws IOException;
+  void pickUpItem(String itemName) throws IOException;
 
   /**
    * Gets the index of the current player.

@@ -260,7 +260,7 @@ public class GuiController implements Controller {
       view.showMessage("Cannot pick up at this time");
       return;
     }
-    town.pickUpItem();
+//    town.pickUpItem();
   }
 
   private void handleAttackAction() throws IOException {

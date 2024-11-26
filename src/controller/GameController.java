@@ -1,7 +1,6 @@
 package controller;
 
 import controller.command.LookAroundCommand;
-import controller.command.PickUpItemCommand;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
@@ -241,7 +240,7 @@ public class GameController implements Controller {
     if (!currentPlace.getItems().isEmpty()
         && computerPlayer.getCurrentCarriedItems().size() < computerPlayer.getCarryLimit()) {
       output.append("Computer player picks up an item.\n");
-      new PickUpItemCommand(town).execute();
+//      new PickUpItemCommand(town).execute();
       return;
     }
 

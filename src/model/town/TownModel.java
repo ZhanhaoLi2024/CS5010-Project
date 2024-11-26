@@ -475,38 +475,46 @@ public class TownModel implements Town {
   }
 
   @Override
-  public void pickUpItem() throws IOException {
+  public void pickUpItem(String itemName) throws IOException {
     Player currentPlayer = this.players.get(currentPlayerIndex);
     Place currentPlace = getPlaceByNumber(currentPlayer.getPlayerCurrentPlaceNumber());
-    List<Item> currentItems = currentPlace.getItems();
-    if (currentItems.isEmpty()) {
-      output.append("No items found.\n");
-      return;
-    } else {
-      if (currentPlayer.isComputerControlled()) {
-        Item item = currentItems.get(new Random().nextInt(currentItems.size()));
+//    List<Item> currentItems = currentPlace.getItems();
+//    if (currentItems.isEmpty()) {
+//      output.append("No items found.\n");
+//      return;
+//    } else {
+//      if (currentPlayer.isComputerControlled()) {
+//        Item item = currentItems.get(new Random().nextInt(currentItems.size()));
+//        currentPlayer.pickUpItem(item);
+//        currentPlace.removeItem(item);
+//        output.append("Picked up ").append(item.getName()).append(".\n");
+//      } else {
+//        output.append("Items in ").append(currentPlace.getName()).append(":\n");
+//        for (int i = 0; i < currentItems.size(); i++) {
+//          int currentIndex = i + 1;
+//          output.append(String.valueOf(currentIndex)).append(". ")
+//              .append(currentItems.get(i).getName())
+//              .append(" (Damage: ").append(String.valueOf(currentItems.get(i).getDamage()))
+//              .append(")\n");
+//        }
+//        output.append("Enter the item number to pick up:\n");
+//        int itemNumber = Integer.parseInt(scanner.nextLine());
+//        if (itemNumber < 1 || itemNumber > currentItems.size()) {
+//          output.append("Invalid item number.\n");
+//        } else {
+//          Item item = currentItems.get(itemNumber - 1);
+//          currentPlayer.pickUpItem(item);
+//          currentPlace.removeItem(item);
+//          output.append("Picked up ").append(item.getName()).append(".\n");
+//        }
+//      }
+//    }
+
+    List<Item> townItems = this.items;
+    for (Item item : townItems) {
+      if (item.getName().equals(itemName)) {
         currentPlayer.pickUpItem(item);
         currentPlace.removeItem(item);
-        output.append("Picked up ").append(item.getName()).append(".\n");
-      } else {
-        output.append("Items in ").append(currentPlace.getName()).append(":\n");
-        for (int i = 0; i < currentItems.size(); i++) {
-          int currentIndex = i + 1;
-          output.append(String.valueOf(currentIndex)).append(". ")
-              .append(currentItems.get(i).getName())
-              .append(" (Damage: ").append(String.valueOf(currentItems.get(i).getDamage()))
-              .append(")\n");
-        }
-        output.append("Enter the item number to pick up:\n");
-        int itemNumber = Integer.parseInt(scanner.nextLine());
-        if (itemNumber < 1 || itemNumber > currentItems.size()) {
-          output.append("Invalid item number.\n");
-        } else {
-          Item item = currentItems.get(itemNumber - 1);
-          currentPlayer.pickUpItem(item);
-          currentPlace.removeItem(item);
-          output.append("Picked up ").append(item.getName()).append(".\n");
-        }
       }
     }
     this.switchToNextPlayer();
