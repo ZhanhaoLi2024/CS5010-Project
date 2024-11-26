@@ -159,9 +159,12 @@ public class GuiGameView implements GameView {
     mainSplitPane.setResizeWeight(0.7); // 设置左侧占70%宽度
 
     // 左侧地图面板
-    MapPanel mapPanel = new MapPanel(controller.getTown().getPlaces(), 60);
+    JPanel leftPanel = new JPanel(new BorderLayout());
+    leftPanel.setBorder(BorderFactory.createTitledBorder("Game Map"));
+    MapPanel mapPanel = new MapPanel(controller.getTown().getPlaces(), 58);
     JScrollPane mapScrollPane = new JScrollPane(mapPanel);
-    mainSplitPane.setLeftComponent(mapScrollPane);
+    leftPanel.add(mapScrollPane, BorderLayout.CENTER);
+    mainSplitPane.setLeftComponent(leftPanel);
 
     // 右侧面板（包含操作区和信息区）
     JPanel rightPanel = new JPanel(new BorderLayout());
@@ -169,6 +172,7 @@ public class GuiGameView implements GameView {
     // 右上操作区
     JPanel actionPanel = createActionPanel();
     rightPanel.add(actionPanel, BorderLayout.NORTH);
+    // 右上操作区占50%高度
 
     // 右下信息区
     JPanel infoPanel = createInfoPanel();
@@ -365,4 +369,6 @@ public class GuiGameView implements GameView {
   public Controller getController() {
     return controller;
   }
+
+  
 }

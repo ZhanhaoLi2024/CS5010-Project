@@ -163,6 +163,7 @@ public class GuiController implements Controller {
   private void handleGameOver() {
   }
 
+
   private void processTurn() throws IOException {
     //
   }
@@ -233,7 +234,11 @@ public class GuiController implements Controller {
   }
 
   private void handleError(String message, Exception e) {
-    // Handle error
+    try {
+      view.showMessage(message + ": " + e.getMessage());
+    } catch (IOException ex) {
+      System.err.println("Error showing message: " + ex.getMessage());
+    }
   }
 
   private Boolean isValidateCommand(String commandName) {
@@ -251,6 +256,7 @@ public class GuiController implements Controller {
 
   @Override
   public void executeCommand(String commandName) throws IOException {
+    System.out.println("Executing command-2: " + commandName);
     if (commandName.startsWith("ADD_PLAYER")) {
       // Parse command parameters
       String[] parts = commandName.split(" ");

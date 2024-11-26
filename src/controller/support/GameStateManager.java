@@ -54,6 +54,10 @@ public class GameStateManager {
     state = GameState.WAITING_FOR_PLAYERS;
   }
 
+  public int getMaxTurns() {
+    return maxTurns;
+  }
+
   /**
    * Checks if the game is over.
    *
