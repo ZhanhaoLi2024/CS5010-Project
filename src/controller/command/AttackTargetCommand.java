@@ -1,9 +1,7 @@
 package controller.command;
 
 import java.io.IOException;
-import model.player.Player;
 import model.town.Town;
-import view.GameView;
 
 /**
  * Command to handle a player's attempt to attack the target character.
@@ -11,31 +9,24 @@ import view.GameView;
  */
 public class AttackTargetCommand implements Command {
   private final Town town;
-  private final GameView view;
+  private final String attackItemName;
 
   /**
    * Constructs a new AttackTargetCommand.
    *
    * @param gameTown the town model
-   * @param gameView the game view
+   * @param itemName the name of the item to use in the attack
    */
-  public AttackTargetCommand(Town gameTown, GameView gameView) {
+  public AttackTargetCommand(Town gameTown, String itemName) {
     this.town = gameTown;
-    this.view = gameView;
+    this.attackItemName = itemName;
   }
 
   @Override
   public void execute() throws IOException {
-    Player currentPlayer = town.getPlayers().get(town.getCurrentPlayerIndex());
+    boolean killSuccess = town.attackTarget(attackItemName);
+    if (killSuccess) {
 
-    if (currentPlayer.isComputerControlled()) {
-      town.executeComputerAttack(currentPlayer);
-    } else {
-      town.handleHumanAttack(currentPlayer);
-    }
-
-    if (town.isGameOver()) {
-      view.showMessage("Congratulations! You have defeated the target!");
     } else {
       town.switchToNextPlayer();
     }

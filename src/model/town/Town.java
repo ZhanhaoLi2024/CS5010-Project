@@ -14,13 +14,6 @@ import model.target.Target;
  * between different places.
  */
 public interface Town {
-  /**
-   * Retrieves the place number by name.
-   *
-   * @param placeName the name of the place
-   * @return the place number
-   */
-  int getPlaceNumberByName(String placeName) throws IOException;
 
   /**
    * Shows the current information about the pet.
@@ -144,21 +137,6 @@ public interface Town {
    */
   void addComputerPlayer() throws IOException;
 
-  /**
-   * Shows information about all places.
-   *
-   * @throws IOException if there is an issue with I/O operations.
-   */
-  void showAllPlacesInfo() throws IOException;
-
-  /**
-   * Shows information about a specific place.
-   *
-   * @param placeName the name of the place
-   * @throws IOException if there is an issue with I/O operations.
-   */
-  void getPlaceByName(String placeName) throws IOException;
-
 
   String getPlayerByName(String playerName) throws IOException;
 
@@ -168,6 +146,8 @@ public interface Town {
    * @throws IOException if there is an issue with I/O operations.
    */
   void lookAround() throws IOException;
+
+  boolean attackTarget(String attackItemName) throws IOException;
 
   /**
    * Switches to the next player in the game.
@@ -237,38 +217,8 @@ public interface Town {
    */
   boolean isPlayerVisible(Player player);
 
-  /**
-   * Displays the current state of the target character.
-   *
-   * @throws IOException if there is an error writing output
-   */
-  void showTargetInfo() throws IOException;
 
-  /**
-   * Displays the current state of the pet.
-   *
-   * @throws IOException if there is an error writing output
-   */
-  void startTurn() throws IOException;
-
-  /**
-   * Executes an attack with a specific item.
-   *
-   * @param player the player performing the attack
-   * @param item   the item being used
-   * @throws IOException              if there is an error with output
-   * @throws IllegalArgumentException if player or item is null
-   */
-  void executeItemAttack(Player player, Item item) throws IOException;
-
-  /**
-   * Executes a basic poke attack that deals 1 damage.
-   *
-   * @param player the player performing the poke attack
-   * @throws IOException              if there is an error with output
-   * @throws IllegalArgumentException if player is null
-   */
-  void executePoke(Player player) throws IOException;
+  String getPlayerCurrentCarriedItems(int playerIndex) throws IOException;
 
   /**
    * Executes an attack for a computer-controlled player.

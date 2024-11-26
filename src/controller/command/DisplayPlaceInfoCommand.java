@@ -54,9 +54,4 @@ public class DisplayPlaceInfoCommand implements Command {
     }
   }
 
-  private void showSpecificPlaceInfo() throws IOException {
-    view.showMessage("Enter the place name:");
-    String placeName = view.getStringInput();
-    town.getPlaceByName(placeName);
-  }
 }

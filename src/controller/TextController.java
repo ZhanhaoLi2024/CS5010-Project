@@ -2,6 +2,7 @@ package controller;
 
 import controller.command.AddPlayerCommand;
 import controller.command.LookAroundCommand;
+import controller.command.MovePetCommand;
 import controller.command.MovePlayerCommand;
 import controller.command.PickUpItemCommand;
 import java.io.IOException;
@@ -100,6 +101,9 @@ public class TextController implements Controller {
   private void takeTurn() throws IOException {
     if (town.getPlayers().isEmpty()) {
       view.showMessage("There are no players in the town. Please add a player first.");
+      continueGame = false;
+    } else if (town.getPlayers().size() < 2) {
+      view.showMessage("You need at least two players to start the game.");
       continueGame = false;
     } else {
       continueGame = true;
@@ -223,17 +227,159 @@ public class TextController implements Controller {
         lookAround();
         break;
       case 4:
-//        new AttackTargetCommand(town, output).execute();
+        attackTarget();
         break;
       case 5:
-//        new MovePetCommand(town, output, scanner).execute();
+        movePet();
         break;
       default:
         view.showMessage("Invalid choice, please try again.");
     }
   }
 
-  private void pickUpItem() throws IOException {
+  private String handleComputerAttack(int playerIndex) throws IOException {
+    // handle computer attack
+    String playerCurrentCarriedItems = town.getPlayerCurrentCarriedItems(playerIndex);
+    String targetPlace = town.getTarget().getCurrentPlace().getPlaceNumber();
+    String playerCurrentPlace = String.valueOf(town.getPlayerCurrPlaceNumber(playerIndex));
+    if (!playerCurrentPlace.equals(targetPlace)) {
+      view.showMessage("Computer player is not in the same place as the target. Cannot attack.");
+      return "fail";
+    }
+    boolean isPlayerVisible = town.isPlayerVisible(town.getPlayers().get(playerIndex));
+    if (isPlayerVisible) {
+      view.showMessage("Computer player is visible to the other players. Cannot attack.");
+      return "fail";
+    }
+    List<String> items = convertStringToList(playerCurrentCarriedItems);
+    items.add("Poke Target-1");
+    String maxDamageItemName = "";
+    int maxDamageItem = 0;
+    for (String item : items) {
+      String[] chooseItem = item.split("-");
+      String itemName = chooseItem[0].trim();
+      String itemDamage = chooseItem[1].trim();
+      if (Integer.parseInt(itemDamage) > maxDamageItem) {
+        maxDamageItem = Integer.parseInt(itemDamage);
+        maxDamageItemName = itemName;
+      }
+    }
+    return maxDamageItemName;
+  }
+
+  private String handleHumanAttack(int playerIndex) throws IOException {
+    // handle human attack
+    String playerCurrentCarriedItems = town.getPlayerCurrentCarriedItems(playerIndex);
+    String targetPlace = town.getTarget().getCurrentPlace().getPlaceNumber();
+    String playerCurrentPlace = String.valueOf(town.getPlayerCurrPlaceNumber(playerIndex));
+    if (!playerCurrentPlace.equals(targetPlace)) {
+      view.showMessage("You are not in the same place as the target. You cannot attack.");
+      return "fail";
+    }
+    boolean isPlayerVisible = town.isPlayerVisible(town.getPlayers().get(playerIndex));
+    if (isPlayerVisible) {
+      view.showMessage("You are visible to the other players. You cannot attack.");
+      return "fail";
+    }
+    List<String> items = convertStringToList(playerCurrentCarriedItems);
+    items.add("Poke Target-1");
+    view.showMessage("Player's current carried items:");
+    int i = 0;
+    for (String item : items) {
+      view.showMessage(i + ". " + item);
+      i++;
+    }
+    view.showMessage("Enter the item name you want to use for attack:");
+    int itemNumber = view.getNumberInput();
+    boolean enterRightNumber = false;
+    while (!enterRightNumber) {
+      if (itemNumber < 0 || itemNumber > items.size()) {
+        view.showMessage("Invalid item number. Please enter a valid item number: ");
+        itemNumber = view.getNumberInput();
+      } else {
+        enterRightNumber = true;
+      }
+    }
+    String[] chooseItem = items.get(itemNumber).split("-");
+    String itemName = chooseItem[0].trim();
+    String itemDamage = chooseItem[1].trim();
+    view.showMessage("You choose to attack with " + itemName);
+    if (itemName.equals("Poke Target")) {
+      view.showMessage("Successfully poke the target in the eye for 1 damage.");
+    } else {
+      view.showMessage("Attack successfully with " + itemName + " for " + itemDamage + " damage.");
+    }
+    return itemName;
+  }
+
+  private void attackTarget() throws IOException {
+    int currentPlayerIndex = town.getCurrentPlayerIndex();
+    String itemName = "";
+    boolean isComputerControlled = town.getPlayers().get(currentPlayerIndex).isComputerControlled();
+    if (isComputerControlled) {
+      itemName = handleComputerAttack(currentPlayerIndex);
+    } else {
+      itemName = handleHumanAttack(currentPlayerIndex);
+      if (itemName.equals("fail")) {
+        return;
+      }
+    }
+
+    boolean killSuccess = town.attackTarget(itemName);
+    if (killSuccess) {
+      view.showMessage("You have successfully eliminated the target!");
+      endGame();
+    } else {
+      int targetHealth = town.getTargetHealth();
+      view.showMessage("The target's health is now " + targetHealth);
+      town.switchToNextPlayer();
+    }
+
+//    new AttackTargetCommand(town, itemName).execute(); // 是否用目前方式更加简单
+  }
+
+  private void movePet() throws IOException {
+    view.showMessage("Please enter the place number you want to move the pet to:");
+    int placeNumber = view.getNumberInput();
+    boolean enterRightNumber = false;
+    while (!enterRightNumber) {
+      if (placeNumber < 0 || placeNumber > 20) {
+        view.showMessage("Invalid place number. Please enter a valid place number: ");
+        placeNumber = view.getNumberInput();
+      } else {
+        enterRightNumber = true;
+      }
+    }
+    new MovePetCommand(town, placeNumber).execute();
+  }
+
+  private void handleComputerPickUpItem() throws IOException {
+    int currentPlayerIndex = town.getCurrentPlayerIndex();
+    int currentPlaceNumber = town.getPlayerCurrPlaceNumber(currentPlayerIndex);
+    String currentPlace = town.getCurrentPlaceInfo(currentPlaceNumber);
+    String[] parts = currentPlace.split(";");
+    List<String> items = convertStringToList(parts[1]);
+    if (items.isEmpty()) {
+      view.showMessage("No item in this place.");
+    } else {
+      int i = 0;
+      String maxDamageItemName = "";
+      int maxDamageItem = 0;
+      for (String item : items) {
+        String[] chooseItem = item.split("-");
+        String itemName1 = chooseItem[0].trim();
+        String itemDamage = chooseItem[1].trim();
+        if (Integer.parseInt(itemDamage) > maxDamageItem) {
+          maxDamageItem = Integer.parseInt(itemDamage);
+          maxDamageItemName = itemName1;
+        }
+        i++;
+      }
+      new PickUpItemCommand(town, maxDamageItemName).execute();
+    }
+  }
+
+  private void handleHumanPickUpItem() throws IOException {
     int currentPlayerIndex = town.getCurrentPlayerIndex();
     int currentPlaceNumber = town.getPlayerCurrPlaceNumber(currentPlayerIndex);
     String currentPlace = town.getCurrentPlaceInfo(currentPlaceNumber);
@@ -266,6 +412,18 @@ public class TextController implements Controller {
     }
   }
 
+  private void pickUpItem() throws IOException {
+    int currentPlayerIndex = town.getCurrentPlayerIndex();
+    boolean isComputerControlled = town.getPlayers().get(currentPlayerIndex).isComputerControlled();
+    if (isComputerControlled) {
+      view.showMessage("Computer player picks up an item.");
+      handleComputerPickUpItem();
+    } else {
+      handleHumanPickUpItem();
+    }
+
+  }
+
   private void lookAround() throws IOException {
     view.showMessage("Looking around...");
     int currentPlayerIndex = town.getCurrentPlayerIndex();
@@ -286,12 +444,15 @@ public class TextController implements Controller {
     String itemName = "";
     String itemDamage = "";
     String currentItem = "";
-    if (parts[1].isEmpty()) {
+    List<String> items = convertStringToList(parts[1]);
+    if (items.isEmpty()) {
       currentItem = "";
     } else {
-      currentItem = parts[1].replace("[", "").replace("]", "").trim();
-      itemName = currentItem.split("-")[0].trim();
-      itemDamage = currentItem.split("-")[1].trim();
+      for (String item : items) {
+        currentItem = item;
+        itemName = currentItem.split("-")[0].trim();
+        itemDamage = currentItem.split("-")[1].trim();
+      }
     }
     String currentPlayers = "";
     if (parts[2].isEmpty()) {
@@ -319,13 +480,18 @@ public class TextController implements Controller {
       String neighborItem = "";
       String neighborItemName = "";
       String neighborItemDamage = "";
-      List<String> items = convertStringToList(neighborInfo[2]);
-      if (items.isEmpty()) {
+      List<String> currentItems = convertStringToList(neighborInfo[2]);
+      if (currentItems.isEmpty()) {
         neighborItem = "No item in this place.";
       } else {
-        neighborItem = neighborInfo[2].replace("[", "").replace("]", "").trim();
-        neighborItemName = neighborItem.split("-")[0].trim();
-        neighborItemDamage = neighborItem.split("-")[1].trim();
+        for (String item : currentItems) {
+          neighborItem = item;
+          neighborItemName = neighborItem.split("-")[0].trim();
+          neighborItemDamage = neighborItem.split("-")[1].trim();
+        }
+//        neighborItem = neighborInfo[2].replace("[", "").replace("]", "").trim();
+//        neighborItemName = neighborItem.split("-")[0].trim();
+//        neighborItemDamage = neighborItem.split("-")[1].trim();
         neighborItem = neighborItemName + " (Damage: " + neighborItemDamage + ")";
       }
       String neighborPlayers = "";
@@ -387,7 +553,32 @@ public class TextController implements Controller {
     }
   }
 
-  private void movePlayer() throws IOException {
+  private void handleComputerMove() throws IOException {
+    int currentPlayerIndex = town.getCurrentPlayerIndex();
+    int currentPlaceNumber = town.getPlayerCurrPlaceNumber(currentPlayerIndex);
+    String currentPlaceNeighbour = town.getCurrentPlaceNeighborsInfo(currentPlaceNumber);
+    currentPlaceNeighbour = currentPlaceNeighbour.substring(1, currentPlaceNeighbour.length() - 1);
+    String[] places = currentPlaceNeighbour.split("\\], \\[");
+    HashSet<Integer> neighborNumber = new HashSet<>();
+    for (String place : places) {
+      place = place.replace("[", "").replace("]", "");
+
+      String[] parts = place.split(";", 5);
+      Integer placeNumber = Integer.parseInt(parts[1].trim());
+      neighborNumber.add(placeNumber);
+    }
+    Random random = new Random();
+    int randomIndex = random.nextInt(neighborNumber.size());
+    int newPlaceNumber = (Integer) neighborNumber.toArray()[randomIndex];
+
+    try {
+      handleComputerMove(currentPlayerIndex, newPlaceNumber);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+
+  private void handleHumanMove() throws IOException {
     int currentPlayerIndex = town.getCurrentPlayerIndex();
     int currentPlaceNumber = town.getPlayerCurrPlaceNumber(currentPlayerIndex);
     int newPlaceNumber = -1;
@@ -426,25 +617,34 @@ public class TextController implements Controller {
     }
 
     new MovePlayerCommand(town, currentPlayerIndex, newPlaceNumber).execute();
+  }
 
+  private void movePlayer() throws IOException {
+    int currentPlayerIndex = town.getCurrentPlayerIndex();
+    boolean isComputerControlled = town.getPlayers().get(currentPlayerIndex).isComputerControlled();
+    if (isComputerControlled) {
+      handleComputerMove();
+    } else {
+      handleHumanMove();
+    }
   }
 
   private void handleComputerTurn() throws IOException {
     view.showMessage("Computer player's turn.");
-//    Player computerPlayer = town.getPlayers().get(town.getCurrentPlayerIndex());
-//    Place currentPlace = town.getPlaceByNumber(
-//        town.getPlayers().get(town.getCurrentPlayerIndex()).getPlayerCurrentPlaceNumber());
 
     // First priority: Attack if in same room as target and not visible
     String computerPlayerPlaceNumber = String.valueOf(
         town.getPlayers().get(town.getCurrentPlayerIndex()).getPlayerCurrentPlaceNumber());
-    if (computerPlayerPlaceNumber.equals(
-        town.getTarget().getCurrentPlace().getPlaceNumber())
+    String targetPlaceNumber = town.getTarget().getCurrentPlace().getPlaceNumber();
+    if (computerPlayerPlaceNumber.equals(targetPlaceNumber)
         && !town.isPlayerVisible(town.getPlayers().get(town.getCurrentPlayerIndex()))) {
       view.showMessage("Computer player attempts to attack the target.");
-//      new AttackTargetCommand(town, output).execute();
+
+      attackTarget();
+
       return;
     }
+
 
     // Second priority: Pick up items if available and has space
     if (!town.getPlaceByNumber(
@@ -453,19 +653,25 @@ public class TextController implements Controller {
         && town.getPlayers().get(town.getCurrentPlayerIndex()).getCurrentCarriedItems().size()
         < town.getPlayers().get(town.getCurrentPlayerIndex()).getCarryLimit()) {
       view.showMessage("Computer player picks up an item.");
-//      new PickUpItemCommand(town).execute();
+
+      pickUpItem();
+
       return;
     }
 
     // Third priority: Move towards target if carrying items
     if (!town.getPlayers().get(town.getCurrentPlayerIndex()).getCurrentCarriedItems().isEmpty()) {
       view.showMessage("Computer player moves to find the target.");
-//      new MovePlayerCommand(town).execute();
+
+      movePlayer();
+
       return;
     }
 
     // Fourth priority: Look around to gather information
     view.showMessage("Computer player looks around.");
+    
+    lookAround();
   }
 
   private void showPlayerInfo() throws IOException {

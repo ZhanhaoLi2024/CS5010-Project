@@ -285,7 +285,7 @@ public class GuiController implements Controller {
       view.showMessage("Cannot start turn at this time");
       return;
     }
-    town.startTurn();
+//    town.startTurn();
   }
 
   private void handleShowPlayerInfo() throws IOException {
