@@ -392,7 +392,7 @@ public class TownModel implements Town {
   public int getCurrentPlayerIndex() {
     return currentPlayerIndex;
   }
-  
+
   @Override
   public boolean isPlayerVisible(Player player) {
     if (player == null) {
@@ -421,6 +421,8 @@ public class TownModel implements Town {
     // Execute attack (always successful if not seen)
     final boolean targetDefeated = targetCharacter.takeDamage(item.getDamage());
 
+    targetHealth = targetCharacter.getHealth();
+
     // Remove used item from player's inventory
     player.getCurrentCarriedItems().remove(item);
 
@@ -434,6 +436,8 @@ public class TownModel implements Town {
 
     // Poke attack (always successful if not seen)
     boolean targetDefeated = targetCharacter.takeDamage(1); // true - 死
+
+    targetHealth = targetCharacter.getHealth();
 
     return targetDefeated;
   }

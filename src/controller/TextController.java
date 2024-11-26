@@ -199,6 +199,7 @@ public class TextController implements Controller {
     } else {
       handleComputerTurn();
     }
+    view.showMessage("Current Target Health: " + town.getTargetHealth());
   }
 
   private void handleHumanTurn() throws IOException {
@@ -264,6 +265,10 @@ public class TextController implements Controller {
         maxDamageItemName = itemName;
       }
     }
+
+    view.showMessage(
+        "Computer player chooses to attack with " + maxDamageItemName + " for " + maxDamageItem
+            + " damage.");
     return maxDamageItemName;
   }
 
@@ -331,7 +336,7 @@ public class TextController implements Controller {
       endGame();
     } else {
       int targetHealth = town.getTargetHealth();
-      view.showMessage("The target's health is now " + targetHealth);
+      view.showMessage("The target's health is now-1 " + targetHealth);
       town.switchToNextPlayer();
     }
   }
@@ -348,6 +353,8 @@ public class TextController implements Controller {
         enterRightNumber = true;
       }
     }
+//    String command = "movePet, " + placeNumber;
+//    executeCommand(command);
     new MovePetCommand(town, placeNumber).execute();
   }
 
@@ -373,6 +380,9 @@ public class TextController implements Controller {
         }
         i++;
       }
+//
+//      String command = "pickUpItem, " + maxDamageItemName;
+//      executeCommand(command);
       new PickUpItemCommand(town, maxDamageItemName).execute();
     }
   }
@@ -406,6 +416,8 @@ public class TextController implements Controller {
           enterRightNumber = true;
         }
       }
+//      String command = "pickUpItem, " + itemName;
+//      executeCommand(command);
       new PickUpItemCommand(town, itemName).execute();
     }
   }
@@ -512,6 +524,8 @@ public class TextController implements Controller {
     view.showMessage("----------");
 
 
+//    String command = "lookAround";
+//    executeCommand(command);
     new LookAroundCommand(town).execute();
   }
 
@@ -524,7 +538,7 @@ public class TextController implements Controller {
     currentPlaceNeighbour = currentPlaceNeighbour.substring(1, currentPlaceNeighbour.length() - 1);
     String[] places = currentPlaceNeighbour.split("\\], \\[");
     HashSet<Integer> neighborNumber = new HashSet<>();
-    Boolean targetInNeighbor = false;
+    boolean targetInNeighbor = false;
     for (String place : places) {
       place = place.replace("[", "").replace("]", "");
 
@@ -537,6 +551,8 @@ public class TextController implements Controller {
       }
     }
     if (targetInNeighbor) {
+//      String command = "movePlayer, " + currentPlayerIndex + ", " + newPlaceNumber;
+//      executeCommand(command);
       new MovePlayerCommand(town, currentPlayerIndex, newPlaceNumber).execute();
     } else {
       // Move to a random neighboring space
@@ -544,6 +560,8 @@ public class TextController implements Controller {
       Random random = new Random();
       int randomIndex = random.nextInt(list.size());
       newPlaceNumber = list.get(randomIndex);
+//      String command = "movePlayer, " + currentPlayerIndex + ", " + newPlaceNumber;
+//      executeCommand(command);
       new MovePlayerCommand(town, currentPlayerIndex, newPlaceNumber).execute();
     }
   }
@@ -611,6 +629,8 @@ public class TextController implements Controller {
       }
     }
 
+//    String command = "movePlayer, " + currentPlayerIndex + ", " + newPlaceNumber;
+//    executeCommand(command);
     new MovePlayerCommand(town, currentPlayerIndex, newPlaceNumber).execute();
   }
 
@@ -716,10 +736,6 @@ public class TextController implements Controller {
     view.showMessage(parts[0] + " is at " + parts[1] + " with carry limit " + parts[2]);
   }
 
-  private void addComputerPlayer() throws IOException {
-    new AddPlayerCommand(town, true, "Computer Player", 1, 1).execute();
-  }
-
   private int showNewPlayerCarryLimit() throws IOException {
     while (true) {
       try {
@@ -739,21 +755,26 @@ public class TextController implements Controller {
   }
 
   private void handleAddComputerPlayer() throws IOException {
-    int currentPlayerSize = town.getPlayers().size();
-    String computerPlayerName = "Computer-" + currentPlayerSize + 1;
+    int currentPlayerSize = town.getPlayers().size() + 1;
+    String computerPlayerName = "Computer-" + currentPlayerSize;
     Random random = new Random();
     int currentPlaceSize = town.getPlaces().size();
-    int randomPlace = random.nextInt(currentPlaceSize + 1);
+    int randomPlace = random.nextInt(currentPlaceSize);
+//    String command = "addPlayer, true, " + computerPlayerName + ", " + randomPlace + ", 5";
+//    executeCommand(command);
     new AddPlayerCommand(town, true, computerPlayerName, randomPlace, 5).execute();
     view.showMessage(computerPlayerName + " player added successfully.");
   }
 
-  private void handleAddHumabPlayer() throws IOException {
+  private void handleAddHumanPlayer() throws IOException {
     boolean addPlayerContinue = true;
     String firstPlayerName = showAddNewPlayerName();
     int firstPlaceNumber = showAddNewPlayerStartingPlaceNumber();
     int firstCarryLimit = showNewPlayerCarryLimit();
     try {
+//      String command = "addPlayer, false, " + firstPlayerName + ", " + firstPlaceNumber + ", "
+//          + firstCarryLimit;
+//      executeCommand(command);
       new AddPlayerCommand(town, false, firstPlayerName, firstPlaceNumber,
           firstCarryLimit).execute();
       view.showMessage(firstPlayerName + " player added successfully.");
@@ -770,6 +791,9 @@ public class TextController implements Controller {
         int humanPlaceNumber = showAddNewPlayerStartingPlaceNumber();
         int humanCarryLimit = showNewPlayerCarryLimit();
         try {
+//          String command = "addPlayer, false, " + humanPlayerName + ", " + humanPlaceNumber + ", "
+//              + humanCarryLimit;
+//          executeCommand(command);
           new AddPlayerCommand(town, false, humanPlayerName, humanPlaceNumber,
               humanCarryLimit).execute();
           view.showMessage(humanPlayerName + " player added successfully.");
@@ -790,7 +814,7 @@ public class TextController implements Controller {
     if (isComputer) {
       handleAddComputerPlayer();
     } else {
-      handleAddHumabPlayer();
+      handleAddHumanPlayer();
     }
   }
 
@@ -834,5 +858,39 @@ public class TextController implements Controller {
   @Override
   public void executeCommand(String command) throws IOException {
     // TODO Auto-generated method stub
+    String[] parts = command.split(", ");
+    String commandType = parts[0];
+    switch (commandType) {
+      case "addPlayer":
+        boolean isComputerPlayer = Boolean.parseBoolean(parts[1]);
+        String playerName = parts[2];
+        int startingPlace = Integer.parseInt(parts[3]);
+        int carryLimit = Integer.parseInt(parts[4]);
+        new AddPlayerCommand(town, isComputerPlayer, playerName, startingPlace,
+            carryLimit).execute();
+        break;
+      case "movePlayer":
+        int currentPlayerIndex = Integer.parseInt(parts[1]);
+        int newPlaceNumber = Integer.parseInt(parts[2]);
+        new MovePlayerCommand(town, currentPlayerIndex, newPlaceNumber).execute();
+        break;
+      case "pickUpItem":
+        String itemName = parts[1];
+        new PickUpItemCommand(town, itemName).execute();
+        break;
+      case "lookAround":
+        new LookAroundCommand(town).execute();
+        break;
+      case "attackTarget":
+        String itemName1 = parts[1];
+        new PickUpItemCommand(town, itemName1).execute();
+        break;
+      case "movePet":
+        int placeNumber1 = Integer.parseInt(parts[1]);
+        new MovePetCommand(town, placeNumber1).execute();
+        break;
+      default:
+        view.showMessage("Invalid command.");
+    }
   }
 }
