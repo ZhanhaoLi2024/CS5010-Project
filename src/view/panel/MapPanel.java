@@ -13,12 +13,13 @@ import javax.swing.JPanel;
 import model.place.Place;
 
 public class MapPanel extends JPanel {
-  private static final int CELL_SIZE = 40;
+  private static int CELL_SIZE = 0;
   private final List<Place> places;
   private BufferedImage mapImage;
 
-  public MapPanel(List<Place> places) {
+  public MapPanel(List<Place> places, int cellSize) {
     this.places = places;
+    CELL_SIZE = cellSize;
     setPreferredSize(new Dimension(11 * CELL_SIZE, 12 * CELL_SIZE));
     createMapImage();
   }

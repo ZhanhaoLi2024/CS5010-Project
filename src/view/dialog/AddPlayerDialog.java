@@ -69,7 +69,7 @@ public class AddPlayerDialog extends JDialog {
         BorderFactory.createEtchedBorder(),
         "Game Map"
     ));
-    MapPanel mapPanel = new MapPanel(parentView.getController().getTown().getPlaces());
+    MapPanel mapPanel = new MapPanel(parentView.getController().getTown().getPlaces(), 40);
     mapPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
     panel.add(mapPanel, BorderLayout.CENTER);
     return panel;

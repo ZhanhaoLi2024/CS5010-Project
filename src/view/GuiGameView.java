@@ -4,6 +4,7 @@ import controller.Controller;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -39,6 +40,9 @@ public class GuiGameView implements GameView {
   private final JPanel mainPanel;
   private final CardLayout cardLayout;
   private final JTextArea messageArea;
+  private JLabel turnLabel;
+  private JLabel playerNameLabel;
+  private JLabel itemsLabel;
 
   /**
    * Constructs the GUI view.
@@ -150,37 +154,78 @@ public class GuiGameView implements GameView {
   private JPanel createGamePanel() {
     JPanel panel = new JPanel(new BorderLayout());
 
-    // Create map panel with scrolling
-    MapPanel mapPanel = new MapPanel(controller.getTown().getPlaces());
-    JScrollPane mapScroll = new JScrollPane(mapPanel);
+    // 创建主分割面板
+    JSplitPane mainSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+    mainSplitPane.setResizeWeight(0.7); // 设置左侧占70%宽度
 
-    // Create info panel
+    // 左侧地图面板
+    MapPanel mapPanel = new MapPanel(controller.getTown().getPlaces(), 60);
+    JScrollPane mapScrollPane = new JScrollPane(mapPanel);
+    mainSplitPane.setLeftComponent(mapScrollPane);
+
+    // 右侧面板（包含操作区和信息区）
+    JPanel rightPanel = new JPanel(new BorderLayout());
+
+    // 右上操作区
+    JPanel actionPanel = createActionPanel();
+    rightPanel.add(actionPanel, BorderLayout.NORTH);
+
+    // 右下信息区
     JPanel infoPanel = createInfoPanel();
+    rightPanel.add(infoPanel, BorderLayout.CENTER);
 
-    // Create control panel
-    JPanel controlPanel = createControlPanel();
+    mainSplitPane.setRightComponent(rightPanel);
 
-    // Add components
-    JSplitPane splitPane = new JSplitPane(
-        JSplitPane.HORIZONTAL_SPLIT,
-        mapScroll,
-        infoPanel
-    );
-    splitPane.setResizeWeight(0.7);
+    panel.add(mainSplitPane, BorderLayout.CENTER);
+    return panel;
+  }
 
-    panel.add(splitPane, BorderLayout.CENTER);
-    panel.add(controlPanel, BorderLayout.SOUTH);
+  private JPanel createActionPanel() {
+    JPanel panel = new JPanel();
+    panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+    panel.setBorder(BorderFactory.createTitledBorder("Actions"));
+
+    String[] actions = {
+        "Move Player",
+        "Look Around",
+        "Pick Up Item",
+        "Move Pet",
+        "Attack Target"
+    };
+
+    for (String action : actions) {
+      JButton button = new JButton(action);
+      button.setAlignmentX(Component.CENTER_ALIGNMENT);
+      button.setMaximumSize(new Dimension(200, 30));
+      panel.add(Box.createRigidArea(new Dimension(0, 5)));
+      panel.add(button);
+    }
 
     return panel;
   }
 
   private JPanel createInfoPanel() {
-    JPanel panel = new JPanel(new BorderLayout());
-    panel.setBorder(BorderFactory.createTitledBorder("Game Information"));
+    JPanel panel = new JPanel();
+    panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+    panel.setBorder(BorderFactory.createTitledBorder("Player Information"));
 
-    // Add message area
-    JScrollPane scrollPane = new JScrollPane(messageArea);
-    panel.add(scrollPane, BorderLayout.CENTER);
+    // 回合信息
+    turnLabel = new JLabel("Turn: 1");
+    turnLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+    // 玩家信息
+    playerNameLabel = new JLabel("Player: ");
+    playerNameLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+    // 物品信息
+    itemsLabel = new JLabel("Items: ");
+    itemsLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+    panel.add(turnLabel);
+    panel.add(Box.createRigidArea(new Dimension(0, 10)));
+    panel.add(playerNameLabel);
+    panel.add(Box.createRigidArea(new Dimension(0, 10)));
+    panel.add(itemsLabel);
 
     return panel;
   }
@@ -234,7 +279,12 @@ public class GuiGameView implements GameView {
         PlayerInfoDialog dialog = new PlayerInfoDialog(this);
         dialog.setVisible(true);
       } else if (command.equals("START_TURNS")) {
-        controller.executeCommand("START_TURNS");
+        cardLayout.show(mainPanel, GAME_CARD);
+        try {
+          controller.executeCommand("START_GAME");
+        } catch (IOException ex) {
+          showError("Error starting game: " + ex.getMessage());
+        }
       } else if (command.equals("QUIT")) {
         close();
       } else {
@@ -265,15 +315,18 @@ public class GuiGameView implements GameView {
   }
 
   @Override
-  public void updatePlayerInfo(Player player, Place currentPlace) throws IOException {
-    SwingUtilities.invokeLater(() -> {
-      String info = String.format("Player: %s\nLocation: %s\nItems: %d/%d\n",
-          player.getName(),
-          currentPlace.getName(),
-          player.getCurrentCarriedItems().size(),
-          player.getCarryLimit());
-      messageArea.append(info);
-    });
+  public void updatePlayerInfo(Player player, Place currentPlace) {
+//    SwingUtilities.invokeLater(() -> {
+//      turnLabel.setText("Turn: " + controller.getTown().getCurrentTurn());
+//      playerNameLabel.setText("Player: " + player.getName());
+//      Object Item = null;
+//      String items = player.getCurrentCarriedItems().isEmpty()
+//          ? "None" :
+//          String.join(", ", player.getCurrentCarriedItems().stream()
+//              .map(Item::getName)
+//              .collect(Collectors.toList()));
+//      itemsLabel.setText("Items: " + items);
+//    });
   }
 
   @Override

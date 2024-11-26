@@ -131,7 +131,7 @@ public class GamePanel extends JPanel {
     gamePanel.setBorder(new EmptyBorder(10, 10, 10, 10));
 
     // Initialize map panel with places
-    mapPanel = new MapPanel(places);
+//    mapPanel = new MapPanel(places);
     JPanel mapContainer = new JPanel(new BorderLayout());
     mapContainer.add(mapPanel, BorderLayout.CENTER);
 
