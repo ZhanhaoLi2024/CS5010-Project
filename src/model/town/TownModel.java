@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 import java.util.Scanner;
 import model.item.Item;
 import model.pet.Pet;
@@ -112,12 +111,9 @@ public class TownModel implements Town {
   }
 
   @Override
-  public String petCurrentInfo() throws IOException {
-//    output.append("Pet info: ").append(pet.getName()).append("is in ")
-//        .append(getPlaceByNumber(pet.getPetCurrentPlaceNumber()).getName()).append("\n");
-    String petInfo = pet.getName() + ","
+  public String petCurrentInfo() {
+    return pet.getName() + ","
         + getPlaceByNumber(pet.getPetCurrentPlaceNumber()).getName();
-    return petInfo;
 
   }
 
@@ -132,32 +128,8 @@ public class TownModel implements Town {
   }
 
   @Override
-  public String getName() {
-    return townName;
-  }
-
-  @Override
   public Target getTarget() {
     return targetCharacter;
-  }
-
-  @Override
-  public Pet getPet() {
-    return this.pet;
-  }
-
-  /**
-   * Determines if a place is visible (not blocked by pet).
-   *
-   * @param place the place to check visibility for
-   * @return true if the place is visible, false otherwise
-   */
-  @Override
-  public boolean isPlaceVisible(Place place) {
-    if (place == null) {
-      throw new IllegalArgumentException("Place cannot be null");
-    }
-    return !place.getPlaceNumber().equals(String.valueOf(pet.getPetCurrentPlaceNumber()));
   }
 
   @Override
@@ -176,16 +148,6 @@ public class TownModel implements Town {
   }
 
   @Override
-  public String getTownName() {
-    return townName;
-  }
-
-  @Override
-  public List<Item> getItems() {
-    return items;
-  }
-
-  @Override
   public List<Player> getPlayers() {
     return players;
   }
@@ -198,7 +160,6 @@ public class TownModel implements Town {
   @Override
   public String getCurrentPlaceInfo(int placeNumber) throws IOException {
     Place place = getPlaceByNumber(placeNumber);
-    List<String> currentPlace = new ArrayList<>();
     List<String> items = new ArrayList<>();
     for (Item item : place.getItems()) {
       items.add(item.getName() + "-" + item.getDamage());
@@ -246,43 +207,12 @@ public class TownModel implements Town {
   }
 
   @Override
-  public void addPlayer(String playerName, int placeNumber, int carryLimit)
-      throws IOException {
-
-    output.append("Adding player...\n");
-    output.append("Player name: ").append(playerName).append("\n");
-
+  public void addPlayer(String playerName, int placeNumber, int carryLimit,
+                        boolean isComputerController) {
     Place startingPlace = places.get(placeNumber - 1);
-    Player player = new PlayerModel(playerName, false, carryLimit, placeNumber);
+    Player player = new PlayerModel(playerName, isComputerController, carryLimit, placeNumber);
     players.add(player);
     startingPlace.addPlayer(player);
-
-    // Confirm addition
-    output.append("Player added successfully:\n")
-        .append("Name: ").append(playerName).append("\n")
-        .append("Location: ").append(startingPlace.getName()).append("\n")
-        .append("Carry limit: ").append(String.valueOf(carryLimit)).append("\n");
-  }
-
-  @Override
-  public void addComputerPlayer() throws IOException {
-    // Generate a random valid position
-    Random random = new Random();
-    int randomPlaceNumber = random.nextInt(places.size()) + 1;
-
-    // Generate a unique name
-    String computerName = "Computer-" + (players.size() + 1);
-    while (!isPlayerNameUnique(computerName)) {
-      computerName = "Computer-" + random.nextInt(1000);
-    }
-
-    // Create computer player with random starting position
-    Player player = new PlayerModel(computerName, true, 3, randomPlaceNumber);
-    players.add(player);
-
-    output.append("Computer player '").append(computerName)
-        .append("' added at ").append(places.get(randomPlaceNumber - 1).getName())
-        .append(".\n");
   }
 
   @Override
@@ -462,14 +392,7 @@ public class TownModel implements Town {
   public int getCurrentPlayerIndex() {
     return currentPlayerIndex;
   }
-
-  /**
-   * Checks if a player can be seen by other players.
-   * A player is visible if another player is in the same room or a neighboring room.
-   *
-   * @param player the player to check visibility for
-   * @return true if the player can be seen by others, false otherwise
-   */
+  
   @Override
   public boolean isPlayerVisible(Player player) {
     if (player == null) {
@@ -495,22 +418,13 @@ public class TownModel implements Town {
       throw new IllegalArgumentException("Player and item cannot be null");
     }
 
-
     // Execute attack (always successful if not seen)
     final boolean targetDefeated = targetCharacter.takeDamage(item.getDamage());
 
     // Remove used item from player's inventory
     player.getCurrentCarriedItems().remove(item);
-    output.append("Attack successful with ").append(item.getName())
-        .append(" for ").append(String.valueOf(item.getDamage())).append(" damage!\n");
-    output.append("Target health: ").append(String.valueOf(targetCharacter.getHealth()))
-        .append("\n");
 
-    if (targetDefeated) {
-      return true;
-    } else {
-      return false;
-    }
+    return targetDefeated;
   }
 
   private boolean executePoke(Player player) throws IOException {
@@ -518,32 +432,10 @@ public class TownModel implements Town {
       throw new IllegalArgumentException("Player cannot be null");
     }
 
-//    String playerPlaceNumber = String.valueOf(player.getPlayerCurrentPlaceNumber());
-//    String targetPlaceNumber = targetCharacter.getCurrentPlace().getPlaceNumber();
-
-//    if (!playerPlaceNumber.equals(targetPlaceNumber)) {
-//      output.append("Attack failed: You must be in the same room as the target!\n");
-//      return;
-//    }
-//
-//    if (isPlayerVisible(player)) {
-//      output.append("Attack failed: Other players have witnessed your attempt!\n");
-//      return;
-//    }
-
     // Poke attack (always successful if not seen)
     boolean targetDefeated = targetCharacter.takeDamage(1); // true - 死
-    output.append("Successfully poked the target in the eye for 1 damage! \n");
-    output.append("Target health: ").append(String.valueOf(targetCharacter.getHealth()))
-        .append("\n");
 
-    if (targetDefeated) {
-//      output.append(player.getName())
-//          .append(" has eliminated the target with a poke in the eye!\n");
-      return true;
-    } else {
-      return false;
-    }
+    return targetDefeated;
   }
 
   @Override
@@ -555,74 +447,6 @@ public class TownModel implements Town {
       itemNames.add(item.getName() + "-" + item.getDamage());
     }
     return itemNames.toString();
-  }
-
-  /**
-   * Executes an attack for a computer-controlled player.
-   *
-   * @param player the computer-controlled player
-   * @throws IOException              if there is an error with output
-   * @throws IllegalArgumentException if player is null or not computer-controlled
-   */
-  @Override
-  public void executeComputerAttack(Player player) throws IOException {
-    if (player == null || !player.isComputerControlled()) {
-      throw new IllegalArgumentException("Player must be a non-null computer-controlled player");
-    }
-
-    // Computer always attempts to attack if in the same room as target
-    List<Item> computerItems = player.getCurrentCarriedItems();
-
-    if (computerItems.isEmpty()) {
-//      executePoke(player);
-      return;
-    }
-
-    // Find and use item with the highest damage
-    Item bestItem = computerItems.stream()
-        .max((i1, i2) -> Integer.compare(i1.getDamage(), i2.getDamage()))
-        .get();
-
-    executeItemAttack(player, bestItem);
-  }
-
-  /**
-   * Handles attack options and execution for human players.
-   *
-   * @param player the human player making the attack
-   * @throws IOException              if there is an error with output
-   * @throws IllegalArgumentException if player is null or is computer-controlled
-   */
-  @Override
-  public void handleHumanAttack(Player player) throws IOException {
-    if (player == null || player.isComputerControlled()) {
-      throw new IllegalArgumentException("Player must be a non-null human player");
-    }
-
-    List<Item> humanItems = player.getCurrentCarriedItems();
-
-    output.append("\nChoose your attack:\n");
-    output.append("0. Poke in the eye (1 damage)\n");
-    // Show item options
-    for (int i = 0; i < humanItems.size(); i++) {
-      Item item = humanItems.get(i);
-      output.append(String.valueOf(i + 1)).append(". Use ")
-          .append(item.getName())
-          .append(" (").append(String.valueOf(item.getDamage())).append(" damage)\n");
-    }
-
-    try {
-      int choice = Integer.parseInt(scanner.nextLine());
-      if (choice == 0) {
-//        executePoke(player);
-      } else if (choice >= 1 && choice <= humanItems.size()) {
-        executeItemAttack(player, humanItems.get(choice - 1));
-      } else {
-        output.append("Invalid choice. Attack cancelled.\n");
-      }
-    } catch (NumberFormatException e) {
-      output.append("Invalid input. Attack cancelled.\n");
-    }
   }
 
   @Override

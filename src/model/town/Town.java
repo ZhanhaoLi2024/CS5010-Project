@@ -2,8 +2,6 @@ package model.town;
 
 import java.io.IOException;
 import java.util.List;
-import model.item.Item;
-import model.pet.Pet;
 import model.place.Place;
 import model.player.Player;
 import model.target.Target;
@@ -18,7 +16,7 @@ public interface Town {
   /**
    * Shows the current information about the pet.
    */
-  String petCurrentInfo() throws IOException;
+  String petCurrentInfo();
 
   /**
    * Retrieves the place by number.
@@ -41,21 +39,6 @@ public interface Town {
   Target getTarget();
 
   /**
-   * Retrieves the pet in the town.
-   *
-   * @return the pet in the town
-   */
-  Pet getPet();
-
-  /**
-   * Determines if a place is visible (not blocked by pet).
-   *
-   * @param place the place to check visibility for
-   * @return true if the place is visible, false otherwise
-   */
-  boolean isPlaceVisible(Place place);
-
-  /**
    * Moves the pet to a new location.
    *
    * @param placeNumber the number of the place to move the pet to
@@ -63,19 +46,6 @@ public interface Town {
    */
   void movePet(int placeNumber) throws IOException;
 
-  /**
-   * Retrieves the name of the town.
-   *
-   * @return the name of the town as a String
-   */
-  String getName();
-
-  /**
-   * Retrieves the list of items in the town.
-   *
-   * @return the list of items in the town
-   */
-  List<Item> getItems();
 
   /**
    * Retrieves the list of places in the town.
@@ -99,13 +69,6 @@ public interface Town {
   int getTargetHealth();
 
   /**
-   * Retrieves the name of the town.
-   *
-   * @return the name of the town as a String
-   */
-  String getTownName();
-
-  /**
    * Retrieves the list of players in the town.
    *
    * @return the list of players in the town
@@ -125,17 +88,10 @@ public interface Town {
    * @param newPlayerName       the name of the new player
    * @param newPlayerPlace      the starting place of the new player
    * @param newPlayerCarryLimit the carry limit of the new player
-   * @throws IOException if there is an issue with I/O operations
+   * @param isComputerPlayer    true if the player is computer-controlled, false otherwise
    */
-  void addPlayer(String newPlayerName, int newPlayerPlace, int newPlayerCarryLimit)
-      throws IOException;
-
-  /**
-   * Adds a computer player to the town.
-   *
-   * @throws IOException if an I/O error occurs
-   */
-  void addComputerPlayer() throws IOException;
+  void addPlayer(String newPlayerName, int newPlayerPlace, int newPlayerCarryLimit,
+                 boolean isComputerPlayer);
 
 
   String getPlayerByName(String playerName) throws IOException;
@@ -220,23 +176,6 @@ public interface Town {
 
   String getPlayerCurrentCarriedItems(int playerIndex) throws IOException;
 
-  /**
-   * Executes an attack for a computer-controlled player.
-   *
-   * @param player the computer-controlled player
-   * @throws IOException              if there is an error with output
-   * @throws IllegalArgumentException if player is null or not computer-controlled
-   */
-  void executeComputerAttack(Player player) throws IOException;
-
-  /**
-   * Handles attack options and execution for human players.
-   *
-   * @param player the human player making the attack
-   * @throws IOException              if there is an error with output
-   * @throws IllegalArgumentException if player is null or is computer-controlled
-   */
-  void handleHumanAttack(Player player) throws IOException;
 
   /**
    * Retrieves the maximum number of turns allowed in the game.

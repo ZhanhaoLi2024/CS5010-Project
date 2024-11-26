@@ -8,7 +8,6 @@ import controller.support.GameStateManager;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import model.player.Player;
 import model.town.Town;
 import view.GameView;
 
@@ -161,43 +160,11 @@ public class GuiController implements Controller {
     handleGameOver();
   }
 
+  private void handleGameOver() {
+  }
+
   private void processTurn() throws IOException {
-    if (town.getPlayers().isEmpty()) {
-      return; // Wait for player additions
-    }
-
-    Player currentPlayer = stateManager.getCurrentPlayer();
-    updatePlayerDisplay(currentPlayer);
-
-    if (currentPlayer.isComputerControlled()) {
-      handleComputerTurn(currentPlayer);
-    } else {
-      handleHumanTurn(currentPlayer);
-    }
-
-    stateManager.nextTurn();
-  }
-
-  private void updatePlayerDisplay(Player currentPlayer) throws IOException {
-    var currentPlace = stateManager.getCurrentPlayerPlace();
-    view.updatePlayerInfo(currentPlayer, currentPlace);
-  }
-
-  private void handleComputerTurn(Player player) throws IOException {
-    if (!player.getCurrentCarriedItems().isEmpty()) {
-      town.executeComputerAttack(player);
-    } else {
-//      town.movePlayer();
-    }
-    view.showMessage("Computer player " + player.getName() + " completed their turn.");
-  }
-
-  private void handleHumanTurn(Player player) throws IOException {
-    String message = String.format("Player %s's turn in %s",
-        player.getName(),
-        stateManager.getCurrentPlayerPlace().getName());
-    view.showMessage(message);
-//    town.showBasicLocationInfo();
+    //
   }
 
   // Player Action Handlers
@@ -211,7 +178,6 @@ public class GuiController implements Controller {
     int place = Integer.parseInt(inputs[1]);
     int limit = Integer.parseInt(inputs[2]);
 
-//    town.addPlayer(name, place, limit);
     new AddPlayerCommand(town, false, name, place, limit).execute();
     view.showMessage("Added human player: " + name);
   }
@@ -239,74 +205,35 @@ public class GuiController implements Controller {
   }
 
   private void handleMoveAction() throws IOException {
-    if (!stateManager.canMove()) {
-      view.showMessage("Cannot move at this time");
-      return;
-    }
-//    town.movePlayer();
-    view.showMessage("Move completed");
+    // Move player to a new location
   }
 
   private void handleLookAction() throws IOException {
-    if (!stateManager.canLook()) {
-      view.showMessage("Cannot look at this time");
-      return;
-    }
-    town.lookAround();
+    // Look around the current location
   }
 
   private void handlePickupAction() throws IOException {
-    if (!stateManager.canPickup()) {
-      view.showMessage("Cannot pick up at this time");
-      return;
-    }
-//    town.pickUpItem();
+    // Pick up an item from the current location
   }
 
   private void handleAttackAction() throws IOException {
-    if (!stateManager.canAttack()) {
-      view.showMessage("Cannot attack at this time");
-      return;
-    }
-    Player currentPlayer = stateManager.getCurrentPlayer();
-    town.handleHumanAttack(currentPlayer);
+    // Attack the target character
   }
 
   private void handlePetMoveAction() throws IOException {
-    if (!stateManager.canMovePet()) {
-      view.showMessage("Cannot move pet at this time");
-      return;
-    }
-    // Implement pet movement logic
+    // Move the pet to a new location
   }
 
   private void handleStartTurn() throws IOException {
-    if (!stateManager.canStartTurn()) {
-      view.showMessage("Cannot start turn at this time");
-      return;
-    }
-//    town.startTurn();
+    // Start the turn
   }
 
   private void handleShowPlayerInfo() throws IOException {
-    Player currentPlayer = stateManager.getCurrentPlayer();
-//    view.showMessage(town.getOnePlayerAndRoomInfo(currentPlayer.getName()));
-  }
-
-  private void handleGameOver() throws IOException {
-    String message = stateManager.isMaxTurnsReached() ?
-        "Game Over! Maximum turns reached." :
-        "Game Over! Target has been defeated!";
-    view.showMessage(message);
-    view.close();
+    // Show player information
   }
 
   private void handleError(String message, Exception e) {
-    try {
-      view.showMessage(message + ": " + e.getMessage());
-    } catch (IOException ex) {
-      System.err.println("Error showing message: " + ex.getMessage());
-    }
+    // Handle error
   }
 
   private Boolean isValidateCommand(String commandName) {
@@ -324,7 +251,6 @@ public class GuiController implements Controller {
 
   @Override
   public void executeCommand(String commandName) throws IOException {
-    System.out.println("Executing command-2: " + commandName);
     if (commandName.startsWith("ADD_PLAYER")) {
       // Parse command parameters
       String[] parts = commandName.split(" ");

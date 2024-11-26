@@ -325,7 +325,7 @@ public class GameController implements Controller {
 //  @Override
   public void displayMapInfo() {
     System.out.println("=== Map Information ===");
-    System.out.println("Town: " + town.getTownName());
+//    System.out.println("Town: " + town.getTownName());
     System.out.println(
         "Target name: " + town.getTargetName() + " (Health: " + town.getTargetHealth() + ")");
     System.out.println("Places in the town:");
