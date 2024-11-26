@@ -2,6 +2,7 @@ package model.town;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
@@ -111,9 +112,13 @@ public class TownModel implements Town {
   }
 
   @Override
-  public void showPetCurrentInfo() throws IOException {
-    output.append("Pet info: ").append(pet.getName()).append("is in ")
-        .append(getPlaceByNumber(pet.getPetCurrentPlaceNumber()).getName()).append("\n");
+  public String petCurrentInfo() throws IOException {
+//    output.append("Pet info: ").append(pet.getName()).append("is in ")
+//        .append(getPlaceByNumber(pet.getPetCurrentPlaceNumber()).getName()).append("\n");
+    String petInfo = pet.getName() + ","
+        + getPlaceByNumber(pet.getPetCurrentPlaceNumber()).getName();
+    return petInfo;
+
   }
 
   @Override
@@ -217,14 +222,46 @@ public class TownModel implements Town {
   }
 
   @Override
-  public List<Place> getCurrentPlaceNeighbors(Place place) {
-    List<Place> neighbors = new ArrayList<>();
+  public Integer getPlayerCurrPlaceNumber(int playerIndex) {
+    return players.get(playerIndex).getPlayerCurrentPlaceNumber();
+  }
+
+  @Override
+  public String getCurrentPlaceInfo(int placeNumber) throws IOException {
+    Place place = getPlaceByNumber(placeNumber);
+    List<String> items = new ArrayList<>();
+    for (Item item : place.getItems()) {
+      items.add(item.getName() + item.getDamage());
+    }
+    List<String> players = new ArrayList<>();
+    for (Player player : place.getCurrentPlacePlayers()) {
+      players.add(player.getName());
+    }
+    return place.getName() + "," + items + "," + players;
+  }
+
+  @Override
+  public String getCurrentPlaceNeighborsInfo(int placeNumber) throws IOException {
+    List<List<String>> neighbors = new ArrayList<>();
+    Place place = getPlaceByNumber(placeNumber);
     for (Place p : places) {
+      boolean isTarget = p.equals(targetCharacter.getCurrentPlace());
+      boolean isPet = p.getPlaceNumber().equals(String.valueOf(pet.getPetCurrentPlaceNumber()));
       if (!p.equals(place) && place.isNeighbor(p)) {
-        neighbors.add(p);
+        List<String> items = new ArrayList<>();
+        for (Item item : p.getItems()) {
+          items.add(item.getName() + item.getDamage());
+        }
+        List<String> neighborPlayers = new ArrayList<>();
+        for (Player player : p.getCurrentPlacePlayers()) {
+          neighborPlayers.add(player.getName());
+        }
+        neighbors.add(Collections.singletonList(
+            p.getName() + "," + p.getPlaceNumber() + "," + items + "," + neighborPlayers + ","
+                + isTarget + "," + isPet));
       }
     }
-    return neighbors;
+    return neighbors.toString();
   }
 
   /**
@@ -248,6 +285,7 @@ public class TownModel implements Town {
     Place startingPlace = places.get(placeNumber - 1);
     Player player = new PlayerModel(playerName, false, carryLimit, placeNumber);
     players.add(player);
+    startingPlace.addPlayer(player);
 
     // Confirm addition
     output.append("Player added successfully:\n")
@@ -348,50 +386,51 @@ public class TownModel implements Town {
   }
 
   @Override
-  public void showBasicLocationInfo() throws IOException {
+  public String showBasicLocationInfo() throws IOException {
     Player currentPlayer = players.get(currentPlayerIndex);
     Place currentPlace = getPlaceByNumber(currentPlayer.getPlayerCurrentPlaceNumber());
 
-    // Show current place name
-    output.append("\nHi ").append(currentPlayer.getName()).append(", you are in ")
-        .append(currentPlace.getName())
-        .append("\n");
+    List<List<String>> playerInfo = new ArrayList<>();
+    List<String> playerBasicInfo = new ArrayList<>();
+    playerBasicInfo.add(currentPlayer.getName() + "," + currentPlace.getName() + ","
+        + currentPlayer.getCarryLimit());
+    playerInfo.add(playerBasicInfo);
 
     // Show other players in the same room
     List<Player> currentPlacePlayers = new ArrayList<>();
+    List<String> playerNeighbours = new ArrayList<>();
     for (Player p : players) {
       Place currentPlaceOfP = getPlaceByNumber(p.getPlayerCurrentPlaceNumber());
       if (currentPlaceOfP.equals(currentPlace) && !p.equals(currentPlayer)) {
         currentPlacePlayers.add(p);
+        playerNeighbours.add(p.getName());
       }
     }
-    if (!currentPlacePlayers.isEmpty()) {
-      output.append("Players in this place:\n");
-      if (currentPlacePlayers.size() == 1) {
-        output.append(" - ").append(currentPlacePlayers.get(0).getName()).append("\n");
-      } else {
-        for (Player player : currentPlacePlayers) {
-          output.append(player.getName()).append(", ");
-        }
-        output.append("\n");
-      }
-    }
+    playerInfo.add(playerNeighbours);
+
 
     // show target current place
-    output.append("Target is in ").append(targetCharacter.getCurrentPlace().getName()).append("\n");
+    List<String> targetInfo = new ArrayList<>();
+    targetInfo.add(targetCharacter.getName() + "," + targetCharacter.getCurrentPlace().getName()
+        + "," + targetCharacter.getHealth());
+    playerInfo.add(targetInfo);
 
     // Show pet current place
-    output.append("Pet is in ").append(getPlaceByNumber(pet.getPetCurrentPlaceNumber()).getName())
-        .append("\n");
+    List<String> petInfo = new ArrayList<>();
+    petInfo.add(
+        pet.getName() + "," + getPlaceByNumber(pet.getPetCurrentPlaceNumber()).getName());
+    playerInfo.add(petInfo);
 
     // Show available items
+    List<String> itemsInfo = new ArrayList<>();
     if (!currentPlace.getItems().isEmpty()) {
       for (Item item : currentPlace.getItems()) {
-        output.append("Item in this place: \n");
-        output.append(" - ").append(item.getName()).append(" (Damage: ")
-            .append(String.valueOf(item.getDamage())).append(")\n");
+        itemsInfo.add(item.getName() + "," + item.getDamage());
       }
+      playerInfo.add(itemsInfo);
     }
+
+    return playerInfo.toString();
   }
 
   @Override
@@ -510,84 +549,23 @@ public class TownModel implements Town {
       }
     }
     output.append("\n");
-    this.switchToNextPlayer(); // Next player turn
-  }
 
-  @Override
-  public void movePlayer() throws IOException {
-    Player currentPlayer = this.players.get(currentPlayerIndex);
-    Place currentPlace = getPlaceByNumber(currentPlayer.getPlayerCurrentPlaceNumber());
-    List<Place> neighbors = currentPlace.getNeighbors();
-
-    if (neighbors.isEmpty()) {
-      output.append("No neighbors found.\n");
-      return;
-    }
-
-    if (currentPlayer.isComputerControlled()) {
-      handleComputerPlayerMove(currentPlayer, neighbors);
-    } else {
-      handleHumanPlayerMove(currentPlayer, currentPlace, neighbors);
-    }
 
     this.switchToNextPlayer();
   }
 
-  /**
-   * Handles movement logic for computer-controlled player.
-   */
-  private void handleComputerPlayerMove(Player player, List<Place> neighbors)
-      throws IOException {
-    // First try to move towards target if visible
-    Place targetPlace = getTarget().getCurrentPlace();
+  @Override
+  public void movePlayer(int playerIndex, int newPlaceNumber) throws IOException {
 
-    // If target is in a neighboring space, move there
-    for (Place neighbor : neighbors) {
-      if (neighbor.equals(targetPlace)) {
-        movePlayerToNeighbor(player, neighbor);
-        return;
-      }
-    }
-
-    // Otherwise, move randomly
-    Random random = new Random();
-    int randomNeighbor = random.nextInt(neighbors.size());
-    movePlayerToNeighbor(player, neighbors.get(randomNeighbor));
-  }
-
-  /**
-   * Handles movement logic for human player.
-   */
-  private void handleHumanPlayerMove(Player player, Place currentPlace, List<Place> neighbors)
-      throws IOException {
-    output.append("Neighbors of ").append(currentPlace.getName())
-        .append(":\n");
-    for (int i = 0; i < neighbors.size(); i++) {
-      output.append(String.valueOf(i + 1)).append(". ")
-          .append(neighbors.get(i).getName())
-          .append("\n");
-    }
-    output.append("Enter the number of the neighbor to move to:\n");
-
-    try {
-      int neighborNumber = Integer.parseInt(scanner.nextLine());
-      if (neighborNumber < 1 || neighborNumber > neighbors.size()) {
-        output.append("Invalid neighbor number.\n");
-        return;
-      }
-      movePlayerToNeighbor(player, neighbors.get(neighborNumber - 1));
-    } catch (NumberFormatException e) {
-      output.append("Invalid input. Please enter a number.\n");
-    }
-  }
-
-  /**
-   * Moves a player to the specified neighboring place.
-   */
-  private void movePlayerToNeighbor(Player player, Place neighbor) throws IOException {
-    int newPlaceNumber = getPlaceNumberByName(neighbor.getName());
+    Player player = players.get(playerIndex);
+    Place oldPlace = getPlaceByNumber(player.getPlayerCurrentPlaceNumber());
+    Place newPlace = getPlaceByNumber(newPlaceNumber);
+    oldPlace.removePlayer(player);
+    newPlace.addPlayer(player);
     player.moveToPlaceNumber(newPlaceNumber);
-    output.append("Moved to ").append(neighbor.getName()).append("\n");
+
+    this.switchToNextPlayer();
+
   }
 
   @Override

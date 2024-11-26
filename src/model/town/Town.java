@@ -25,7 +25,7 @@ public interface Town {
   /**
    * Shows the current information about the pet.
    */
-  void showPetCurrentInfo() throws IOException;
+  String petCurrentInfo() throws IOException;
 
   /**
    * Retrieves the place by number.
@@ -119,13 +119,12 @@ public interface Town {
    */
   List<Player> getPlayers();
 
-  /**
-   * Retrieves the neighbors of the specified place.
-   *
-   * @param place the place to retrieve the neighbors of
-   * @return the neighbors of the specified place
-   */
-  List<Place> getCurrentPlaceNeighbors(Place place);
+
+  Integer getPlayerCurrPlaceNumber(int playerIndex);
+
+  String getCurrentPlaceInfo(int placeNumber) throws IOException;
+
+  String getCurrentPlaceNeighborsInfo(int placeNumber) throws IOException;
 
   /**
    * Adds a player to the town.
@@ -180,7 +179,7 @@ public interface Town {
    *
    * @throws IOException if there is an issue with I/O operations
    */
-  void showBasicLocationInfo() throws IOException;
+  String showBasicLocationInfo() throws IOException;
 
   List<String> getAllPlayersInfo();
 
@@ -212,12 +211,8 @@ public interface Town {
    */
   int getCurrentTurn();
 
-  /**
-   * Moves the player to the next place in the list of neighboring places.
-   *
-   * @throws IOException if there is an issue with I/O operations.
-   */
-  void movePlayer() throws IOException;
+
+  void movePlayer(int playerIndex, int newPlaceNumber) throws IOException;
 
   /**
    * Allows the player to pick up an item from the current location.

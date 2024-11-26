@@ -8,18 +8,22 @@ import model.town.Town;
  */
 public class MovePlayerCommand implements Command {
   private final Town town;
+  private final int placeNumber;
+  private final int playerIndex;
 
   /**
    * Constructs a new MovePlayerCommand.
    *
    * @param gameTown the town model
    */
-  public MovePlayerCommand(Town gameTown) {
+  public MovePlayerCommand(Town gameTown, int currentPlayerIndex, int newPlaceNumber) {
     this.town = gameTown;
+    this.placeNumber = newPlaceNumber;
+    this.playerIndex = currentPlayerIndex;
   }
 
   @Override
   public void execute() throws IOException {
-    town.movePlayer();
+    town.movePlayer(playerIndex, placeNumber);
   }
 }

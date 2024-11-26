@@ -187,7 +187,7 @@ public class GuiController implements Controller {
     if (!player.getCurrentCarriedItems().isEmpty()) {
       town.executeComputerAttack(player);
     } else {
-      town.movePlayer();
+//      town.movePlayer();
     }
     view.showMessage("Computer player " + player.getName() + " completed their turn.");
   }
@@ -197,7 +197,7 @@ public class GuiController implements Controller {
         player.getName(),
         stateManager.getCurrentPlayerPlace().getName());
     view.showMessage(message);
-    town.showBasicLocationInfo();
+//    town.showBasicLocationInfo();
   }
 
   // Player Action Handlers
@@ -211,12 +211,13 @@ public class GuiController implements Controller {
     int place = Integer.parseInt(inputs[1]);
     int limit = Integer.parseInt(inputs[2]);
 
-    town.addPlayer(name, place, limit);
+//    town.addPlayer(name, place, limit);
+    new AddPlayerCommand(town, false, name, place, limit).execute();
     view.showMessage("Added human player: " + name);
   }
 
   private void handleAddComputerPlayer() throws IOException {
-    town.addComputerPlayer();
+    new AddPlayerCommand(town, true, "Computer", 0, 0);
     view.showMessage("Added computer player successfully");
   }
 
@@ -242,7 +243,7 @@ public class GuiController implements Controller {
       view.showMessage("Cannot move at this time");
       return;
     }
-    town.movePlayer();
+//    town.movePlayer();
     view.showMessage("Move completed");
   }
 
