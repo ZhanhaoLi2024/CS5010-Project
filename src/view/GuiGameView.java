@@ -45,6 +45,7 @@ public class GuiGameView implements View, GuiView, KeyListener {
   private JLabel turnLabel;
   private JLabel playerNameLabel;
   private JLabel itemsLabel;
+  private MapPanel mapPanel;
 
   /**
    * Constructs the GUI view.
@@ -169,7 +170,10 @@ public class GuiGameView implements View, GuiView, KeyListener {
     // 左侧地图面板
     JPanel leftPanel = new JPanel(new BorderLayout());
     leftPanel.setBorder(BorderFactory.createTitledBorder("Game Map"));
-    MapPanel mapPanel = new MapPanel(controller.getTown().getPlaces(), 58);
+//    MapPanel mapPanel = new MapPanel(controller.getTown().getPlaces(), 58);
+//    JScrollPane mapScrollPane = new JScrollPane(mapPanel);
+//    leftPanel.add(mapScrollPane, BorderLayout.CENTER);
+    mapPanel = new MapPanel(controller.getTown().getPlaces(), 58);
     JScrollPane mapScrollPane = new JScrollPane(mapPanel);
     leftPanel.add(mapScrollPane, BorderLayout.CENTER);
     mainSplitPane.setLeftComponent(leftPanel);
@@ -231,15 +235,12 @@ public class GuiGameView implements View, GuiView, KeyListener {
     panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
     panel.setBorder(BorderFactory.createTitledBorder("Player Information"));
 
-    // 回合信息
     turnLabel = new JLabel("Turn: ");
     turnLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-    // 玩家信息
     playerNameLabel = new JLabel("Player: ");
     playerNameLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-    // 物品信息
     itemsLabel = new JLabel("Items: ");
     itemsLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
@@ -261,22 +262,14 @@ public class GuiGameView implements View, GuiView, KeyListener {
       String itemsText = info.getItems() == null
           ? "None" : String.join(", ", info.getItems());
       itemsLabel.setText("Items: " + itemsText);
+
+      // update target and player locations on map
+      String targetPlace = controller.getTown().getTarget().getCurrentPlace().getName();
+      System.out.println(
+          "Target place: " + targetPlace + "Player place: " + info.getCurrentPlace());
+      mapPanel.updateLocations(targetPlace, info.getCurrentPlace());
     });
   }
-
-//  private JPanel createControlPanel() {
-//    JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 5));
-//    panel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-//
-//    String[] buttonLabels = {"Move (M)", "Look (L)", "Pick (P)", "Attack (A)", "Pet Move (T)"};
-//    String[] commands = {"MOVE", "LOOK", "PICK", "ATTACK", "PETMOVE"};
-//
-//    for (int i = 0; i < buttonLabels.length; i++) {
-//      panel.add(createActionButton(buttonLabels[i], commands[i]));
-//    }
-//
-//    return panel;
-//  }
 
   private JLabel createStyledLabel(String text, int size, int style) {
     JLabel label = new JLabel(text);
@@ -304,38 +297,49 @@ public class GuiGameView implements View, GuiView, KeyListener {
 
   private void handleCommand(String command) {
     try {
-      if (command.equals("ADD_PLAYER_SCREEN")) {
-        AddPlayerDialog dialog = new AddPlayerDialog(this);
-        dialog.setVisible(true);
-      } else if (command.equals("ADD_COMPUTER_PLAYER")) {
-        controller.executeCommand("ADD_COMPUTER");
-      } else if (command.equals("SHOW_PLAYER_INFO")) {
-        PlayerInfoDialog dialog = new PlayerInfoDialog(this);
-        dialog.setVisible(true);
-      } else if (command.equals("START_TURNS")) {
-        System.out.println("Starting game...");
-//        if (controller.executeCommand("START_TURNS")) {
-//          cardLayout.show(mainPanel, GAME_CARD);
-//        }
-        if (controller.executeCommand("START_TURNS")) {
-          cardLayout.show(mainPanel, GAME_CARD);
-          mainFrame.requestFocusInWindow();
+      switch (command) {
+        case "ADD_PLAYER_SCREEN": {
+          AddPlayerDialog dialog = new AddPlayerDialog(this);
+          dialog.setVisible(true);
+          break;
         }
-      } else if (command.equals("QUIT")) {
-        close();
-      } else if (command.equals("MOVE")) {
+        case "ADD_COMPUTER_PLAYER":
+          controller.executeCommand("ADD_COMPUTER");
+          break;
+        case "SHOW_PLAYER_INFO": {
+          PlayerInfoDialog dialog = new PlayerInfoDialog(this);
+          dialog.setVisible(true);
+          break;
+        }
+        case "START_TURNS":
+          System.out.println("Starting game...");
+          if (controller.executeCommand("START_TURNS")) {
+            cardLayout.show(mainPanel, GAME_CARD);
+            mainFrame.requestFocusInWindow();
+          }
+          break;
+        case "QUIT":
+          close();
+          break;
+        case "MOVE":
 //        controller.executeCommand("MOVE");
-      } else if (command.equals("LOOK")) {
-        System.out.println("Looking around...");
-        controller.executeCommand("LOOK");
-      } else if (command.equals("PICK")) {
+          break;
+        case "LOOK":
+          System.out.println("Looking around...");
+          controller.executeCommand("LOOK");
+          break;
+        case "PICK":
 //        controller.executeCommand("PICK");
-      } else if (command.equals("ATTACK")) {
+          break;
+        case "ATTACK":
 //        controller.executeCommand("ATTACK");
-      } else if (command.equals("PETMOVE")) {
+          break;
+        case "PETMOVE":
 //        controller.executeCommand("PETMOVE");
-      } else {
-        System.out.println("Executing command: " + command);
+          break;
+        default:
+          System.out.println("Executing command: " + command);
+          break;
       }
     } catch (Exception ex) {
       showError("Error executing command: " + ex.getMessage());
@@ -415,8 +419,8 @@ public class GuiGameView implements View, GuiView, KeyListener {
   }
 
   @Override
-  public void close() throws IOException {
-    SwingUtilities.invokeLater(() -> mainFrame.dispose());
+  public void close() {
+    SwingUtilities.invokeLater(mainFrame::dispose);
   }
 
   public JFrame getMainFrame() {
@@ -476,10 +480,5 @@ public class GuiGameView implements View, GuiView, KeyListener {
   public void keyReleased(KeyEvent e) {
     // 不需要实现
   }
-
-//  private void showError(String message) {
-//    JOptionPane.showMessageDialog(mainFrame, message, "Error", JOptionPane.ERROR_MESSAGE);
-//    mainFrame.requestFocusInWindow(); // 对话框关闭后重新请求焦点
-//  }
 
 }

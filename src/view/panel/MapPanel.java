@@ -16,6 +16,8 @@ public class MapPanel extends JPanel {
   private static int CELL_SIZE = 0;
   private final List<Place> places;
   private BufferedImage mapImage;
+  private String targetPlaceName;
+  private String playerPlaceName;
 
   public MapPanel(List<Place> places, int cellSize) {
     this.places = places;
@@ -88,6 +90,64 @@ public class MapPanel extends JPanel {
     super.paintComponent(g);
     if (mapImage != null) {
       g.drawImage(mapImage, 0, 0, this);
+
+      if (targetPlaceName != null || playerPlaceName != null) {
+        Graphics2D g2d = (Graphics2D) g;
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+            RenderingHints.VALUE_ANTIALIAS_ON);
+
+        for (Place place : places) {
+          int x = place.getRow1() * 58;
+          int y = place.getCol1() * 58;
+          int width = (place.getRow2() - place.getRow1()) * 58;
+          int height = (place.getCol2() - place.getCol1()) * 58;
+
+          if (place.getName().equals(targetPlaceName)) {
+            drawTarget(g2d, x, y, width, height);
+          }
+
+          if (place.getName().equals(playerPlaceName)) {
+            drawPlayer(g2d, x, y, width, height);
+          }
+        }
+      }
     }
+  }
+
+  public void updateLocations(String targetPlace, String playerPlace) {
+    this.targetPlaceName = targetPlace;
+    this.playerPlaceName = playerPlace;
+    repaint(); // 触发重绘
+  }
+
+  private void drawTarget(Graphics2D g2d, int x, int y, int width, int height) {
+    int size = 14;
+    int centerX = x + (width - size) / 3;
+    int centerY = y + (height - size) / 3;
+    Color transparentRed = new Color(255, 0, 0, 128);
+    g2d.setColor(transparentRed);
+    g2d.fillRect(centerX, centerY, size, size);
+  }
+
+  private void drawPlayer(Graphics2D g2d, int x, int y, int width, int height) {
+    int size = 14;
+    int centerX = x + (width - size) / 3 + size;
+    int centerY = y + (height - size) / 3;
+
+    int[] xPoints = {
+        centerX,
+        centerX + size,
+        centerX + size / 2
+    };
+    int[] yPoints = {
+        centerY + size,
+        centerY + size,
+        centerY
+    };
+
+    Color transparentBlue = new Color(0, 0, 255, 128);
+    g2d.setColor(transparentBlue);
+
+    g2d.fillPolygon(xPoints, yPoints, 3);
   }
 }
