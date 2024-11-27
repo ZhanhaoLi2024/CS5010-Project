@@ -118,6 +118,7 @@ public class TextGameController implements Controller {
     while (continueGame) {
       view.showMessage(town.getCurrentTurn() + " of " + maxTurns);
       String playerInfo = town.showBasicLocationInfo();
+      view.showMessage("playerInfo: " + playerInfo);
       playerInfo = playerInfo.substring(1, playerInfo.length() - 1);
       String[] items = playerInfo.split("\\], \\[");
       String playerName = "";

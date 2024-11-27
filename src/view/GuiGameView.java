@@ -1,15 +1,15 @@
 package view;
 
 import controller.Controller;
-import controller.GuiController;
 import controller.support.PlayerInfoDTO;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.io.IOException;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -31,7 +31,7 @@ import view.panel.MapPanel;
 /**
  * GUI implementation of the GameView interface.
  */
-public class GuiGameView implements View, GuiView {
+public class GuiGameView implements View, GuiView, KeyListener {
   private static final String WELCOME_CARD = "WELCOME";
   private static final String MENU_CARD = "MENU";
   private static final String GAME_CARD = "GAME";
@@ -57,6 +57,9 @@ public class GuiGameView implements View, GuiView {
     this.mainPanel = new JPanel(cardLayout);
     this.messageArea = new JTextArea(10, 40);
     messageArea.setEditable(false);
+
+    mainFrame.addKeyListener(this);
+    mainFrame.setFocusable(true);
 
     setupMainFrame();
     createPanels();
@@ -155,6 +158,9 @@ public class GuiGameView implements View, GuiView {
   private JPanel createGamePanel() {
     JPanel panel = new JPanel(new BorderLayout());
 
+    panel.setFocusable(true);
+    panel.addKeyListener(this);
+
     // 创建主分割面板
     JSplitPane mainSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
     mainSplitPane.setResizeWeight(0.7); // 设置左侧占70%宽度
@@ -191,20 +197,38 @@ public class GuiGameView implements View, GuiView {
     panel.setBorder(BorderFactory.createTitledBorder("Actions"));
 
     String[] actions = {
-        "Move Player",
-        "Look Around",
-        "Pick Up Item",
-        "Move Pet",
-        "Attack Target"
+        "Move Player(M)",
+        "Look Around(L)",
+        "Pick Up Item(P)",
+        "Move Pet(E)",
+        "Attack Target(A)"
+    };
+    String[] commands = {
+        "MOVE",
+        "LOOK",
+        "PICK",
+        "PETMOVE",
+        "ATTACK"
     };
 
-    for (String action : actions) {
-      JButton button = new JButton(action);
+    for (int i = 0; i < actions.length; i++) {
+      JButton button = new JButton(actions[i]);
       button.setAlignmentX(Component.CENTER_ALIGNMENT);
       button.setMaximumSize(new Dimension(200, 30));
+      button.setActionCommand(commands[i]);
+      final int index = i;
+      button.addActionListener(e -> handleCommand(commands[index]));
       panel.add(Box.createRigidArea(new Dimension(0, 5)));
       panel.add(button);
     }
+
+//    for (String action : actions) {
+//      JButton button = new JButton(action);
+//      button.setAlignmentX(Component.CENTER_ALIGNMENT);
+//      button.setMaximumSize(new Dimension(200, 30));
+//      panel.add(Box.createRigidArea(new Dimension(0, 5)));
+//      panel.add(button);
+//    }
 
     return panel;
   }
@@ -215,7 +239,7 @@ public class GuiGameView implements View, GuiView {
     panel.setBorder(BorderFactory.createTitledBorder("Player Information"));
 
     // 回合信息
-    turnLabel = new JLabel("Turn: 1");
+    turnLabel = new JLabel("Turn: ");
     turnLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
     // 玩家信息
@@ -235,19 +259,31 @@ public class GuiGameView implements View, GuiView {
     return panel;
   }
 
-  private JPanel createControlPanel() {
-    JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 5));
-    panel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+  @Override
+  public void updatePlayerInfo(PlayerInfoDTO info) {
+    SwingUtilities.invokeLater(() -> {
+      turnLabel.setText("Turn: " + info.getCurrentTurn());
+      playerNameLabel.setText("Player: " + info.getPlayerName());
 
-    String[] buttonLabels = {"Move (M)", "Look (L)", "Pick (P)", "Attack (A)", "Pet Move (T)"};
-    String[] commands = {"MOVE", "LOOK", "PICK", "ATTACK", "PETMOVE"};
-
-    for (int i = 0; i < buttonLabels.length; i++) {
-      panel.add(createActionButton(buttonLabels[i], commands[i]));
-    }
-
-    return panel;
+      String itemsText = info.getItems() == null
+          ? "None" : String.join(", ", info.getItems());
+      itemsLabel.setText("Items: " + itemsText);
+    });
   }
+
+//  private JPanel createControlPanel() {
+//    JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 5));
+//    panel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+//
+//    String[] buttonLabels = {"Move (M)", "Look (L)", "Pick (P)", "Attack (A)", "Pet Move (T)"};
+//    String[] commands = {"MOVE", "LOOK", "PICK", "ATTACK", "PETMOVE"};
+//
+//    for (int i = 0; i < buttonLabels.length; i++) {
+//      panel.add(createActionButton(buttonLabels[i], commands[i]));
+//    }
+//
+//    return panel;
+//  }
 
   private JLabel createStyledLabel(String text, int size, int style) {
     JLabel label = new JLabel(text);
@@ -285,11 +321,26 @@ public class GuiGameView implements View, GuiView {
         dialog.setVisible(true);
       } else if (command.equals("START_TURNS")) {
         System.out.println("Starting game...");
+//        if (controller.executeCommand("START_TURNS")) {
+//          cardLayout.show(mainPanel, GAME_CARD);
+//        }
         if (controller.executeCommand("START_TURNS")) {
           cardLayout.show(mainPanel, GAME_CARD);
+          mainFrame.requestFocusInWindow();
         }
       } else if (command.equals("QUIT")) {
         close();
+      } else if (command.equals("MOVE")) {
+//        controller.executeCommand("MOVE");
+      } else if (command.equals("LOOK")) {
+        System.out.println("Looking around...");
+        controller.executeCommand("LOOK");
+      } else if (command.equals("PICK")) {
+//        controller.executeCommand("PICK");
+      } else if (command.equals("ATTACK")) {
+//        controller.executeCommand("ATTACK");
+      } else if (command.equals("PETMOVE")) {
+//        controller.executeCommand("PETMOVE");
       } else {
         System.out.println("Executing command: " + command);
       }
@@ -323,7 +374,14 @@ public class GuiGameView implements View, GuiView {
   @Override
   public void showGuiMessage(String title, String message, String buttonText) {
     SwingUtilities.invokeLater(() -> {
-      MessageDialog.showMessage(mainFrame, title, message, buttonText);
+      MessageDialog.showMessage(mainFrame, title, message, buttonText, null);
+    });
+  }
+
+  @Override
+  public void showGuiMessage(String title, String message, String buttonText, Runnable onClose) {
+    SwingUtilities.invokeLater(() -> {
+      MessageDialog.showMessage(mainFrame, title, message, buttonText, onClose);
     });
   }
 
@@ -357,20 +415,34 @@ public class GuiGameView implements View, GuiView {
   }
 
   @Override
-  public void updatePlayerInfoPanel() throws IOException {
-    PlayerInfoDTO playerInfo = ((GuiController) controller).getCurrentPlayerInfo();
-
-    // Update turn label
-    turnLabel.setText("Turn: " + playerInfo.getCurrentTurn());
-
-    // Update player name label
-    playerNameLabel.setText("Player: " + playerInfo.getPlayerName());
-
-    // Update items label
-    String itemsText = playerInfo.getItems().isEmpty()
-        ? "None"
-        : String.join(", ", playerInfo.getItems());
-    itemsLabel.setText("Items: " + itemsText);
+  public void resetGame() {
+    cardLayout.show(mainPanel, MENU_CARD);
   }
+
+  @Override
+  public void keyPressed(KeyEvent e) {
+    if (e.getKeyChar() == 'L' || e.getKeyChar() == 'l') {
+      try {
+        controller.executeCommand("LOOK");
+      } catch (IOException ex) {
+        showError("Error executing look command: " + ex.getMessage());
+      }
+    }
+  }
+
+  @Override
+  public void keyTyped(KeyEvent e) {
+    // 不需要实现
+  }
+
+  @Override
+  public void keyReleased(KeyEvent e) {
+    // 不需要实现
+  }
+
+//  private void showError(String message) {
+//    JOptionPane.showMessageDialog(mainFrame, message, "Error", JOptionPane.ERROR_MESSAGE);
+//    mainFrame.requestFocusInWindow(); // 对话框关闭后重新请求焦点
+//  }
 
 }

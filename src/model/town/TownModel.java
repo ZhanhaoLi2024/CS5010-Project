@@ -195,17 +195,6 @@ public class TownModel implements Town {
     return neighbors.toString();
   }
 
-  /**
-   * Validates if a player name is unique (not already taken).
-   *
-   * @param name The name to check
-   * @return true if the name is unique, false otherwise
-   */
-  private boolean isPlayerNameUnique(String name) {
-    return players.stream()
-        .noneMatch(p -> p.getName().equalsIgnoreCase(name));
-  }
-
   @Override
   public void addPlayer(String playerName, int placeNumber, int carryLimit,
                         boolean isComputerController) {
@@ -222,8 +211,17 @@ public class TownModel implements Town {
 
     List<List<String>> playerInfo = new ArrayList<>();
     List<String> playerBasicInfo = new ArrayList<>();
+    List<Item> currentCarriedItems = currentPlayer.getCurrentCarriedItems();
+    StringBuilder carryItems = new StringBuilder();
+    if (currentCarriedItems.isEmpty()) {
+      carryItems = new StringBuilder("None");
+    } else {
+      for (Item item : currentCarriedItems) {
+        carryItems.append(item.getName()).append("-").append(item.getDamage()).append("|");
+      }
+    }
     playerBasicInfo.add(currentPlayer.getName() + "," + currentPlace.getName() + ","
-        + currentPlayer.getCarryLimit());
+        + currentPlayer.getCarryLimit() + "," + carryItems);
     playerInfo.add(playerBasicInfo);
 
     // Show other players in the same room
@@ -239,7 +237,7 @@ public class TownModel implements Town {
     playerInfo.add(playerNeighbours);
 
 
-    // show target current place
+    // show target current info(name, place, health)
     List<String> targetInfo = new ArrayList<>();
     targetInfo.add(targetCharacter.getName() + "," + targetCharacter.getCurrentPlace().getName()
         + "," + targetCharacter.getHealth());

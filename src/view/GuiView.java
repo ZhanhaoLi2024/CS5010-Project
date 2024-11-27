@@ -1,10 +1,15 @@
 package view;
 
-import java.io.IOException;
+
+import controller.support.PlayerInfoDTO;
 
 public interface GuiView extends View {
 
+  void updatePlayerInfo(PlayerInfoDTO info);
+
   void showGuiMessage(String title, String message, String buttonText);
 
-  void updatePlayerInfoPanel() throws IOException;
+  void showGuiMessage(String title, String message, String buttonText, Runnable onClose);
+
+  void resetGame();
 }
