@@ -11,6 +11,7 @@ import java.awt.Font;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.IOException;
+import java.util.concurrent.CompletableFuture;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -222,14 +223,6 @@ public class GuiGameView implements View, GuiView, KeyListener {
       panel.add(button);
     }
 
-//    for (String action : actions) {
-//      JButton button = new JButton(action);
-//      button.setAlignmentX(Component.CENTER_ALIGNMENT);
-//      button.setMaximumSize(new Dimension(200, 30));
-//      panel.add(Box.createRigidArea(new Dimension(0, 5)));
-//      panel.add(button);
-//    }
-
     return panel;
   }
 
@@ -379,6 +372,26 @@ public class GuiGameView implements View, GuiView, KeyListener {
   }
 
   @Override
+  public CompletableFuture<Integer> showGuiNumberMessage(String title, String message,
+                                                         String buttonText,
+                                                         int minValue, int maxValue) {
+    CompletableFuture<Integer> future = new CompletableFuture<>();
+
+    SwingUtilities.invokeLater(() -> {
+      MessageDialog.showNumberInputAsync(mainFrame, title, message, buttonText, minValue, maxValue)
+          .thenAccept(result -> {
+            if (result.hasNumber()) {
+              future.complete(result.getNumber());
+            } else {
+              future.completeExceptionally(new IllegalStateException("No number input provided"));
+            }
+          });
+    });
+
+    return future;
+  }
+
+  @Override
   public void showGuiMessage(String title, String message, String buttonText, Runnable onClose) {
     SwingUtilities.invokeLater(() -> {
       MessageDialog.showMessage(mainFrame, title, message, buttonText, onClose);
@@ -426,6 +439,30 @@ public class GuiGameView implements View, GuiView, KeyListener {
         controller.executeCommand("LOOK");
       } catch (IOException ex) {
         showError("Error executing look command: " + ex.getMessage());
+      }
+    } else if (e.getKeyChar() == 'M' || e.getKeyChar() == 'm') {
+      try {
+        controller.executeCommand("MOVE");
+      } catch (IOException ex) {
+        showError("Error executing move command: " + ex.getMessage());
+      }
+    } else if (e.getKeyChar() == 'P' || e.getKeyChar() == 'p') {
+      try {
+        controller.executeCommand("PICK");
+      } catch (IOException ex) {
+        showError("Error executing pick command: " + ex.getMessage());
+      }
+    } else if (e.getKeyChar() == 'E' || e.getKeyChar() == 'e') {
+      try {
+        controller.executeCommand("PETMOVE");
+      } catch (IOException ex) {
+        showError("Error executing pet move command: " + ex.getMessage());
+      }
+    } else if (e.getKeyChar() == 'A' || e.getKeyChar() == 'a') {
+      try {
+        controller.executeCommand("ATTACK");
+      } catch (IOException ex) {
+        showError("Error executing attack command: " + ex.getMessage());
       }
     }
   }

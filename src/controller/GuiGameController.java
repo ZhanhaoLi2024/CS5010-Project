@@ -1,6 +1,7 @@
 package controller;
 
 import controller.command.AddPlayerCommand;
+import controller.command.PickUpItemCommand;
 import controller.support.CommandHandler;
 import controller.support.EventHandler;
 import controller.support.PlayerInfoDTO;
@@ -126,12 +127,14 @@ public class GuiGameController implements Controller, GuiController {
     String petInfoString = petName + "," + petPlace;
 
     // current place items
-    parts[4] = parts[4].replace("[", "").replace("]", "");
-    String[] currentPlaceItems = parts[4].split(",");
-    String currentPlaceItemName = currentPlaceItems[0];
-    String currentPlaceItemDemage = currentPlaceItems[1];
     List<String> currentPlaceItemsList = new ArrayList<>();
-    currentPlaceItemsList.add(currentPlaceItemName + "(" + currentPlaceItemDemage + ")");
+    if (parts.length > 4) {
+      parts[4] = parts[4].replace("[", "").replace("]", "");
+      String[] currentPlaceItems = parts[4].split(",");
+      String currentPlaceItemName = currentPlaceItems[0];
+      String currentPlaceItemDemage = currentPlaceItems[1];
+      currentPlaceItemsList.add(currentPlaceItemName + "(" + currentPlaceItemDemage + ")");
+    }
 
     PlayerInfoDTO playerInfo =
         new PlayerInfoDTO(town.getCurrentTurn(), currentPlayerName, currentPlayerItems,
@@ -186,6 +189,93 @@ public class GuiGameController implements Controller, GuiController {
     });
     return true;
   }
+
+  private void pickUpItem() throws IOException {
+    String showItemInfo = "";
+    int maxItemNumber = 0;
+    int currentPlayerIndex = town.getCurrentPlayerIndex();
+    int currentPlaceNumber = town.getPlayerCurrPlaceNumber(currentPlayerIndex);
+    String currentPlace = town.getCurrentPlaceInfo(currentPlaceNumber);
+    String[] parts = currentPlace.split(";");
+    String itemName = "";
+    List<String> items = convertStringToList(parts[1]);
+    if (items.isEmpty()) {
+      showItemInfo += "No item in this place." + "\n";
+    } else {
+      showItemInfo += "Items in this place:" + "\n";
+      int i = 1;
+      for (String item : items) {
+        itemName = item.split("-")[0].trim();
+        String itemDamage = item.split("-")[1].trim();
+        showItemInfo += i + ". " + itemName + " (Damage: " + itemDamage + ")" + "\n";
+      }
+    }
+    maxItemNumber = items.size();
+    if (maxItemNumber == 0) {
+      guiView.showGuiMessage("Pick Up Item", "No item in this place", "OK", () -> {
+        try {
+          takeTurn();
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
+      });
+    } else {
+      guiView.showGuiNumberMessage("Pick Up Item", showItemInfo,
+              "OK",
+              1, maxItemNumber).thenAccept(itemNumber -> {
+                System.out.println("Item number-1: " + itemNumber);
+                String item = items.get(itemNumber - 1);
+                String[] itemParts = item.split("-");
+                String itemName1 = itemParts[0].trim();
+                System.out.println("Item name: " + itemName1);
+                try {
+                  new PickUpItemCommand(town, itemName1).execute();
+                  takeTurn();
+                } catch (IOException e) {
+                  e.printStackTrace();
+                }
+              }
+          )
+          .exceptionally(e -> {
+            guiView.showGuiMessage("Error", "Invalid item number", "OK");
+            return null;
+          });
+    }
+//    if (maxItemNumber > 0) {
+//      showItemInfo += "Enter the item number you want to pick up: ";
+//      guiView.showGuiNumberMessage("Pick Up Item", showItemInfo,
+//              "OK",
+//              1, maxItemNumber).thenAccept(itemNumber -> {
+//                System.out.println("Item number-1: " + itemNumber);
+//                String item = items.get(itemNumber - 1);
+//                String[] itemParts = item.split("-");
+//                String itemName1 = itemParts[0].trim();
+//                System.out.println("Item name: " + itemName1);
+//                try {
+//                  new PickUpItemCommand(town, itemName1).execute();
+//                  town.pickUpItem(itemName1);
+//                  takeTurn();
+//                } catch (IOException e) {
+//                  e.printStackTrace();
+//                }
+//              }
+//          )
+//          .exceptionally(e -> {
+//            guiView.showGuiMessage("Error", "Invalid item number", "OK");
+//            return null;
+//          });
+//    } else {
+//      guiView.showGuiMessage("Pick Up Item", "No item in this place", "OK", () -> {
+//            try {
+//              takeTurn();
+//            } catch (IOException e) {
+//              e.printStackTrace();
+//            }
+//          }
+//      );
+//    }
+  }
+
 
   private void lookAround() throws IOException {
     int currentPlayerIndex = town.getCurrentPlayerIndex();
@@ -289,6 +379,7 @@ public class GuiGameController implements Controller, GuiController {
         break;
       case "PICK":
         // Pick command
+        pickUpItem();
         break;
       case "ATTACK":
         // Attack command
@@ -353,6 +444,7 @@ public class GuiGameController implements Controller, GuiController {
       return true;
     } else if (commandName.startsWith("PICK")) {
       // Pick command
+      handlePlayerAction("PICK");
     } else if (commandName.startsWith("ATTACK")) {
       // Attack command
 
