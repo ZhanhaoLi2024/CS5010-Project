@@ -13,5 +13,5 @@ public interface Command {
    *
    * @throws IOException if there is an error during command execution
    */
-  void execute() throws IOException;
+  boolean execute() throws IOException;
 }

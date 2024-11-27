@@ -1,6 +1,8 @@
 package view;
 
 import controller.Controller;
+import controller.GuiController;
+import controller.support.PlayerInfoDTO;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
@@ -21,16 +23,15 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
-import model.place.Place;
-import model.player.Player;
 import view.dialog.AddPlayerDialog;
+import view.dialog.MessageDialog;
 import view.dialog.PlayerInfoDialog;
 import view.panel.MapPanel;
 
 /**
  * GUI implementation of the GameView interface.
  */
-public class GuiGameView implements GameView {
+public class GuiGameView implements View, GuiView {
   private static final String WELCOME_CARD = "WELCOME";
   private static final String MENU_CARD = "MENU";
   private static final String GAME_CARD = "GAME";
@@ -283,11 +284,9 @@ public class GuiGameView implements GameView {
         PlayerInfoDialog dialog = new PlayerInfoDialog(this);
         dialog.setVisible(true);
       } else if (command.equals("START_TURNS")) {
-        cardLayout.show(mainPanel, GAME_CARD);
-        try {
-          controller.executeCommand("START_GAME");
-        } catch (IOException ex) {
-          showError("Error starting game: " + ex.getMessage());
+        System.out.println("Starting game...");
+        if (controller.executeCommand("START_TURNS")) {
+          cardLayout.show(mainPanel, GAME_CARD);
         }
       } else if (command.equals("QUIT")) {
         close();
@@ -314,30 +313,17 @@ public class GuiGameView implements GameView {
   }
 
   @Override
-  public void showWelcomeScreen() throws IOException {
-    SwingUtilities.invokeLater(() -> cardLayout.show(mainPanel, WELCOME_CARD));
-  }
-
-  @Override
-  public void updatePlayerInfo(Player player, Place currentPlace) {
-//    SwingUtilities.invokeLater(() -> {
-//      turnLabel.setText("Turn: " + controller.getTown().getCurrentTurn());
-//      playerNameLabel.setText("Player: " + player.getName());
-//      Object Item = null;
-//      String items = player.getCurrentCarriedItems().isEmpty()
-//          ? "None" :
-//          String.join(", ", player.getCurrentCarriedItems().stream()
-//              .map(Item::getName)
-//              .collect(Collectors.toList()));
-//      itemsLabel.setText("Items: " + items);
-//    });
-  }
-
-  @Override
   public void showMessage(String message) throws IOException {
     SwingUtilities.invokeLater(() -> {
       messageArea.append(message + "\n");
       messageArea.setCaretPosition(messageArea.getDocument().getLength());
+    });
+  }
+
+  @Override
+  public void showGuiMessage(String title, String message, String buttonText) {
+    SwingUtilities.invokeLater(() -> {
+      MessageDialog.showMessage(mainFrame, title, message, buttonText);
     });
   }
 
@@ -370,5 +356,21 @@ public class GuiGameView implements GameView {
     return controller;
   }
 
-  
+  @Override
+  public void updatePlayerInfoPanel() throws IOException {
+    PlayerInfoDTO playerInfo = ((GuiController) controller).getCurrentPlayerInfo();
+
+    // Update turn label
+    turnLabel.setText("Turn: " + playerInfo.getCurrentTurn());
+
+    // Update player name label
+    playerNameLabel.setText("Player: " + playerInfo.getPlayerName());
+
+    // Update items label
+    String itemsText = playerInfo.getItems().isEmpty()
+        ? "None"
+        : String.join(", ", playerInfo.getItems());
+    itemsLabel.setText("Items: " + itemsText);
+  }
+
 }

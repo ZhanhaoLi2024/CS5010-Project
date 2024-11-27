@@ -3,13 +3,11 @@ package view;
 import controller.Controller;
 import java.io.IOException;
 import java.util.Scanner;
-import model.place.Place;
-import model.player.Player;
 
 /**
  * Implementation of GameView for text-based interface.
  */
-public class TextGameView implements GameView {
+public class TextGameView implements View {
   private static Appendable output;
   private static Scanner scanner;
   private final Readable input;
@@ -35,21 +33,6 @@ public class TextGameView implements GameView {
     output.append("Welcome to the game!\n");
   }
 
-  @Override
-  public void showWelcomeScreen() throws IOException {
-    output.append("\n=== Kill Doctor Lucky ===\n")
-        .append("Created by Zhanhao Li\n")
-        .append("CS 5010 Project\n\n");
-  }
-  
-  @Override
-  public void updatePlayerInfo(Player player, Place currentPlace) throws IOException {
-    output.append("\nCurrent Player: ").append(player.getName())
-        .append("\nLocation: ").append(currentPlace.getName())
-        .append("\nItems carried: ").append(String.valueOf(player.getCurrentCarriedItems().size()))
-        .append("/").append(String.valueOf(player.getCarryLimit()))
-        .append("\n");
-  }
 
   @Override
   public void showMessage(String message) throws IOException {

@@ -25,8 +25,9 @@ public class AddPlayerCommand implements Command {
 
 
   @Override
-  public void execute() throws IOException {
+  public boolean execute() throws IOException {
     town.addPlayer(playerName, startingPlace, carryLimit, isComputerPlayer);
+    return true;
   }
 
 }

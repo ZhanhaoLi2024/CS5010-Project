@@ -1,14 +1,14 @@
 import controller.Controller;
-import controller.GuiController;
-import controller.TextController;
+import controller.GuiGameController;
+import controller.TextGameController;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import model.town.Town;
 import model.town.TownLoader;
 import model.town.TownModel;
-import view.GameView;
 import view.GuiGameView;
 import view.TextGameView;
+import view.View;
 
 public class Driver {
   /**
@@ -50,13 +50,13 @@ public class Driver {
       // 3. Create the View and connect it to the Controller
       // 4. Connect the View to the Controller
       Controller controller;
-      GameView view;
+      View view;
       if (useGui) {
-        controller = new GuiController(town, maxTurns);
+        controller = new GuiGameController(town, maxTurns);
         view = new GuiGameView(controller);
         controller.setView(view, true);
       } else {
-        controller = new TextController(town, null, maxTurns);
+        controller = new TextGameController(town, null, maxTurns);
         view = new TextGameView(controller, new InputStreamReader(System.in), System.out);
         controller.setView(view, false);
       }

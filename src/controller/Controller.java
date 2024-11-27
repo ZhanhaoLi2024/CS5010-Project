@@ -2,14 +2,14 @@ package controller;
 
 import java.io.IOException;
 import model.town.Town;
-import view.GameView;
+import view.View;
 
 /**
  * The Controller interface defines the contract for managing game flow and user interactions.
  * It coordinates communication between the model and view components following the MVC pattern.
  */
 public interface Controller {
-  void setView(GameView gameView, boolean gui);
+  void setView(View view, boolean gui);
 
   /**
    * Initializes and starts the game, setting up initial game state and beginning gameplay.
@@ -20,5 +20,5 @@ public interface Controller {
 
   Town getTown();
 
-  void executeCommand(String command) throws IOException;
+  boolean executeCommand(String command) throws IOException;
 }

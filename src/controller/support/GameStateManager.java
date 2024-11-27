@@ -42,7 +42,7 @@ public class GameStateManager {
     validCommands.add("MOVE_PET");
 
     // Add game flow commands
-    validCommands.add("START_TURN");
+    validCommands.add("START_TURNS");
     validCommands.add("END_TURN");
   }
 

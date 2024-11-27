@@ -23,7 +23,8 @@ public class MovePlayerCommand implements Command {
   }
 
   @Override
-  public void execute() throws IOException {
+  public boolean execute() throws IOException {
     town.movePlayer(playerIndex, placeNumber);
+    return true;
   }
 }

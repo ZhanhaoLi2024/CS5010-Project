@@ -21,7 +21,8 @@ public class PickUpItemCommand implements Command {
   }
 
   @Override
-  public void execute() throws IOException {
+  public boolean execute() throws IOException {
     town.pickUpItem(itemName);
+    return true;
   }
 }
