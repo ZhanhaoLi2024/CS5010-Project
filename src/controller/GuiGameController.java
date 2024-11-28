@@ -1,6 +1,7 @@
 package controller;
 
 import controller.command.AddPlayerCommand;
+import controller.command.LookAroundCommand;
 import controller.command.MovePetCommand;
 import controller.command.MovePlayerCommand;
 import controller.command.PickUpItemCommand;
@@ -11,6 +12,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -43,7 +45,6 @@ public class GuiGameController implements Controller, GuiController {
   public GuiGameController(Town gameModel, int gameMaxTurns) {
     this.town = gameModel;
     this.maxTurns = gameMaxTurns;
-//    this.stateManager = new GameStateManager(gameModel, gameMaxTurns);
     this.commandHandler = new CommandHandler();
     this.eventHandler = new EventHandler(this);
   }
@@ -85,7 +86,36 @@ public class GuiGameController implements Controller, GuiController {
   }
 
   private void handleComputerTurn() throws IOException {
-    takeTurn();
+    // First priority: Attack the target if in the same place as target and not visible
+    String computerPlayerPlaceNumber = String.valueOf(
+        town.getPlayers().get(town.getCurrentPlayerIndex()).getPlayerCurrentPlaceNumber());
+    String targetPlaceNumber = town.getTarget().getCurrentPlace().getPlaceNumber();
+    if (computerPlayerPlaceNumber.equals(targetPlaceNumber)
+        && !town.isPlayerVisible(town.getPlayers().get(town.getCurrentPlayerIndex()))) {
+      // Computer player attempts to attack the target
+      attackTarget();
+      return;
+    }
+
+    // Second priority: Pick up an item if available in the current place
+    if (!town.getPlaceByNumber(
+            town.getPlayers().get(town.getCurrentPlayerIndex()).getPlayerCurrentPlaceNumber())
+        .getItems().isEmpty()
+        && town.getPlayers().get(town.getCurrentPlayerIndex()).getCurrentCarriedItems().size()
+        < town.getPlayers().get(town.getCurrentPlayerIndex()).getCarryLimit()) {
+      // Computer player picks up an item
+      pickUpItem();
+      return;
+    }
+
+    // Third priority: Move towards target if carrying items
+    if (!town.getPlayers().get(town.getCurrentPlayerIndex()).getCurrentCarriedItems().isEmpty()) {
+      movePlayer();
+      return;
+    }
+
+    // Fourth priority: Look around to gather information
+    lookAround();
   }
 
   private void takeTurnForPlayer() throws IOException {
@@ -147,7 +177,6 @@ public class GuiGameController implements Controller, GuiController {
             petInfoString);
     guiView.updatePlayerInfo(playerInfo);
   }
-//  }
 
   private void takeTurn() throws IOException {
     String playerInfo = town.showBasicLocationInfo();
@@ -195,8 +224,35 @@ public class GuiGameController implements Controller, GuiController {
     return true;
   }
 
-  private void pickUpItem() throws IOException {
-    String showItemInfo = "";
+  private void handleComputerPickUpItem() throws IOException {
+    int currentPlayerIndex = town.getCurrentPlayerIndex();
+    int currentPlaceNumber = town.getPlayerCurrPlaceNumber(currentPlayerIndex);
+    String currentPlace = town.getCurrentPlaceInfo(currentPlaceNumber);
+    String[] parts = currentPlace.split(";");
+    List<String> items = convertStringToList(parts[1]);
+    if (items.isEmpty()) {
+      view.showMessage("No item in this place.");
+    } else {
+      int i = 0;
+      String maxDamageItemName = "";
+      int maxDamageItem = 0;
+      for (String item : items) {
+        String[] chooseItem = item.split("-");
+        String itemName1 = chooseItem[0].trim();
+        String itemDamage = chooseItem[1].trim();
+        if (Integer.parseInt(itemDamage) > maxDamageItem) {
+          maxDamageItem = Integer.parseInt(itemDamage);
+          maxDamageItemName = itemName1;
+        }
+        i++;
+      }
+      new PickUpItemCommand(town, maxDamageItemName).execute();
+      takeTurn();
+    }
+  }
+
+  private void handleHumanPickUpItem() throws IOException {
+    StringBuilder showItemInfo = new StringBuilder();
     int maxItemNumber = 0;
     int currentPlayerIndex = town.getCurrentPlayerIndex();
     int currentPlaceNumber = town.getPlayerCurrPlaceNumber(currentPlayerIndex);
@@ -205,14 +261,15 @@ public class GuiGameController implements Controller, GuiController {
     String itemName = "";
     List<String> items = convertStringToList(parts[1]);
     if (items.isEmpty()) {
-      showItemInfo += "No item in this place." + "\n";
+      showItemInfo.append("No item in this place." + "\n");
     } else {
-      showItemInfo += "Items in this place:" + "\n";
+      showItemInfo.append("Items in this place:" + "\n");
       int i = 1;
       for (String item : items) {
         itemName = item.split("-")[0].trim();
         String itemDamage = item.split("-")[1].trim();
-        showItemInfo += i + ". " + itemName + " (Damage: " + itemDamage + ")" + "\n";
+        showItemInfo.append(i).append(". ").append(itemName).append(" (Damage: ").append(itemDamage)
+            .append(")").append("\n");
       }
     }
     maxItemNumber = items.size();
@@ -225,7 +282,7 @@ public class GuiGameController implements Controller, GuiController {
         }
       });
     } else {
-      guiView.showGuiNumberMessage("Pick Up Item", showItemInfo,
+      guiView.showGuiNumberMessage("Pick Up Item", showItemInfo.toString(),
               "OK",
               1, maxItemNumber).thenAccept(itemNumber -> {
                 System.out.println("Item number-1: " + itemNumber);
@@ -248,18 +305,32 @@ public class GuiGameController implements Controller, GuiController {
     }
   }
 
+  private void pickUpItem() throws IOException {
+    int currentPlayerIndex = town.getCurrentPlayerIndex();
+    boolean isComputerController = town.getPlayers().get(currentPlayerIndex).isComputerControlled();
+    if (isComputerController) {
+      handleComputerPickUpItem();
+    } else {
+      handleHumanPickUpItem();
+    }
+  }
 
-  private void lookAround() throws IOException {
+  private void handleComputerLookAround() throws IOException {
+    new LookAroundCommand(town).execute();
+    takeTurn();
+  }
+
+  private void handleHumanLookAround() throws IOException {
     int currentPlayerIndex = town.getCurrentPlayerIndex();
     int currentPlayerPlaceNumber = town.getPlayerCurrPlaceNumber(currentPlayerIndex);
     String currentPlace = town.getCurrentPlaceInfo(currentPlayerPlaceNumber);
     String neighbors = town.getCurrentPlaceNeighborsInfo(currentPlayerPlaceNumber);
 
-    String lookAroundInfo = "";
+    StringBuilder lookAroundInfo = new StringBuilder();
     // Show current place info: name, items, players
     String[] parts = currentPlace.split(";");
     String currentPlaceName = parts[0];
-    lookAroundInfo = "Current place: " + currentPlaceName + "\n";
+    lookAroundInfo = new StringBuilder("Current place: " + currentPlaceName + "\n");
     String itemName = "";
     String itemDamage = "";
     String currentItem = "";
@@ -281,15 +352,16 @@ public class GuiGameController implements Controller, GuiController {
     }
 
     if (currentItem.isEmpty()) {
-      lookAroundInfo += "No item in this place.\n";
+      lookAroundInfo.append("No item in this place.\n");
     } else {
-      lookAroundInfo += "Current place item: " + itemName + " (Damage: " + itemDamage + ")\n";
+      lookAroundInfo.append("Current place item: ").append(itemName).append(" (Damage: ")
+          .append(itemDamage).append(")\n");
     }
-    lookAroundInfo += "Current place players: " + currentPlayers + "\n";
+    lookAroundInfo.append("Current place players: ").append(currentPlayers).append("\n");
 
     // Show neighbors info: name, items, players
     neighbors = neighbors.replace("[[", "").replace("]]", "");
-    String[] neighborParts = neighbors.split("\\], \\[");
+    String[] neighborParts = neighbors.split("], \\[");
     for (String neighbor : neighborParts) {
       String[] neighborInfo = neighbor.split(";");
 
@@ -317,19 +389,19 @@ public class GuiGameController implements Controller, GuiController {
         neighborPlayers = neighborInfo[3].replace("[", "").replace("]", "").trim();
       }
       if (neighborInfo[5].equals("true")) {
-        lookAroundInfo += "Neighboring place: " + neighborName + "\n";
-        lookAroundInfo += "Pet is in this place.\n";
+        lookAroundInfo.append("Neighboring place: ").append(neighborName).append("\n");
+        lookAroundInfo.append("Pet is in this place.\n");
       } else {
-        lookAroundInfo +=
-            "Neighboring place: " + neighborName + " (Place NUmber: " + neighborNumber + ")\n";
-        lookAroundInfo += "Item: " + neighborItem + "\n";
-        lookAroundInfo += "Players: " + neighborPlayers + "\n";
+        lookAroundInfo.append("Neighboring place: ").append(neighborName).append(" (Place NUmber: ")
+            .append(neighborNumber).append(")\n");
+        lookAroundInfo.append("Item: ").append(neighborItem).append("\n");
+        lookAroundInfo.append("Players: ").append(neighborPlayers).append("\n");
         if (neighborInfo[4].equals("true")) {
-          lookAroundInfo += "Target is in this place.\n";
+          lookAroundInfo.append("Target is in this place.\n");
         }
       }
     }
-    guiView.showGuiMessage("Look Around", lookAroundInfo, "OK", () -> {
+    guiView.showGuiMessage("Look Around", lookAroundInfo.toString(), "OK", () -> {
       try {
         town.lookAround();
         takeTurn();
@@ -337,10 +409,63 @@ public class GuiGameController implements Controller, GuiController {
         e.printStackTrace();
       }
     });
-//    town.lookAround();
   }
 
-  private void movePlayer() {
+
+  private void lookAround() throws IOException {
+    int currentPlayerIndex = town.getCurrentPlayerIndex();
+    boolean isComputerControlled = town.getPlayers().get(currentPlayerIndex).isComputerControlled();
+    if (isComputerControlled) {
+      handleComputerLookAround();
+    } else {
+      handleHumanLookAround();
+    }
+  }
+
+  private void handleComputerMove() throws IOException {
+    int currentPlayerIndex = town.getCurrentPlayerIndex();
+    int currentPlaceNumber = town.getPlayerCurrPlaceNumber(currentPlayerIndex);
+
+    // Get neighboring places info
+    String currentPlaceNeighbour = town.getCurrentPlaceNeighborsInfo(currentPlaceNumber);
+    currentPlaceNeighbour = currentPlaceNeighbour.substring(1, currentPlaceNeighbour.length() - 1);
+    String[] places = currentPlaceNeighbour.split("\\], \\[");
+
+    // Process neighbor information
+    HashSet<Integer> neighborNumbers = new HashSet<>();
+    int targetPlaceNumber = -1;
+
+    for (String place : places) {
+      place = place.replace("[", "").replace("]", "");
+      String[] parts = place.split(";", 5);
+      int placeNumber = Integer.parseInt(parts[1].trim());
+      neighborNumbers.add(placeNumber);
+
+      // Check if target is in this neighbor
+      if (parts[4].equals("true")) {
+        targetPlaceNumber = placeNumber;
+      }
+    }
+
+    // Choose move location
+    int newPlaceNumber;
+    if (targetPlaceNumber != -1) {
+      // Move to target's location if available
+      newPlaceNumber = targetPlaceNumber;
+    } else {
+      // Move to random neighbor
+      ArrayList<Integer> neighborsList = new ArrayList<>(neighborNumbers);
+      Random random = new Random();
+      newPlaceNumber = neighborsList.get(random.nextInt(neighborsList.size()));
+    }
+
+    // Execute move
+    new MovePlayerCommand(town, currentPlayerIndex, newPlaceNumber).execute();
+
+    takeTurn();
+  }
+
+  private void handleHumanMove() {
     int currentPlayerIndex = town.getCurrentPlayerIndex();
     String moveInfo = "You want to move to " + newPlaceName + "?" + "\n";
     guiView.showGuiMessage("Move Player", moveInfo, "OK", () -> {
@@ -351,6 +476,16 @@ public class GuiGameController implements Controller, GuiController {
         e.printStackTrace();
       }
     });
+  }
+
+  private void movePlayer() throws IOException {
+    int currentPlayerIndex = town.getCurrentPlayerIndex();
+    boolean isComputerControlled = town.getPlayers().get(currentPlayerIndex).isComputerControlled();
+    if (isComputerControlled) {
+      handleComputerMove();
+    } else {
+      handleHumanMove();
+    }
   }
 
   private void movePet() {
@@ -370,7 +505,7 @@ public class GuiGameController implements Controller, GuiController {
         });
   }
 
-  private void attackTarget() throws IOException {
+  private void handleHumanAttackTarget() throws IOException {
     int currentPlayerIndex = town.getCurrentPlayerIndex();
     String playerCurrentCarriedItems = town.getPlayerCurrentCarriedItems(currentPlayerIndex);
     String targetPlaceNumber = town.getTarget().getCurrentPlace().getPlaceNumber();
@@ -427,7 +562,57 @@ public class GuiGameController implements Controller, GuiController {
           guiView.showGuiMessage("Error", "Invalid item number", "OK");
           return null;
         });
+  }
 
+  private void handleComputerAttackTarget() throws IOException {
+    int currentPlayerIndex = town.getCurrentPlayerIndex();
+    String playerCurrentCarriedItems = town.getPlayerCurrentCarriedItems(currentPlayerIndex);
+    String currentPlayerName = town.getPlayers().get(currentPlayerIndex).getName();
+    String targetPlaceNumber = town.getTarget().getCurrentPlace().getPlaceNumber();
+    String playerCurrentPlaceNumber =
+        String.valueOf(town.getPlayerCurrPlaceNumber(currentPlayerIndex));
+    List<String> playerItems = convertStringToList(playerCurrentCarriedItems);
+    playerItems.add("Poke Target-1");
+    String maxDamageItemName = "";
+    int maxDamage = 0;
+    for (String item : playerItems) {
+      String[] itemParts = item.split("-");
+      String itemName = itemParts[0];
+      int itemDamage = Integer.parseInt(itemParts[1]);
+      if (itemDamage > maxDamage) {
+        maxDamage = itemDamage;
+        maxDamageItemName = itemName;
+      }
+    }
+    view.showMessage(
+        "Computer player chooses to attack with " + maxDamageItemName + " for " + maxDamage
+            + " damage.");
+    boolean killSuccess = town.attackTarget(maxDamageItemName);
+    if (killSuccess) {
+      guiView.showGuiMessage("Game Over",
+          currentPlayerName + " player has successfully eliminated the target.",
+          "OK", () -> {
+            try {
+              endGame();
+            } catch (IOException e) {
+              e.printStackTrace();
+            }
+          });
+      return;
+    } else {
+      town.switchToNextPlayer();
+      takeTurn();
+    }
+  }
+
+  private void attackTarget() throws IOException {
+    int currentPlayerIndex = town.getCurrentPlayerIndex();
+    boolean isComputerController = town.getPlayers().get(currentPlayerIndex).isComputerControlled();
+    if (isComputerController) {
+      handleComputerAttackTarget();
+    } else {
+      handleHumanAttackTarget();
+    }
   }
 
   private void handlePlayerAction(String action) throws IOException {
@@ -526,25 +711,6 @@ public class GuiGameController implements Controller, GuiController {
     newPlaceName = parts[1];
     newPlaceNumber = Integer.parseInt(parts[2]);
 
-//    System.out.println("New place name: " + newPlaceName);
-
     handlePlayerAction("MOVE");
-  }
-
-//        } else if (command.equals("MOVE")) {
-////        controller.executeCommand("MOVE");
-//      } else if (command.equals("LOOK")) {
-//        System.out.println("Looking around...");
-//        controller.executeCommand("LOOK");
-//      } else if (command.equals("PICK")) {
-////        controller.executeCommand("PICK");
-//      } else if (command.equals("ATTACK")) {
-////        controller.executeCommand("ATTACK");
-//      } else if (command.equals("PETMOVE")) {
-////        controller.executeCommand("PETMOVE");
-
-  // 测试代码，最后删除
-  private void testHere() {
-    guiView.showGuiMessage("Error", "Test here", "OK");
   }
 }

@@ -60,7 +60,7 @@ public class PlayerInfoDialog extends JDialog {
   }
 
   private JPanel createButtonPanel() {
-    JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 5));
+    final JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 5));
 
     JButton showAllButton = new JButton("Show All Players");
     JButton showSomeoneButton = new JButton("Show Someone");

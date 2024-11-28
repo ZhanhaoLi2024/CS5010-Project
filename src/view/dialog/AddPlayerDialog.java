@@ -48,7 +48,7 @@ public class AddPlayerDialog extends JDialog {
     JPanel formPanel = createFormPanel();
 
     // Button panel
-    JPanel buttonPanel = createButtonPanel();
+    final JPanel buttonPanel = createButtonPanel();
 
     // Split pane
     JSplitPane splitPane = new JSplitPane(
@@ -80,8 +80,8 @@ public class AddPlayerDialog extends JDialog {
     formPanel.setLayout(new BoxLayout(formPanel, BoxLayout.Y_AXIS));
     formPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-    Dimension inputSize = new Dimension(200, 25);
-    Font labelFont = new Font("Dialog", Font.PLAIN, 12);
+    final Dimension inputSize = new Dimension(200, 25);
+    final Font labelFont = new Font("Dialog", Font.PLAIN, 12);
 
     // Initialize input fields
     nameField = new JTextField();

@@ -137,7 +137,7 @@ public class MessageDialog extends JDialog {
   }
 
   private JPanel createMessagePanel(String message) {
-    JPanel panel = new JPanel(new BorderLayout());
+    final JPanel panel = new JPanel(new BorderLayout());
 
     StringBuilder htmlMessage = new StringBuilder("<html>");
     for (String line : message.split("\n")) {
@@ -239,7 +239,7 @@ public class MessageDialog extends JDialog {
       this.number = null;
     }
 
-    public DialogResult(int number) {
+    private DialogResult(int number) {
       this.number = number;
     }
 

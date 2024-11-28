@@ -19,11 +19,11 @@ import model.place.Place;
 public class MapPanel extends JPanel {
   private static int CELL_SIZE = 0;
   private final List<Place> places;
+  private final List<Place> highlightedPlaces = new ArrayList<>();
   private BufferedImage mapImage;
   private String targetPlaceName;
   private String playerPlaceName;
   private boolean showMoveHighlight = false;
-  private List<Place> highlightedPlaces = new ArrayList<>();
   private Timer highlightTimer;
   private MapClickListener clickListener;
 

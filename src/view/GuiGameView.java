@@ -94,13 +94,13 @@ public class GuiGameView implements View, GuiView, KeyListener {
     panel.setBorder(BorderFactory.createEmptyBorder(50, 50, 50, 50));
 
     // Title
-    JLabel titleLabel = createStyledLabel("Kill Doctor Lucky", 48, Font.BOLD);
+    final JLabel titleLabel = createStyledLabel("Kill Doctor Lucky", 48, Font.BOLD);
 
     // Author
-    JLabel authorLabel = createStyledLabel("Created by Li,Zhanhao", 24, Font.PLAIN);
+    final JLabel authorLabel = createStyledLabel("Created by Li,Zhanhao", 24, Font.PLAIN);
 
     // Course Info
-    JLabel courseLabel = createStyledLabel("CS5010 Project", 20, Font.PLAIN);
+    final JLabel courseLabel = createStyledLabel("CS5010 Project", 20, Font.PLAIN);
 
     // Start Button
     JButton startButton = new JButton("Start Game");
@@ -165,30 +165,21 @@ public class GuiGameView implements View, GuiView, KeyListener {
     panel.setFocusable(true);
     panel.addKeyListener(this);
 
-    // 创建主分割面板
     JSplitPane mainSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
-    mainSplitPane.setResizeWeight(0.7); // 设置左侧占70%宽度
+    mainSplitPane.setResizeWeight(0.7);
 
-    // 左侧地图面板
     JPanel leftPanel = new JPanel(new BorderLayout());
     leftPanel.setBorder(BorderFactory.createTitledBorder("Game Map"));
-//    MapPanel mapPanel = new MapPanel(controller.getTown().getPlaces(), 58);
-//    JScrollPane mapScrollPane = new JScrollPane(mapPanel);
-//    leftPanel.add(mapScrollPane, BorderLayout.CENTER);
     mapPanel = new MapPanel(controller.getTown().getPlaces(), 58);
     JScrollPane mapScrollPane = new JScrollPane(mapPanel);
     leftPanel.add(mapScrollPane, BorderLayout.CENTER);
     mainSplitPane.setLeftComponent(leftPanel);
 
-    // 右侧面板（包含操作区和信息区）
     JPanel rightPanel = new JPanel(new BorderLayout());
 
-    // 右上操作区
     JPanel actionPanel = createActionPanel();
     rightPanel.add(actionPanel, BorderLayout.NORTH);
-    // 右上操作区占50%高度
 
-    // 右下信息区
     JPanel infoPanel = createInfoPanel();
     rightPanel.add(infoPanel, BorderLayout.CENTER);
 
@@ -290,13 +281,6 @@ public class GuiGameView implements View, GuiView, KeyListener {
     return button;
   }
 
-  private JButton createActionButton(String text, String command) {
-    JButton button = new JButton(text);
-    button.setActionCommand(command);
-    button.addActionListener(e -> handleCommand(command));
-    return button;
-  }
-
   private void handleCommand(String command) {
     try {
       switch (command) {
@@ -324,20 +308,16 @@ public class GuiGameView implements View, GuiView, KeyListener {
           close();
           break;
         case "MOVE":
-//        controller.executeCommand("MOVE");
           break;
         case "LOOK":
           System.out.println("Looking around...");
           controller.executeCommand("LOOK");
           break;
         case "PICK":
-//        controller.executeCommand("PICK");
           break;
         case "ATTACK":
-//        controller.executeCommand("ATTACK");
           break;
         case "PETMOVE":
-//        controller.executeCommand("PETMOVE");
           break;
         default:
           System.out.println("Executing command: " + command);

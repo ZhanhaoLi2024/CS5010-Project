@@ -381,9 +381,6 @@ public class TextGameController implements Controller {
         }
         i++;
       }
-//
-//      String command = "pickUpItem, " + maxDamageItemName;
-//      executeCommand(command);
       new PickUpItemCommand(town, maxDamageItemName).execute();
     }
   }
@@ -529,79 +526,78 @@ public class TextGameController implements Controller {
 //    executeCommand(command);
     new LookAroundCommand(town).execute();
   }
-
-  private void handleComputerMove(int currentPlayerIndex, int currentPlaceNumber)
-      throws IOException {
-    int newPlaceNumber = -1;
-
-    // If target is in a neighboring space, move there
-    String currentPlaceNeighbour = town.getCurrentPlaceNeighborsInfo(currentPlaceNumber);
-    currentPlaceNeighbour = currentPlaceNeighbour.substring(1, currentPlaceNeighbour.length() - 1);
-    String[] places = currentPlaceNeighbour.split("\\], \\[");
-    HashSet<Integer> neighborNumber = new HashSet<>();
-    boolean targetInNeighbor = false;
-    for (String place : places) {
-      place = place.replace("[", "").replace("]", "");
-
-      String[] parts = place.split(";", 5);
-      Integer placeNumber = Integer.parseInt(parts[1].trim());
-      neighborNumber.add(placeNumber);
-      if (parts[4].equals("true")) {
-        targetInNeighbor = true;
-        newPlaceNumber = placeNumber;
-      }
-    }
-    if (targetInNeighbor) {
-//      String command = "movePlayer, " + currentPlayerIndex + ", " + newPlaceNumber;
-//      executeCommand(command);
-      new MovePlayerCommand(town, currentPlayerIndex, newPlaceNumber).execute();
-    } else {
-      // Move to a random neighboring space
-      ArrayList<Integer> list = new ArrayList<>(neighborNumber);
-      Random random = new Random();
-      int randomIndex = random.nextInt(list.size());
-      newPlaceNumber = list.get(randomIndex);
-//      String command = "movePlayer, " + currentPlayerIndex + ", " + newPlaceNumber;
-//      executeCommand(command);
-      new MovePlayerCommand(town, currentPlayerIndex, newPlaceNumber).execute();
-    }
-  }
+  
+//
+//  private void handleComputerMove() throws IOException {
+//    int currentPlayerIndex = town.getCurrentPlayerIndex();
+//    int currentPlaceNumber = town.getPlayerCurrPlaceNumber(currentPlayerIndex);
+//    String currentPlaceNeighbour = town.getCurrentPlaceNeighborsInfo(currentPlaceNumber);
+//    currentPlaceNeighbour = currentPlaceNeighbour.substring(1, currentPlaceNeighbour.length() - 1);
+//    String[] places = currentPlaceNeighbour.split("\\], \\[");
+//    HashSet<Integer> neighborNumber = new HashSet<>();
+//    for (String place : places) {
+//      place = place.replace("[", "").replace("]", "");
+//
+//      String[] parts = place.split(";", 5);
+//      Integer placeNumber = Integer.parseInt(parts[1].trim());
+//      neighborNumber.add(placeNumber);
+//    }
+//    Random random = new Random();
+//    int randomIndex = random.nextInt(neighborNumber.size());
+//    int newPlaceNumber = (Integer) neighborNumber.toArray()[randomIndex];
+//
+//    try {
+//      handleComputerMove(currentPlayerIndex, newPlaceNumber);
+//    } catch (IOException e) {
+//      e.printStackTrace();
+//    }
+//  }
 
   private void handleComputerMove() throws IOException {
     int currentPlayerIndex = town.getCurrentPlayerIndex();
     int currentPlaceNumber = town.getPlayerCurrPlaceNumber(currentPlayerIndex);
+
+    // Get neighboring places info
     String currentPlaceNeighbour = town.getCurrentPlaceNeighborsInfo(currentPlaceNumber);
     currentPlaceNeighbour = currentPlaceNeighbour.substring(1, currentPlaceNeighbour.length() - 1);
     String[] places = currentPlaceNeighbour.split("\\], \\[");
-    HashSet<Integer> neighborNumber = new HashSet<>();
+
+    // Process neighbor information
+    HashSet<Integer> neighborNumbers = new HashSet<>();
+    int targetPlaceNumber = -1;
+
     for (String place : places) {
       place = place.replace("[", "").replace("]", "");
-
       String[] parts = place.split(";", 5);
-      Integer placeNumber = Integer.parseInt(parts[1].trim());
-      neighborNumber.add(placeNumber);
-    }
-    Random random = new Random();
-    int randomIndex = random.nextInt(neighborNumber.size());
-    int newPlaceNumber = (Integer) neighborNumber.toArray()[randomIndex];
+      int placeNumber = Integer.parseInt(parts[1].trim());
+      neighborNumbers.add(placeNumber);
 
-    try {
-      handleComputerMove(currentPlayerIndex, newPlaceNumber);
-    } catch (IOException e) {
-      e.printStackTrace();
+      // Check if target is in this neighbor
+      if (parts[4].equals("true")) {
+        targetPlaceNumber = placeNumber;
+      }
     }
+
+    // Choose move location
+    int newPlaceNumber;
+    if (targetPlaceNumber != -1) {
+      // Move to target's location if available
+      newPlaceNumber = targetPlaceNumber;
+    } else {
+      // Move to random neighbor
+      ArrayList<Integer> neighborsList = new ArrayList<>(neighborNumbers);
+      Random random = new Random();
+      newPlaceNumber = neighborsList.get(random.nextInt(neighborsList.size()));
+    }
+
+    // Execute move
+    new MovePlayerCommand(town, currentPlayerIndex, newPlaceNumber).execute();
   }
 
   private void handleHumanMove() throws IOException {
     int currentPlayerIndex = town.getCurrentPlayerIndex();
     int currentPlaceNumber = town.getPlayerCurrPlaceNumber(currentPlayerIndex);
     int newPlaceNumber = -1;
-
-    // If the player is computer controlled, move the player automatically
-    if (town.getPlayers().get(currentPlayerIndex).isComputerControlled()) {
-      handleComputerMove(currentPlayerIndex, currentPlaceNumber);
-      return;
-    }
 
     // If the player is human controlled, ask the player where they want to move
     String currentPlaceNeighbour = town.getCurrentPlaceNeighborsInfo(currentPlaceNumber);
@@ -661,7 +657,7 @@ public class TextGameController implements Controller {
       return;
     }
 
-    // Second priority: Pick up items if available and has space
+    // Second priority: Pick up items if available in the current place
     if (!town.getPlaceByNumber(
             town.getPlayers().get(town.getCurrentPlayerIndex()).getPlayerCurrentPlaceNumber())
         .getItems().isEmpty()
@@ -761,8 +757,6 @@ public class TextGameController implements Controller {
     Random random = new Random();
     int currentPlaceSize = town.getPlaces().size();
     int randomPlace = random.nextInt(currentPlaceSize);
-//    String command = "addPlayer, true, " + computerPlayerName + ", " + randomPlace + ", 5";
-//    executeCommand(command);
     new AddPlayerCommand(town, true, computerPlayerName, randomPlace, 5).execute();
     view.showMessage(computerPlayerName + " player added successfully.");
   }
@@ -773,9 +767,6 @@ public class TextGameController implements Controller {
     int firstPlaceNumber = showAddNewPlayerStartingPlaceNumber();
     int firstCarryLimit = showNewPlayerCarryLimit();
     try {
-//      String command = "addPlayer, false, " + firstPlayerName + ", " + firstPlaceNumber + ", "
-//          + firstCarryLimit;
-//      executeCommand(command);
       new AddPlayerCommand(town, false, firstPlayerName, firstPlaceNumber,
           firstCarryLimit).execute();
       view.showMessage(firstPlayerName + " player added successfully.");
@@ -792,9 +783,6 @@ public class TextGameController implements Controller {
         int humanPlaceNumber = showAddNewPlayerStartingPlaceNumber();
         int humanCarryLimit = showNewPlayerCarryLimit();
         try {
-//          String command = "addPlayer, false, " + humanPlayerName + ", " + humanPlaceNumber + ", "
-//              + humanCarryLimit;
-//          executeCommand(command);
           new AddPlayerCommand(town, false, humanPlayerName, humanPlaceNumber,
               humanCarryLimit).execute();
           view.showMessage(humanPlayerName + " player added successfully.");
