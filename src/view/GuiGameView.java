@@ -24,6 +24,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
+import model.place.Place;
+import model.player.Player;
 import view.dialog.AddPlayerDialog;
 import view.dialog.MessageDialog;
 import view.dialog.PlayerInfoDialog;
@@ -445,10 +447,40 @@ public class GuiGameView implements View, GuiView, KeyListener {
         showError("Error executing look command: " + ex.getMessage());
       }
     } else if (e.getKeyChar() == 'M' || e.getKeyChar() == 'm') {
+//      try {
+//        controller.executeCommand("MOVE");
+//      } catch (IOException ex) {
+//        showError("Error executing move command: " + ex.getMessage());
+//      }
       try {
-        controller.executeCommand("MOVE");
-      } catch (IOException ex) {
-        showError("Error executing move command: " + ex.getMessage());
+        // Get current player's place
+        int currentPlayerIndex = controller.getTown().getCurrentPlayerIndex();
+        Player currentPlayer = controller.getTown().getPlayers().get(currentPlayerIndex);
+        Place currentPlace = controller.getTown().getPlaceByNumber(
+            currentPlayer.getPlayerCurrentPlaceNumber());
+
+        // Show move options and handle clicks
+        mapPanel.setClickListener((clickedPlace, isValidMove) -> {
+          if (isValidMove) {
+            System.out.println("Success");
+            try {
+              // Execute move command
+              int placeNumber = Integer.parseInt(clickedPlace.getPlaceNumber());
+              String placeName = clickedPlace.getName();
+              controller.executeCommand("MOVE " + "," + placeName + "," + placeNumber);
+            } catch (IOException ex) {
+              showError("Error executing move: " + ex.getMessage());
+            }
+          } else {
+            System.out.println("Wrong");
+            showGuiMessage("Invalid Move", "You cannot move to this place.", "OK");
+          }
+        });
+
+        mapPanel.showMoveOptions(currentPlace);
+
+      } catch (Exception ex) {
+        showError("Error showing move options: " + ex.getMessage());
       }
     } else if (e.getKeyChar() == 'P' || e.getKeyChar() == 'p') {
       try {

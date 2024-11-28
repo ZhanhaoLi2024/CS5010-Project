@@ -1,6 +1,7 @@
 package controller;
 
 import controller.command.AddPlayerCommand;
+import controller.command.MovePlayerCommand;
 import controller.command.PickUpItemCommand;
 import controller.support.CommandHandler;
 import controller.support.EventHandler;
@@ -28,6 +29,8 @@ public class GuiGameController implements Controller, GuiController {
   private View view;
   private GuiView guiView;
   private boolean continueGame;
+  private String newPlaceName;
+  private int newPlaceNumber;
 
   /**
    * Constructs a new GUI controller.
@@ -145,8 +148,6 @@ public class GuiGameController implements Controller, GuiController {
 //  }
 
   private void takeTurn() throws IOException {
-//    continueGame = true;
-//    while (continueGame) {
     String playerInfo = town.showBasicLocationInfo();
     System.out.println("Current player: " + playerInfo);
     updateCurrentPlayerInfo(playerInfo);
@@ -241,39 +242,6 @@ public class GuiGameController implements Controller, GuiController {
             return null;
           });
     }
-//    if (maxItemNumber > 0) {
-//      showItemInfo += "Enter the item number you want to pick up: ";
-//      guiView.showGuiNumberMessage("Pick Up Item", showItemInfo,
-//              "OK",
-//              1, maxItemNumber).thenAccept(itemNumber -> {
-//                System.out.println("Item number-1: " + itemNumber);
-//                String item = items.get(itemNumber - 1);
-//                String[] itemParts = item.split("-");
-//                String itemName1 = itemParts[0].trim();
-//                System.out.println("Item name: " + itemName1);
-//                try {
-//                  new PickUpItemCommand(town, itemName1).execute();
-//                  town.pickUpItem(itemName1);
-//                  takeTurn();
-//                } catch (IOException e) {
-//                  e.printStackTrace();
-//                }
-//              }
-//          )
-//          .exceptionally(e -> {
-//            guiView.showGuiMessage("Error", "Invalid item number", "OK");
-//            return null;
-//          });
-//    } else {
-//      guiView.showGuiMessage("Pick Up Item", "No item in this place", "OK", () -> {
-//            try {
-//              takeTurn();
-//            } catch (IOException e) {
-//              e.printStackTrace();
-//            }
-//          }
-//      );
-//    }
   }
 
 
@@ -368,10 +336,24 @@ public class GuiGameController implements Controller, GuiController {
 //    town.lookAround();
   }
 
+  private void movePlayer() {
+    int currentPlayerIndex = town.getCurrentPlayerIndex();
+    String moveInfo = "You want to move to " + newPlaceName + "?" + "\n";
+    guiView.showGuiMessage("Move Player", moveInfo, "OK", () -> {
+      try {
+        new MovePlayerCommand(town, currentPlayerIndex, newPlaceNumber).execute();
+        takeTurn();
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    });
+  }
+
   private void handlePlayerAction(String action) throws IOException {
     switch (action) {
       case "MOVE":
         // Move command
+        movePlayer();
         break;
       case "LOOK":
         // Look command
@@ -437,6 +419,8 @@ public class GuiGameController implements Controller, GuiController {
       }
     } else if (commandName.startsWith("MOVE")) {
       // Move command
+      handleMovePlayer(commandName);
+//      handlePlayerAction("MOVE");
     } else if (commandName.startsWith("LOOK")) {
       // Look command
 //      lookAround();
@@ -455,6 +439,17 @@ public class GuiGameController implements Controller, GuiController {
       guiView.showGuiMessage("Error", "Invalid command: " + commandName, "OK");
     }
     return false;
+  }
+
+
+  private void handleMovePlayer(String command) throws IOException {
+    String[] parts = command.split(",");
+    newPlaceName = parts[1];
+    newPlaceNumber = Integer.parseInt(parts[2]);
+
+//    System.out.println("New place name: " + newPlaceName);
+
+    handlePlayerAction("MOVE");
   }
 
 //        } else if (command.equals("MOVE")) {

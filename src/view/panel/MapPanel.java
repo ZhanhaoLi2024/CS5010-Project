@@ -7,9 +7,13 @@ import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JPanel;
+import javax.swing.Timer;
 import model.place.Place;
 
 public class MapPanel extends JPanel {
@@ -18,12 +22,85 @@ public class MapPanel extends JPanel {
   private BufferedImage mapImage;
   private String targetPlaceName;
   private String playerPlaceName;
+  private boolean showMoveHighlight = false;
+  private List<Place> highlightedPlaces = new ArrayList<>();
+  private Timer highlightTimer;
+  private MapClickListener clickListener;
 
   public MapPanel(List<Place> places, int cellSize) {
     this.places = places;
     CELL_SIZE = cellSize;
     setPreferredSize(new Dimension(11 * CELL_SIZE, 12 * CELL_SIZE));
+
+    addMouseListener(new MouseAdapter() {
+      @Override
+      public void mouseClicked(MouseEvent e) {
+        if (showMoveHighlight) {
+          handleMapClick(e.getX(), e.getY());
+        }
+      }
+    });
     createMapImage();
+  }
+
+  public void setClickListener(MapClickListener listener) {
+    this.clickListener = listener;
+  }
+
+  public void showMoveOptions(Place playerPlace) {
+    this.showMoveHighlight = true;
+    this.highlightedPlaces.clear();
+
+    // Find neighboring places
+    for (Place place : places) {
+      if (playerPlace.isNeighbor(place)) {
+        highlightedPlaces.add(place);
+      }
+    }
+
+    // Start timer to clear highlights after 5 seconds
+    if (highlightTimer != null && highlightTimer.isRunning()) {
+      highlightTimer.stop();
+    }
+
+    highlightTimer = new Timer(5000, e -> {
+      showMoveHighlight = false;
+      highlightedPlaces.clear();
+      repaint();
+      ((Timer) e.getSource()).stop();
+    });
+    highlightTimer.setRepeats(false);
+    highlightTimer.start();
+
+    repaint();
+  }
+
+  private void handleMapClick(int x, int y) {
+    if (!showMoveHighlight || clickListener == null) {
+      return;
+    }
+
+    Place clickedPlace = getPlaceAtCoordinates(x, y);
+    System.out.println("Clicked place: " + clickedPlace.getName());
+    if (clickedPlace != null) {
+      boolean isValidMove = highlightedPlaces.contains(clickedPlace);
+      clickListener.onPlaceClicked(clickedPlace, isValidMove);
+    }
+  }
+
+  private Place getPlaceAtCoordinates(int x, int y) {
+    for (Place place : places) {
+      int placeX = place.getRow1() * 58;
+      int placeY = place.getCol1() * 58;
+      int placeWidth = (place.getRow2() - place.getRow1()) * 58;
+      int placeHeight = (place.getCol2() - place.getCol1()) * 58;
+
+      if (x >= placeX && x <= placeX + placeWidth
+          && y >= placeY && y <= placeY + placeHeight) {
+        return place;
+      }
+    }
+    return null;
   }
 
   private void createMapImage() {
@@ -91,11 +168,26 @@ public class MapPanel extends JPanel {
     if (mapImage != null) {
       g.drawImage(mapImage, 0, 0, this);
 
-      if (targetPlaceName != null || playerPlaceName != null) {
-        Graphics2D g2d = (Graphics2D) g;
-        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-            RenderingHints.VALUE_ANTIALIAS_ON);
+      Graphics2D g2d = (Graphics2D) g;
+      g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+          RenderingHints.VALUE_ANTIALIAS_ON);
 
+      // Draw highlights for movable places
+      if (showMoveHighlight) {
+        Color highlightColor = new Color(0, 255, 0, 64); // Semi-transparent green
+        g2d.setColor(highlightColor);
+
+        for (Place place : highlightedPlaces) {
+          int x = place.getRow1() * 58;
+          int y = place.getCol1() * 58;
+          int width = (place.getRow2() - place.getRow1()) * 58;
+          int height = (place.getCol2() - place.getCol1()) * 58;
+          g2d.fillRect(x, y, width, height);
+        }
+      }
+
+      // Draw target and player markers
+      if (targetPlaceName != null || playerPlaceName != null) {
         for (Place place : places) {
           int x = place.getRow1() * 58;
           int y = place.getCol1() * 58;
@@ -149,5 +241,9 @@ public class MapPanel extends JPanel {
     g2d.setColor(transparentBlue);
 
     g2d.fillPolygon(xPoints, yPoints, 3);
+  }
+
+  public interface MapClickListener {
+    void onPlaceClicked(Place clickedPlace, boolean isValidMove);
   }
 }
