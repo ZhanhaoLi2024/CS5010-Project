@@ -337,6 +337,7 @@ public class TownModel implements Town {
   public boolean attackTarget(String attackItemName) throws IOException {
     Player currentPlayer = players.get(currentPlayerIndex);
     if (attackItemName.equals("Poke Target")) {
+      System.out.println("Poke Target");
       return this.executePoke(currentPlayer);
     }
 
@@ -420,6 +421,7 @@ public class TownModel implements Town {
     final boolean targetDefeated = targetCharacter.takeDamage(item.getDamage());
 
     targetHealth = targetCharacter.getHealth();
+    System.out.println("Target health: " + targetHealth);
 
     // Remove used item from player's inventory
     player.getCurrentCarriedItems().remove(item);
@@ -436,6 +438,7 @@ public class TownModel implements Town {
     boolean targetDefeated = targetCharacter.takeDamage(1); // true - 死
 
     targetHealth = targetCharacter.getHealth();
+    System.out.println("Target health: " + targetHealth);
 
     return targetDefeated;
   }

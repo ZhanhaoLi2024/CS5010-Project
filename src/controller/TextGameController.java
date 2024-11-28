@@ -295,7 +295,7 @@ public class TextGameController implements Controller {
       view.showMessage(i + ". " + item);
       i++;
     }
-    view.showMessage("Enter the item name you want to use for attack:");
+    view.showMessage("Enter the item number you want to use for attack:");
     int itemNumber = view.getNumberInput();
     boolean enterRightNumber = false;
     while (!enterRightNumber) {

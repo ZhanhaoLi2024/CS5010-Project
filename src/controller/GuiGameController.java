@@ -367,6 +367,59 @@ public class GuiGameController implements Controller, GuiController {
         });
   }
 
+  private void attackTarget() throws IOException {
+    int currentPlayerIndex = town.getCurrentPlayerIndex();
+    String playerCurrentCarriedItems = town.getPlayerCurrentCarriedItems(currentPlayerIndex);
+    String targetPlaceNumber = town.getTarget().getCurrentPlace().getPlaceNumber();
+    String playerCurrentPlaceNumber =
+        String.valueOf(town.getPlayerCurrPlaceNumber(currentPlayerIndex));
+    if (!playerCurrentPlaceNumber.equals(targetPlaceNumber)) {
+      guiView.showGuiMessage("Error", "Target is not in the same place as you", "OK");
+      return;
+    }
+    boolean isPlayerVisible = town.isPlayerVisible(town.getPlayers().get(currentPlayerIndex));
+    if (isPlayerVisible) {
+      guiView.showGuiMessage("Error", "You are visible to the other players. You cannot attack",
+          "OK");
+      return;
+    }
+    List<String> playerItems = convertStringToList(playerCurrentCarriedItems);
+    playerItems.add("Poke Target-1");
+    String showItemInfo = "";
+    showItemInfo += "Items you have: " + "\n";
+    int i = 1;
+    for (String item : playerItems) {
+      showItemInfo += i + ". " + item + "\n";
+      i++;
+    }
+    showItemInfo += "Enter the item number you want to use to attack the target: \n";
+    guiView.showGuiNumberMessage("Attack Target", showItemInfo, "OK", 1, playerItems.size())
+        .thenAccept(itemNumber -> {
+          String[] itemsParts = playerItems.get(itemNumber - 1).split("-");
+          String itemName = itemsParts[0].trim();
+          String itemDamage = itemsParts[1].trim();
+          try {
+            town.attackTarget(itemName);
+            String showAttackResult = "";
+            showAttackResult += "You used " + itemName + " to attack the target." + "\n";
+            if (itemName.equals("Poke Target")) {
+              showAttackResult += "You hit the target and caused 1 damage." + "\n";
+            } else {
+              showAttackResult += "You hit the target and caused " + itemDamage + " damage." + "\n";
+            }
+            guiView.showGuiMessage("Attack Result", showAttackResult, "OK");
+          } catch (IOException e) {
+            e.printStackTrace();
+          }
+        })
+        .exceptionally(e -> {
+          guiView.showGuiMessage("Error", "Invalid item number", "OK");
+          return null;
+        });
+    town.switchToNextPlayer();
+    takeTurn();
+  }
+
   private void handlePlayerAction(String action) throws IOException {
     switch (action) {
       case "MOVE":
@@ -383,6 +436,7 @@ public class GuiGameController implements Controller, GuiController {
         break;
       case "ATTACK":
         // Attack command
+        attackTarget();
         break;
       case "PETMOVE":
         // Pet move command
