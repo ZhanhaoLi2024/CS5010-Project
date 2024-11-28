@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicBoolean;
 import model.town.Town;
 import view.GuiView;
 import view.View;
@@ -164,7 +165,9 @@ public class GuiGameController implements Controller, GuiController {
     if (town.getTarget().isDefeated()) {
       String winner = town.getPlayers().get(town.getCurrentPlayerIndex()).getName();
       guiView.showGuiMessage("Game Over",
-          winner + "has successfully eliminated the target and won the game!", "OK");
+          winner + " has successfully eliminated the target and won the game!", "OK", () -> {
+            guiView.resetGame();
+          });
     } else if (town.getCurrentTurn() > town.getMaxTurns()) {
       guiView.showGuiMessage("Game Over",
           "The target has escaped and nobody wins!", "OK", () -> {
@@ -383,6 +386,7 @@ public class GuiGameController implements Controller, GuiController {
           "OK");
       return;
     }
+    AtomicBoolean killSuccess = new AtomicBoolean(false);
     List<String> playerItems = convertStringToList(playerCurrentCarriedItems);
     playerItems.add("Poke Target-1");
     String showItemInfo = "";
@@ -399,13 +403,20 @@ public class GuiGameController implements Controller, GuiController {
           String itemName = itemsParts[0].trim();
           String itemDamage = itemsParts[1].trim();
           try {
-            town.attackTarget(itemName);
+            killSuccess.set(town.attackTarget(itemName));
             String showAttackResult = "";
             showAttackResult += "You used " + itemName + " to attack the target." + "\n";
             if (itemName.equals("Poke Target")) {
               showAttackResult += "You hit the target and caused 1 damage." + "\n";
             } else {
               showAttackResult += "You hit the target and caused " + itemDamage + " damage." + "\n";
+            }
+            System.out.println("Kill success: " + killSuccess);
+            if (killSuccess.equals(true)) {
+              endGame();
+            } else {
+              town.switchToNextPlayer();
+              takeTurn();
             }
             guiView.showGuiMessage("Attack Result", showAttackResult, "OK");
           } catch (IOException e) {
@@ -416,8 +427,7 @@ public class GuiGameController implements Controller, GuiController {
           guiView.showGuiMessage("Error", "Invalid item number", "OK");
           return null;
         });
-    town.switchToNextPlayer();
-    takeTurn();
+
   }
 
   private void handlePlayerAction(String action) throws IOException {

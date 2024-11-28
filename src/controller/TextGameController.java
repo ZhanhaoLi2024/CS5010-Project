@@ -337,7 +337,7 @@ public class TextGameController implements Controller {
       endGame();
     } else {
       int targetHealth = town.getTargetHealth();
-      view.showMessage("The target's health is now-1 " + targetHealth);
+      view.showMessage("The target's health is now " + targetHealth);
       town.switchToNextPlayer();
     }
   }
