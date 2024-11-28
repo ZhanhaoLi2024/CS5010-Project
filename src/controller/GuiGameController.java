@@ -1,6 +1,7 @@
 package controller;
 
 import controller.command.AddPlayerCommand;
+import controller.command.MovePetCommand;
 import controller.command.MovePlayerCommand;
 import controller.command.PickUpItemCommand;
 import controller.support.CommandHandler;
@@ -349,6 +350,23 @@ public class GuiGameController implements Controller, GuiController {
     });
   }
 
+  private void movePet() {
+    guiView.showGuiNumberMessage("Move Pet", "Enter the place number to move the pet to", "OK", 1,
+            20)
+        .thenAccept(placeNumber -> {
+          try {
+            new MovePetCommand(town, placeNumber).execute();
+            takeTurn();
+          } catch (IOException e) {
+            e.printStackTrace();
+          }
+        })
+        .exceptionally(e -> {
+          guiView.showGuiMessage("Error", "Invalid place number", "OK");
+          return null;
+        });
+  }
+
   private void handlePlayerAction(String action) throws IOException {
     switch (action) {
       case "MOVE":
@@ -368,6 +386,7 @@ public class GuiGameController implements Controller, GuiController {
         break;
       case "PETMOVE":
         // Pet move command
+        movePet();
         break;
       default:
         guiView.showGuiMessage("Error", "Invalid command: " + action, "OK");
@@ -413,17 +432,12 @@ public class GuiGameController implements Controller, GuiController {
       }
     } else if (commandName.startsWith("START_TURNS")) {
       // Start game command
-      boolean startSuccess = handleStartGame();
-      if (startSuccess) {
-        return true;
-      }
+      return handleStartGame();
     } else if (commandName.startsWith("MOVE")) {
       // Move command
       handleMovePlayer(commandName);
-//      handlePlayerAction("MOVE");
     } else if (commandName.startsWith("LOOK")) {
       // Look command
-//      lookAround();
       handlePlayerAction("LOOK");
       return true;
     } else if (commandName.startsWith("PICK")) {
@@ -431,9 +445,10 @@ public class GuiGameController implements Controller, GuiController {
       handlePlayerAction("PICK");
     } else if (commandName.startsWith("ATTACK")) {
       // Attack command
-
+      handlePlayerAction("ATTACK");
     } else if (commandName.startsWith("PETMOVE")) {
       // Pet move command
+      handlePlayerAction("PETMOVE");
 
     } else {
       guiView.showGuiMessage("Error", "Invalid command: " + commandName, "OK");

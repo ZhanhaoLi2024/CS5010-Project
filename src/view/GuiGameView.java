@@ -447,11 +447,6 @@ public class GuiGameView implements View, GuiView, KeyListener {
         showError("Error executing look command: " + ex.getMessage());
       }
     } else if (e.getKeyChar() == 'M' || e.getKeyChar() == 'm') {
-//      try {
-//        controller.executeCommand("MOVE");
-//      } catch (IOException ex) {
-//        showError("Error executing move command: " + ex.getMessage());
-//      }
       try {
         // Get current player's place
         int currentPlayerIndex = controller.getTown().getCurrentPlayerIndex();
