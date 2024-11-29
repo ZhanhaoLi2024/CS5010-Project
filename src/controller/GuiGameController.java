@@ -5,8 +5,6 @@ import controller.command.LookAroundCommand;
 import controller.command.MovePetCommand;
 import controller.command.MovePlayerCommand;
 import controller.command.PickUpItemCommand;
-import controller.support.CommandHandler;
-import controller.support.EventHandler;
 import controller.support.PlayerInfoDTO;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -24,12 +22,9 @@ import view.View;
  * GUI implementation of the Controller interface.
  * Handles game logic and coordinates between model and view.
  */
-public class GuiGameController implements Controller, GuiController {
+public class GuiGameController implements Controller {
   private final Town town;
   private final int maxTurns;
-  //  private final GameStateManager stateManager;
-  private final CommandHandler commandHandler;
-  private final EventHandler eventHandler;
   private View view;
   private GuiView guiView;
   private boolean continueGame;
@@ -45,8 +40,6 @@ public class GuiGameController implements Controller, GuiController {
   public GuiGameController(Town gameModel, int gameMaxTurns) {
     this.town = gameModel;
     this.maxTurns = gameMaxTurns;
-    this.commandHandler = new CommandHandler();
-    this.eventHandler = new EventHandler(this);
   }
 
   private static List<String> convertStringToList(String input) {
@@ -133,7 +126,6 @@ public class GuiGameController implements Controller, GuiController {
     String[] playerInfoParts = parts[0].split(",");
     final String currentPlayerName = playerInfoParts[0];
     final String currentPlayerPlace = playerInfoParts[1];
-    String currentPlayerMaxCarry = playerInfoParts[2];
     String playerItemList = playerInfoParts[3];
     if (playerItemList.endsWith("|")) {
       playerItemList = playerItemList.substring(0, playerItemList.length() - 1);
@@ -448,19 +440,19 @@ public class GuiGameController implements Controller, GuiController {
     }
 
     // Choose move location
-    int newPlaceNumber;
+    int newPlaceNumberInfo;
     if (targetPlaceNumber != -1) {
       // Move to target's location if available
-      newPlaceNumber = targetPlaceNumber;
+      newPlaceNumberInfo = targetPlaceNumber;
     } else {
       // Move to random neighbor
       ArrayList<Integer> neighborsList = new ArrayList<>(neighborNumbers);
       Random random = new Random();
-      newPlaceNumber = neighborsList.get(random.nextInt(neighborsList.size()));
+      newPlaceNumberInfo = neighborsList.get(random.nextInt(neighborsList.size()));
     }
 
     // Execute move
-    new MovePlayerCommand(town, currentPlayerIndex, newPlaceNumber).execute();
+    new MovePlayerCommand(town, currentPlayerIndex, newPlaceNumberInfo).execute();
 
     takeTurn();
   }
@@ -521,7 +513,7 @@ public class GuiGameController implements Controller, GuiController {
           "OK");
       return;
     }
-    AtomicBoolean killSuccess = new AtomicBoolean(false);
+    final AtomicBoolean killSuccess = new AtomicBoolean(false);
     List<String> playerItems = convertStringToList(playerCurrentCarriedItems);
     playerItems.add("Poke Target-1");
     String showItemInfo = "";
@@ -547,7 +539,7 @@ public class GuiGameController implements Controller, GuiController {
               showAttackResult += "You hit the target and caused " + itemDamage + " damage." + "\n";
             }
             System.out.println("Kill success: " + killSuccess);
-            if (killSuccess.equals(true)) {
+            if (killSuccess.get()) {
               endGame();
             } else {
               town.switchToNextPlayer();
@@ -568,9 +560,6 @@ public class GuiGameController implements Controller, GuiController {
     int currentPlayerIndex = town.getCurrentPlayerIndex();
     String playerCurrentCarriedItems = town.getPlayerCurrentCarriedItems(currentPlayerIndex);
     String currentPlayerName = town.getPlayers().get(currentPlayerIndex).getName();
-    String targetPlaceNumber = town.getTarget().getCurrentPlace().getPlaceNumber();
-    String playerCurrentPlaceNumber =
-        String.valueOf(town.getPlayerCurrPlaceNumber(currentPlayerIndex));
     List<String> playerItems = convertStringToList(playerCurrentCarriedItems);
     playerItems.add("Poke Target-1");
     String maxDamageItemName = "";
@@ -648,7 +637,6 @@ public class GuiGameController implements Controller, GuiController {
     if (commandName.startsWith("ADD_PLAYER")) {
       // Add player command
       String[] parts = commandName.split(" ");
-      String commandStringName = parts[0];
       String name = parts[1];
       int place = Integer.parseInt(parts[2]);
       int limit = Integer.parseInt(parts[3]);
