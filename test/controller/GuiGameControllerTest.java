@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.List;
 import mock.MockTownModel;
 import mock.MockView;
+import model.item.ItemModel;
 import model.place.Place;
 import model.place.PlaceModel;
 import model.player.Player;
@@ -245,5 +246,79 @@ public class GuiGameControllerTest {
     assertTrue("Should call lookAround", mockModel.getLog().contains("lookAround called"));
     assertTrue("Check isGameOver called",
         mockModel.getLog().contains("isGameOver called"));
+  }
+
+  /**
+   * Tests the Invalid Place Number exception for the MOVE command
+   */
+  @Test
+  public void testMoveCommandInvalidDestination() {
+    try {
+      controller.executeCommand("MOVE,InvalidPlace,999");
+      fail("Expected IllegalArgumentException for invalid place");
+    } catch (IllegalArgumentException | IOException e) {
+      assertEquals("Invalid place number", e.getMessage());
+    }
+  }
+
+  @Test
+  public void testPickUpItemWhenInventoryFull() throws IOException {
+    // Create places list with an item
+    List<Place> mockPlaces = new ArrayList<>();
+    Place mockPlace = new PlaceModel(0, 0, 1, 1, "TestPlace", "1");
+    mockPlace.addItem(new ItemModel("PickableItem", 10));
+    mockPlaces.add(mockPlace);
+    mockModel.setPlaces(mockPlaces);
+
+    // Create player with full inventory
+    Player mockPlayer = new PlayerModel("TestPlayer", false, 3, 1);
+    for (int i = 1; i <= 3; i++) {
+      mockPlayer.pickUpItem(new ItemModel("Item" + i, 5));
+    }
+    List<Player> players = new ArrayList<>();
+    players.add(mockPlayer);
+    mockModel.setPlayers(players);
+
+    // Set current state
+    mockModel.setPlayerCurrPlaceNumber(0, 1);
+
+    String placeInfo = "TestPlace;[PickableItem-10];[]";
+    mockModel.placeInfoToReturn = placeInfo;
+
+    // Execute pick up command
+    controller.executeCommand("PICK");
+
+    // Verify error message was shown
+    assertTrue("Should show inventory full message",
+        mockView.getLastMessage().contains("inventory is full"));
+  }
+
+  @Test
+  public void testAttackCommandTargetNotInRange() throws IOException {
+    // Set up player
+    Player mockPlayer = new PlayerModel("TestPlayer", false, 3, 1);
+    mockModel.setPlayers(Arrays.asList(mockPlayer));
+    mockModel.setPlayerCurrPlaceNumber(0, 1);
+
+    // Set up places
+    List<Place> mockPlaces = new ArrayList<>();
+    Place playerPlace = new PlaceModel(0, 0, 1, 1, "PlayerPlace", "1");
+    Place targetPlace = new PlaceModel(1, 1, 2, 2, "TargetPlace", "2");
+    mockPlaces.add(playerPlace);
+    mockPlaces.add(targetPlace);
+    mockModel.setPlaces(mockPlaces);
+
+    // Set up target in a different place
+    Target mockTarget = new TargetModel("TestTarget", 50, targetPlace, mockPlaces);
+    mockModel.setTarget(mockTarget);
+
+    // Execute attack command
+    controller.executeCommand("ATTACK");
+
+    // Verify error message
+    assertTrue("Should show target not in range message",
+        mockView.getLog().contains("showGuiMessage called"));
+    assertEquals("Target is not in the same place as you",
+        mockView.getLastMessage());
   }
 }

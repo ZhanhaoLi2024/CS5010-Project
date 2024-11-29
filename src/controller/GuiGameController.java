@@ -267,6 +267,9 @@ public class GuiGameController implements Controller {
           e.printStackTrace();
         }
       });
+    } else if (town.getPlayers().get(town.getCurrentPlayerIndex()).getCurrentCarriedItems().size()
+        >= town.getPlayers().get(town.getCurrentPlayerIndex()).getCarryLimit()) {
+      guiView.showGuiMessage("Pick Up Item", "Your inventory is full", "OK");
     } else {
       guiView.showGuiNumberMessage("Pick Up Item", showItemInfo.toString(),
               "OK",
@@ -692,6 +695,13 @@ public class GuiGameController implements Controller {
 
   private void handleMovePlayer(String command) throws IOException {
     String[] parts = command.split(",");
+    if (parts.length != 3) {
+      throw new IllegalArgumentException("Invalid move command format");
+    }
+    int destinationNumber = Integer.parseInt(parts[2]);
+    if (destinationNumber < 1 || destinationNumber > town.getPlaces().size()) {
+      throw new IllegalArgumentException("Invalid place number");
+    }
     newPlaceName = parts[1];
     newPlaceNumber = Integer.parseInt(parts[2]);
 

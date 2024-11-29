@@ -16,6 +16,7 @@ import model.town.Town;
  */
 public class MockTownModel implements Town {
   private final StringBuilder log;
+  public String placeInfoToReturn;
   private List<Place> places;
   private List<Player> players;
   private Target target;
@@ -153,23 +154,12 @@ public class MockTownModel implements Town {
     return playerPlaceNumbers.getOrDefault(playerIndex, 1);
   }
 
-  @Override
-  public String getCurrentPlaceInfo(int placeNumber) throws IOException {
-    logMethodCall("getCurrentPlaceInfo");
-    return "MockPlace;[];[]";
-  }
-
-  //  @Override
-//  public String getCurrentPlaceNeighborsInfo(int placeNumber) throws IOException {
-//    List<Integer> places = neighborPlaces.getOrDefault(placeNumber, new ArrayList<>());
-//    List<List<String>> neighbors = new ArrayList<>();
-//    for (int place : places) {
-//      neighbors.add(Arrays.asList(
-//          "MockNeighbor", String.valueOf(place), "[]", "[]", "false", "false"
-//      ));
-//    }
-//    return neighbors.toString();
+//  @Override
+//  public String getCurrentPlaceInfo(int placeNumber) throws IOException {
+//    logMethodCall("getCurrentPlaceInfo");
+//    return "MockPlace;[];[]";
 //  }
+
   @Override
   public String getCurrentPlaceNeighborsInfo(int placeNumber) throws IOException {
     return "[[MockNeighbor;2;[];[];false;false], [AnotherNeighbor;3;[];[];true;false]]";
@@ -271,6 +261,10 @@ public class MockTownModel implements Town {
     this.currentTurn = turn;
   }
 
+  public void setPlaceInfoString(String placeInfo) {
+    log.append("Place info: ").append(placeInfo).append("\n");
+  }
+
   @Override
   public void movePlayer(int playerIndex, int newPlaceNumber) throws IOException {
     logMethodCall("movePlayer");
@@ -310,5 +304,11 @@ public class MockTownModel implements Town {
 
   public void setMaxTurns(int maxTurns) {
     this.maxTurns = maxTurns;
+  }
+
+  @Override
+  public String getCurrentPlaceInfo(int placeNumber) throws IOException {
+    logMethodCall("getCurrentPlaceInfo");
+    return placeInfoToReturn != null ? placeInfoToReturn : "MockPlace;[];[]";
   }
 }
