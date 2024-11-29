@@ -2,7 +2,9 @@ package mock;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import model.place.Place;
 import model.player.Player;
 import model.target.Target;
@@ -22,6 +24,8 @@ public class MockTownModel implements Town {
   private int maxTurns;
   private boolean gameOver;
   private String lastMethodCalled;
+  private Map<Integer, Integer> playerPlaceNumbers = new HashMap<>();
+  private Map<Integer, List<Integer>> neighborPlaces = new HashMap<>();
 
   /**
    * Constructs a new MockTownModel with initial test data.
@@ -103,6 +107,10 @@ public class MockTownModel implements Town {
   @Override
   public List<Place> getPlaces() {
     logMethodCall("getPlaces");
+    // Return the places list, even if empty
+    if (places == null) {
+      places = new ArrayList<>();
+    }
     return places;
   }
 
@@ -132,10 +140,17 @@ public class MockTownModel implements Town {
     this.players = players;
   }
 
+  public void setPlayerCurrPlaceNumber(int playerIndex, int placeNumber) {
+    playerPlaceNumbers.put(playerIndex, placeNumber);
+  }
+
+  public void setNeighborPlaces(int placeNumber, List<Integer> places) {
+    neighborPlaces.put(placeNumber, places);
+  }
+
   @Override
   public Integer getPlayerCurrPlaceNumber(int playerIndex) {
-    logMethodCall("getPlayerCurrPlaceNumber");
-    return 1;
+    return playerPlaceNumbers.getOrDefault(playerIndex, 1);
   }
 
   @Override
@@ -144,16 +159,38 @@ public class MockTownModel implements Town {
     return "MockPlace;[];[]";
   }
 
+  //  @Override
+//  public String getCurrentPlaceNeighborsInfo(int placeNumber) throws IOException {
+//    List<Integer> places = neighborPlaces.getOrDefault(placeNumber, new ArrayList<>());
+//    List<List<String>> neighbors = new ArrayList<>();
+//    for (int place : places) {
+//      neighbors.add(Arrays.asList(
+//          "MockNeighbor", String.valueOf(place), "[]", "[]", "false", "false"
+//      ));
+//    }
+//    return neighbors.toString();
+//  }
   @Override
   public String getCurrentPlaceNeighborsInfo(int placeNumber) throws IOException {
-    logMethodCall("getCurrentPlaceNeighborsInfo");
-    return "[[MockNeighbor;2;[];[];false;false]]";
+    return "[[MockNeighbor;2;[];[];false;false], [AnotherNeighbor;3;[];[];true;false]]";
   }
 
   @Override
   public void addPlayer(String playerName, int placeNumber, int carryLimit,
                         boolean isComputerPlayer) {
     logMethodCall("addPlayer");
+
+    // Modified validation to match actual implementation
+    if (placeNumber < 1 || placeNumber > getPlaces().size()) {
+      throw new IllegalArgumentException("Invalid place number");
+    }
+    if (playerName == null || playerName.trim().isEmpty()) {
+      throw new IllegalArgumentException("Invalid player name");
+    }
+    if (carryLimit < 1 || carryLimit > 10) {
+      throw new IllegalArgumentException("Invalid carry limit");
+    }
+
     String playerType = isComputerPlayer ? "computer" : "human";
     log.append("Player added: ").append(playerName)
         .append(" (").append(playerType).append(")\n");
@@ -188,7 +225,7 @@ public class MockTownModel implements Town {
   @Override
   public String showBasicLocationInfo() throws IOException {
     logMethodCall("showBasicLocationInfo");
-    return "[[MockPlayer,MockPlace,5,None],[],[MockTarget,MockPlace,50],[MockPet,MockPlace]]";
+    return "[[MockPlayer,MockPlace,5,None], [], [MockTarget,MockPlace,50], [MockPet,MockPlace]]";
   }
 
   @Override

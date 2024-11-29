@@ -348,6 +348,7 @@ public class GuiGameController implements Controller {
     // Show neighbors info: name, items, players
     neighbors = neighbors.replace("[[", "").replace("]]", "");
     String[] neighborParts = neighbors.split("], \\[");
+    System.out.println("Neighbor parts: " + Arrays.toString(neighborParts));
     for (String neighbor : neighborParts) {
       String[] neighborInfo = neighbor.split(";");
 
