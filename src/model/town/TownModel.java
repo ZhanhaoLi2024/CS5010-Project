@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Scanner;
 import model.item.Item;
 import model.pet.Pet;
 import model.pet.PetModel;
@@ -21,8 +20,6 @@ import model.target.TargetModel;
  */
 public class TownModel implements Town {
   private final Appendable output;
-  private final Scanner scanner;
-  private final String townName;
   private final int maxTurns;
   private final String worldFile;
   private final TownLoaderInterface loader;
@@ -41,18 +38,19 @@ public class TownModel implements Town {
    *
    * @param townLoader   the town loader to load the town data
    * @param filename     the name of the file to load the town from
-   * @param townScanner  the scanner to read input from
    * @param townOutput   the appendable to write output to
    * @param townMaxTurns the maximum number of turns allowed in the game
    * @throws IOException if an I/O error occurs
    */
-  public TownModel(TownLoaderInterface townLoader, String filename, Readable townScanner,
+  public TownModel(TownLoaderInterface townLoader, String filename,
                    Appendable townOutput,
                    int townMaxTurns)
       throws IOException {
+    if (townMaxTurns <= 0) {
+      throw new IllegalArgumentException("Maximum turns must be positive");
+    }
     this.loader = townLoader;
     TownData townData = townLoader.loadTown(filename);
-    this.townName = townData.getTownName();
     this.targetName = townData.getTargetName();
     this.targetHealth = townData.getTargetHealth();
     this.places = townData.getPlaces();
@@ -63,7 +61,6 @@ public class TownModel implements Town {
     this.pet = new PetModel(townData.getPetName(), targetCurrentPlaceNumber);
     this.players = new ArrayList<>();
     this.currentPlayerIndex = 0;
-    this.scanner = new Scanner(townScanner);
     this.output = townOutput;
     this.currentTurn = 1;
     this.maxTurns = townMaxTurns;
@@ -160,15 +157,15 @@ public class TownModel implements Town {
   @Override
   public String getCurrentPlaceInfo(int placeNumber) throws IOException {
     Place place = getPlaceByNumber(placeNumber);
-    List<String> items = new ArrayList<>();
+    List<String> currPlaceItems = new ArrayList<>();
     for (Item item : place.getItems()) {
-      items.add(item.getName() + "-" + item.getDamage());
+      currPlaceItems.add(item.getName() + "-" + item.getDamage());
     }
-    List<String> players = new ArrayList<>();
+    List<String> playerPlayers = new ArrayList<>();
     for (Player player : place.getCurrentPlacePlayers()) {
-      players.add(player.getName());
+      playerPlayers.add(player.getName());
     }
-    return place.getName() + ";" + items + ";" + players;
+    return place.getName() + ";" + currPlaceItems + ";" + playerPlayers;
   }
 
   @Override
@@ -225,12 +222,10 @@ public class TownModel implements Town {
     playerInfo.add(playerBasicInfo);
 
     // Show other players in the same room
-    List<Player> currentPlacePlayers = new ArrayList<>();
     List<String> playerNeighbours = new ArrayList<>();
     for (Player p : players) {
       Place currentPlaceOfP = getPlaceByNumber(p.getPlayerCurrentPlaceNumber());
       if (currentPlaceOfP.equals(currentPlace) && !p.equals(currentPlayer)) {
-        currentPlacePlayers.add(p);
         playerNeighbours.add(p.getName());
       }
     }
@@ -336,7 +331,7 @@ public class TownModel implements Town {
   @Override
   public boolean attackTarget(String attackItemName) throws IOException {
     Player currentPlayer = players.get(currentPlayerIndex);
-    if (attackItemName.equals("Poke Target")) {
+    if ("Poke Target".equals(attackItemName)) {
       System.out.println("Poke Target");
       return this.executePoke(currentPlayer);
     }

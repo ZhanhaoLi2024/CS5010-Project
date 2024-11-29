@@ -24,10 +24,8 @@ import view.View;
  */
 public class GuiGameController implements Controller {
   private final Town town;
-  private final int maxTurns;
   private View view;
   private GuiView guiView;
-  private boolean continueGame;
   private String newPlaceName;
   private int newPlaceNumber;
 
@@ -39,11 +37,10 @@ public class GuiGameController implements Controller {
    */
   public GuiGameController(Town gameModel, int gameMaxTurns) {
     this.town = gameModel;
-    this.maxTurns = gameMaxTurns;
   }
 
   private static List<String> convertStringToList(String input) {
-    if (input == null || input.equals("[]")) {
+    if (input == null || "[]".equals(input)) {
       return new ArrayList<>();
     }
 
@@ -58,13 +55,13 @@ public class GuiGameController implements Controller {
   }
 
   @Override
-  public void setView(View view, boolean gui) {
+  public void setView(View gameView, boolean gui) {
     if (this.view != null) {
       throw new IllegalStateException("View already set");
     }
-    this.view = view;
+    this.view = gameView;
     if (gui) {
-      this.guiView = (GuiView) view;
+      this.guiView = (GuiView) gameView;
     }
   }
 
@@ -182,7 +179,6 @@ public class GuiGameController implements Controller {
   }
 
   private void endGame() throws IOException {
-    continueGame = false;
     if (town.getTarget().isDefeated()) {
       String winner = town.getPlayers().get(town.getCurrentPlayerIndex()).getName();
       guiView.showGuiMessage("Game Over",
@@ -225,7 +221,6 @@ public class GuiGameController implements Controller {
     if (items.isEmpty()) {
       view.showMessage("No item in this place.");
     } else {
-      int i = 0;
       String maxDamageItemName = "";
       int maxDamageItem = 0;
       for (String item : items) {
@@ -236,7 +231,6 @@ public class GuiGameController implements Controller {
           maxDamageItem = Integer.parseInt(itemDamage);
           maxDamageItemName = itemName1;
         }
-        i++;
       }
       new PickUpItemCommand(town, maxDamageItemName).execute();
       takeTurn();
@@ -516,15 +510,16 @@ public class GuiGameController implements Controller {
     final AtomicBoolean killSuccess = new AtomicBoolean(false);
     List<String> playerItems = convertStringToList(playerCurrentCarriedItems);
     playerItems.add("Poke Target-1");
-    String showItemInfo = "";
-    showItemInfo += "Items you have: " + "\n";
+    StringBuilder showItemInfo = new StringBuilder();
+    showItemInfo.append("Items you have: " + "\n");
     int i = 1;
     for (String item : playerItems) {
-      showItemInfo += i + ". " + item + "\n";
+      showItemInfo.append(i).append(". ").append(item).append("\n");
       i++;
     }
-    showItemInfo += "Enter the item number you want to use to attack the target: \n";
-    guiView.showGuiNumberMessage("Attack Target", showItemInfo, "OK", 1, playerItems.size())
+    showItemInfo.append("Enter the item number you want to use to attack the target: \n");
+    guiView.showGuiNumberMessage("Attack Target", showItemInfo.toString(), "OK", 1,
+            playerItems.size())
         .thenAccept(itemNumber -> {
           String[] itemsParts = playerItems.get(itemNumber - 1).split("-");
           String itemName = itemsParts[0].trim();
@@ -533,7 +528,7 @@ public class GuiGameController implements Controller {
             killSuccess.set(town.attackTarget(itemName));
             String showAttackResult = "";
             showAttackResult += "You used " + itemName + " to attack the target." + "\n";
-            if (itemName.equals("Poke Target")) {
+            if ("Poke Target".equals(itemName)) {
               showAttackResult += "You hit the target and caused 1 damage." + "\n";
             } else {
               showAttackResult += "You hit the target and caused " + itemDamage + " damage." + "\n";
@@ -559,7 +554,7 @@ public class GuiGameController implements Controller {
   private void handleComputerAttackTarget() throws IOException {
     int currentPlayerIndex = town.getCurrentPlayerIndex();
     String playerCurrentCarriedItems = town.getPlayerCurrentCarriedItems(currentPlayerIndex);
-    String currentPlayerName = town.getPlayers().get(currentPlayerIndex).getName();
+    final String currentPlayerName = town.getPlayers().get(currentPlayerIndex).getName();
     List<String> playerItems = convertStringToList(playerCurrentCarriedItems);
     playerItems.add("Poke Target-1");
     String maxDamageItemName = "";

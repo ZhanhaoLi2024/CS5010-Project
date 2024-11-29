@@ -41,7 +41,6 @@ public class Driver {
       Town town = new TownModel(
           loader,
           worldFile,
-          new InputStreamReader(System.in),
           System.out,
           maxTurns
       );
