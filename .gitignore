@@ -13,3 +13,5 @@ out/
 .classpath
 .project
 *.iml
+
+/lib/
