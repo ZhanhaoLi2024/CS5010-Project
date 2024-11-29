@@ -1,9 +1,7 @@
 package model.item;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -68,7 +66,7 @@ public class ItemModelTest {
   @Test
   public void testUnequalItems() {
     assertNotEquals("Different items should not be equal", item1, item2);
-    assertFalse("Different items should not be equal", item1.equals(item2));
+    assertNotEquals("Different items should not be equal", item1, item2);
   }
 
   @Test
@@ -87,16 +85,16 @@ public class ItemModelTest {
 
   @Test
   public void testEqualityWithNull() {
-    assertFalse("Item should not equal null", item1.equals(null));
+    assertNotEquals("Item should not equal null", null, item1);
   }
 
   @Test
   public void testEqualityWithDifferentClass() {
-    assertFalse("Item should not equal non-item object", item1.equals("Sword"));
+    assertNotEquals("Item should not equal non-item object", "Sword", item1);
   }
 
   @Test
   public void testEqualityWithSelf() {
-    assertTrue("Item should equal itself", item1.equals(item1));
+    assertEquals("Item should equal itself", item1, item1);
   }
 }
