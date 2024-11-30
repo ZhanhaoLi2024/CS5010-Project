@@ -1,10 +1,10 @@
 package mock;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import model.item.Item;
 import model.place.Place;
 import model.player.Player;
 import model.target.Target;
@@ -16,6 +16,9 @@ import model.town.Town;
  */
 public class MockTownModel implements Town {
   private final StringBuilder log;
+  private final Map<Integer, Integer> playerPlaceNumbers = new HashMap<>();
+  private final Map<String, Integer> methodCallCount = new HashMap<>();
+  private final Map<Integer, String> neighborInfoMap = new HashMap<>();
   public String placeInfoToReturn;
   private List<Place> places;
   private List<Player> players;
@@ -24,10 +27,10 @@ public class MockTownModel implements Town {
   private int currentTurn;
   private int maxTurns;
   private boolean gameOver;
-  private String lastMethodCalled;
-  private Map<Integer, Integer> playerPlaceNumbers = new HashMap<>();
-  private Map<Integer, List<Integer>> neighborPlaces = new HashMap<>();
   private boolean playerVisible;
+  private boolean isComputerPlayer = false;
+  private String currentPlayerInfo;
+  private boolean initialized = false;
 
   /**
    * Constructs a new MockTownModel with initial test data.
@@ -38,8 +41,26 @@ public class MockTownModel implements Town {
     this.players = new ArrayList<>();
     this.currentPlayerIndex = 0;
     this.currentTurn = 1;
-    this.maxTurns = 50;
+    this.maxTurns = 5;
     this.gameOver = false;
+  }
+
+  /**
+   * Sets whether the player is a computer player.
+   *
+   * @param isComputer true if the player is a computer player, false otherwise
+   */
+  public void setIsComputerPlayer(boolean isComputer) {
+    this.isComputerPlayer = isComputer;
+  }
+
+  @Override
+  public Boolean isComputerControllerPlayer() {
+    logMethodCall("isComputerControllerPlayer");
+    if (players != null && !players.isEmpty() && currentPlayerIndex >= 0) {
+      return players.get(currentPlayerIndex).isComputerControlled();
+    }
+    return isComputerPlayer;
   }
 
   /**
@@ -52,28 +73,21 @@ public class MockTownModel implements Town {
   }
 
   /**
-   * Gets the last method called.
-   *
-   * @return name of the last method called
-   */
-  public String getLastMethodCalled() {
-    return lastMethodCalled;
-  }
-
-  /**
    * Clears the log of method calls.
    */
   public void clearLog() {
     log.setLength(0);
-    lastMethodCalled = null;
   }
 
+  /**
+   * Appends the method name to the log and sets it as the last method called.
+   *
+   * @param methodName the name of the method called
+   */
   private void logMethodCall(String methodName) {
     log.append(methodName).append(" called\n");
-    lastMethodCalled = methodName;
   }
 
-  // Town interface implementations
   @Override
   public String petCurrentInfo() {
     logMethodCall("petCurrentInfo");
@@ -82,7 +96,9 @@ public class MockTownModel implements Town {
 
   @Override
   public Place getPlaceByNumber(int placeNumber) {
-    logMethodCall("getPlaceByNumber");
+    if (places != null && placeNumber > 0 && placeNumber <= places.size()) {
+      return places.get(placeNumber - 1);
+    }
     return null;
   }
 
@@ -97,12 +113,17 @@ public class MockTownModel implements Town {
     return target;
   }
 
+  /**
+   * Sets the target for testing purposes.
+   *
+   * @param target the target to set
+   */
   public void setTarget(Target target) {
     this.target = target;
   }
 
   @Override
-  public void movePet(int placeNumber) throws IOException {
+  public void movePet(int placeNumber) {
     logMethodCall("movePet");
   }
 
@@ -116,6 +137,11 @@ public class MockTownModel implements Town {
     return places;
   }
 
+  /**
+   * Sets the list of places for testing purposes.
+   *
+   * @param places the list of places to set
+   */
   public void setPlaces(List<Place> places) {
     this.places = places;
   }
@@ -138,16 +164,20 @@ public class MockTownModel implements Town {
     return players;
   }
 
+  /**
+   * Sets the list of players for testing purposes.
+   *
+   * @param players the list of players to set
+   */
   public void setPlayers(List<Player> players) {
     this.players = players;
   }
 
+  /**
+   * Sets the place info to return for testing purposes.
+   */
   public void setPlayerCurrPlaceNumber(int playerIndex, int placeNumber) {
     playerPlaceNumbers.put(playerIndex, placeNumber);
-  }
-
-  public void setNeighborPlaces(int placeNumber, List<Integer> places) {
-    neighborPlaces.put(placeNumber, places);
   }
 
   @Override
@@ -156,15 +186,14 @@ public class MockTownModel implements Town {
   }
 
   @Override
-  public String getCurrentPlaceNeighborsInfo(int placeNumber) throws IOException {
-    return "[[MockNeighbor;2;[];[];false;false], [AnotherNeighbor;3;[];[];true;false]]";
+  public String getCurrentPlaceNeighborsInfo(int placeNumber) {
+    logMethodCall("getCurrentPlaceNeighborsInfo");
+    if (shouldSkipExecution("getCurrentPlaceNeighborsInfo")) {
+      return "";
+    }
+    return neighborInfoMap.getOrDefault(placeNumber,
+        "[[TestPlace3;3;[];[];true;false]]");
   }
-
-//  @Override
-//  public String getCurrentPlaceInfo(int placeNumber) throws IOException {
-//    logMethodCall("getCurrentPlaceInfo");
-//    return "MockPlace;[];[]";
-//  }
 
   @Override
   public void addPlayer(String playerName, int placeNumber, int carryLimit,
@@ -188,43 +217,84 @@ public class MockTownModel implements Town {
   }
 
   @Override
-  public String getPlayerByName(String playerName) throws IOException {
+  public String getPlayerByName(String playerName) {
     logMethodCall("getPlayerByName");
     return "MockPlayer,MockPlace,5";
   }
 
   @Override
-  public void lookAround() throws IOException {
+  public void lookAround() {
     logMethodCall("lookAround");
     switchToNextPlayer();
   }
 
   @Override
-  public boolean attackTarget(String itemName) throws IOException {
+  public boolean attackTarget(String itemName) {
     logMethodCall("attackTarget");
-    return true; // 返回true表示目标被击败
+    return true;
   }
 
   @Override
-  public void switchToNextPlayer() throws IOException {
+  public void switchToNextPlayer() {
     logMethodCall("switchToNextPlayer");
+    if (shouldSkipExecution("switchToNextPlayer")) {
+      return;
+    }
+
     if (players != null && !players.isEmpty()) {
       currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
+
       if (currentPlayerIndex == 0) {
         currentTurn++;
         moveTarget();
       }
+
+      log.append("Switched to player ").append(currentPlayerIndex)
+          .append(" on turn ").append(currentTurn).append("\n");
     }
   }
 
+  /**
+   * Sets whether the player is visible for testing purposes.
+   *
+   * @param isVisible true if the player is visible, false otherwise
+   */
   public void setPlayerVisible(boolean isVisible) {
     this.playerVisible = isVisible;
   }
 
+  /**
+   * Sets the place info to return for testing purposes.
+   */
+  public void setBasicLocationInfo() {
+  }
+
   @Override
-  public String showBasicLocationInfo() throws IOException {
+  public String showBasicLocationInfo() {
     logMethodCall("showBasicLocationInfo");
-    return "[[MockPlayer,MockPlace,5,None], [], [MockTarget,MockPlace,50], [MockPet,MockPlace]]";
+
+    if (!initialized) {
+      initialized = true;
+      return String.format("[[%s,%s,5,%s], [], [%s,%s,%d], [%s,%s]]",
+          players.get(currentPlayerIndex).getName(),
+          "TestPlace",
+          "None",
+          "MockTarget",
+          "TestPlace",
+          50,
+          "MockPet",
+          "TestPlace");
+    }
+
+    return currentPlayerInfo != null ? currentPlayerInfo :
+        "[[MockPlayer,TestPlace,5,None], [], [MockTarget,TestPlace,50], [MockPet,TestPlace]]";
+  }
+
+  /**
+   * Sets the place info to return for testing purposes.
+   */
+  public void setCurrentPlayerInfo(String info) {
+    this.currentPlayerInfo = info;
   }
 
   @Override
@@ -236,7 +306,7 @@ public class MockTownModel implements Town {
   }
 
   @Override
-  public void resetGameState() throws IOException {
+  public void resetGameState() {
     logMethodCall("resetGameState");
     currentPlayerIndex = 0;
     currentTurn = 1;
@@ -249,15 +319,13 @@ public class MockTownModel implements Town {
     return gameOver;
   }
 
-  // Additional test helper methods
+  /**
+   * Sets whether the game is over for testing purposes.
+   *
+   * @param isGameOver true if the game is over, false otherwise
+   */
   public void setGameOver(boolean isGameOver) {
     this.gameOver = isGameOver;
-  }
-
-  @Override
-  public Boolean isComputerControllerPlayer() {
-    logMethodCall("isComputerControllerPlayer");
-    return false;
   }
 
   @Override
@@ -266,25 +334,39 @@ public class MockTownModel implements Town {
     return currentTurn;
   }
 
+  /**
+   * Sets the current turn for testing purposes.
+   *
+   * @param turn the turn to set
+   */
   public void setCurrentTurn(int turn) {
     this.currentTurn = turn;
   }
 
-  public void setPlaceInfoString(String placeInfo) {
-    log.append("Place info: ").append(placeInfo).append("\n");
-  }
-
   @Override
-  public void movePlayer(int playerIndex, int newPlaceNumber) throws IOException {
+  public void movePlayer(int playerIndex, int newPlaceNumber) {
     logMethodCall("movePlayer");
+    if (shouldSkipExecution("movePlayer")) {
+      return;
+    }
+
     log.append("Player ").append(playerIndex)
         .append(" moved to place ").append(newPlaceNumber).append("\n");
+
+    playerPlaceNumbers.put(playerIndex, newPlaceNumber);
+
+    switchToNextPlayer();
   }
 
   @Override
-  public void pickUpItem(String itemName) throws IOException {
+  public void pickUpItem(String itemName) {
     logMethodCall("pickUpItem");
+    if (shouldSkipExecution("pickUpItem")) {
+      return;
+    }
+
     log.append("Item picked up: ").append(itemName).append("\n");
+    switchToNextPlayer();
   }
 
   @Override
@@ -302,6 +384,23 @@ public class MockTownModel implements Town {
     this.currentPlayerIndex = index;
   }
 
+  /**
+   * Sets the neighbor places for testing purposes.
+   *
+   * @param placeNumber the place number
+   * @param hasTarget   true if the neighbor has the target, false otherwise
+   */
+  public void setNeighborInfoForPlace(int placeNumber, boolean hasTarget) {
+    StringBuilder info = new StringBuilder("[[");
+    if (hasTarget) {
+      info.append(String.format("Neighbor1;%d;[];[];true;false", placeNumber));
+    } else {
+      info.append(String.format("Neighbor1;%d;[];[];false;false", placeNumber));
+    }
+    info.append("]]");
+    neighborInfoMap.put(placeNumber, info.toString());
+  }
+
   @Override
   public boolean isPlayerVisible(Player player) {
     logMethodCall("isPlayerVisible");
@@ -309,7 +408,7 @@ public class MockTownModel implements Town {
   }
 
   @Override
-  public String getPlayerCurrentCarriedItems(int playerIndex) throws IOException {
+  public String getPlayerCurrentCarriedItems(int playerIndex) {
     logMethodCall("getPlayerCurrentCarriedItems");
     return "[Sword-10]";
   }
@@ -320,14 +419,42 @@ public class MockTownModel implements Town {
     return maxTurns;
   }
 
+  /**
+   * Sets the maximum number of turns for testing purposes.
+   *
+   * @param maxTurns the maximum number of turns to set
+   */
   public void setMaxTurns(int maxTurns) {
     this.maxTurns = maxTurns;
   }
 
   @Override
-  public String getCurrentPlaceInfo(int placeNumber) throws IOException {
+  public String getCurrentPlaceInfo(int placeNumber) {
     logMethodCall("getCurrentPlaceInfo");
+    if (placeNumber > 0 && placeNumber <= places.size()) {
+      Place place = places.get(placeNumber - 1);
+      StringBuilder itemsStr = new StringBuilder("[");
+      boolean first = true;
+      for (Item item : place.getItems()) {
+        if (!first) {
+          itemsStr.append(", ");
+        }
+        itemsStr.append(item.getName()).append("-").append(item.getDamage());
+        first = false;
+      }
+      itemsStr.append("]");
+
+      return String.format("%s;%s;[]", place.getName(), itemsStr);
+    }
     return placeInfoToReturn != null ? placeInfoToReturn : "MockPlace;[];[]";
   }
 
+  /**
+   * Sets the place info to return for testing purposes.
+   */
+  private boolean shouldSkipExecution(String methodName) {
+    int count = methodCallCount.getOrDefault(methodName, 0) + 1;
+    methodCallCount.put(methodName, count);
+    return count > 1;
+  }
 }

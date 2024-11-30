@@ -26,11 +26,13 @@ public class ItemModelTest {
     assertEquals("Item damage should match", 10, item1.getDamage());
   }
 
+  // Test null name
   @Test(expected = IllegalArgumentException.class)
   public void testNullNameItemCreation() {
     new ItemModel(null, 10);
   }
 
+  // Test empty name
   @Test(expected = IllegalArgumentException.class)
   public void testEmptyNameItemCreation() {
     new ItemModel("", 10);
@@ -42,12 +44,14 @@ public class ItemModelTest {
     new ItemModel("Sword", -1);
   }
 
+  // Test zero damage
   @Test
   public void testZeroDamageItemCreation() {
     ItemModel zeroItem = new ItemModel("Feather", 0);
     assertEquals("Zero damage should be allowed", 0, zeroItem.getDamage());
   }
 
+  // Test max damage
   @Test
   public void testMaxDamageItemCreation() {
     ItemModel maxItem = new ItemModel("Ultimate", Integer.MAX_VALUE);
@@ -63,12 +67,14 @@ public class ItemModelTest {
         item1.hashCode(), duplicateItem.hashCode());
   }
 
+  // Test unequal items
   @Test
   public void testUnequalItems() {
     assertNotEquals("Different items should not be equal", item1, item2);
     assertNotEquals("Different items should not be equal", item1, item2);
   }
 
+  // Test unequal items with same name
   @Test
   public void testUnequalItemsSameName() {
     ItemModel differentDamage = new ItemModel("Sword", 20);
@@ -76,6 +82,7 @@ public class ItemModelTest {
         item1, differentDamage);
   }
 
+  // Test unequal items with same damage
   @Test
   public void testUnequalItemsSameDamage() {
     ItemModel differentName = new ItemModel("Axe", 10);
@@ -83,16 +90,19 @@ public class ItemModelTest {
         item1, differentName);
   }
 
+  // Test equality with null
   @Test
   public void testEqualityWithNull() {
     assertNotEquals("Item should not equal null", null, item1);
   }
 
+  // Test equality with different class
   @Test
   public void testEqualityWithDifferentClass() {
     assertNotEquals("Item should not equal non-item object", "Sword", item1);
   }
 
+  // Test equality with self
   @Test
   public void testEqualityWithSelf() {
     assertEquals("Item should equal itself", item1, item1);

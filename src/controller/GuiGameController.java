@@ -32,13 +32,18 @@ public class GuiGameController implements Controller {
   /**
    * Constructs a new GUI controller.
    *
-   * @param gameModel    the game model
-   * @param gameMaxTurns maximum number of turns allowed
+   * @param gameModel the game model
    */
-  public GuiGameController(Town gameModel, int gameMaxTurns) {
+  public GuiGameController(Town gameModel) {
     this.town = gameModel;
   }
 
+  /**
+   * Converts a string to a list of strings.
+   *
+   * @param input the input string
+   * @return the list of strings
+   */
   private static List<String> convertStringToList(String input) {
     if (input == null || "[]".equals(input)) {
       return new ArrayList<>();
@@ -75,11 +80,19 @@ public class GuiGameController implements Controller {
     view.initialize();
   }
 
+  /**
+   * Handles the computer player's turn.
+   *
+   * @throws IOException if an I/O error occurs
+   */
   private void handleComputerTurn() throws IOException {
     // First priority: Attack the target if in the same place as target and not visible
     String computerPlayerPlaceNumber = String.valueOf(
         town.getPlayers().get(town.getCurrentPlayerIndex()).getPlayerCurrentPlaceNumber());
     String targetPlaceNumber = town.getTarget().getCurrentPlace().getPlaceNumber();
+
+    System.out.println("Computer player place number: " + computerPlayerPlaceNumber);
+    System.out.println("Target place number: " + targetPlaceNumber);
     if (computerPlayerPlaceNumber.equals(targetPlaceNumber)
         && !town.isPlayerVisible(town.getPlayers().get(town.getCurrentPlayerIndex()))) {
       // Computer player attempts to attack the target
@@ -94,6 +107,7 @@ public class GuiGameController implements Controller {
         && town.getPlayers().get(town.getCurrentPlayerIndex()).getCurrentCarriedItems().size()
         < town.getPlayers().get(town.getCurrentPlayerIndex()).getCarryLimit()) {
       // Computer player picks up an item
+      System.out.println("Computer player picks up an item");
       pickUpItem();
       return;
     }
@@ -108,6 +122,11 @@ public class GuiGameController implements Controller {
     lookAround();
   }
 
+  /**
+   * Handles the player's turn.
+   *
+   * @throws IOException if an I/O error occurs
+   */
   private void takeTurnForPlayer() throws IOException {
     boolean isComputerController = town.isComputerControllerPlayer();
     if (isComputerController) {
@@ -115,7 +134,13 @@ public class GuiGameController implements Controller {
     }
   }
 
+  /**
+   * Updates the current player's information.
+   *
+   * @param currentPlayerInfo the current player's information
+   */
   private void updateCurrentPlayerInfo(String currentPlayerInfo) {
+    System.out.println("Current player info: " + currentPlayerInfo);
     currentPlayerInfo = currentPlayerInfo.replace("[[", "[").replace("]]", "]");
     String[] parts = currentPlayerInfo.split("], \\[");
     // current player info
@@ -156,17 +181,20 @@ public class GuiGameController implements Controller {
       parts[4] = parts[4].replace("[", "").replace("]", "");
       String[] currentPlaceItems = parts[4].split(",");
       String currentPlaceItemName = currentPlaceItems[0];
-      String currentPlaceItemDemage = currentPlaceItems[1];
-      currentPlaceItemsList.add(currentPlaceItemName + "(" + currentPlaceItemDemage + ")");
+      String currentPlaceItemDamage = currentPlaceItems[1];
+      currentPlaceItemsList.add(currentPlaceItemName + "(" + currentPlaceItemDamage + ")");
     }
 
     PlayerInfoDTO playerInfo =
         new PlayerInfoDTO(town.getCurrentTurn(), currentPlayerName, currentPlayerItems,
-            currentPlayerPlace, targetInfoString, otherPlayersList, currentPlaceItemsList,
-            petInfoString);
+            currentPlayerPlace, targetInfoString
+        );
     guiView.updatePlayerInfo(playerInfo);
   }
 
+  /**
+   * Handles the move player command.
+   */
   private void takeTurn() throws IOException {
     String playerInfo = town.showBasicLocationInfo();
     System.out.println("Current player: " + playerInfo);
@@ -178,23 +206,30 @@ public class GuiGameController implements Controller {
     }
   }
 
+  /**
+   * Ends the game.
+   *
+   * @throws IOException if an I/O error occurs
+   */
   private void endGame() throws IOException {
     if (town.getTarget().isDefeated()) {
       String winner = town.getPlayers().get(town.getCurrentPlayerIndex()).getName();
       guiView.showGuiMessage("Game Over",
-          winner + " has successfully eliminated the target and won the game!", "OK", () -> {
-            guiView.resetGame();
-          });
+          winner + " has successfully eliminated the target and won the game!", "OK",
+          () -> guiView.resetGame());
     } else if (town.getCurrentTurn() > town.getMaxTurns()) {
       guiView.showGuiMessage("Game Over",
-          "The target has escaped and nobody wins!", "OK", () -> {
-            guiView.resetGame();
-          });
+          "The target has escaped and nobody wins!", "OK", () -> guiView.resetGame());
     }
     town.resetGameState();
   }
 
-  private boolean handleStartGame() throws IOException {
+  /**
+   * Handles the start game command.
+   *
+   * @return true if the game can start, false otherwise
+   */
+  private boolean handleStartGame() {
     int currentPlayersSize = town.getPlayers().size();
     if (currentPlayersSize < 2) {
       guiView.showGuiMessage("Error", "Need at least 2 players to start the game.", "OK");
@@ -212,18 +247,26 @@ public class GuiGameController implements Controller {
     return true;
   }
 
+  /**
+   * Handles the move player command.
+   *
+   * @throws IOException if an I/O error occurs
+   */
   private void handleComputerPickUpItem() throws IOException {
     int currentPlayerIndex = town.getCurrentPlayerIndex();
     int currentPlaceNumber = town.getPlayerCurrPlaceNumber(currentPlayerIndex);
     String currentPlace = town.getCurrentPlaceInfo(currentPlaceNumber);
     String[] parts = currentPlace.split(";");
     List<String> items = convertStringToList(parts[1]);
+    System.out.println("Items: " + items);
     if (items.isEmpty()) {
       view.showMessage("No item in this place.");
     } else {
       String maxDamageItemName = "";
       int maxDamageItem = 0;
+      System.out.print("Items: " + items);
       for (String item : items) {
+        System.out.println("Item: " + item);
         String[] chooseItem = item.split("-");
         String itemName1 = chooseItem[0].trim();
         String itemDamage = chooseItem[1].trim();
@@ -232,19 +275,25 @@ public class GuiGameController implements Controller {
           maxDamageItemName = itemName1;
         }
       }
+      System.out.println("Max damage item: " + maxDamageItemName);
       new PickUpItemCommand(town, maxDamageItemName).execute();
       takeTurn();
     }
   }
 
+  /**
+   * Handles the pickup item command.
+   *
+   * @throws IOException if an I/O error occurs
+   */
   private void handleHumanPickUpItem() throws IOException {
     StringBuilder showItemInfo = new StringBuilder();
-    int maxItemNumber = 0;
+    int maxItemNumber;
     int currentPlayerIndex = town.getCurrentPlayerIndex();
     int currentPlaceNumber = town.getPlayerCurrPlaceNumber(currentPlayerIndex);
     String currentPlace = town.getCurrentPlaceInfo(currentPlaceNumber);
     String[] parts = currentPlace.split(";");
-    String itemName = "";
+    String itemName;
     List<String> items = convertStringToList(parts[1]);
     if (items.isEmpty()) {
       showItemInfo.append("No item in this place." + "\n");
@@ -292,6 +341,11 @@ public class GuiGameController implements Controller {
     }
   }
 
+  /**
+   * Handles the pickup item command.
+   *
+   * @throws IOException if an I/O error occurs
+   */
   private void pickUpItem() throws IOException {
     int currentPlayerIndex = town.getCurrentPlayerIndex();
     boolean isComputerController = town.getPlayers().get(currentPlayerIndex).isComputerControlled();
@@ -302,18 +356,28 @@ public class GuiGameController implements Controller {
     }
   }
 
+  /**
+   * Handles the computer look around command.
+   *
+   * @throws IOException if an I/O error occurs
+   */
   private void handleComputerLookAround() throws IOException {
     new LookAroundCommand(town).execute();
     takeTurn();
   }
 
+  /**
+   * Handles the human look around command.
+   *
+   * @throws IOException if an I/O error occurs
+   */
   private void handleHumanLookAround() throws IOException {
     int currentPlayerIndex = town.getCurrentPlayerIndex();
     int currentPlayerPlaceNumber = town.getPlayerCurrPlaceNumber(currentPlayerIndex);
     String currentPlace = town.getCurrentPlaceInfo(currentPlayerPlaceNumber);
     String neighbors = town.getCurrentPlaceNeighborsInfo(currentPlayerPlaceNumber);
 
-    StringBuilder lookAroundInfo = new StringBuilder();
+    StringBuilder lookAroundInfo;
     // Show current place info: name, items, players
     String[] parts = currentPlace.split(";");
     String currentPlaceName = parts[0];
@@ -331,7 +395,7 @@ public class GuiGameController implements Controller {
         itemDamage = currentItem.split("-")[1].trim();
       }
     }
-    String currentPlayers = "";
+    String currentPlayers;
     if (parts[2].isEmpty()) {
       currentPlayers = "No other player in this place";
     } else {
@@ -355,7 +419,7 @@ public class GuiGameController implements Controller {
 
       String neighborName = neighborInfo[0].trim();
       String neighborNumber = neighborInfo[1].trim();
-      String neighborItem = "";
+      String neighborItem;
       String neighborItemName = "";
       String neighborItemDamage = "";
       List<String> currentItems = convertStringToList(neighborInfo[2]);
@@ -369,7 +433,7 @@ public class GuiGameController implements Controller {
         }
         neighborItem = neighborItemName + " (Damage: " + neighborItemDamage + ")";
       }
-      String neighborPlayers = "";
+      String neighborPlayers;
       List<String> players = convertStringToList(neighborInfo[3]);
       if (players.isEmpty()) {
         neighborPlayers = "No other player in this place";
@@ -399,7 +463,11 @@ public class GuiGameController implements Controller {
     });
   }
 
-
+  /**
+   * Handles the look around command.
+   *
+   * @throws IOException if an I/O error occurs
+   */
   private void lookAround() throws IOException {
     int currentPlayerIndex = town.getCurrentPlayerIndex();
     boolean isComputerControlled = town.getPlayers().get(currentPlayerIndex).isComputerControlled();
@@ -410,6 +478,11 @@ public class GuiGameController implements Controller {
     }
   }
 
+  /**
+   * Handles the computer move command.
+   *
+   * @throws IOException if an I/O error occurs
+   */
   private void handleComputerMove() throws IOException {
     int currentPlayerIndex = town.getCurrentPlayerIndex();
     int currentPlaceNumber = town.getPlayerCurrPlaceNumber(currentPlayerIndex);
@@ -453,6 +526,9 @@ public class GuiGameController implements Controller {
     takeTurn();
   }
 
+  /**
+   * Handles the human move command.
+   */
   private void handleHumanMove() {
     int currentPlayerIndex = town.getCurrentPlayerIndex();
     String moveInfo = "You want to move to " + newPlaceName + "?" + "\n";
@@ -466,6 +542,11 @@ public class GuiGameController implements Controller {
     });
   }
 
+  /**
+   * Moves the player.
+   *
+   * @throws IOException if an I/O error occurs
+   */
   private void movePlayer() throws IOException {
     int currentPlayerIndex = town.getCurrentPlayerIndex();
     boolean isComputerControlled = town.getPlayers().get(currentPlayerIndex).isComputerControlled();
@@ -476,6 +557,9 @@ public class GuiGameController implements Controller {
     }
   }
 
+  /**
+   * Handles the move pet command.
+   */
   private void movePet() {
     guiView.showGuiNumberMessage("Move Pet", "Enter the place number to move the pet to", "OK", 1,
             20)
@@ -493,6 +577,11 @@ public class GuiGameController implements Controller {
         });
   }
 
+  /**
+   * Handles the human attack target command.
+   *
+   * @throws IOException if an I/O error occurs
+   */
   private void handleHumanAttackTarget() throws IOException {
     int currentPlayerIndex = town.getCurrentPlayerIndex();
     String playerCurrentCarriedItems = town.getPlayerCurrentCarriedItems(currentPlayerIndex);
@@ -553,6 +642,11 @@ public class GuiGameController implements Controller {
         });
   }
 
+  /**
+   * Handles the computer attack target command.
+   *
+   * @throws IOException if an I/O error occurs
+   */
   private void handleComputerAttackTarget() throws IOException {
     int currentPlayerIndex = town.getCurrentPlayerIndex();
     String playerCurrentCarriedItems = town.getPlayerCurrentCarriedItems(currentPlayerIndex);
@@ -584,13 +678,17 @@ public class GuiGameController implements Controller {
               e.printStackTrace();
             }
           });
-      return;
     } else {
       town.switchToNextPlayer();
       takeTurn();
     }
   }
 
+  /**
+   * Handles the attack target command.
+   *
+   * @throws IOException if an I/O error occurs
+   */
   private void attackTarget() throws IOException {
     int currentPlayerIndex = town.getCurrentPlayerIndex();
     boolean isComputerController = town.getPlayers().get(currentPlayerIndex).isComputerControlled();
@@ -601,6 +699,12 @@ public class GuiGameController implements Controller {
     }
   }
 
+  /**
+   * Handles the player's action.
+   *
+   * @param action the player's action
+   * @throws IOException if an I/O error occurs
+   */
   private void handlePlayerAction(String action) throws IOException {
     switch (action) {
       case "MOVE":
@@ -689,7 +793,12 @@ public class GuiGameController implements Controller {
     return false;
   }
 
-
+  /**
+   * Handles the move player command.
+   *
+   * @param command the player command
+   * @throws IOException if an I/O error occurs
+   */
   private void handleMovePlayer(String command) throws IOException {
     String[] parts = command.split(",");
     if (parts.length != 3) {

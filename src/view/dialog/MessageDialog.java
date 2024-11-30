@@ -29,45 +29,28 @@ public class MessageDialog extends JDialog {
   private final String buttonText;
   private final Runnable onClose;
   private final DialogMode mode;
+  private final CompletableFuture<DialogResult> resultFuture;
   private JSpinner numberSpinner;
-  private CompletableFuture<DialogResult> resultFuture;
 
   /**
    * Creates a new message dialog.
    *
-   * @param parent     The parent frame
-   * @param title      Dialog title
-   * @param message    Message to display
-   * @param buttonText Button text
-   * @param mode       Dialog mode (message only or with number input)
-   * @param onClose    Optional callback when dialog closes (can be null)
+   * @param parent        The parent frame
+   * @param title         Dialog title
+   * @param message       Message to display
+   * @param mesButtonText Button text
+   * @param mesMode       Dialog mode (message only or with number input)
+   * @param mesOnClose    Optional callback when dialog closes (can be null)
    */
   public MessageDialog(JFrame parent, String title, String message,
-                       String buttonText, DialogMode mode, Runnable onClose) {
+                       String mesButtonText, DialogMode mesMode, Runnable mesOnClose) {
     super(parent, title, true);
-    this.buttonText = buttonText;
-    this.onClose = onClose;
-    this.mode = mode;
+    this.buttonText = mesButtonText;
+    this.onClose = mesOnClose;
+    this.mode = mesMode;
     this.resultFuture = new CompletableFuture<>();
 
     initializeDialog(message);
-  }
-
-  /**
-   * Shows a message dialog and returns a future for the result.
-   *
-   * @param parent     The parent frame
-   * @param title      Dialog title
-   * @param message    Message to display
-   * @param buttonText Button text
-   * @return CompletableFuture containing the dialog result
-   */
-  public static CompletableFuture<DialogResult> showMessageAsync(
-      JFrame parent, String title, String message, String buttonText) {
-    MessageDialog dialog = new MessageDialog(
-        parent, title, message, buttonText, DialogMode.MESSAGE_ONLY, null);
-    dialog.setVisible(true);
-    return dialog.resultFuture;
   }
 
   /**
@@ -156,7 +139,7 @@ public class MessageDialog extends JDialog {
   }
 
   private JPanel createNumberInputPanel() {
-    JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+    final JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
 
     numberSpinner = new JSpinner();
     numberSpinner.setPreferredSize(new Dimension(80, 25));
@@ -239,14 +222,20 @@ public class MessageDialog extends JDialog {
       this.number = null;
     }
 
-    private DialogResult(int number) {
-      this.number = number;
+    private DialogResult(int diaNumber) {
+      this.number = diaNumber;
     }
 
     public boolean hasNumber() {
       return number != null;
     }
 
+    /**
+     * Gets the number input from the dialog.
+     *
+     * @return the number input
+     * @throws IllegalStateException if no number is available
+     */
     public int getNumber() {
       if (!hasNumber()) {
         throw new IllegalStateException("No number available in result");

@@ -31,7 +31,7 @@ public class PlaceModelTest {
   }
 
   // Place Creation Tests
-
+  // Test that a place with valid parameters is created successfully
   @Test
   public void testValidPlaceCreation() {
     assertNotNull("Place should be created successfully", testPlace);
@@ -43,23 +43,26 @@ public class PlaceModelTest {
     assertEquals("Col2 should match", 3, testPlace.getCol2());
   }
 
+  // Test that a place with null name is invalid
   @Test(expected = IllegalArgumentException.class)
   public void testNegativeRowCol1() {
     new PlaceModel(-1, 1, 3, 3, "Test Room", "1");
   }
 
+  // Test that a place with negative row2/col2 is invalid
   @Test(expected = IllegalArgumentException.class)
   public void testNegativeRowCol2() {
     new PlaceModel(1, -1, 3, 3, "Test Room", "1");
   }
 
+  // Test that a place with row1/col1 greater than row2/col2 is invalid
   @Test(expected = IllegalArgumentException.class)
   public void testInvalidCoordinates() {
     new PlaceModel(3, 3, 1, 1, "Test Room", "1"); // row1/col1 greater than row2/col2
   }
 
   // Neighbor Relationship Tests
-
+// Test that rooms that share a horizontal wall are neighbors
   @Test
   public void testValidNeighborHorizontal() {
     // Create a room that shares a vertical wall with testPlace (1,1,3,3)
@@ -68,6 +71,7 @@ public class PlaceModelTest {
     assertTrue("Neighbor relationship should be symmetric", neighbor.isNeighbor(testPlace));
   }
 
+  // Test that rooms that share a vertical wall are neighbors
   @Test
   public void testValidNeighborVertical() {
     // Create a room that shares a horizontal wall with testPlace (1,1,3,3)
@@ -76,6 +80,7 @@ public class PlaceModelTest {
     assertTrue("Neighbor relationship should be symmetric", neighbor.isNeighbor(testPlace));
   }
 
+  // Test that rooms that share a corner are not considered neighbors
   @Test
   public void testNotNeighbor() {
     PlaceModel nonNeighbor = new PlaceModel(5, 5, 7, 7, "Non-Neighbor Room", "2");
@@ -83,6 +88,7 @@ public class PlaceModelTest {
     assertFalse("Non-neighbor relationship should be symmetric", nonNeighbor.isNeighbor(testPlace));
   }
 
+  // Neighbor Management Tests
   @Test
   public void testAddNeighbor() {
     PlaceModel neighbor = new PlaceModel(1, 4, 3, 6, "Neighbor Room", "2");
@@ -93,7 +99,6 @@ public class PlaceModelTest {
   }
 
   // Item Management Tests
-
   @Test
   public void testAddItem() {
     testPlace.addItem(testItem);
@@ -102,6 +107,7 @@ public class PlaceModelTest {
     assertEquals("Should have exactly one item", 1, items.size());
   }
 
+  // Test that adding the same item twice does not duplicate it
   @Test
   public void testRemoveItem() {
     testPlace.addItem(testItem);
@@ -111,6 +117,7 @@ public class PlaceModelTest {
     assertTrue("Items list should be empty", items.isEmpty());
   }
 
+  // Test that removing an item that is not in the list does not change the list
   @Test
   public void testRemoveNonexistentItem() {
     Item nonexistentItem = new ItemModel("Nonexistent Item", 5);
@@ -118,6 +125,7 @@ public class PlaceModelTest {
     assertTrue("Items list should remain empty", testPlace.getItems().isEmpty());
   }
 
+  // Test that multiple items can be added to a place
   @Test
   public void testMultipleItems() {
     Item item2 = new ItemModel("Second Item", 15);
@@ -130,7 +138,6 @@ public class PlaceModelTest {
   }
 
   // Player Management Tests
-
   @Test
   public void testAddPlayer() {
     testPlace.addPlayer(testPlayer);
@@ -139,6 +146,7 @@ public class PlaceModelTest {
     assertEquals("Should have exactly one player", 1, players.size());
   }
 
+  // Test that Removing a player from a place removes it from the list
   @Test
   public void testRemovePlayer() {
     testPlace.addPlayer(testPlayer);
@@ -148,6 +156,7 @@ public class PlaceModelTest {
     assertTrue("Players list should be empty", players.isEmpty());
   }
 
+  // Test that removing a player that is not in the list does not change the list
   @Test
   public void testRemoveNonexistentPlayer() {
     Player nonexistentPlayer = new PlayerModel("Nonexistent Player", false, 5, 1);
@@ -155,6 +164,7 @@ public class PlaceModelTest {
     assertTrue("Players list should remain empty", testPlace.getCurrentPlacePlayers().isEmpty());
   }
 
+  // Test that multiple players can be added to a place
   @Test
   public void testMultiplePlayers() {
     Player player2 = new PlayerModel("Second Player", false, 5, 1);

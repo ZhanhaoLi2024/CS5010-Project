@@ -16,6 +16,9 @@ import javax.swing.JPanel;
 import javax.swing.Timer;
 import model.place.Place;
 
+/**
+ * A JPanel that displays a map of the town with places and highlights for valid moves.
+ */
 public class MapPanel extends JPanel {
   private static int CELL_SIZE = 0;
   private final List<Place> places;
@@ -27,8 +30,14 @@ public class MapPanel extends JPanel {
   private Timer highlightTimer;
   private MapClickListener clickListener;
 
-  public MapPanel(List<Place> places, int cellSize) {
-    this.places = places;
+  /**
+   * Constructs a new MapPanel with the specified list of places and cell size.
+   *
+   * @param mapPlaces the list of places in the town
+   * @param cellSize  the size of each cell in the map
+   */
+  public MapPanel(List<Place> mapPlaces, int cellSize) {
+    this.places = mapPlaces;
     CELL_SIZE = cellSize;
     setPreferredSize(new Dimension(11 * CELL_SIZE, 12 * CELL_SIZE));
 
@@ -43,10 +52,20 @@ public class MapPanel extends JPanel {
     createMapImage();
   }
 
+  /**
+   * Sets the click listener for the map.
+   *
+   * @param listener the click listener to set
+   */
   public void setClickListener(MapClickListener listener) {
     this.clickListener = listener;
   }
 
+  /**
+   * Shows the valid move options for the player at the specified place.
+   *
+   * @param playerPlace the place where the player is currently located
+   */
   public void showMoveOptions(Place playerPlace) {
     this.showMoveHighlight = true;
     this.highlightedPlaces.clear();
@@ -81,11 +100,10 @@ public class MapPanel extends JPanel {
     }
 
     Place clickedPlace = getPlaceAtCoordinates(x, y);
+    assert clickedPlace != null;
     System.out.println("Clicked place: " + clickedPlace.getName());
-    if (clickedPlace != null) {
-      boolean isValidMove = highlightedPlaces.contains(clickedPlace);
-      clickListener.onPlaceClicked(clickedPlace, isValidMove);
-    }
+    boolean isValidMove = highlightedPlaces.contains(clickedPlace);
+    clickListener.onPlaceClicked(clickedPlace, isValidMove);
   }
 
   private Place getPlaceAtCoordinates(int x, int y) {
@@ -206,6 +224,12 @@ public class MapPanel extends JPanel {
     }
   }
 
+  /**
+   * Updates the target and player locations on the map.
+   *
+   * @param targetPlace the name of the target place
+   * @param playerPlace the name of the player place
+   */
   public void updateLocations(String targetPlace, String playerPlace) {
     this.targetPlaceName = targetPlace;
     this.playerPlaceName = playerPlace;
@@ -243,6 +267,9 @@ public class MapPanel extends JPanel {
     g2d.fillPolygon(xPoints, yPoints, 3);
   }
 
+  /**
+   * A listener interface for handling map clicks.
+   */
   public interface MapClickListener {
     void onPlaceClicked(Place clickedPlace, boolean isValidMove);
   }

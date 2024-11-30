@@ -14,20 +14,27 @@ import java.util.Random;
 import model.town.Town;
 import view.View;
 
+/**
+ * The TextGameController class represents the controller for the text-based game.
+ */
 public class TextGameController implements Controller {
   private final Town town;
   private final int maxTurns;
   private View view;
-  private int currentTurn;
   private boolean quitGame;
   private boolean continueGame;
-  private boolean isGui;
 
-  public TextGameController(Town gameTown, View view, int gameMaxTurns) {
+  /**
+   * Constructs a new TextGameController.
+   *
+   * @param gameTown     the town model
+   * @param gameView     the view
+   * @param gameMaxTurns the maximum number of turns
+   */
+  public TextGameController(Town gameTown, View gameView, int gameMaxTurns) {
     this.town = gameTown;
-    this.view = view;
+    this.view = gameView;
     this.maxTurns = gameMaxTurns;
-    this.currentTurn = 1;
     this.quitGame = false;
   }
 
@@ -47,12 +54,11 @@ public class TextGameController implements Controller {
   }
 
   @Override
-  public void setView(View view, boolean gui) {
+  public void setView(View gameView, boolean gui) {
     if (this.view != null) {
       throw new IllegalStateException("View is already set");
     }
-    this.view = view;
-    this.isGui = gui;
+    this.view = gameView;
   }
 
   @Override
@@ -188,7 +194,6 @@ public class TextGameController implements Controller {
       view.showMessage("Game Over! The target has escaped and nobody wins!");
     }
     view.showMessage("++++++++++++++++++++");
-    this.currentTurn = 1;
     this.quitGame = false;
     town.resetGameState();
   }
@@ -320,7 +325,7 @@ public class TextGameController implements Controller {
 
   private void attackTarget() throws IOException {
     int currentPlayerIndex = town.getCurrentPlayerIndex();
-    String itemName = "";
+    String itemName;
     boolean isComputerControlled = town.getPlayers().get(currentPlayerIndex).isComputerControlled();
     if (isComputerControlled) {
       itemName = handleComputerAttack(currentPlayerIndex);
@@ -354,8 +359,6 @@ public class TextGameController implements Controller {
         enterRightNumber = true;
       }
     }
-//    String command = "movePet, " + placeNumber;
-//    executeCommand(command);
     new MovePetCommand(town, placeNumber).execute();
   }
 
@@ -368,7 +371,6 @@ public class TextGameController implements Controller {
     if (items.isEmpty()) {
       view.showMessage("No item in this place.");
     } else {
-      int i = 0;
       String maxDamageItemName = "";
       int maxDamageItem = 0;
       for (String item : items) {
@@ -379,7 +381,6 @@ public class TextGameController implements Controller {
           maxDamageItem = Integer.parseInt(itemDamage);
           maxDamageItemName = itemName1;
         }
-        i++;
       }
       new PickUpItemCommand(town, maxDamageItemName).execute();
     }
@@ -414,8 +415,6 @@ public class TextGameController implements Controller {
           enterRightNumber = true;
         }
       }
-//      String command = "pickUpItem, " + itemName;
-//      executeCommand(command);
       new PickUpItemCommand(town, itemName).execute();
     }
   }
@@ -439,9 +438,9 @@ public class TextGameController implements Controller {
 
     String currentPlace = town.getCurrentPlaceInfo(currentPlayerPlaceNumber);
     view.showMessage("Current place: "
-        + currentPlace); // Current place: Grocery Store,[Shopping Cart12],[Steven]
+        + currentPlace);
     String neighbors = town.getCurrentPlaceNeighborsInfo(
-        currentPlayerPlaceNumber); // Neighbors: [[Park,1,[Toy Ball8],[Ivan],true,true], [School,3,[Textbook6],[],false,false], [Restaurant,9,[Menu22],[],false,false]]
+        currentPlayerPlaceNumber);
     view.showMessage("Neighbors: " + neighbors);
 
     // show the current place Info: name, items, players
@@ -462,7 +461,7 @@ public class TextGameController implements Controller {
         itemDamage = currentItem.split("-")[1].trim();
       }
     }
-    String currentPlayers = "";
+    String currentPlayers;
     if (parts[2].isEmpty()) {
       currentPlayers = "No other player in this place";
     } else {
@@ -485,7 +484,7 @@ public class TextGameController implements Controller {
 
       String neighborName = neighborInfo[0].trim();
       String neighborNumber = neighborInfo[1].trim();
-      String neighborItem = "";
+      String neighborItem;
       String neighborItemName = "";
       String neighborItemDamage = "";
       List<String> currentItems = convertStringToList(neighborInfo[2]);
@@ -499,7 +498,7 @@ public class TextGameController implements Controller {
         }
         neighborItem = neighborItemName + " (Damage: " + neighborItemDamage + ")";
       }
-      String neighborPlayers = "";
+      String neighborPlayers;
       List<String> players = convertStringToList(neighborInfo[3]);
       if (players.isEmpty()) {
         neighborPlayers = "No other player in this place";
@@ -521,37 +520,8 @@ public class TextGameController implements Controller {
     }
     view.showMessage("----------");
 
-
-//    String command = "lookAround";
-//    executeCommand(command);
     new LookAroundCommand(town).execute();
   }
-  
-//
-//  private void handleComputerMove() throws IOException {
-//    int currentPlayerIndex = town.getCurrentPlayerIndex();
-//    int currentPlaceNumber = town.getPlayerCurrPlaceNumber(currentPlayerIndex);
-//    String currentPlaceNeighbour = town.getCurrentPlaceNeighborsInfo(currentPlaceNumber);
-//    currentPlaceNeighbour = currentPlaceNeighbour.substring(1, currentPlaceNeighbour.length() - 1);
-//    String[] places = currentPlaceNeighbour.split("\\], \\[");
-//    HashSet<Integer> neighborNumber = new HashSet<>();
-//    for (String place : places) {
-//      place = place.replace("[", "").replace("]", "");
-//
-//      String[] parts = place.split(";", 5);
-//      Integer placeNumber = Integer.parseInt(parts[1].trim());
-//      neighborNumber.add(placeNumber);
-//    }
-//    Random random = new Random();
-//    int randomIndex = random.nextInt(neighborNumber.size());
-//    int newPlaceNumber = (Integer) neighborNumber.toArray()[randomIndex];
-//
-//    try {
-//      handleComputerMove(currentPlayerIndex, newPlaceNumber);
-//    } catch (IOException e) {
-//      e.printStackTrace();
-//    }
-//  }
 
   private void handleComputerMove() throws IOException {
     int currentPlayerIndex = town.getCurrentPlayerIndex();
@@ -626,8 +596,6 @@ public class TextGameController implements Controller {
       }
     }
 
-//    String command = "movePlayer, " + currentPlayerIndex + ", " + newPlaceNumber;
-//    executeCommand(command);
     new MovePlayerCommand(town, currentPlayerIndex, newPlaceNumber).execute();
   }
 
@@ -847,40 +815,6 @@ public class TextGameController implements Controller {
   @Override
   public boolean executeCommand(String command) throws IOException {
     // TODO Auto-generated method stub
-    String[] parts = command.split(", ");
-    String commandType = parts[0];
-    switch (commandType) {
-      case "addPlayer":
-        boolean isComputerPlayer = Boolean.parseBoolean(parts[1]);
-        String playerName = parts[2];
-        int startingPlace = Integer.parseInt(parts[3]);
-        int carryLimit = Integer.parseInt(parts[4]);
-        new AddPlayerCommand(town, isComputerPlayer, playerName, startingPlace,
-            carryLimit).execute();
-        break;
-      case "movePlayer":
-        int currentPlayerIndex = Integer.parseInt(parts[1]);
-        int newPlaceNumber = Integer.parseInt(parts[2]);
-        new MovePlayerCommand(town, currentPlayerIndex, newPlaceNumber).execute();
-        break;
-      case "pickUpItem":
-        String itemName = parts[1];
-        new PickUpItemCommand(town, itemName).execute();
-        break;
-      case "lookAround":
-        new LookAroundCommand(town).execute();
-        break;
-      case "attackTarget":
-        String itemName1 = parts[1];
-        new PickUpItemCommand(town, itemName1).execute();
-        break;
-      case "movePet":
-        int placeNumber1 = Integer.parseInt(parts[1]);
-        new MovePetCommand(town, placeNumber1).execute();
-        break;
-      default:
-        view.showMessage("Invalid command.");
-    }
     return false;
   }
 }

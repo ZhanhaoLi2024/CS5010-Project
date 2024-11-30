@@ -13,7 +13,8 @@ public class PickUpItemCommand implements Command {
   /**
    * Constructs a new PickUpItemCommand.
    *
-   * @param gameTown the town model
+   * @param gameTown     the town model
+   * @param pickItemName the name of the item to pick up
    */
   public PickUpItemCommand(Town gameTown, String pickItemName) {
     this.town = gameTown;
@@ -22,6 +23,7 @@ public class PickUpItemCommand implements Command {
 
   @Override
   public boolean execute() throws IOException {
+    System.out.println("Picking up item: " + itemName);
     town.pickUpItem(itemName);
     return true;
   }

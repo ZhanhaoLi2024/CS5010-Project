@@ -12,47 +12,57 @@ public class PlayerInfoDTO {
   private final int currentTurn;
   private final String currentPlace;
   private final String target;
-  private final List<String> otherPlayers;
-  private final List<String> currentPlaceItems;
-  private final String petInfo;
 
-  public PlayerInfoDTO(int currentTurn, String playerName, List<String> items,
-                       String currentPlace, String target, List<String> otherPlayers,
-                       List<String> currentPlaceItems, String petInfo) {
-    this.playerName = playerName;
-    this.items = items;
-    this.currentTurn = currentTurn;
-    this.currentPlace = currentPlace;
-    this.target = target;
-    this.otherPlayers = otherPlayers;
-    this.currentPlaceItems = currentPlaceItems;
-    this.petInfo = petInfo;
+  /**
+   * Constructs a new PlayerInfoDTO.
+   *
+   * @param playerCurrentTurn  the current turn number
+   * @param currentPlayerName  the player's name
+   * @param currentItems       the player's items
+   * @param palyerCurrentPlace the player's current place
+   * @param gameTarget         the player's target
+   */
+  public PlayerInfoDTO(int playerCurrentTurn, String currentPlayerName, List<String> currentItems,
+                       String palyerCurrentPlace, String gameTarget) {
+    this.playerName = currentPlayerName;
+    this.items = currentItems;
+    this.currentTurn = playerCurrentTurn;
+    this.currentPlace = palyerCurrentPlace;
+    this.target = gameTarget;
   }
 
-  public String getPetInfo() {
-    return petInfo;
-  }
-
-  public List<String> getCurrentPlaceItems() {
-    return currentPlaceItems;
-  }
-
-  public List<String> getOtherPlayers() {
-    return otherPlayers;
-  }
-
+  /**
+   * Get the name of the target character.
+   *
+   * @return the name of the target character
+   */
   public String getTarget() {
     return target;
   }
 
+  /**
+   * Get the player's current place.
+   *
+   * @return the player's current place
+   */
   public String getCurrentPlace() {
     return currentPlace;
   }
 
+  /**
+   * Get the names of other players.
+   *
+   * @return the names of other players
+   */
   public String getPlayerName() {
     return playerName;
   }
 
+  /**
+   * Get the items in the player's current place.
+   *
+   * @return the items in the player's current place
+   */
   public List<String> getItems() {
     if (items.get(0).equals("None")) {
       return null;
@@ -60,6 +70,11 @@ public class PlayerInfoDTO {
     return items;
   }
 
+  /**
+   * Get the current turn number.
+   *
+   * @return the current turn number
+   */
   public int getCurrentTurn() {
     return currentTurn;
   }

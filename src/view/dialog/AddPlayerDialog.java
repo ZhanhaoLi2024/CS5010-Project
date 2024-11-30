@@ -30,12 +30,20 @@ public class AddPlayerDialog extends JDialog {
   private JSpinner placeSpinner;
   private JSpinner limitSpinner;
 
+  /**
+   * Constructs a new AddPlayerDialog.
+   *
+   * @param parent the parent GuiGameView
+   */
   public AddPlayerDialog(GuiGameView parent) {
     super(parent.getMainFrame(), "Add Human Player", true);
     this.parentView = parent;
     initializeDialog();
   }
 
+  /**
+   * Initializes the dialog components.
+   */
   private void initializeDialog() {
     setLayout(new BorderLayout(10, 10));
     setSize(900, 600);

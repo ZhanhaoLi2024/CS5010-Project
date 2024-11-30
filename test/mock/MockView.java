@@ -1,7 +1,6 @@
 package mock;
 
 import controller.support.PlayerInfoDTO;
-import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
 import view.GuiView;
 
@@ -11,10 +10,9 @@ import view.GuiView;
  */
 public class MockView implements GuiView {
   private final StringBuilder log;
+  private final String nextStringInput;
   private String lastMessage;
   private int nextNumberInput;
-  private String nextStringInput;
-  private boolean initialized;
   private PlayerInfoDTO lastPlayerInfo;
 
   /**
@@ -22,7 +20,6 @@ public class MockView implements GuiView {
    */
   public MockView() {
     this.log = new StringBuilder();
-    this.initialized = false;
     this.nextNumberInput = 1;
     this.nextStringInput = "";
   }
@@ -43,15 +40,6 @@ public class MockView implements GuiView {
    */
   public String getLastMessage() {
     return lastMessage;
-  }
-
-  /**
-   * Gets whether the view has been initialized.
-   *
-   * @return true if initialized, false otherwise
-   */
-  public boolean isInitialized() {
-    return initialized;
   }
 
   /**
@@ -81,48 +69,42 @@ public class MockView implements GuiView {
   }
 
   /**
-   * Sets the next string to return for string input.
+   * Logs a method call.
    *
-   * @param input the string to return
+   * @param methodName the name of the method called
    */
-  public void setNextStringInput(String input) {
-    this.nextStringInput = input;
-  }
-
   private void logMethodCall(String methodName) {
     log.append(methodName).append(" called\n");
   }
 
   // View interface implementations
   @Override
-  public void initialize() throws IOException {
+  public void initialize() {
     logMethodCall("initialize");
-    initialized = true;
   }
 
   @Override
-  public void showMessage(String message) throws IOException {
+  public void showMessage(String message) {
     logMethodCall("showMessage");
     log.append("Message: ").append(message).append("\n");
     lastMessage = message;
   }
 
   @Override
-  public String getStringInput() throws IOException {
+  public String getStringInput() {
     logMethodCall("getStringInput");
     return nextStringInput;
   }
 
   @Override
-  public int getNumberInput() throws IOException {
+  public int getNumberInput() {
     logMethodCall("getNumberInput");
     return nextNumberInput;
   }
 
   @Override
-  public void close() throws IOException {
+  public void close() {
     logMethodCall("close");
-    initialized = false;
   }
 
   // GuiView interface implementations
@@ -165,24 +147,5 @@ public class MockView implements GuiView {
   @Override
   public void resetGame() {
     logMethodCall("resetGame");
-    initialized = false;
-  }
-
-  /**
-   * Extended MockView for testing turn switching that captures callbacks
-   */
-  public static class TurnTestMockView extends MockView {
-    private Runnable lastCallback;
-
-    @Override
-    public void showGuiMessage(String title, String message, String buttonText,
-                               Runnable onClose) {
-      super.showGuiMessage(title, message, buttonText, onClose);
-      this.lastCallback = onClose;
-    }
-
-    public Runnable getLastCallback() {
-      return lastCallback;
-    }
   }
 }

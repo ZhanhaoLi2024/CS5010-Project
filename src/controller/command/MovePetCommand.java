@@ -14,7 +14,8 @@ public class MovePetCommand implements Command {
   /**
    * Constructs a new MovePetCommand.
    *
-   * @param gameTown the town model
+   * @param gameTown          the town model
+   * @param petNewPlaceNumber the number of the place to move the pet to
    */
   public MovePetCommand(Town gameTown, int petNewPlaceNumber) {
     this.town = gameTown;

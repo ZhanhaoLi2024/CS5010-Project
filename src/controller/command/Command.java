@@ -11,6 +11,7 @@ public interface Command {
   /**
    * Executes the command's specific action in the game.
    *
+   * @return true if the command was executed successfully, false otherwise
    * @throws IOException if there is an error during command execution
    */
   boolean execute() throws IOException;

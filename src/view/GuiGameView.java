@@ -281,6 +281,7 @@ public class GuiGameView implements View, GuiView, KeyListener {
     return button;
   }
 
+  @SuppressWarnings("checkstyle:IllegalCatch")
   private void handleCommand(String command) {
     try {
       switch (command) {
@@ -343,7 +344,7 @@ public class GuiGameView implements View, GuiView, KeyListener {
   }
 
   @Override
-  public void showMessage(String message) throws IOException {
+  public void showMessage(String message) {
     SwingUtilities.invokeLater(() -> {
       messageArea.append(message + "\n");
       messageArea.setCaretPosition(messageArea.getDocument().getLength());
@@ -352,9 +353,14 @@ public class GuiGameView implements View, GuiView, KeyListener {
 
   @Override
   public void showGuiMessage(String title, String message, String buttonText) {
-    SwingUtilities.invokeLater(() -> {
-      MessageDialog.showMessage(mainFrame, title, message, buttonText, null);
-    });
+    SwingUtilities.invokeLater(
+        () -> MessageDialog.showMessage(mainFrame, title, message, buttonText, null));
+  }
+
+  @Override
+  public void showGuiMessage(String title, String message, String buttonText, Runnable onClose) {
+    SwingUtilities.invokeLater(
+        () -> MessageDialog.showMessage(mainFrame, title, message, buttonText, onClose));
   }
 
   @Override
@@ -363,34 +369,28 @@ public class GuiGameView implements View, GuiView, KeyListener {
                                                          int minValue, int maxValue) {
     CompletableFuture<Integer> future = new CompletableFuture<>();
 
-    SwingUtilities.invokeLater(() -> {
-      MessageDialog.showNumberInputAsync(mainFrame, title, message, buttonText, minValue, maxValue)
-          .thenAccept(result -> {
-            if (result.hasNumber()) {
-              future.complete(result.getNumber());
-            } else {
-              future.completeExceptionally(new IllegalStateException("No number input provided"));
-            }
-          });
-    });
+    SwingUtilities.invokeLater(
+        () -> MessageDialog.showNumberInputAsync(mainFrame, title, message, buttonText, minValue,
+                maxValue)
+            .thenAccept(result -> {
+              if (result.hasNumber()) {
+                future.complete(result.getNumber());
+              } else {
+                future.completeExceptionally(new IllegalStateException("No number input provided"));
+              }
+            }));
 
     return future;
   }
 
-  @Override
-  public void showGuiMessage(String title, String message, String buttonText, Runnable onClose) {
-    SwingUtilities.invokeLater(() -> {
-      MessageDialog.showMessage(mainFrame, title, message, buttonText, onClose);
-    });
-  }
 
   @Override
-  public String getStringInput() throws IOException {
+  public String getStringInput() {
     return JOptionPane.showInputDialog(mainFrame, "Enter value:");
   }
 
   @Override
-  public int getNumberInput() throws IOException {
+  public int getNumberInput() {
     try {
       String input = JOptionPane.showInputDialog(mainFrame, "Enter number:");
       return Integer.parseInt(input);

@@ -10,6 +10,9 @@ import view.GuiGameView;
 import view.TextGameView;
 import view.View;
 
+/**
+ * The main driver class for the game.
+ */
 public class Driver {
   /**
    * The main method to run the game.
@@ -51,7 +54,7 @@ public class Driver {
       Controller controller;
       View view;
       if (useGui) {
-        controller = new GuiGameController(town, maxTurns);
+        controller = new GuiGameController(town);
         view = new GuiGameView(controller);
         controller.setView(view, true);
       } else {

@@ -35,7 +35,7 @@ public class TownModelTest {
 
   // Test basic object creation
   @Test
-  public void testValidTownModelCreation() throws IOException {
+  public void testValidTownModelCreation() {
     assertNotNull("Town model should not be null", townModel);
     assertEquals("Max turns should be set correctly", MAX_TURNS, townModel.getMaxTurns());
     assertEquals("Initial turn should be 1", 1, townModel.getCurrentTurn());
@@ -43,18 +43,21 @@ public class TownModelTest {
     assertTrue("Players list should be empty initially", townModel.getPlayers().isEmpty());
   }
 
+  // Test that a place with negative row2/col2 is invalid
   @Test(expected = IllegalArgumentException.class)
   public void testInvalidMaxTurnsZero() throws IOException {
     TownLoader loader = new TownLoader();
     new TownModel(loader, TEST_FILE, output, 0);
   }
 
+  // Test that a place with negative row2/col2 is invalid
   @Test(expected = IllegalArgumentException.class)
   public void testInvalidMaxTurns() throws IOException {
     TownLoader loader = new TownLoader();
     new TownModel(loader, TEST_FILE, output, -1);
   }
 
+  // Test that invalid file throws IOException
   @Test(expected = IOException.class)
   public void testInvalidWorldFile() throws IOException {
     TownLoader loader = new TownLoader();
@@ -73,6 +76,7 @@ public class TownModelTest {
     assertFalse("Target should not be defeated initially", target.isDefeated());
   }
 
+  // Test target movement
   @Test
   public void testTargetMovement() {
     Place initialPlace = townModel.getTarget().getCurrentPlace();
@@ -98,6 +102,7 @@ public class TownModelTest {
     assertEquals("First place should have correct col2", 3, firstPlace.getCol2());
   }
 
+  // Test items in places
   @Test
   public void testItemsInPlaces() {
     Place firstPlace = townModel.getPlaces().get(0);
@@ -116,6 +121,7 @@ public class TownModelTest {
     assertTrue("Should find Toy Ball in first place", foundToyBall);
   }
 
+  // Test neighboring places
   @Test
   public void testNeighboringPlaces() {
     Place park = townModel.getPlaces().get(0); // Park
@@ -130,6 +136,7 @@ public class TownModelTest {
         parkNeighbors.contains(groceryStore));
   }
 
+  // Test pet initialization
   @Test
   public void testPetInitialization() {
     String petInfo = townModel.petCurrentInfo();
@@ -143,6 +150,7 @@ public class TownModelTest {
         townModel.getPlaces().get(0).getName(), petInfoParts[1]);
   }
 
+  // Test pet movement
   @Test
   public void testGetPlaceByNumber() {
     Place place = townModel.getPlaceByNumber(1);
@@ -157,7 +165,7 @@ public class TownModelTest {
 
   // Player Management Tests
   @Test
-  public void testAddHumanPlayer() throws IOException {
+  public void testAddHumanPlayer() {
     // Test adding a valid human player
     townModel.addPlayer("TestPlayer", 1, 3, false);
     assertEquals("Should have 1 player", 1, townModel.getPlayers().size());
@@ -171,18 +179,21 @@ public class TownModelTest {
         townModel.getPlayers().get(0).getPlayerCurrentPlaceNumber());
   }
 
+  // Player Management Tests
   @Test(expected = IllegalArgumentException.class)
-  public void testAddPlayerWithInvalidName() throws IOException {
+  public void testAddPlayerWithInvalidName() {
     townModel.addPlayer("", 1, 3, false);
   }
 
+  // Player Management Tests
   @Test(expected = IllegalArgumentException.class)
-  public void testAddPlayerWithNegativeCarryLimit() throws IOException {
+  public void testAddPlayerWithNegativeCarryLimit() {
     townModel.addPlayer("TestPlayer", 1, -1, false);
   }
 
+  // test adding a computer player
   @Test
-  public void testAddComputerPlayer() throws IOException {
+  public void testAddComputerPlayer() {
     townModel.addPlayer("Computer1", 1, 5, true);
     assertEquals("Should have 1 player", 1, townModel.getPlayers().size());
     assertTrue("Should be computer player",
@@ -191,8 +202,9 @@ public class TownModelTest {
         townModel.getPlayers().get(0).getCarryLimit());
   }
 
+  // Player Management Tests
   @Test
-  public void testMultiplePlayersInSameLocation() throws IOException {
+  public void testMultiplePlayersInSameLocation() {
     townModel.addPlayer("Player1", 1, 3, false);
     townModel.addPlayer("Player2", 1, 3, false);
 
@@ -201,13 +213,15 @@ public class TownModelTest {
         place.getCurrentPlacePlayers().size());
   }
 
+  // Player Management Tests
   @Test(expected = IndexOutOfBoundsException.class)
-  public void testAddPlayerWithInvalidStartingPlace() throws IOException {
+  public void testAddPlayerWithInvalidStartingPlace() {
     townModel.addPlayer("TestPlayer", 21, 3, false); // There are only 20 places
   }
 
+  // test player carry limit restriction
   @Test
-  public void testPlayerCarryLimitRestriction() throws IOException {
+  public void testPlayerCarryLimitRestriction() {
     // Add player with carry limit 2
     townModel.addPlayer("TestPlayer", 1, 2, false);
     Player player = townModel.getPlayers().get(0);
@@ -232,8 +246,9 @@ public class TownModelTest {
         player.getCurrentCarriedItems().size());
   }
 
+  // test player starting position
   @Test
-  public void testPlayersStartingPositionInPlace() throws IOException {
+  public void testPlayersStartingPositionInPlace() {
     townModel.addPlayer("TestPlayer", 1, 3, false);
     Player player = townModel.getPlayers().get(0);
     Place startingPlace = townModel.getPlaceByNumber(1);
@@ -244,8 +259,9 @@ public class TownModelTest {
         1, player.getPlayerCurrentPlaceNumber());
   }
 
+  //test computer player default behavior
   @Test
-  public void testComputerPlayerDefaultBehavior() throws IOException {
+  public void testComputerPlayerDefaultBehavior() {
     townModel.addPlayer("Computer1", 1, 5, true);
     Player computerPlayer = townModel.getPlayers().get(0);
 
@@ -257,6 +273,7 @@ public class TownModelTest {
   }
 
   // Turn System Tests
+  // test switching to next player
   @Test
   public void testSwitchToNextPlayer() throws IOException {
     // Add multiple players
@@ -282,6 +299,7 @@ public class TownModelTest {
     assertEquals("Should increment turn counter", 2, townModel.getCurrentTurn());
   }
 
+  // test target movement on round completion
   @Test
   public void testTargetMovementOnRoundCompletion() throws IOException {
     townModel.addPlayer("Player1", 1, 3, false);
@@ -298,6 +316,7 @@ public class TownModelTest {
         initialTargetPlace, newTargetPlace);
   }
 
+  // test max turns limit
   @Test
   public void testMaxTurnsLimit() throws IOException {
     TownLoader loader = new TownLoader();
@@ -319,8 +338,9 @@ public class TownModelTest {
     assertTrue("Game should be over after max turns", limitedTurnModel.isGameOver());
   }
 
+  // test game end conditions
   @Test
-  public void testGameEndConditions() throws IOException {
+  public void testGameEndConditions() {
     townModel.addPlayer("Player1", 1, 3, false);
     townModel.addPlayer("Player2", 2, 3, false);
 
@@ -335,6 +355,7 @@ public class TownModelTest {
     assertTrue("Game should be over when target defeated", townModel.isGameOver());
   }
 
+  //test single player turn management
   @Test
   public void testSinglePlayerTurnManagement() throws IOException {
     townModel.addPlayer("Player1", 1, 3, false);
@@ -345,6 +366,7 @@ public class TownModelTest {
     assertEquals("Should remain at turn 1 with single player", 1, townModel.getCurrentTurn());
   }
 
+  // test invalid turn switch
   @Test
   public void testInvalidTurnSwitch() throws IOException {
     // Test switching turns with no players
@@ -354,8 +376,9 @@ public class TownModelTest {
         townModel.getCurrentPlayerIndex());
   }
 
+  //test target movement pattern
   @Test
-  public void testTargetMovementPattern() throws IOException {
+  public void testTargetMovementPattern() {
     Place firstPlace = townModel.getTarget().getCurrentPlace();
     townModel.moveTarget();
     Place secondPlace = townModel.getTarget().getCurrentPlace();
@@ -385,6 +408,11 @@ public class TownModelTest {
         initialHealth - 8, townModel.getTarget().getHealth());
   }
 
+  /**
+   * Test a successful attack that defeats the target.
+   *
+   * @throws IOException if an error occurs
+   */
   @Test
   public void testPokeAttack() throws IOException {
     // Setup player in same place as target
@@ -400,6 +428,11 @@ public class TownModelTest {
         initialHealth - 1, townModel.getTarget().getHealth());
   }
 
+  /**
+   * Test a successful attack that defeats the target.
+   *
+   * @throws IOException if an error occurs
+   */
   @Test
   public void testKillingTargetAttack() throws IOException {
     // Setup player with powerful weapon
@@ -420,6 +453,11 @@ public class TownModelTest {
     assertEquals("Target health should be 0", 0, target.getHealth());
   }
 
+  /**
+   * Test item removal after attack.
+   *
+   * @throws IOException if an error occurs
+   */
   @Test
   public void testItemRemovalAfterAttack() throws IOException {
     // Setup player with item
@@ -437,6 +475,11 @@ public class TownModelTest {
     assertFalse("Item should be removed after attack", hasToyBall);
   }
 
+  /**
+   * Test that pet affects player visibility.
+   *
+   * @throws IOException if an error occurs
+   */
   @Test
   public void testPetAffectsVisibility() throws IOException {
     // Setup players
@@ -456,6 +499,11 @@ public class TownModelTest {
         townModel.isPlayerVisible(player1));
   }
 
+  /**
+   * Test that player visibility is affected by pet location.
+   *
+   * @throws IOException if an error occurs
+   */
   @Test
   public void testVisiblePlayerCannotAttack() throws IOException {
     // Setup players
@@ -508,12 +556,22 @@ public class TownModelTest {
         42, townModel.getTarget().getHealth());
   }
 
+  /**
+   * Test attack with nonexistent item.
+   *
+   * @throws IOException if an error occurs
+   */
   @Test(expected = IllegalArgumentException.class)
   public void testAttackWithNonexistentItem() throws IOException {
     townModel.addPlayer("Player1", 1, 5, false);
     townModel.attackTarget("NonexistentItem");
   }
 
+  /**
+   * Test pet blocks player visibility.
+   *
+   * @throws IOException if an error occurs
+   */
   @Test
   public void testPetBlocksVisibility() throws IOException {
     // Setup players and pet
@@ -534,7 +592,11 @@ public class TownModelTest {
         initialHealth, townModel.getTarget().getHealth());
   }
 
-  // Pet System Tests
+  /**
+   * Test pet movement.
+   *
+   * @throws IOException if an error occurs
+   */
   @Test
   public void testPetMovement() throws IOException {
     // Test valid pet movement
@@ -548,24 +610,38 @@ public class TownModelTest {
         petInfoParts[1]);
   }
 
+  /**
+   * Test invalid pet movement.
+   *
+   * @throws IOException if an error occurs
+   */
   @Test(expected = IllegalArgumentException.class)
   public void testInvalidPetMovementNegativePlace() throws IOException {
     townModel.movePet(-1);
   }
 
+  /**
+   * Test invalid pet movement.
+   *
+   * @throws IOException if an error occurs
+   */
   @Test(expected = IllegalArgumentException.class)
   public void testInvalidPetMovementTooLargePlace() throws IOException {
     townModel.movePet(21); // Only 20 places exist
   }
 
+  /**
+   * Test pet visibility effect.
+   *
+   * @throws IOException if an error occurs
+   */
   @Test
   public void testPetVisibilityEffect() throws IOException {
     // Add two players in neighboring places
     townModel.addPlayer("Player1", 1, 3, false); // In Park
     townModel.addPlayer("Player2", 2, 3, false); // In Grocery Store
 
-    // Initially players can see each other since pet is in Place 1 (Park) with target
-    // but Player1 is in Park so they're not visible
+    // Initially players can see each other since pet is in Place 1 (Park) with target but Player1 is in Park so they're not visible
     assertFalse("Players should not be visible due to pet in Place 1",
         townModel.isPlayerVisible(townModel.getPlayers().get(0)));
 
@@ -584,6 +660,11 @@ public class TownModelTest {
         townModel.isPlayerVisible(townModel.getPlayers().get(0)));
   }
 
+  /**
+   * Test pet location update.
+   *
+   * @throws IOException if an error occurs
+   */
   @Test
   public void testPetLocationUpdate() throws IOException {
     // Test initial pet location
@@ -606,6 +687,11 @@ public class TownModelTest {
         updatedInfoParts[1]);
   }
 
+  /**
+   * Test pet visibility with multiple players.
+   *
+   * @throws IOException if an error occurs
+   */
   @Test
   public void testPetVisibilityWithMultiplePlayers() throws IOException {
     // Setup players with non-adjacent locations
@@ -640,6 +726,11 @@ public class TownModelTest {
         townModel.isPlayerVisible(player3));
   }
 
+  /**
+   * Test pet info consistency.
+   *
+   * @throws IOException if an error occurs
+   */
   @Test
   public void testPetInfoConsistency() throws IOException {
     // Get initial pet info

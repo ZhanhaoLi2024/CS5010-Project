@@ -9,7 +9,6 @@ import static org.junit.Assert.fail;
 import controller.support.PlayerInfoDTO;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import mock.MockTownModel;
 import mock.MockView;
@@ -36,10 +35,8 @@ public class GuiGameControllerTest {
 
   @Before
   public void setUp() {
-    // Create mock model with initialized places
     mockModel = new MockTownModel();
 
-    // Add 20 mock places to match the game's requirements
     List<Place> mockPlaces = new ArrayList<>();
     for (int i = 1; i <= 20; i++) {
       Place mockPlace = new PlaceModel(0, 0, 1, 1, "TestPlace" + i, String.valueOf(i));
@@ -47,19 +44,18 @@ public class GuiGameControllerTest {
     }
     mockModel.setPlaces(mockPlaces);
 
-    // Add a mock player
     Player mockPlayer = new PlayerModel("TestPlayer", false, 5, 1);
-    mockModel.setPlayers(Arrays.asList(mockPlayer));
+    mockModel.setPlayers(List.of(mockPlayer));
 
-    controller = new GuiGameController(mockModel, 50);
+    controller = new GuiGameController(mockModel);
     mockView = new MockView();
     controller.setView(mockView, true);
 
     mockTown = new MockTownModel();
-    mockController = new GuiGameController(mockTown, 50);
+    mockController = new GuiGameController(mockTown);
   }
 
-  // Test adding a human player with valid parameters
+
   @Test
   public void testAddHumanPlayerValid() throws IOException {
     // Execute add player command with valid parameters
@@ -139,7 +135,7 @@ public class GuiGameControllerTest {
   // Test adding player when view is not set
   @Test
   public void testAddPlayerNoView() {
-    Controller newController = new GuiGameController(mockModel, 50);
+    Controller newController = new GuiGameController(mockModel);
     try {
       newController.executeCommand("ADD_PLAYER TestPlayer 1 5");
     } catch (Exception e) {
@@ -178,7 +174,7 @@ public class GuiGameControllerTest {
   @Test
   public void testMovePlayer() throws IOException {
     controller.executeCommand("MOVE,MockPlayer,1");
-
+    
     assertTrue(mockModel.getLog().contains("movePlayer called"));
     assertTrue("Check isGameOver called",
         mockModel.getLog().contains("isGameOver called"));
@@ -287,10 +283,9 @@ public class GuiGameControllerTest {
     mockModel.setPlayers(players);
 
     // Set current state
-    mockModel.setPlayerCurrPlaceNumber(0, 1);
+//    mockModel.setPlayerCurrPlaceNumber(0, 1);
 
-    String placeInfo = "TestPlace;[PickableItem-10];[]";
-    mockModel.placeInfoToReturn = placeInfo;
+    mockModel.placeInfoToReturn = "TestPlace;[PickableItem-10];[]";
 
     // Execute pick up command
     controller.executeCommand("PICK");
@@ -304,7 +299,7 @@ public class GuiGameControllerTest {
   public void testAttackCommandTargetNotInRange() throws IOException {
     // Set up player
     Player mockPlayer = new PlayerModel("TestPlayer", false, 3, 1);
-    mockModel.setPlayers(Arrays.asList(mockPlayer));
+    mockModel.setPlayers(List.of(mockPlayer));
     mockModel.setPlayerCurrPlaceNumber(0, 1);
 
     // Set up places
@@ -348,8 +343,8 @@ public class GuiGameControllerTest {
   public void testGameStartWithSufficientPlayers() throws IOException {
     // Set up mock players
     List<Player> players = new ArrayList<>();
-    players.add(new MockPlayer("Player1", false));
-    players.add(new MockPlayer("Player2", false));
+    players.add(new PlayerModel("Player1", false, 5, 1));
+    players.add(new PlayerModel("Player2", false, 5, 2));
     mockModel.setPlayers(players);
 
     // Start game
@@ -360,58 +355,76 @@ public class GuiGameControllerTest {
         mockView.getLastMessage().contains("There are 2 players"));
   }
 
-  // Turn Management Tests
+  /**
+   * Tests turn progression mechanics for multiple players.
+   */
   @Test
   public void testPlayerTurnAndRoundProgression() throws IOException {
-    // 设置三个测试玩家
+    // 设置场景:两个玩家和初始空间
+    List<Place> mockPlaces = new ArrayList<>();
+    Place testPlace = new PlaceModel(0, 0, 1, 1, "TestPlace", "1");
+    mockPlaces.add(testPlace);
+    mockTown.setPlaces(mockPlaces);
+
+    // 创建两个玩家
     List<Player> players = new ArrayList<>();
-    players.add(new MockPlayer("Player1", false));
-    players.add(new MockPlayer("Player2", false));
-    players.add(new MockPlayer("Player3", false));
+    Player player1 = new PlayerModel("Player1", false, 5, 1);
+    Player player2 = new PlayerModel("Player2", false, 5, 1);
+    players.add(player1);
+    players.add(player2);
     mockTown.setPlayers(players);
 
     // 设置初始状态
-    mockTown.setCurrentTurn(1);
     mockTown.setCurrentPlayerIndex(0);
-    mockTown.setGameOver(false);
+    mockTown.setCurrentTurn(1);
+    mockTown.setPlayerCurrPlaceNumber(0, 1); // 设置两个玩家都在位置1
+    mockTown.setPlayerCurrPlaceNumber(1, 1);
+    mockTown.setPlayerVisible(false); // 设置玩家不可见以允许attack
+
+    // 设置目标角色
+    Target mockTarget = new MockTarget(false) {
+      @Override
+      public Place getCurrentPlace() {
+        return testPlace; // 目标也在同一位置
+      }
+    };
+    mockTown.setTarget(mockTarget);
 
     // 创建并设置View
     MockView mockGuiView = new MockView();
     mockController.setView(mockGuiView, true);
 
-    // 为MockTownModel设置必要的返回数据
-    mockTown.placeInfoToReturn = "TestPlace;[TestItem-10];[TestPlayer]";
+    // 设置第一个玩家(Player1)的位置信息
+    mockTown.setCurrentPlayerInfo(
+        "[[Player1,TestPlace,5,None], [], [MockTarget,TestPlace,50], [MockPet,TestPlace]]"
+    );
 
-    // 第一个玩家执行LOOK
+    // Player1执行lookAround操作
     mockController.executeCommand("LOOK");
 
-    // 验证第一个玩家的操作结果
+    // 验证Player1的lookAround结果
     String modelLog = mockTown.getLog();
     assertTrue("Should call lookAround", modelLog.contains("lookAround called"));
-    assertTrue("Should switch to next player", modelLog.contains("switchToNextPlayer called"));
+    assertTrue("Should switch to player 2",
+        modelLog.contains("Switched to player 1 on turn 1"));
+    assertEquals("Should be on turn 1", 1, mockTown.getCurrentTurn());
     assertEquals("Should be player 2's turn", 1, mockTown.getCurrentPlayerIndex());
-    assertEquals("Should still be turn 1", 1, mockTown.getCurrentTurn());
 
+    // 清除日志准备验证下一个玩家
     mockTown.clearLog();
 
-    // 第二个玩家执行LOOK
-    mockController.executeCommand("LOOK");
-    modelLog = mockTown.getLog();
-    assertTrue("Should call lookAround", modelLog.contains("lookAround called"));
-    assertTrue("Should switch to next player", modelLog.contains("switchToNextPlayer called"));
-    assertEquals("Should be player 3's turn", 2, mockTown.getCurrentPlayerIndex());
-    assertEquals("Should still be turn 1", 1, mockTown.getCurrentTurn());
+    // 设置第二个玩家(Player2)的信息
+    mockTown.setCurrentPlayerInfo(
+        "[[Player2,TestPlace,5,Sword-10], [], [MockTarget,TestPlace,50], [MockPet,TestPlace]]"
+    );
 
-    // 清除日志
-    mockTown.clearLog();
+    // Player2执行attack操作
+    mockController.executeCommand("ATTACK");
 
-    // 第三个玩家执行LOOK
-    mockController.executeCommand("LOOK");
+    // 验证Player2的attack结果
     modelLog = mockTown.getLog();
-    assertTrue("Should call lookAround", modelLog.contains("lookAround called"));
-    assertTrue("Should switch to next player", modelLog.contains("switchToNextPlayer called"));
-    assertEquals("Should return to player 1", 0, mockTown.getCurrentPlayerIndex());
-    assertEquals("Should advance to turn 2", 2, mockTown.getCurrentTurn());
+    assertTrue("Should attempt attack", modelLog.contains("attackTarget called"));
+    assertEquals("Should be back to first player", 0, mockTown.getCurrentPlayerIndex());
   }
 
 
@@ -419,8 +432,8 @@ public class GuiGameControllerTest {
   public void testTurnUpdateWithPlayerInfo() throws IOException {
     // 设置测试玩家
     List<Player> players = new ArrayList<>();
-    players.add(new MockPlayer("Player1", false));
-    players.add(new MockPlayer("Player2", false));
+    players.add(new PlayerModel("Player1", false, 5, 1));
+    players.add(new PlayerModel("Player2", false, 5, 2));
     mockTown.setPlayers(players);
 
     // 设置初始状态
@@ -442,7 +455,7 @@ public class GuiGameControllerTest {
     PlayerInfoDTO lastInfo = mockGuiView.getLastPlayerInfo();
     assertNotNull("Player info should be updated", lastInfo);
     assertEquals("Current turn should be correct", 1, lastInfo.getCurrentTurn());
-    assertEquals("Current player name should be correct", "MockPlayer", lastInfo.getPlayerName());
+    assertEquals("Current player name should be correct", "Player2", lastInfo.getPlayerName());
 
     // 验证Model方法调用
     String modelLog = mockTown.getLog();
@@ -456,7 +469,7 @@ public class GuiGameControllerTest {
   @Test
   public void testGameEndByTargetDefeat() throws IOException {
     List<Player> players = new ArrayList<>();
-    MockPlayer player = new MockPlayer("Player1", false);
+    PlayerModel player = new PlayerModel("Player1", false, 5, 1);
     players.add(player);
     mockTown.setPlayers(players);
 
@@ -517,7 +530,7 @@ public class GuiGameControllerTest {
   public void testGameEndByMaxTurns() throws IOException {
     // 设置测试玩家
     List<Player> players = new ArrayList<>();
-    players.add(new MockPlayer("Player1", false));
+    players.add(new PlayerModel("Player1", false, 5, 1));
     mockTown.setPlayers(players);
 
     // 设置初始状态 - 已达到最大回合数
@@ -556,52 +569,219 @@ public class GuiGameControllerTest {
         viewLog.contains("resetGame called"));
   }
 
-  // Helper mock classes
-  private static class MockPlayer implements Player {
-    private final String name;
-    private final boolean isComputer;
+  /**
+   * Tests computer player AI decision-making and priorities:
+   * 1. Attack target if in same place and not visible
+   * 2. Pick up items if available and inventory not full
+   * 3. Move towards target if carrying items
+   * 4. Look around to gather information
+   */
+  @Test
+  public void testComputerPlayerAIDecisionMaking() throws IOException {
+    // Set up two players: one computer player and one human player (need minimum 2 players)
+    List<Player> players = new ArrayList<>();
+    Player computerPlayer = new PlayerModel("Computer1", true, 5, 1);
+    players.add(computerPlayer);
+    Player humanPlayer = new PlayerModel("Human1", false, 5, 2);
+    players.add(humanPlayer);
+    computerPlayer.moveToPlaceNumber(1);
+    mockTown.setPlayers(players);
+    mockTown.setCurrentPlayerIndex(0); // Set to computer player's turn
 
-    MockPlayer(String name, boolean isComputer) {
-      this.name = name;
-      this.isComputer = isComputer;
-    }
+    // Create and set View
+    MockView mockGuiView = new MockView();
+    mockController.setView(mockGuiView, true);
 
-    @Override
-    public String getName() {
-      return name;
-    }
+    // Test Case 1: Computer player finds target in same place and is not visible
+    // Setup conditions for attack
+    mockTown.setPlayerCurrPlaceNumber(0, 1);
+    Place mockPlace = new PlaceModel(0, 0, 1, 1, "TestPlace1", "1");
+    List<Place> mockPlaces = new ArrayList<>();
+    mockPlaces.add(mockPlace);
+    mockTown.setPlaces(mockPlaces);
 
-    @Override
-    public boolean isComputerControlled() {
-      return isComputer;
-    }
+    Target mockTarget = new MockTarget(false) {
+      @Override
+      public Place getCurrentPlace() {
+        return mockPlace;
+      }
+    };
 
-    @Override
-    public int getPlayerCurrentPlaceNumber() {
-      return 0;
-    }
+    mockTown.setTarget(mockTarget);
+    mockTown.setPlayerVisible(false);
 
-    @Override
-    public void moveToPlaceNumber(int placeNumber) throws IllegalArgumentException {
+    mockTown.placeInfoToReturn = "TestPlace;[];[]";
 
-    }
+    // Mock isComputerControllerPlayer return value
+    mockTown.setIsComputerPlayer(true);
 
-    @Override
-    public void pickUpItem(Item item) throws IllegalStateException {
+    // Execute turn and verify attack attempt
+    mockController.executeCommand("START_TURNS");
+    String modelLog = mockTown.getLog();
+    assertTrue("Computer should attempt to attack when conditions are right",
+        modelLog.contains("attackTarget called"));
 
-    }
-
-    @Override
-    public List<Item> getCurrentCarriedItems() {
-      return List.of();
-    }
-
-    @Override
-    public int getCarryLimit() {
-      return 0;
-    }
-
+    mockTown.clearLog();
+    mockGuiView.clearLog();
   }
+
+  /**
+   * Tests computer player AI's item pickup behavior.
+   * Second priority: Pick up items if available and inventory not full
+   */
+  @Test
+  public void testComputerPlayerPickupBehavior() throws IOException {
+    mockTown = new MockTownModel();
+
+    // Set up places with item
+    Place place1 = new PlaceModel(0, 0, 2, 3, "TestPlace1", "1");
+    Place place2 = new PlaceModel(2, 0, 4, 1, "TestPlace2", "2");
+    Item mockItem = new ItemModel("TestItem", 10);
+    place1.addItem(mockItem);
+    place2.addItem(mockItem);
+    List<Place> mockPlaces = new ArrayList<>();
+    mockPlaces.add(place1);
+    mockPlaces.add(place2);
+    mockTown.setPlaces(mockPlaces);
+
+    // Set up computer player
+    List<Player> players = new ArrayList<>();
+    Player computerPlayer = new PlayerModel("Computer1", true, 5, 2);
+    players.add(computerPlayer);
+    players.add(new PlayerModel("Human1", false, 5, 1));
+    mockTown.setPlayers(players);
+    mockTown.setCurrentPlayerIndex(0);
+
+    // Set up target
+    Target mockTarget = new TargetModel("MockTarget", 50, place1, mockPlaces);
+    mockTown.setTarget(mockTarget);
+
+    // Set computer player state
+    mockTown.setPlayerCurrPlaceNumber(0, 2);
+    mockTown.setIsComputerPlayer(true);
+    mockTown.setPlayerVisible(false);
+
+    // Set up view and controller
+    mockController = new GuiGameController(mockTown);
+    MockView mockGuiView = new MockView();
+    mockController.setView(mockGuiView, true);
+
+    // Execute command
+    mockController.executeCommand("START_TURNS");
+
+    // Verify behavior
+    String modelLog = mockTown.getLog();
+    assertTrue("Should check computer player status",
+        modelLog.contains("isComputerControllerPlayer called"));
+    assertTrue("Should get current place info",
+        modelLog.contains("getCurrentPlaceInfo called"));
+    assertTrue("Should attempt to pick up item",
+        modelLog.contains("pickUpItem called"));
+  }
+
+  /**
+   * Test computer player's movement decision when:
+   * - Carrying items
+   * - Target is in different place
+   */
+  @Test
+  public void testComputerPlayerMovementWithItemsTowardsTarget() throws IOException {
+    mockTown = new MockTownModel();
+    Place place1 = new PlaceModel(0, 0, 2, 3, "TestPlace1", "1");
+    Place place2 = new PlaceModel(2, 0, 4, 1, "TestPlace2", "2");
+    Place place3 = new PlaceModel(4, 0, 6, 2, "TestPlace3", "3");
+    List<Place> mockPlaces = new ArrayList<>();
+    mockPlaces.add(place1);
+    mockPlaces.add(place2);
+    mockPlaces.add(place3);
+    mockTown.setPlaces(mockPlaces);
+
+    Player computerPlayer = new PlayerModel("Computer1", true, 5, 2);
+    computerPlayer.pickUpItem(new ItemModel("TestItem", 10));
+    List<Player> players = new ArrayList<>();
+    players.add(computerPlayer);
+    players.add(new PlayerModel("Human1", false, 5, 1));
+    mockTown.setPlayers(players);
+    mockTown.setCurrentPlayerIndex(0);
+
+    Target mockTarget = new TargetModel("MockTarget", 50, place3, mockPlaces);
+    mockTown.setTarget(mockTarget);
+
+    mockTown.setPlayerCurrPlaceNumber(0, 2); // 电脑在place2
+    mockTown.setIsComputerPlayer(true);
+    mockTown.setPlayerVisible(false);
+
+    mockTown.setNeighborInfoForPlace(2, true);
+
+    mockTown.setBasicLocationInfo(
+    );
+
+    mockController = new GuiGameController(mockTown);
+    MockView mockGuiView = new MockView();
+    mockController.setView(mockGuiView, true);
+
+    mockController.executeCommand("START_TURNS");
+
+    String modelLog = mockTown.getLog();
+
+    assertTrue("Should check computer player status",
+        modelLog.contains("isComputerControllerPlayer called"));
+    assertTrue("Should get current place neighbors info",
+        modelLog.contains("getCurrentPlaceNeighborsInfo called"));
+    assertTrue("Should attempt to move player",
+        modelLog.contains("movePlayer called"));
+  }
+
+  @Test
+  public void testComputerPlayerLookAround() throws IOException {
+
+    // Set up two players: one computer player and one human player (need minimum 2 players)
+    List<Player> players = new ArrayList<>();
+    Player computerPlayer = new PlayerModel("Computer1", true, 5, 1);
+    players.add(computerPlayer);
+    Player humanPlayer = new PlayerModel("Human1", false, 5, 2);
+    players.add(humanPlayer);
+    computerPlayer.moveToPlaceNumber(1);
+    mockTown.setPlayers(players);
+    mockTown.setCurrentPlayerIndex(0);
+
+    // Create and set View
+    MockView mockGuiView = new MockView();
+    mockController.setView(mockGuiView, true);
+
+    mockTown.setPlayerCurrPlaceNumber(0, 1);
+    Place mockPlace = new PlaceModel(0, 0, 1, 1, "TestPlace1", "1");
+    List<Place> mockPlaces = new ArrayList<>();
+    mockPlaces.add(mockPlace);
+    mockTown.setPlaces(mockPlaces);
+
+    Target mockTarget = new MockTarget(false) {
+      @Override
+      public Place getCurrentPlace() {
+        return mockPlace;
+      }
+    };
+
+    mockTown.setTarget(mockTarget);
+    mockTown.setPlayerVisible(false);
+
+    // Mock isComputerControllerPlayer return value
+    mockTown.setIsComputerPlayer(true);
+
+    mockTown.placeInfoToReturn = "TestPlace;[];[]";
+    mockTown.setPlayerVisible(true); // Make player visible so they can't attack
+
+    // Execute turn and verify look around attempt
+    mockController.executeCommand("START_TURNS");
+    String modelLog;
+    modelLog = mockTown.getLog();
+    assertTrue("Computer should look around when no other actions are available",
+        modelLog.contains("lookAround called"));
+
+    mockTown.clearLog();
+    mockGuiView.clearLog();
+  }
+
 
   private static class MockTarget implements Target {
     private final boolean isDefeated;

@@ -319,6 +319,12 @@ public class TownModel implements Town {
     this.switchToNextPlayer();
   }
 
+  /**
+   * Gets the item with the specified name.
+   *
+   * @param itemName the name of the item to get
+   * @return the item with the specified name, or null if not found
+   */
   private Item getItemByName(String itemName) {
     for (Item item : items) {
       if (item.getName().equals(itemName)) {
@@ -406,7 +412,14 @@ public class TownModel implements Town {
     return false;
   }
 
-
+  /**
+   * Executes an attack using the specified item.
+   *
+   * @param player the player executing the attack
+   * @param item   the item to use for the attack
+   * @return true if the target was defeated, false otherwise
+   * @throws IOException if an I/O error occurs
+   */
   private boolean executeItemAttack(Player player, Item item) throws IOException {
     if (player == null || item == null) {
       throw new IllegalArgumentException("Player and item cannot be null");
@@ -424,6 +437,13 @@ public class TownModel implements Town {
     return targetDefeated;
   }
 
+  /**
+   * Executes a poke attack.
+   *
+   * @param player the player executing the attack
+   * @return true if the target was defeated, false otherwise
+   * @throws IOException if an I/O error occurs
+   */
   private boolean executePoke(Player player) throws IOException {
     if (player == null) {
       throw new IllegalArgumentException("Player cannot be null");
