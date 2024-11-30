@@ -274,11 +274,9 @@ public class GuiGameController implements Controller {
       guiView.showGuiNumberMessage("Pick Up Item", showItemInfo.toString(),
               "OK",
               1, maxItemNumber).thenAccept(itemNumber -> {
-                System.out.println("Item number-1: " + itemNumber);
                 String item = items.get(itemNumber - 1);
                 String[] itemParts = item.split("-");
                 String itemName1 = itemParts[0].trim();
-                System.out.println("Item name: " + itemName1);
                 try {
                   new PickUpItemCommand(town, itemName1).execute();
                   takeTurn();
@@ -628,7 +626,6 @@ public class GuiGameController implements Controller {
       default:
         guiView.showGuiMessage("Error", "Invalid command: " + action, "OK");
     }
-
   }
 
   @Override

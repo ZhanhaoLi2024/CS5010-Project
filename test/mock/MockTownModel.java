@@ -27,6 +27,7 @@ public class MockTownModel implements Town {
   private String lastMethodCalled;
   private Map<Integer, Integer> playerPlaceNumbers = new HashMap<>();
   private Map<Integer, List<Integer>> neighborPlaces = new HashMap<>();
+  private boolean playerVisible;
 
   /**
    * Constructs a new MockTownModel with initial test data.
@@ -154,16 +155,16 @@ public class MockTownModel implements Town {
     return playerPlaceNumbers.getOrDefault(playerIndex, 1);
   }
 
+  @Override
+  public String getCurrentPlaceNeighborsInfo(int placeNumber) throws IOException {
+    return "[[MockNeighbor;2;[];[];false;false], [AnotherNeighbor;3;[];[];true;false]]";
+  }
+
 //  @Override
 //  public String getCurrentPlaceInfo(int placeNumber) throws IOException {
 //    logMethodCall("getCurrentPlaceInfo");
 //    return "MockPlace;[];[]";
 //  }
-
-  @Override
-  public String getCurrentPlaceNeighborsInfo(int placeNumber) throws IOException {
-    return "[[MockNeighbor;2;[];[];false;false], [AnotherNeighbor;3;[];[];true;false]]";
-  }
 
   @Override
   public void addPlayer(String playerName, int placeNumber, int carryLimit,
@@ -195,21 +196,29 @@ public class MockTownModel implements Town {
   @Override
   public void lookAround() throws IOException {
     logMethodCall("lookAround");
+    switchToNextPlayer();
   }
 
   @Override
   public boolean attackTarget(String itemName) throws IOException {
     logMethodCall("attackTarget");
-    return false;
+    return true; // 返回true表示目标被击败
   }
 
   @Override
   public void switchToNextPlayer() throws IOException {
     logMethodCall("switchToNextPlayer");
-    currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
-    if (currentPlayerIndex == 0) {
-      currentTurn++;
+    if (players != null && !players.isEmpty()) {
+      currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
+      if (currentPlayerIndex == 0) {
+        currentTurn++;
+        moveTarget();
+      }
     }
+  }
+
+  public void setPlayerVisible(boolean isVisible) {
+    this.playerVisible = isVisible;
   }
 
   @Override
@@ -284,16 +293,25 @@ public class MockTownModel implements Town {
     return currentPlayerIndex;
   }
 
+  /**
+   * Sets the current player index for testing purposes
+   *
+   * @param index the index to set
+   */
+  public void setCurrentPlayerIndex(int index) {
+    this.currentPlayerIndex = index;
+  }
+
   @Override
   public boolean isPlayerVisible(Player player) {
     logMethodCall("isPlayerVisible");
-    return false;
+    return playerVisible;
   }
 
   @Override
   public String getPlayerCurrentCarriedItems(int playerIndex) throws IOException {
     logMethodCall("getPlayerCurrentCarriedItems");
-    return "[]";
+    return "[Sword-10]";
   }
 
   @Override
@@ -311,4 +329,5 @@ public class MockTownModel implements Town {
     logMethodCall("getCurrentPlaceInfo");
     return placeInfoToReturn != null ? placeInfoToReturn : "MockPlace;[];[]";
   }
+
 }

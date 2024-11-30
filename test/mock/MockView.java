@@ -143,12 +143,10 @@ public class MockView implements GuiView {
   }
 
   @Override
-  public CompletableFuture<Integer> showGuiNumberMessage(
-      String title, String message, String buttonText, int minValue, int maxValue) {
+  public CompletableFuture<Integer> showGuiNumberMessage(String title, String message,
+                                                         String buttonText, int minValue,
+                                                         int maxValue) {
     logMethodCall("showGuiNumberMessage");
-    log.append("GUI Number Message - Title: ").append(title)
-        .append(", Min: ").append(minValue)
-        .append(", Max: ").append(maxValue).append("\n");
     return CompletableFuture.completedFuture(nextNumberInput);
   }
 
@@ -168,5 +166,23 @@ public class MockView implements GuiView {
   public void resetGame() {
     logMethodCall("resetGame");
     initialized = false;
+  }
+
+  /**
+   * Extended MockView for testing turn switching that captures callbacks
+   */
+  public static class TurnTestMockView extends MockView {
+    private Runnable lastCallback;
+
+    @Override
+    public void showGuiMessage(String title, String message, String buttonText,
+                               Runnable onClose) {
+      super.showGuiMessage(title, message, buttonText, onClose);
+      this.lastCallback = onClose;
+    }
+
+    public Runnable getLastCallback() {
+      return lastCallback;
+    }
   }
 }
