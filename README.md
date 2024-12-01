@@ -86,9 +86,10 @@ both text-based and GUI modes, allowing players to interact with the game world 
 
 ### Prerequisites
 
-- Java 11 or higher
+- Java 8 or higher
 - Swing library (included in JDK)
 - Screen resolution of at least 1024x768
+- World specification file (example provided in `res/SmallTownWorld.txt`)
 
 ### Using JAR File
 
@@ -100,21 +101,81 @@ java -jar res/CS5010-Project.jar <world-file> <max-turns> --gui
 java -jar res/CS5010-Project.jar <world-file> <max-turns>
 ```
 
-Example:
+### Starting the Game
+
+The game can be played in either GUI mode or text mode. The JAR file is located in the `res/` directory.
+
+For first-time users, we recommend starting with GUI mode:
 
 ```bash
-# For GUI Mode
 java -jar res/CS5010-Project.jar res/SmallTownWorld.txt 50 --gui
+```
 
-# For Text Mode
+### Using the GUI Version
+
+1. **Welcome Screen**
+    - When you start the game, you'll see a welcome screen with game credits
+    - Click "Start Game" to proceed to the main menu
+
+2. **Main Menu**
+    - Add Human Player: Create a new player by entering name, starting location, and item carry limit
+    - Add Computer Player: Add an AI-controlled player to the game
+    - Display Player Information: View details about all players
+    - Start Game: Begin playing (requires at least 2 players)
+    - Exit Game: Close the application
+
+3. **During Gameplay**
+    - The main game screen shows:
+        - Left side: Interactive map with player and target locations
+        - Right side: Player information and available actions
+
+    - Use keyboard shortcuts for actions:
+        - 'M': Move to adjacent room (click on highlighted rooms)
+        - 'L': Look around current location
+        - 'P': Pick up items in the room
+        - 'E': Move the pet
+        - 'A': Attempt to attack the target
+
+### Using the Text Version
+
+For players who prefer text-based interaction:
+
+```bash
 java -jar res/CS5010-Project.jar res/SmallTownWorld.txt 50
 ```
 
+The text version provides the same functionality through a menu-driven interface:
+
+1. Follow the on-screen prompts to add players
+2. Choose actions from the numbered menu options
+3. Enter commands and values as requested
+
+### Example Gameplay Session
+
+1. Start the game in GUI mode
+2. Add more than 2 players
+3. Start the game
+4. Each player takes turns:
+    - Move around the mansion
+    - Collect items for attacking
+    - Position strategically near the target
+    - Attempt attacks when other players can't see you
+5. Game ends when either:
+    - A player successfully kills the target
+    - Maximum turns are reached
+
 ### Command Line Arguments
 
-1. `world-file`: Path to world specification file
-2. `max-turns`: Maximum number of game turns
-3. `--gui` (optional): Launch in GUI mode
+- `world-file`: Path to the world specification file (e.g., `res/SmallTownWorld.txt`)
+- `max-turns`: Maximum number of turns before the target escapes (e.g., 50)
+- `--gui`: (Optional) Launch in GUI mode
+
+### Important Notes
+
+- The game must be run from the project's root directory
+- Ensure the world specification file exists in the specified path
+- The maximum turns must be a positive integer
+- At least 2 players are required to start the game
 
 ## Design Principles
 
