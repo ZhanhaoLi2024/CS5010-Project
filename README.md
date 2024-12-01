@@ -228,22 +228,114 @@ The text version provides the same functionality through a menu-driven interface
 - Interface compliance verification
 - Event handling validation
 
-## Limitations and Future Improvements
+## Assumptions
 
-### Current Limitations
+### Game Logic
 
-- Fixed window size recommendations
-- Limited animation support
-- No game state persistence
-- Basic computer player AI
+- Players always start in different rooms
+- Only one item can be picked up per turn
+- Computer players will always attempt to attack if possible
+- Target character moves in a fixed pattern
 
-### Potential Improvements
+### User Interface
 
-- Responsive design for different screen sizes
-- Enhanced visual effects and animations
-- Save/load game functionality
-- Advanced AI strategies
-- Network multiplayer support
+- Screen resolution is at least 1024x768 for GUI mode
+- Users have access to both keyboard and mouse
+- Single instance of game running at a time
+- All file paths are relative to project root
+
+### Technical
+
+- Java 8 or later runtime environment
+- Swing library available for GUI
+- System has sufficient memory to load entire game map
+- File system permissions allow reading world files
+
+## Design Changes from Milestone 3
+
+### Model Refactoring
+
+1. Enhanced TownModel:
+    - Removed UI-specific logic
+    - Added observer pattern for state changes
+    - Improved separation of concerns
+
+2. Player System Updates:
+    - Extracted player action logic into separate command classes
+    - Improved computer player decision making
+    - Added support for multiple control types
+
+3. Game State Management:
+    - Centralized state tracking
+    - Added support for GUI state queries
+    - Improved error handling and validation
+
+### Interface Changes
+
+1. Command Pattern Implementation:
+    - Redesigned commands to support both GUI and text interfaces
+    - Added new commands for GUI-specific actions
+    - Improved command execution feedback
+
+2. Event System:
+    - Added event dispatching for GUI updates
+    - Implemented observer pattern for view notifications
+    - Enhanced error reporting mechanism
+
+## Limitations
+
+### Technical Limitations
+
+1. User Interface:
+    - Fixed window size
+    - Limited animation support
+    - No support for window resizing
+    - Basic graphics rendering
+
+2. Gameplay:
+    - No save/load functionality
+    - Limited computer player AI
+    - No undo/redo support
+    - Single game instance only
+
+3. Performance:
+    - All game state held in memory
+    - Limited optimization for large maps
+    - No support for dynamic resource loading
+
+### Known Issues
+
+- Occasional graphical glitches in map display
+- Memory usage increases with game duration
+- Limited error recovery options
+- No support for custom key bindings
+
+## Citations and Resources
+
+### Libraries and Frameworks
+
+- Java Swing Documentation:
+  https://docs.oracle.com/javase/8/docs/api/javax/swing/package-summary.html
+
+### Design Patterns
+
+- Command Pattern Implementation:
+  "Design Patterns: Elements of Reusable Object-Oriented Software" by Gamma et al.
+
+### Technical Resources
+
+- Java Code Conventions:
+  https://www.oracle.com/java/technologies/javase/codeconventions-contents.html
+
+### Code Examples and Tutorials
+
+- Java Swing Tutorial:
+  https://docs.oracle.com/javase/tutorial/uiswing/
+
+### Testing Resources
+
+- JUnit Documentation:
+  https://junit.org/junit4/
 
 ## Author
 
