@@ -272,8 +272,15 @@ public class TownModelTest {
         computerPlayer.getCurrentCarriedItems().isEmpty());
   }
 
-  // Turn System Tests
-  // test switching to next player
+  /**
+   * Tests the complete turn switching mechanism with multiple players.
+   * Verifies:
+   * - Turn switches correctly between players
+   * - Turn counter increments when round completes
+   * - Target moves when round completes
+   *
+   * @throws IOException if there is an error with I/O operations
+   */
   @Test
   public void testSwitchToNextPlayer() throws IOException {
     // Add multiple players
@@ -389,7 +396,15 @@ public class TownModelTest {
     assertNotEquals("Target should move to different place again", secondPlace, thirdPlace);
   }
 
-  // Combat System Tests
+  /**
+   * Tests successful attacks on the target.
+   * Verifies:
+   * - Attack reduces target health by correct amount
+   * - Attack result indicates target survived
+   * - Target health is updated correctly
+   *
+   * @throws IOException if there is an error with I/O operations
+   */
   @Test
   public void testSuccessfulTargetAttack() throws IOException {
     // Setup players and initial conditions
@@ -409,9 +424,13 @@ public class TownModelTest {
   }
 
   /**
-   * Test a successful attack that defeats the target.
+   * Tests "poke" attack mechanics.
+   * Verifies:
+   * - Poke attack does exactly 1 damage
+   * - Attack result indicates target survived
+   * - Target health is reduced by 1
    *
-   * @throws IOException if an error occurs
+   * @throws IOException if there is an error with I/O operations
    */
   @Test
   public void testPokeAttack() throws IOException {
@@ -429,9 +448,13 @@ public class TownModelTest {
   }
 
   /**
-   * Test a successful attack that defeats the target.
+   * Tests that an attack that reduces target health to 0 kills the target.
+   * Verifies:
+   * - Fatal attack returns true
+   * - Target is marked as defeated
+   * - Target health reaches 0
    *
-   * @throws IOException if an error occurs
+   * @throws IOException if there is an error with I/O operations
    */
   @Test
   public void testKillingTargetAttack() throws IOException {
@@ -454,9 +477,13 @@ public class TownModelTest {
   }
 
   /**
-   * Test item removal after attack.
+   * Tests that items are removed from player inventory after being used in attack.
+   * Verifies:
+   * - Player can pick up item
+   * - Attack consumes/removes the used item
+   * - Item is no longer in player's inventory
    *
-   * @throws IOException if an error occurs
+   * @throws IOException if there is an error with I/O operations
    */
   @Test
   public void testItemRemovalAfterAttack() throws IOException {

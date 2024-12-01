@@ -15,7 +15,10 @@ import model.town.Town;
 import view.View;
 
 /**
- * The TextGameController class represents the controller for the text-based game.
+ * TextGameController implements the Controller interface for a text-based version of the game.
+ * This controller manages game flow, user input/output, and coordinates between the model and view
+ * following the MVC architecture pattern. It supports both human and computer-controlled players,
+ * handles turn management, and processes various game commands.
  */
 public class TextGameController implements Controller {
   private final Town town;
@@ -25,11 +28,12 @@ public class TextGameController implements Controller {
   private boolean continueGame;
 
   /**
-   * Constructs a new TextGameController.
+   * Constructs a new TextGameController with specified model, view and game parameters.
    *
-   * @param gameTown     the town model
-   * @param gameView     the view
-   * @param gameMaxTurns the maximum number of turns
+   * @param gameTown     the town model representing the game state
+   * @param gameView     the view for user interaction
+   * @param gameMaxTurns the maximum number of turns allowed in the game
+   * @throws IllegalArgumentException if gameTown is null or gameMaxTurns is less than 1
    */
   public TextGameController(Town gameTown, View gameView, int gameMaxTurns) {
     this.town = gameTown;
@@ -38,6 +42,12 @@ public class TextGameController implements Controller {
     this.quitGame = false;
   }
 
+  /**
+   * Converts a string representation of a list to an actual List object.
+   *
+   * @param input the string to convert, expected in format "[item1, item2, ...]"
+   * @return List containing the parsed items,or empty list if input is null or empty
+   */
   private static List<String> convertStringToList(String input) {
     if (input == null || input.equals("[]")) {
       return new ArrayList<>();
@@ -74,6 +84,11 @@ public class TextGameController implements Controller {
     }
   }
 
+  /**
+   * Displays the main menu and handles user input for menu options.
+   *
+   * @throws IOException if there is an error in input/output operations
+   */
   private void displayMainMenu() throws IOException {
     view.showMessage("Please choose an option:");
     view.showMessage("1. Add Human-controller player");
@@ -104,6 +119,12 @@ public class TextGameController implements Controller {
     }
   }
 
+  /**
+   * Manages the game turn logic, including displaying current game state,
+   * processing player actions, and checking for game end conditions.
+   *
+   * @throws IOException if there is an error in input/output operations
+   */
   private void takeTurn() throws IOException {
     if (town.getPlayers().isEmpty()) {
       view.showMessage("There are no players in the town. Please add a player first.");
@@ -183,6 +204,12 @@ public class TextGameController implements Controller {
     }
   }
 
+  /**
+   * Handles game end conditions, displays appropriate messages, and resets game state.
+   *
+   * @throws IOException if there is an error in input/output operations
+   */
+
   private void endGame() throws IOException {
     continueGame = false;
     if (town.getTarget().isDefeated()) {
@@ -198,6 +225,11 @@ public class TextGameController implements Controller {
     town.resetGameState();
   }
 
+  /**
+   * Processes a single player's turn based on whether they are human or computer-controlled.
+   *
+   * @throws IOException if there is an error in input/output operations
+   */
   private void takeTurnForPlayer() throws IOException {
     boolean isComputerControlled = town.isComputerControllerPlayer();
     if (!isComputerControlled) {
@@ -208,6 +240,12 @@ public class TextGameController implements Controller {
     view.showMessage("Current Target Health: " + town.getTargetHealth());
   }
 
+  /**
+   * Handles turn logic for human-controlled players by displaying options
+   * and processing their choice.
+   *
+   * @throws IOException if there is an error in input/output operations
+   */
   private void handleHumanTurn() throws IOException {
     view.showMessage("Please choose an option:");
     view.showMessage("1. Move player");
@@ -244,6 +282,13 @@ public class TextGameController implements Controller {
     }
   }
 
+  /**
+   * Processes computer player's attack attempt.
+   *
+   * @param playerIndex index of the computer player
+   * @return String representing the name of the item used for attack.
+   * @throws IOException if there is an error in input/output operations
+   */
   private String handleComputerAttack(int playerIndex) throws IOException {
     // handle computer attack
     String playerCurrentCarriedItems = town.getPlayerCurrentCarriedItems(playerIndex);
@@ -278,6 +323,13 @@ public class TextGameController implements Controller {
     return maxDamageItemName;
   }
 
+  /**
+   * Processes human player's attack attempt.
+   *
+   * @param playerIndex index of the human player
+   * @return String representing the name of the item used for attack
+   * @throws IOException if there is an error in input/output operations
+   */
   private String handleHumanAttack(int playerIndex) throws IOException {
     // handle human attack
     String playerCurrentCarriedItems = town.getPlayerCurrentCarriedItems(playerIndex);
@@ -323,6 +375,13 @@ public class TextGameController implements Controller {
     return itemName;
   }
 
+  /**
+   * Processes an attack attempt on the target by the current player.
+   * Handles both computer and human player attacks, checking for success conditions
+   * and updating game state accordingly.
+   *
+   * @throws IOException if there is an error in input/output operations
+   */
   private void attackTarget() throws IOException {
     int currentPlayerIndex = town.getCurrentPlayerIndex();
     String itemName;
@@ -347,6 +406,12 @@ public class TextGameController implements Controller {
     }
   }
 
+  /**
+   * Handles the movement of the pet to a new location specified by the player.
+   * Validates the input location and executes the move command.
+   *
+   * @throws IOException if there is an error in input/output operations
+   */
   private void movePet() throws IOException {
     view.showMessage("Please enter the place number you want to move the pet to:");
     int placeNumber = view.getNumberInput();
@@ -362,6 +427,12 @@ public class TextGameController implements Controller {
     new MovePetCommand(town, placeNumber).execute();
   }
 
+  /**
+   * Processes a computer-controlled player's attempt to pick up an item.
+   * Automatically selects the item with the highest damage value if available.
+   *
+   * @throws IOException if there is an error in input/output operations
+   */
   private void handleComputerPickUpItem() throws IOException {
     int currentPlayerIndex = town.getCurrentPlayerIndex();
     int currentPlaceNumber = town.getPlayerCurrPlaceNumber(currentPlayerIndex);
@@ -386,6 +457,12 @@ public class TextGameController implements Controller {
     }
   }
 
+  /**
+   * Handles a human player's attempt to pick up an item.
+   * Displays available items and prompts for selection.
+   *
+   * @throws IOException if there is an error in input/output operations
+   */
   private void handleHumanPickUpItem() throws IOException {
     int currentPlayerIndex = town.getCurrentPlayerIndex();
     int currentPlaceNumber = town.getPlayerCurrPlaceNumber(currentPlayerIndex);
@@ -419,6 +496,11 @@ public class TextGameController implements Controller {
     }
   }
 
+  /**
+   * Coordinates the item pickup action for both human and computer-controlled players.
+   *
+   * @throws IOException if there is an error in input/output operations
+   */
   private void pickUpItem() throws IOException {
     int currentPlayerIndex = town.getCurrentPlayerIndex();
     boolean isComputerControlled = town.getPlayers().get(currentPlayerIndex).isComputerControlled();
@@ -431,6 +513,12 @@ public class TextGameController implements Controller {
 
   }
 
+  /**
+   * Implements the look around action for a player, displaying information about
+   * the current location and neighboring spaces including items, players, and special characters.
+   *
+   * @throws IOException if there is an error in input/output operations
+   */
   private void lookAround() throws IOException {
     view.showMessage("Looking around...");
     int currentPlayerIndex = town.getCurrentPlayerIndex();
@@ -523,6 +611,12 @@ public class TextGameController implements Controller {
     new LookAroundCommand(town).execute();
   }
 
+  /**
+   * Handles movement logic for computer-controlled players.
+   * Prioritizes moving towards the target if visible, otherwise moves randomly.
+   *
+   * @throws IOException if there is an error in input/output operations
+   */
   private void handleComputerMove() throws IOException {
     int currentPlayerIndex = town.getCurrentPlayerIndex();
     int currentPlaceNumber = town.getPlayerCurrPlaceNumber(currentPlayerIndex);
@@ -564,6 +658,12 @@ public class TextGameController implements Controller {
     new MovePlayerCommand(town, currentPlayerIndex, newPlaceNumber).execute();
   }
 
+  /**
+   * Handles movement logic for human players.
+   * Displays available destinations and processes player choice.
+   *
+   * @throws IOException if there is an error in input/output operations
+   */
   private void handleHumanMove() throws IOException {
     int currentPlayerIndex = town.getCurrentPlayerIndex();
     int currentPlaceNumber = town.getPlayerCurrPlaceNumber(currentPlayerIndex);
@@ -599,6 +699,11 @@ public class TextGameController implements Controller {
     new MovePlayerCommand(town, currentPlayerIndex, newPlaceNumber).execute();
   }
 
+  /**
+   * Coordinates the movement action for both human and computer-controlled players.
+   *
+   * @throws IOException if there is an error in input/output operations
+   */
   private void movePlayer() throws IOException {
     int currentPlayerIndex = town.getCurrentPlayerIndex();
     boolean isComputerControlled = town.getPlayers().get(currentPlayerIndex).isComputerControlled();
@@ -609,6 +714,16 @@ public class TextGameController implements Controller {
     }
   }
 
+  /**
+   * Implements the decision-making logic for computer-controlled players.
+   * Prioritizes actions in the following order:
+   * 1. Attack target if possible
+   * 2. Pick up items if available
+   * 3. Move towards target if carrying items
+   * 4. Look around for information
+   *
+   * @throws IOException if there is an error in input/output operations
+   */
   private void handleComputerTurn() throws IOException {
     view.showMessage("Computer player's turn.");
 
@@ -653,6 +768,11 @@ public class TextGameController implements Controller {
     lookAround();
   }
 
+  /**
+   * Displays and handles the player information menu options.
+   *
+   * @throws IOException if there is an error in input/output operations
+   */
   private void showPlayerInfo() throws IOException {
     boolean showPlayerInfo = true;
     while (showPlayerInfo) {
@@ -678,6 +798,11 @@ public class TextGameController implements Controller {
     }
   }
 
+  /**
+   * Displays information about all players currently in the game.
+   *
+   * @throws IOException if there is an error in input/output operations
+   */
   private void showAllPlayersInfo() throws IOException {
     List<String> players = town.getAllPlayersInfo();
     if (players.isEmpty()) {
@@ -693,6 +818,11 @@ public class TextGameController implements Controller {
     }
   }
 
+  /**
+   * Displays information about a specific player based on user input.
+   *
+   * @throws IOException if there is an error in input/output operations
+   */
   private void showSpecificPlayerInfo() throws IOException {
     view.showMessage("Enter the player's name:");
     String playerName = view.getStringInput();
@@ -701,6 +831,12 @@ public class TextGameController implements Controller {
     view.showMessage(parts[0] + " is at " + parts[1] + " with carry limit " + parts[2]);
   }
 
+  /**
+   * Prompts for and validates the carry limit for a new player.
+   *
+   * @return the validated carry limit between 1 and 5
+   * @throws IOException if there is an error in input/output operations
+   */
   private int showNewPlayerCarryLimit() throws IOException {
     while (true) {
       try {
@@ -719,6 +855,12 @@ public class TextGameController implements Controller {
     }
   }
 
+  /**
+   * Handles the creation and addition of a computer-controlled player.
+   * Automatically assigns a name and random starting location.
+   *
+   * @throws IOException if there is an error in input/output operations
+   */
   private void handleAddComputerPlayer() throws IOException {
     int currentPlayerSize = town.getPlayers().size() + 1;
     String computerPlayerName = "Computer-" + currentPlayerSize;
@@ -729,6 +871,12 @@ public class TextGameController implements Controller {
     view.showMessage(computerPlayerName + " player added successfully.");
   }
 
+  /**
+   * Handles the creation and addition of human-controlled players.
+   * Prompts for player details and allows adding multiple players.
+   *
+   * @throws IOException if there is an error in input/output operations
+   */
   private void handleAddHumanPlayer() throws IOException {
     boolean addPlayerContinue = true;
     String firstPlayerName = showAddNewPlayerName();
@@ -741,7 +889,7 @@ public class TextGameController implements Controller {
       view.showMessage(firstPlayerName + " is at " + firstPlaceNumber + " with carry limit "
           + firstCarryLimit);
     } catch (IOException e) {
-      e.printStackTrace();
+      throw new RuntimeException(e);
     }
     while (addPlayerContinue) {
       view.showMessage("Do you want to add another player? (yes/no)");
@@ -757,7 +905,7 @@ public class TextGameController implements Controller {
           view.showMessage(humanPlayerName + " is at " + humanPlaceNumber + " with carry limit "
               + humanCarryLimit);
         } catch (IOException e) {
-          e.printStackTrace();
+          throw new RuntimeException(e);
         }
       } else if ("no".equalsIgnoreCase(choice)) {
         addPlayerContinue = false;
@@ -767,6 +915,12 @@ public class TextGameController implements Controller {
     }
   }
 
+  /**
+   * Coordinates the addition of new players to the game.
+   *
+   * @param isComputer true if adding a computer-controlled player, false for human player
+   * @throws IOException if there is an error in input/output operations
+   */
   private void addPlayer(boolean isComputer) throws IOException {
     if (isComputer) {
       handleAddComputerPlayer();
@@ -775,6 +929,12 @@ public class TextGameController implements Controller {
     }
   }
 
+  /**
+   * Prompts for and validates a new player's name.
+   *
+   * @return the validated player name
+   * @throws IOException if there is an error in input/output operations
+   */
   private String showAddNewPlayerName() throws IOException {
     while (true) {
       view.showMessage("Enter the player's name:\n");
@@ -787,6 +947,12 @@ public class TextGameController implements Controller {
     }
   }
 
+  /**
+   * Prompts for and validates a new player's starting place number.
+   *
+   * @return the validated place number between 0 and 20
+   * @throws IOException if there is an error in input/output operations
+   */
   private int showAddNewPlayerStartingPlaceNumber() throws IOException {
     while (true) {
       try {
@@ -813,7 +979,7 @@ public class TextGameController implements Controller {
   }
 
   @Override
-  public boolean executeCommand(String command) throws IOException {
+  public boolean executeCommand(String command) {
     // TODO Auto-generated method stub
     return false;
   }

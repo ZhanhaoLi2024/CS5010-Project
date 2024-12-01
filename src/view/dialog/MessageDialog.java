@@ -22,8 +22,8 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
 /**
- * An enhanced message dialog that can display text messages and optionally collect numeric input.
- * Supports both synchronous and asynchronous operation modes.
+ * A customizable message dialog that supports both simple messages and number input.
+ * Provides both synchronous and asynchronous interactions with configurable callbacks.
  */
 public class MessageDialog extends JDialog {
   private final String buttonText;
@@ -33,14 +33,14 @@ public class MessageDialog extends JDialog {
   private JSpinner numberSpinner;
 
   /**
-   * Creates a new message dialog.
+   * Creates a new MessageDialog with specified parameters.
    *
-   * @param parent        The parent frame
-   * @param title         Dialog title
-   * @param message       Message to display
-   * @param mesButtonText Button text
-   * @param mesMode       Dialog mode (message only or with number input)
-   * @param mesOnClose    Optional callback when dialog closes (can be null)
+   * @param parent        parent window of the dialog
+   * @param title         title of the dialog window
+   * @param message       message to display in the dialog
+   * @param mesButtonText text for the action button
+   * @param mesMode       mode of operation (MESSAGE_ONLY or MESSAGE_WITH_NUMBER)
+   * @param mesOnClose    callback to execute when dialog closes (can be null)
    */
   public MessageDialog(JFrame parent, String title, String message,
                        String mesButtonText, DialogMode mesMode, Runnable mesOnClose) {
@@ -54,15 +54,15 @@ public class MessageDialog extends JDialog {
   }
 
   /**
-   * Shows a message dialog with number input and returns a future for the result.
+   * Creates and shows a dialog for number input.
    *
-   * @param parent     The parent frame
-   * @param title      Dialog title
-   * @param message    Message to display
-   * @param buttonText Button text
-   * @param minValue   Minimum allowed value
-   * @param maxValue   Maximum allowed value
-   * @return CompletableFuture containing the dialog result
+   * @param parent     parent window of the dialog
+   * @param title      title of the dialog window
+   * @param message    message to display
+   * @param buttonText text for the action button
+   * @param minValue   minimum allowed input value
+   * @param maxValue   maximum allowed input value
+   * @return CompletableFuture containing the user's input
    */
   public static CompletableFuture<DialogResult> showNumberInputAsync(
       JFrame parent, String title, String message, String buttonText,
@@ -75,13 +75,13 @@ public class MessageDialog extends JDialog {
   }
 
   /**
-   * Shows a message dialog with optional callback.
+   * Creates and shows a simple message dialog.
    *
-   * @param parent     The parent frame
-   * @param title      Dialog title
-   * @param message    Message to display
-   * @param buttonText Button text
-   * @param onClose    Optional callback when dialog closes
+   * @param parent     parent window of the dialog
+   * @param title      title of the dialog window
+   * @param message    message to display
+   * @param buttonText text for the action button
+   * @param onClose    callback to execute when dialog closes
    */
   public static void showMessage(
       JFrame parent, String title, String message, String buttonText, Runnable onClose) {
@@ -92,6 +92,11 @@ public class MessageDialog extends JDialog {
     });
   }
 
+  /**
+   * Initializes the dialog components and layout.
+   *
+   * @param message the message to display in the dialog
+   */
   private void initializeDialog(String message) {
     setLayout(new BorderLayout(10, 10));
     setResizable(true);
@@ -119,6 +124,12 @@ public class MessageDialog extends JDialog {
     setupDialogSize();
   }
 
+  /**
+   * Creates the panel containing the message text.
+   *
+   * @param message the message to display
+   * @return JPanel containing the formatted message
+   */
   private JPanel createMessagePanel(String message) {
     final JPanel panel = new JPanel(new BorderLayout());
 
@@ -138,6 +149,11 @@ public class MessageDialog extends JDialog {
     return panel;
   }
 
+  /**
+   * Creates the panel containing the number input spinner.
+   *
+   * @return JPanel containing the number input controls
+   */
   private JPanel createNumberInputPanel() {
     final JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
 
@@ -153,11 +169,22 @@ public class MessageDialog extends JDialog {
     return panel;
   }
 
+  /**
+   * Initializes the number spinner with specified range.
+   *
+   * @param minValue minimum allowed value
+   * @param maxValue maximum allowed value
+   */
   private void initNumberSpinner(int minValue, int maxValue) {
     numberSpinner.setModel(new SpinnerNumberModel(
         minValue, minValue, maxValue, 1));
   }
 
+  /**
+   * Creates the panel containing the dialog's action button.
+   *
+   * @return JPanel containing the button
+   */
   private JPanel createButtonPanel() {
     JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
     panel.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 0));
@@ -187,6 +214,10 @@ public class MessageDialog extends JDialog {
     return panel;
   }
 
+  /**
+   * Configures the dialog size and position based on screen dimensions.
+   * Ensures dialog fits within screen bounds and is properly centered.
+   */
   private void setupDialogSize() {
     pack();
 
@@ -213,19 +244,33 @@ public class MessageDialog extends JDialog {
   }
 
   /**
-   * Represents the result of the dialog interaction.
+   * Result class representing the outcome of dialog interaction.
+   * Contains methods to access and validate the input value.
    */
   public static class DialogResult {
     private final Integer number;
 
+    /**
+     * Creates a new DialogResult with no number value.
+     */
     public DialogResult() {
       this.number = null;
     }
 
+    /**
+     * Creates a new DialogResult with the specified number value.
+     *
+     * @param diaNumber the number input value
+     */
     private DialogResult(int diaNumber) {
       this.number = diaNumber;
     }
 
+    /**
+     * Checks if this result contains a number value.
+     *
+     * @return true if a number value is present, false otherwise
+     */
     public boolean hasNumber() {
       return number != null;
     }
@@ -240,7 +285,7 @@ public class MessageDialog extends JDialog {
       if (!hasNumber()) {
         throw new IllegalStateException("No number available in result");
       }
-      return number;
+      return number != null ? number : 0;
     }
   }
 }

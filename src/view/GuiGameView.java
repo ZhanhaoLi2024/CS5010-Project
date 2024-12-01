@@ -32,7 +32,10 @@ import view.dialog.PlayerInfoDialog;
 import view.panel.MapPanel;
 
 /**
- * GUI implementation of the GameView interface.
+ * A GUI implementation of the game view using Swing components.
+ * This class implements both View and GuiView interfaces to provide
+ * a graphical user interface for the game, managing all visual components
+ * and user interactions.
  */
 public class GuiGameView implements View, GuiView, KeyListener {
   private static final String WELCOME_CARD = "WELCOME";
@@ -50,9 +53,9 @@ public class GuiGameView implements View, GuiView, KeyListener {
   private MapPanel mapPanel;
 
   /**
-   * Constructs the GUI view.
+   * Constructs a new GUI view for the game.
    *
-   * @param gameController the game controller
+   * @param gameController the controller that will handle game logic and user actions
    */
   public GuiGameView(Controller gameController) {
     this.controller = gameController;
@@ -69,6 +72,9 @@ public class GuiGameView implements View, GuiView, KeyListener {
     createPanels();
   }
 
+  /**
+   * Sets up the main application window with default size and properties.
+   */
   private void setupMainFrame() {
     mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     mainFrame.setPreferredSize(new Dimension(1024, 768));
@@ -76,6 +82,10 @@ public class GuiGameView implements View, GuiView, KeyListener {
     mainFrame.setLocationRelativeTo(null);
   }
 
+  /**
+   * Creates and adds all main panels to the card layout.
+   * Includes welcome panel, menu panel, and game panel.
+   */
   private void createPanels() {
     // Welcome Panel
     mainPanel.add(createWelcomePanel(), WELCOME_CARD);
@@ -87,6 +97,11 @@ public class GuiGameView implements View, GuiView, KeyListener {
     mainPanel.add(createGamePanel(), GAME_CARD);
   }
 
+  /**
+   * Creates the welcome panel with title, author info, and start button.
+   *
+   * @return the configured welcome panel
+   */
   private JPanel createWelcomePanel() {
     JPanel panel = new JPanel();
     panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -123,6 +138,11 @@ public class GuiGameView implements View, GuiView, KeyListener {
     return panel;
   }
 
+  /**
+   * Creates the menu panel with all game menu options.
+   *
+   * @return the configured menu panel
+   */
   private JPanel createMenuPanel() {
     JPanel panel = new JPanel();
     panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -159,6 +179,11 @@ public class GuiGameView implements View, GuiView, KeyListener {
     return panel;
   }
 
+  /**
+   * Creates the main game panel with map and control sections.
+   *
+   * @return the configured game panel
+   */
   private JPanel createGamePanel() {
     JPanel panel = new JPanel(new BorderLayout());
 
@@ -189,40 +214,39 @@ public class GuiGameView implements View, GuiView, KeyListener {
     return panel;
   }
 
+  /**
+   * Creates the action panel showing available keyboard commands.
+   *
+   * @return the configured action panel
+   */
   private JPanel createActionPanel() {
     JPanel panel = new JPanel();
     panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
     panel.setBorder(BorderFactory.createTitledBorder("Actions"));
 
-    String[] actions = {
-        "Move Player(M)",
-        "Look Around(L)",
-        "Pick Up Item(P)",
-        "Move Pet(E)",
-        "Attack Target(A)"
-    };
-    String[] commands = {
-        "MOVE",
-        "LOOK",
-        "PICK",
-        "PETMOVE",
-        "ATTACK"
-    };
+    JLabel instructionLabel = new JLabel("<html><body>"
+        + "Actions available:<br/>"
+        + "Press 'M' to Move Player<br/>"
+        + "Press 'L' to Look Around<br/>"
+        + "Press 'P' to Pick Up Item<br/>"
+        + "Press 'E' to Move Pet<br/>"
+        + "Press 'A' to Attack Target"
+        + "</body></html>");
 
-    for (int i = 0; i < actions.length; i++) {
-      JButton button = new JButton(actions[i]);
-      button.setAlignmentX(Component.CENTER_ALIGNMENT);
-      button.setMaximumSize(new Dimension(200, 30));
-      button.setActionCommand(commands[i]);
-      final int index = i;
-      button.addActionListener(e -> handleCommand(commands[index]));
-      panel.add(Box.createRigidArea(new Dimension(0, 5)));
-      panel.add(button);
-    }
+    instructionLabel.setFont(new Font("Dialog", Font.PLAIN, 14));
+    instructionLabel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+    instructionLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+    panel.add(instructionLabel);
 
     return panel;
   }
 
+  /**
+   * Creates the information panel showing current game state.
+   *
+   * @return the configured information panel
+   */
   private JPanel createInfoPanel() {
     JPanel panel = new JPanel();
     panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -246,6 +270,11 @@ public class GuiGameView implements View, GuiView, KeyListener {
     return panel;
   }
 
+  /**
+   * Updates the player information display with current game state.
+   *
+   * @param info data transfer object containing current player information
+   */
   @Override
   public void updatePlayerInfo(PlayerInfoDTO info) {
     SwingUtilities.invokeLater(() -> {
@@ -264,6 +293,14 @@ public class GuiGameView implements View, GuiView, KeyListener {
     });
   }
 
+  /**
+   * Creates a styled JLabel with specified properties.
+   *
+   * @param text  text to display in the label
+   * @param size  font size for the label
+   * @param style font style for the label
+   * @return the configured JLabel
+   */
   private JLabel createStyledLabel(String text, int size, int style) {
     JLabel label = new JLabel(text);
     label.setFont(new Font("Arial", style, size));
@@ -271,69 +308,80 @@ public class GuiGameView implements View, GuiView, KeyListener {
     return label;
   }
 
+  /**
+   * Creates a menu button with specified text and command.
+   *
+   * @param text    text to display on the button
+   * @param command command to execute when clicked
+   * @return the configured JButton
+   */
   private JButton createMenuButton(String text, String command) {
     JButton button = new JButton(text);
     button.setFont(new Font("Arial", Font.PLAIN, 18));
     button.setAlignmentX(JButton.CENTER_ALIGNMENT);
     button.setMaximumSize(new Dimension(300, 40));
     button.setActionCommand(command);
-    button.addActionListener(e -> handleCommand(command));
+    button.addActionListener(e -> {
+      try {
+        handleCommand(command);
+      } catch (IOException ex) {
+        throw new RuntimeException(ex);
+      }
+    });
     return button;
   }
 
-  @SuppressWarnings("checkstyle:IllegalCatch")
-  private void handleCommand(String command) {
-    try {
-      switch (command) {
-        case "ADD_PLAYER_SCREEN": {
-          AddPlayerDialog dialog = new AddPlayerDialog(this);
-          dialog.setVisible(true);
-          break;
-        }
-        case "ADD_COMPUTER_PLAYER":
-          controller.executeCommand("ADD_COMPUTER");
-          break;
-        case "SHOW_PLAYER_INFO": {
-          PlayerInfoDialog dialog = new PlayerInfoDialog(this);
-          dialog.setVisible(true);
-          break;
-        }
-        case "START_TURNS":
-          System.out.println("Starting game...");
-          if (controller.executeCommand("START_TURNS")) {
-            cardLayout.show(mainPanel, GAME_CARD);
-            mainFrame.requestFocusInWindow();
-          }
-          break;
-        case "QUIT":
-          close();
-          break;
-        case "MOVE":
-          break;
-        case "LOOK":
-          System.out.println("Looking around...");
-          controller.executeCommand("LOOK");
-          break;
-        case "PICK":
-          break;
-        case "ATTACK":
-          break;
-        case "PETMOVE":
-          break;
-        default:
-          System.out.println("Executing command: " + command);
-          break;
+  /**
+   * Handles menu commands and executes appropriate actions.
+   *
+   * @param command the command to handle
+   * @throws IOException if there's an error executing the command
+   */
+  private void handleCommand(String command) throws IOException {
+    switch (command) {
+      case "ADD_PLAYER_SCREEN": {
+        AddPlayerDialog dialog = new AddPlayerDialog(this);
+        dialog.setVisible(true);
+        break;
       }
-    } catch (Exception ex) {
-      showError("Error executing command: " + ex.getMessage());
+      case "ADD_COMPUTER_PLAYER":
+        controller.executeCommand("ADD_COMPUTER");
+        break;
+      case "SHOW_PLAYER_INFO": {
+        PlayerInfoDialog dialog = new PlayerInfoDialog(this);
+        dialog.setVisible(true);
+        break;
+      }
+      case "START_TURNS":
+        System.out.println("Starting game...");
+        if (controller.executeCommand("START_TURNS")) {
+          cardLayout.show(mainPanel, GAME_CARD);
+          mainFrame.requestFocusInWindow();
+        }
+        break;
+      case "QUIT":
+        close();
+        break;
+      default:
+        System.out.println("Executing command: " + command);
+        break;
     }
   }
 
+  /**
+   * Displays an error message dialog.
+   *
+   * @param message the error message to display
+   */
   private void showError(String message) {
     JOptionPane.showMessageDialog(mainFrame, message, "Error", JOptionPane.ERROR_MESSAGE);
   }
 
-  // Interface implementations
+  /**
+   * Initializes the GUI components and shows the welcome screen.
+   *
+   * @throws IOException if there's an error during initialization
+   */
   @Override
   public void initialize() throws IOException {
     SwingUtilities.invokeLater(() -> {
@@ -343,6 +391,11 @@ public class GuiGameView implements View, GuiView, KeyListener {
     });
   }
 
+  /**
+   * Displays a message in the message area.
+   *
+   * @param message the message to display
+   */
   @Override
   public void showMessage(String message) {
     SwingUtilities.invokeLater(() -> {
@@ -351,11 +404,27 @@ public class GuiGameView implements View, GuiView, KeyListener {
     });
   }
 
+  /**
+   * Shows a GUI message dialog with specified title and message.
+   *
+   * @param title      the dialog title
+   * @param message    the message to display
+   * @param buttonText the text for the dialog button
+   */
   @Override
   public void showGuiMessage(String title, String message, String buttonText) {
     SwingUtilities.invokeLater(
         () -> MessageDialog.showMessage(mainFrame, title, message, buttonText, null));
   }
+
+  /**
+   * Shows a GUI message dialog with callback on close.
+   *
+   * @param title      the dialog title
+   * @param message    the message to display
+   * @param buttonText the text for the dialog button
+   * @param onClose    callback to execute when dialog closes
+   */
 
   @Override
   public void showGuiMessage(String title, String message, String buttonText, Runnable onClose) {
@@ -363,6 +432,16 @@ public class GuiGameView implements View, GuiView, KeyListener {
         () -> MessageDialog.showMessage(mainFrame, title, message, buttonText, onClose));
   }
 
+  /**
+   * Shows a GUI number input dialog with validation.
+   *
+   * @param title      the dialog title
+   * @param message    the message to display
+   * @param buttonText the text for the dialog button
+   * @param minValue   minimum allowed value
+   * @param maxValue   maximum allowed value
+   * @return CompletableFuture containing the entered number
+   */
   @Override
   public CompletableFuture<Integer> showGuiNumberMessage(String title, String message,
                                                          String buttonText,
@@ -383,12 +462,21 @@ public class GuiGameView implements View, GuiView, KeyListener {
     return future;
   }
 
-
+  /**
+   * Gets string input from user via dialog.
+   *
+   * @return the user's input string
+   */
   @Override
   public String getStringInput() {
     return JOptionPane.showInputDialog(mainFrame, "Enter value:");
   }
 
+  /**
+   * Gets numeric input from user via dialog.
+   *
+   * @return the user's numeric input
+   */
   @Override
   public int getNumberInput() {
     try {
@@ -400,24 +488,51 @@ public class GuiGameView implements View, GuiView, KeyListener {
     }
   }
 
+  /**
+   * Closes the GUI window and disposes of resources.
+   */
   @Override
   public void close() {
     SwingUtilities.invokeLater(mainFrame::dispose);
   }
 
+  /**
+   * Gets the main application window.
+   *
+   * @return the main JFrame
+   */
   public JFrame getMainFrame() {
     return mainFrame;
   }
 
+  /**
+   * Gets the game controller.
+   *
+   * @return the Controller instance
+   */
   public Controller getController() {
     return controller;
   }
 
+  /**
+   * Resets the game view to the menu screen.
+   */
   @Override
   public void resetGame() {
     cardLayout.show(mainPanel, MENU_CARD);
   }
 
+  /**
+   * Handles keyboard input for game actions.
+   * Supports the following keys:
+   * - 'L': Look around
+   * - 'M': Move player
+   * - 'P': Pick up item
+   * - 'E': Move pet
+   * - 'A': Attack target
+   *
+   * @param e the key event
+   */
   @Override
   public void keyPressed(KeyEvent e) {
     if (e.getKeyChar() == 'L' || e.getKeyChar() == 'l') {
@@ -427,36 +542,34 @@ public class GuiGameView implements View, GuiView, KeyListener {
         showError("Error executing look command: " + ex.getMessage());
       }
     } else if (e.getKeyChar() == 'M' || e.getKeyChar() == 'm') {
-      try {
-        // Get current player's place
-        int currentPlayerIndex = controller.getTown().getCurrentPlayerIndex();
-        Player currentPlayer = controller.getTown().getPlayers().get(currentPlayerIndex);
-        Place currentPlace = controller.getTown().getPlaceByNumber(
-            currentPlayer.getPlayerCurrentPlaceNumber());
 
-        // Show move options and handle clicks
-        mapPanel.setClickListener((clickedPlace, isValidMove) -> {
-          if (isValidMove) {
-            System.out.println("Success");
-            try {
-              // Execute move command
-              int placeNumber = Integer.parseInt(clickedPlace.getPlaceNumber());
-              String placeName = clickedPlace.getName();
-              controller.executeCommand("MOVE " + "," + placeName + "," + placeNumber);
-            } catch (IOException ex) {
-              showError("Error executing move: " + ex.getMessage());
-            }
-          } else {
-            System.out.println("Wrong");
-            showGuiMessage("Invalid Move", "You cannot move to this place.", "OK");
+      // Get current player's place
+      int currentPlayerIndex = controller.getTown().getCurrentPlayerIndex();
+      Player currentPlayer = controller.getTown().getPlayers().get(currentPlayerIndex);
+      Place currentPlace = controller.getTown().getPlaceByNumber(
+          currentPlayer.getPlayerCurrentPlaceNumber());
+
+      // Show move options and handle clicks
+      mapPanel.setClickListener((clickedPlace, isValidMove) -> {
+        if (isValidMove) {
+          System.out.println("Success");
+          try {
+            // Execute move command
+            int placeNumber = Integer.parseInt(clickedPlace.getPlaceNumber());
+            String placeName = clickedPlace.getName();
+            controller.executeCommand("MOVE " + "," + placeName + "," + placeNumber);
+          } catch (IOException ex) {
+            showError("Error executing move: " + ex.getMessage());
           }
-        });
+        } else {
+          System.out.println("Wrong");
+          showGuiMessage("Invalid Move", "You cannot move to this place.", "OK");
+        }
+      });
 
-        mapPanel.showMoveOptions(currentPlace);
+      mapPanel.showMoveOptions(currentPlace);
 
-      } catch (Exception ex) {
-        showError("Error showing move options: " + ex.getMessage());
-      }
+
     } else if (e.getKeyChar() == 'P' || e.getKeyChar() == 'p') {
       try {
         controller.executeCommand("PICK");

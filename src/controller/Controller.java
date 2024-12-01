@@ -9,16 +9,38 @@ import view.View;
  * It coordinates communication between the model and view components following the MVC pattern.
  */
 public interface Controller {
-  void setView(View view, boolean gui);
+  /**
+   * Sets the view component for this controller. The view can only be set once.
+   *
+   * @param gameView the view to be used for user interaction
+   * @param gui      boolean indicating if the view is a GUI
+   * @throws IllegalStateException if the view has already been set
+   */
+  void setView(View gameView, boolean gui);
 
   /**
-   * Initializes and starts the game, setting up initial game state and beginning gameplay.
+   * Starts the game by initializing the view and entering the main game loop.
+   * Displays welcome message and maximum turns, then shows the main menu until quit.
    *
-   * @throws IOException if there is an error during game initialization or I/O operations
+   * @throws IOException           if there is an error in input/output operations
+   * @throws IllegalStateException if the view has not been set
    */
   void startGame() throws IOException;
 
+  /**
+   * Gets the town model associated with this controller.
+   *
+   * @return the Town model instance
+   */
   Town getTown();
+
+  /**
+   * Executes a game command.
+   *
+   * @param command the command string to execute
+   * @return boolean indicating if the command was executed successfully
+   * @throws IOException if there is an error in input/output operations
+   */
 
   boolean executeCommand(String command) throws IOException;
 }

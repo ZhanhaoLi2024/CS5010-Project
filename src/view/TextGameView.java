@@ -1,6 +1,5 @@
 package view;
 
-import controller.Controller;
 import java.io.IOException;
 import java.util.Scanner;
 
@@ -10,8 +9,6 @@ import java.util.Scanner;
 public class TextGameView implements View {
   private static Appendable output;
   private static Scanner scanner;
-  private final Readable input;
-  private final Controller controller;
 
   /**
    * Constructs a TextGameView object.
@@ -19,11 +16,9 @@ public class TextGameView implements View {
    * @param gameInput  Readable input source
    * @param gameOutput Appendable output destination
    */
-  public TextGameView(Controller gameController, Readable gameInput, Appendable gameOutput) {
-    this.input = gameInput;
+  public TextGameView(Readable gameInput, Appendable gameOutput) {
     output = gameOutput;
-    scanner = new Scanner(input);
-    this.controller = gameController;
+    scanner = new Scanner(gameInput);
   }
 
   @Override
@@ -32,8 +27,7 @@ public class TextGameView implements View {
     output.append("++++++++++++++++++++\n");
     output.append("Welcome to the game!\n");
   }
-
-
+  
   @Override
   public void showMessage(String message) throws IOException {
     output.append(message).append("\n");

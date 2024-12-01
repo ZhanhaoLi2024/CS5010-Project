@@ -22,7 +22,8 @@ import view.GuiGameView;
 import view.panel.MapPanel;
 
 /**
- * Dialog for adding a new human player to the game.
+ * A dialog window for adding a new human player to the game.
+ * Provides a form interface with a map preview and input fields for player details.
  */
 public class AddPlayerDialog extends JDialog {
   private final GuiGameView parentView;
@@ -31,9 +32,10 @@ public class AddPlayerDialog extends JDialog {
   private JSpinner limitSpinner;
 
   /**
-   * Constructs a new AddPlayerDialog.
+   * Constructs a new AddPlayerDialog with the specified parent view.
+   * Creates a modal dialog window for adding a new human player.
    *
-   * @param parent the parent GuiGameView
+   * @param parent the parent GuiGameView that owns this dialog
    */
   public AddPlayerDialog(GuiGameView parent) {
     super(parent.getMainFrame(), "Add Human Player", true);
@@ -42,7 +44,9 @@ public class AddPlayerDialog extends JDialog {
   }
 
   /**
-   * Initializes the dialog components.
+   * Initializes and configures all dialog components.
+   * Sets up the layout with a split pane containing a map preview and input form,
+   * and adds a button panel at the bottom.
    */
   private void initializeDialog() {
     setLayout(new BorderLayout(10, 10));
@@ -71,6 +75,12 @@ public class AddPlayerDialog extends JDialog {
     add(buttonPanel, BorderLayout.SOUTH);
   }
 
+  /**
+   * Creates the map panel showing the game world.
+   * This panel helps players visualize the starting locations available.
+   *
+   * @return a JPanel containing the map display
+   */
   private JPanel createMapPanel() {
     JPanel panel = new JPanel(new BorderLayout(5, 5));
     panel.setBorder(BorderFactory.createTitledBorder(
@@ -83,6 +93,12 @@ public class AddPlayerDialog extends JDialog {
     return panel;
   }
 
+  /**
+   * Creates the form panel containing input fields for player details.
+   * Includes fields for player name, starting location, and item carry limit.
+   *
+   * @return a JPanel containing the input form
+   */
   private JPanel createFormPanel() {
     JPanel formPanel = new JPanel();
     formPanel.setLayout(new BoxLayout(formPanel, BoxLayout.Y_AXIS));
@@ -116,6 +132,16 @@ public class AddPlayerDialog extends JDialog {
     return formPanel;
   }
 
+  /**
+   * Creates a standardized input panel with a label and input component.
+   * Used for creating consistent form fields throughout the dialog.
+   *
+   * @param labelText the text to display in the label
+   * @param input     the input component (JTextField or JSpinner)
+   * @param inputSize the preferred size for the input component
+   * @param labelFont the font to use for the label
+   * @return a JPanel containing the label and input component
+   */
   private JPanel createInputPanel(String labelText, JComponent input,
                                   Dimension inputSize, Font labelFont) {
     JPanel panel = new JPanel(new BorderLayout(10, 5));
@@ -137,6 +163,12 @@ public class AddPlayerDialog extends JDialog {
     return panel;
   }
 
+  /**
+   * Creates the button panel with "Cancel" and "Add Player" buttons.
+   * Cancel closes the dialog, while Add Player validates and submits the form.
+   *
+   * @return a JPanel containing the dialog buttons
+   */
   private JPanel createButtonPanel() {
     JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
     JButton cancelButton = new JButton("Cancel");
@@ -150,6 +182,11 @@ public class AddPlayerDialog extends JDialog {
     return buttonPanel;
   }
 
+  /**
+   * Handles the player addition process when the Add Player button is clicked.
+   * Validates input fields and sends the command to add the player.
+   * Shows error messages if validation fails or if there are issues adding the player.
+   */
   private void handleAddPlayer() {
     String name = nameField.getText().trim();
     int place = (Integer) placeSpinner.getValue();

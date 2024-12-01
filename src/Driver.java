@@ -37,9 +37,11 @@ public class Driver {
       return;
     }
 
+    // 1. Create the Model
+    // 2. Create the Controller
+    // 3. Create the View and connect it to the Controller
+    // 4. Connect the View to the Controller
     try {
-      // Initialize MVC components in the correct order
-      // 1. Create the Model
       TownLoader loader = new TownLoader();
       Town town = new TownModel(
           loader,
@@ -47,10 +49,6 @@ public class Driver {
           System.out,
           maxTurns
       );
-
-      // 2. Create the Controller
-      // 3. Create the View and connect it to the Controller
-      // 4. Connect the View to the Controller
       Controller controller;
       View view;
       if (useGui) {
@@ -59,7 +57,7 @@ public class Driver {
         controller.setView(view, true);
       } else {
         controller = new TextGameController(town, null, maxTurns);
-        view = new TextGameView(controller, new InputStreamReader(System.in), System.out);
+        view = new TextGameView(new InputStreamReader(System.in), System.out);
         controller.setView(view, false);
       }
 

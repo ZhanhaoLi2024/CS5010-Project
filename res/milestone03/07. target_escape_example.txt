@@ -1,0 +1,234 @@
+This run shows that the target successfully escapes with its health still above zero after all turns have ended.
+
+I set the game to 5 turns and added one human-controlled player and one computer-controlled player. At the end of the fifth turn, the target’s health remained above zero, allowing the target to successfully escape.
+
+
+(base) zhanhaoli@ZhanhaotekiMacBook-Pro cs5010-project % java -cp bin Driver res/SmallTownWorld.txt 5; 
+
+++++++++++++++++++++
+Welcome to the game! You have 5 turns.
+Please choose an option:
+1. Show the Map Information
+2. Add the Human-controller player
+3. Add the Computer-controller player
+4. Display the player's information
+5. Display the Place's information
+6. Start the game
+7. Print the map
+0. Exit
+2
+Enter the player's name:
+Ivan
+Enter your starting place number (1-20):
+4
+Enter your limit of carrying items (1-10):
+3
+Player added successfully:
+Name: Ivan
+Location: Post Office
+Carry limit: 3
+Do you want to add another player? (yes/no)
+no
+Please choose an option:
+1. Show the Map Information
+2. Add the Human-controller player
+3. Add the Computer-controller player
+4. Display the player's information
+5. Display the Place's information
+6. Start the game
+7. Print the map
+0. Exit
+3
+Computer player 'Computer-2' added at Hospital.
+Please choose an option:
+1. Show the Map Information
+2. Add the Human-controller player
+3. Add the Computer-controller player
+4. Display the player's information
+5. Display the Place's information
+6. Start the game
+7. Print the map
+0. Exit
+6
+
+1 of 5
+
+Hi Ivan, you are in Post Office
+Target is in Park
+Pet is in Park
+Item in this place: 
+ - Envelope (Damage: 8)
+Please choose an option:
+1. Move player
+2. Pick up item
+3. Look around
+4. Attack target
+5. Move pet
+2
+Items in Post Office:
+1. Envelope (Damage: 8)
+Enter the item number to pick up:
+1
+Picked up Envelope.
+
+Turn changed from Ivan to Computer-2 (Turn 1)
+
+1 of 5
+
+Hi Computer-2, you are in Hospital
+Target is in Park
+Pet is in Park
+Item in this place: 
+ - Medical Kit (Damage: 18)
+Computer player's turn.
+Computer player picks up an item.
+Picked up Medical Kit.
+
+Turn changed from Computer-2 to Ivan (Turn 2)
+
+2 of 5
+
+Hi Ivan, you are in Post Office
+Target is in Grocery Store
+Pet is in Park
+Please choose an option:
+1. Move player
+2. Pick up item
+3. Look around
+4. Attack target
+5. Move pet
+1
+Neighbors of Post Office:
+1. School
+2. Police Station
+3. Library
+4. Hospital
+Enter the number of the neighbor to move to:
+3
+Moved to Library
+
+Turn changed from Ivan to Computer-2 (Turn 2)
+
+2 of 5
+
+Hi Computer-2, you are in Hospital
+Target is in Grocery Store
+Pet is in Park
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Gas Station
+
+Turn changed from Computer-2 to Ivan (Turn 3)
+
+3 of 5
+
+Hi Ivan, you are in Library
+Target is in School
+Pet is in Park
+Item in this place: 
+ - Storybook (Damage: 10)
+Please choose an option:
+1. Move player
+2. Pick up item
+3. Look around
+4. Attack target
+5. Move pet
+3
+Current place: Library
+Items in Library:
+Storybook (Damage: 10)
+Neighbors of Library:
+ - Post Office
+ - Police Station
+   Items in Police Station:Handcuffs (Damage: 20)
+ - Fire Station
+   Items in Fire Station:Fire Hose (Damage: 15)
+ - Hospital
+ - House #2
+   Items in House #2:Mailbox Key (Damage: 14)
+ - Gym
+   Items in Gym:Dumbbells (Damage: 12)
+
+
+Turn changed from Ivan to Computer-2 (Turn 3)
+
+3 of 5
+
+Hi Computer-2, you are in Gas Station
+Target is in School
+Pet is in Park
+Item in this place: 
+ - Gas Can (Damage: 8)
+Computer player's turn.
+Computer player picks up an item.
+Picked up Gas Can.
+
+Turn changed from Computer-2 to Ivan (Turn 4)
+
+4 of 5
+
+Hi Ivan, you are in Library
+Target is in Post Office
+Pet is in Park
+Item in this place: 
+ - Storybook (Damage: 10)
+Please choose an option:
+1. Move player
+2. Pick up item
+3. Look around
+4. Attack target
+5. Move pet
+2
+Items in Library:
+1. Storybook (Damage: 10)
+Enter the item number to pick up:
+1
+Picked up Storybook.
+
+Turn changed from Ivan to Computer-2 (Turn 4)
+
+4 of 5
+
+Hi Computer-2, you are in Gas Station
+Target is in Post Office
+Pet is in Park
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Hospital
+
+Turn changed from Computer-2 to Ivan (Turn 5)
+
+5 of 5
+
+Hi Ivan, you are in Library
+Target is in Police Station
+Pet is in Park
+Please choose an option:
+1. Move player
+2. Pick up item
+3. Look around
+4. Attack target
+5. Move pet
+4
+
+Choose your attack:
+0. Poke in the eye (1 damage)
+1. Use Envelope (8 damage)
+2. Use Storybook (10 damage)
+0
+Attack failed: You must be in the same room as the target!
+
+Turn changed from Ivan to Computer-2 (Turn 5)
+
+5 of 5
+
+Hi Computer-2, you are in Hospital
+Target is in Police Station
+Pet is in Park
+Computer player's turn.
+Computer player moves to find the target.
+Moved to Bakery
+
+Turn changed from Computer-2 to Ivan (Turn 6)
+Game Over! The target has escaped and nobody wins!
+++++++++++++++++++++

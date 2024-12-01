@@ -17,7 +17,9 @@ import javax.swing.Timer;
 import model.place.Place;
 
 /**
- * A JPanel that displays a map of the town with places and highlights for valid moves.
+ * A custom JPanel that provides a graphical representation of the game world map.
+ * Displays places, highlights valid moves, and shows current positions of the target and player.
+ * Supports interactive clicking for player movement.
  */
 public class MapPanel extends JPanel {
   private static int CELL_SIZE = 0;
@@ -31,10 +33,10 @@ public class MapPanel extends JPanel {
   private MapClickListener clickListener;
 
   /**
-   * Constructs a new MapPanel with the specified list of places and cell size.
+   * Constructs a new MapPanel with the specified game map layout.
    *
-   * @param mapPlaces the list of places in the town
-   * @param cellSize  the size of each cell in the map
+   * @param mapPlaces the list of places that make up the game world
+   * @param cellSize  the size in pixels of each cell in the grid
    */
   public MapPanel(List<Place> mapPlaces, int cellSize) {
     this.places = mapPlaces;
@@ -53,16 +55,18 @@ public class MapPanel extends JPanel {
   }
 
   /**
-   * Sets the click listener for the map.
+   * Sets a listener to handle clicks on the map.
+   * The listener will be notified when a player clicks on a place.
    *
-   * @param listener the click listener to set
+   * @param listener the MapClickListener to handle click events
    */
   public void setClickListener(MapClickListener listener) {
     this.clickListener = listener;
   }
 
   /**
-   * Shows the valid move options for the player at the specified place.
+   * Displays visual highlights for valid movement options from the player's current position.
+   * Highlights will automatically clear after 5 seconds.
    *
    * @param playerPlace the place where the player is currently located
    */
@@ -94,6 +98,13 @@ public class MapPanel extends JPanel {
     repaint();
   }
 
+  /**
+   * Processes a mouse click on the map and notifies the click listener if appropriate.
+   * Only processes clicks when move highlighting is active and a listener is set.
+   *
+   * @param x the x-coordinate of the click
+   * @param y the y-coordinate of the click
+   */
   private void handleMapClick(int x, int y) {
     if (!showMoveHighlight || clickListener == null) {
       return;
@@ -106,6 +117,13 @@ public class MapPanel extends JPanel {
     clickListener.onPlaceClicked(clickedPlace, isValidMove);
   }
 
+  /**
+   * Determines which place on the map was clicked based on coordinates.
+   *
+   * @param x the x-coordinate of the click
+   * @param y the y-coordinate of the click
+   * @return the Place that was clicked, or null if no place was clicked
+   */
   private Place getPlaceAtCoordinates(int x, int y) {
     for (Place place : places) {
       int placeX = place.getRow1() * 58;
@@ -121,6 +139,10 @@ public class MapPanel extends JPanel {
     return null;
   }
 
+  /**
+   * Creates the base map image showing all places.
+   * This image is created once and reused for efficiency.
+   */
   private void createMapImage() {
     mapImage = new BufferedImage(11 * CELL_SIZE, 12 * CELL_SIZE,
         BufferedImage.TYPE_INT_ARGB);
@@ -142,6 +164,13 @@ public class MapPanel extends JPanel {
     g2d.dispose();
   }
 
+  /**
+   * Draws a single place on the map with its name and number.
+   *
+   * @param g2d         the Graphics2D context to draw with
+   * @param place       the Place to draw
+   * @param placeNumber the number identifier of the place
+   */
   private void drawPlace(Graphics2D g2d, Place place, int placeNumber) {
     int x = place.getRow1() * CELL_SIZE;
     int y = place.getCol1() * CELL_SIZE;
@@ -180,6 +209,12 @@ public class MapPanel extends JPanel {
     g2d.setFont(originalFont);
   }
 
+  /**
+   * Overrides the paintComponent method to draw the map and all dynamic elements.
+   * Includes the base map, movement highlights, and position markers.
+   *
+   * @param g the Graphics context to draw with
+   */
   @Override
   protected void paintComponent(Graphics g) {
     super.paintComponent(g);
@@ -225,10 +260,10 @@ public class MapPanel extends JPanel {
   }
 
   /**
-   * Updates the target and player locations on the map.
+   * Updates the displayed positions of the target and player on the map.
    *
-   * @param targetPlace the name of the target place
-   * @param playerPlace the name of the player place
+   * @param targetPlace the name of the place where the target is located
+   * @param playerPlace the name of the place where the player is located
    */
   public void updateLocations(String targetPlace, String playerPlace) {
     this.targetPlaceName = targetPlace;
@@ -236,6 +271,16 @@ public class MapPanel extends JPanel {
     repaint(); // 触发重绘
   }
 
+  /**
+   * Draws the target marker on the map.
+   * The target is represented by a semi-transparent red square.
+   *
+   * @param g2d    the Graphics2D context to draw with
+   * @param x      the x-coordinate to draw at
+   * @param y      the y-coordinate to draw at
+   * @param width  the width of the containing place
+   * @param height the height of the containing place
+   */
   private void drawTarget(Graphics2D g2d, int x, int y, int width, int height) {
     int size = 14;
     int centerX = x + (width - size) / 3;
@@ -245,17 +290,27 @@ public class MapPanel extends JPanel {
     g2d.fillRect(centerX, centerY, size, size);
   }
 
+  /**
+   * Draws the player marker on the map.
+   * The player is represented by a semi-transparent blue triangle.
+   *
+   * @param g2d    the Graphics2D context to draw with
+   * @param x      the x-coordinate to draw at
+   * @param y      the y-coordinate to draw at
+   * @param width  the width of the containing place
+   * @param height the height of the containing place
+   */
   private void drawPlayer(Graphics2D g2d, int x, int y, int width, int height) {
     int size = 14;
     int centerX = x + (width - size) / 3 + size;
     int centerY = y + (height - size) / 3;
 
-    int[] xPoints = {
+    int[] xpoints = {
         centerX,
         centerX + size,
         centerX + size / 2
     };
-    int[] yPoints = {
+    int[] ypoints = {
         centerY + size,
         centerY + size,
         centerY
@@ -264,13 +319,20 @@ public class MapPanel extends JPanel {
     Color transparentBlue = new Color(0, 0, 255, 128);
     g2d.setColor(transparentBlue);
 
-    g2d.fillPolygon(xPoints, yPoints, 3);
+    g2d.fillPolygon(xpoints, ypoints, 3);
   }
 
   /**
-   * A listener interface for handling map clicks.
+   * Interface for handling click events on the map.
+   * Implementers can receive notifications when places are clicked.
    */
   public interface MapClickListener {
+    /**
+     * Called when a place on the map is clicked.
+     *
+     * @param clickedPlace the Place that was clicked
+     * @param isValidMove  whether the clicked place is a valid move destination
+     */
     void onPlaceClicked(Place clickedPlace, boolean isValidMove);
   }
 }

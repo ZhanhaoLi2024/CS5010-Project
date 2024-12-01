@@ -155,7 +155,7 @@ public class TownModel implements Town {
   }
 
   @Override
-  public String getCurrentPlaceInfo(int placeNumber) throws IOException {
+  public String getCurrentPlaceInfo(int placeNumber) {
     Place place = getPlaceByNumber(placeNumber);
     List<String> currPlaceItems = new ArrayList<>();
     for (Item item : place.getItems()) {
@@ -169,24 +169,24 @@ public class TownModel implements Town {
   }
 
   @Override
-  public String getCurrentPlaceNeighborsInfo(int placeNumber) throws IOException {
+  public String getCurrentPlaceNeighborsInfo(int placeNumber) {
     List<List<String>> neighbors = new ArrayList<>();
     Place place = getPlaceByNumber(placeNumber);
     for (Place p : places) {
       boolean isTarget = p.equals(targetCharacter.getCurrentPlace());
       boolean isPet = p.getPlaceNumber().equals(String.valueOf(pet.getPetCurrentPlaceNumber()));
       if (!p.equals(place) && place.isNeighbor(p)) {
-        List<String> items = new ArrayList<>();
+        List<String> currentItems = new ArrayList<>();
         for (Item item : p.getItems()) {
-          items.add(item.getName() + "-" + item.getDamage());
+          currentItems.add(item.getName() + "-" + item.getDamage());
         }
         List<String> neighborPlayers = new ArrayList<>();
         for (Player player : p.getCurrentPlacePlayers()) {
           neighborPlayers.add(player.getName());
         }
         neighbors.add(Collections.singletonList(
-            p.getName() + ";" + p.getPlaceNumber() + ";" + items + ";" + neighborPlayers + ";"
-                + isTarget + ";" + isPet));
+            p.getName() + ";" + p.getPlaceNumber() + ";" + currentItems + ";" + neighborPlayers
+                + ";" + isTarget + ";" + isPet));
       }
     }
     return neighbors.toString();
@@ -202,7 +202,7 @@ public class TownModel implements Town {
   }
 
   @Override
-  public String showBasicLocationInfo() throws IOException {
+  public String showBasicLocationInfo() {
     Player currentPlayer = players.get(currentPlayerIndex);
     Place currentPlace = getPlaceByNumber(currentPlayer.getPlayerCurrentPlaceNumber());
 
@@ -271,10 +271,8 @@ public class TownModel implements Town {
       playerInfo =
           player.getName() + "," + getPlaceByNumber(player.getPlayerCurrentPlaceNumber()).getName()
               + "," + player.getCarryLimit();
-      return playerInfo;
-    } else {
-      return playerInfo;
     }
+    return playerInfo;
   }
 
   @Override
@@ -335,7 +333,7 @@ public class TownModel implements Town {
   }
 
   @Override
-  public boolean attackTarget(String attackItemName) throws IOException {
+  public boolean attackTarget(String attackItemName) {
     Player currentPlayer = players.get(currentPlayerIndex);
     if ("Poke Target".equals(attackItemName)) {
       System.out.println("Poke Target");
@@ -418,9 +416,8 @@ public class TownModel implements Town {
    * @param player the player executing the attack
    * @param item   the item to use for the attack
    * @return true if the target was defeated, false otherwise
-   * @throws IOException if an I/O error occurs
    */
-  private boolean executeItemAttack(Player player, Item item) throws IOException {
+  private boolean executeItemAttack(Player player, Item item) {
     if (player == null || item == null) {
       throw new IllegalArgumentException("Player and item cannot be null");
     }
@@ -442,9 +439,8 @@ public class TownModel implements Town {
    *
    * @param player the player executing the attack
    * @return true if the target was defeated, false otherwise
-   * @throws IOException if an I/O error occurs
    */
-  private boolean executePoke(Player player) throws IOException {
+  private boolean executePoke(Player player) {
     if (player == null) {
       throw new IllegalArgumentException("Player cannot be null");
     }
@@ -459,7 +455,7 @@ public class TownModel implements Town {
   }
 
   @Override
-  public String getPlayerCurrentCarriedItems(int playerIndex) throws IOException {
+  public String getPlayerCurrentCarriedItems(int playerIndex) {
     Player player = players.get(playerIndex);
     List<Item> carriedItems = player.getCurrentCarriedItems();
     List<String> itemNames = new ArrayList<>();

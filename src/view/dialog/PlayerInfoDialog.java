@@ -17,7 +17,8 @@ import javax.swing.JTextArea;
 import view.GuiGameView;
 
 /**
- * Dialog for displaying player information.
+ * A dialog window for displaying player information in the game.
+ * Provides functionality to view all players' information or details about a specific player.
  */
 public class PlayerInfoDialog extends JDialog {
   private final GuiGameView parentView;
@@ -25,8 +26,9 @@ public class PlayerInfoDialog extends JDialog {
 
   /**
    * Constructs a new PlayerInfoDialog.
+   * Initializes a modal dialog window with a text area for displaying player information.
    *
-   * @param parent the parent GuiGameView
+   * @param parent the parent GuiGameView that owns this dialog
    */
   public PlayerInfoDialog(GuiGameView parent) {
     super(parent.getMainFrame(), "Player Information", true);
@@ -36,6 +38,10 @@ public class PlayerInfoDialog extends JDialog {
     initializeDialog();
   }
 
+  /**
+   * Initializes the dialog components and layout.
+   * Sets up the main content area with a scrollable text display and button panel.
+   */
   private void initializeDialog() {
     setLayout(new BorderLayout(10, 10));
     setSize(600, 400);
@@ -59,6 +65,12 @@ public class PlayerInfoDialog extends JDialog {
     add(buttonPanel, BorderLayout.SOUTH);
   }
 
+  /**
+   * Creates the button panel with controls for viewing player information.
+   * Contains buttons for showing all players, showing specific player, and exiting.
+   *
+   * @return a JPanel containing the control buttons
+   */
   private JPanel createButtonPanel() {
     final JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 5));
 
@@ -79,15 +91,20 @@ public class PlayerInfoDialog extends JDialog {
     return buttonPanel;
   }
 
+  /**
+   * Handles the action to display information about all players in the game.
+   * Retrieves player information from the model and updates the display.
+   */
   private void handleShowAllPlayers() {
-    try {
-      List<String> playersInfo = parentView.getController().getTown().getAllPlayersInfo();
-      displayPlayersInfo(playersInfo);
-    } catch (Exception e) {
-      showError("Error getting players info: " + e.getMessage());
-    }
+    List<String> playersInfo = parentView.getController().getTown().getAllPlayersInfo();
+    displayPlayersInfo(playersInfo);
+
   }
 
+  /**
+   * Handles the action to display information about a specific player.
+   * Prompts for player name and displays their information if found.
+   */
   private void handleShowSomeone() {
     String playerName = JOptionPane.showInputDialog(this, "Enter player name:");
     if (playerName != null && !playerName.trim().isEmpty()) {
@@ -106,6 +123,12 @@ public class PlayerInfoDialog extends JDialog {
     }
   }
 
+  /**
+   * Formats and displays player information in the text area.
+   * Handles both single and multiple player information display.
+   *
+   * @param playersInfo list of strings containing player information to display
+   */
   private void displayPlayersInfo(List<String> playersInfo) {
     if (playersInfo.isEmpty()) {
       infoArea.setText("No players in the game.");
@@ -124,6 +147,11 @@ public class PlayerInfoDialog extends JDialog {
     infoArea.setText(sb.toString());
   }
 
+  /**
+   * Displays an error message dialog with the specified message.
+   *
+   * @param message the error message to display
+   */
   private void showError(String message) {
     JOptionPane.showMessageDialog(this, message, "Error", JOptionPane.ERROR_MESSAGE);
   }

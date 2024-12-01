@@ -158,7 +158,6 @@ public class GuiGameController implements Controller {
     // other players in the same place
     parts[1] = parts[1].replace("[", "").replace("]", "");
     String[] otherPlayers = parts[1].split(", ");
-    final List<String> otherPlayersList = new ArrayList<>(Arrays.asList(otherPlayers));
 
     // target info
     parts[2] = parts[2].replace("[", "").replace("]", "");
@@ -173,7 +172,6 @@ public class GuiGameController implements Controller {
     String[] currentPetInfo = parts[3].split(",");
     String petName = currentPetInfo[0];
     String petPlace = currentPetInfo[1];
-    String petInfoString = petName + "," + petPlace;
 
     // current place items
     List<String> currentPlaceItemsList = new ArrayList<>();
@@ -241,7 +239,7 @@ public class GuiGameController implements Controller {
       try {
         takeTurn();
       } catch (IOException e) {
-        e.printStackTrace();
+        throw new RuntimeException(e);
       }
     });
     return true;
@@ -313,7 +311,7 @@ public class GuiGameController implements Controller {
         try {
           takeTurn();
         } catch (IOException e) {
-          e.printStackTrace();
+          throw new RuntimeException(e);
         }
       });
     } else if (town.getPlayers().get(town.getCurrentPlayerIndex()).getCurrentCarriedItems().size()
@@ -330,7 +328,7 @@ public class GuiGameController implements Controller {
                   new PickUpItemCommand(town, itemName1).execute();
                   takeTurn();
                 } catch (IOException e) {
-                  e.printStackTrace();
+                  throw new RuntimeException(e);
                 }
               }
           )
@@ -458,7 +456,7 @@ public class GuiGameController implements Controller {
         town.lookAround();
         takeTurn();
       } catch (IOException e) {
-        e.printStackTrace();
+        throw new RuntimeException(e);
       }
     });
   }
@@ -537,7 +535,7 @@ public class GuiGameController implements Controller {
         new MovePlayerCommand(town, currentPlayerIndex, newPlaceNumber).execute();
         takeTurn();
       } catch (IOException e) {
-        e.printStackTrace();
+        throw new RuntimeException(e);
       }
     });
   }
@@ -568,7 +566,7 @@ public class GuiGameController implements Controller {
             new MovePetCommand(town, placeNumber).execute();
             takeTurn();
           } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
           }
         })
         .exceptionally(e -> {
@@ -633,7 +631,7 @@ public class GuiGameController implements Controller {
             }
             guiView.showGuiMessage("Attack Result", showAttackResult, "OK");
           } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
           }
         })
         .exceptionally(e -> {
@@ -675,7 +673,7 @@ public class GuiGameController implements Controller {
             try {
               endGame();
             } catch (IOException e) {
-              e.printStackTrace();
+              throw new RuntimeException(e);
             }
           });
     } else {
