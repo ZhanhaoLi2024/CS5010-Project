@@ -1,7 +1,7 @@
 package view;
 
 import controller.Controller;
-import controller.support.PlayerInfoDTO;
+import controller.support.PlayerInfoDto;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
@@ -276,7 +276,7 @@ public class GuiGameView implements View, GuiView, KeyListener {
    * @param info data transfer object containing current player information
    */
   @Override
-  public void updatePlayerInfo(PlayerInfoDTO info) {
+  public void updatePlayerInfo(PlayerInfoDto info) {
     SwingUtilities.invokeLater(() -> {
       turnLabel.setText("Turn: " + info.getCurrentTurn());
       playerNameLabel.setText("Player: " + info.getPlayerName());

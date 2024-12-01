@@ -376,6 +376,11 @@ public class TownModel implements Town {
     return currentTurn;
   }
 
+  /**
+   * Checks if the current player is computer-controlled.
+   *
+   * @return true if the current player is computer-controlled, false otherwise
+   */
   @Override
   public Boolean isComputerControllerPlayer() {
     return players.get(currentPlayerIndex).isComputerControlled();
@@ -391,6 +396,12 @@ public class TownModel implements Town {
     return currentPlayerIndex;
   }
 
+  /**
+   * checks if the player is visible to other players.
+   *
+   * @param player the player to check visibility for
+   * @return true if the player is visible to others, false otherwise
+   */
   @Override
   public boolean isPlayerVisible(Player player) {
     if (player == null) {
@@ -454,6 +465,12 @@ public class TownModel implements Town {
     return targetDefeated;
   }
 
+  /**
+   * Gets the current items carried by the player.
+   *
+   * @param playerIndex the index of the player
+   * @return a string containing the names of the items carried by the player
+   */
   @Override
   public String getPlayerCurrentCarriedItems(int playerIndex) {
     Player player = players.get(playerIndex);
@@ -465,6 +482,11 @@ public class TownModel implements Town {
     return itemNames.toString();
   }
 
+  /**
+   * Gets the maximum number of turns allowed in the game.
+   *
+   * @return the maximum number of turns
+   */
   @Override
   public int getMaxTurns() {
     return maxTurns;

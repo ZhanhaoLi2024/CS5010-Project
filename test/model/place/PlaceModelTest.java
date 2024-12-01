@@ -22,6 +22,9 @@ public class PlaceModelTest {
   private Item testItem;
   private Player testPlayer;
 
+  /**
+   * Set up a test place with valid parameters.
+   */
   @Before
   public void setUp() {
     // Initialize a test place with valid parameters
@@ -62,7 +65,7 @@ public class PlaceModelTest {
   }
 
   // Neighbor Relationship Tests
-// Test that rooms that share a horizontal wall are neighbors
+  // Test that rooms that share a horizontal wall are neighbors
   @Test
   public void testValidNeighborHorizontal() {
     // Create a room that shares a vertical wall with testPlace (1,1,3,3)

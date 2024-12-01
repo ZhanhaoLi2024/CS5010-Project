@@ -49,7 +49,7 @@ public class TextGameController implements Controller {
    * @return List containing the parsed items,or empty list if input is null or empty
    */
   private static List<String> convertStringToList(String input) {
-    if (input == null || input.equals("[]")) {
+    if ("[]".equals(input) || input == null) {
       return new ArrayList<>();
     }
 
@@ -147,7 +147,7 @@ public class TextGameController implements Controller {
       String playerInfo = town.showBasicLocationInfo();
       view.showMessage("playerInfo: " + playerInfo);
       playerInfo = playerInfo.substring(1, playerInfo.length() - 1);
-      String[] items = playerInfo.split("\\], \\[");
+      String[] items = playerInfo.split("], \\[");
       String playerName = "";
       String playerPlace = "";
       List<String> otherPlayers = new ArrayList<>();
@@ -367,7 +367,7 @@ public class TextGameController implements Controller {
     String itemName = chooseItem[0].trim();
     String itemDamage = chooseItem[1].trim();
     view.showMessage("You choose to attack with " + itemName);
-    if (itemName.equals("Poke Target")) {
+    if ("Poke Target".equals(itemName)) {
       view.showMessage("Successfully poke the target in the eye for 1 damage.");
     } else {
       view.showMessage("Attack successfully with " + itemName + " for " + itemDamage + " damage.");
@@ -390,7 +390,7 @@ public class TextGameController implements Controller {
       itemName = handleComputerAttack(currentPlayerIndex);
     } else {
       itemName = handleHumanAttack(currentPlayerIndex);
-      if (itemName.equals("fail")) {
+      if ("fail".equals(itemName)) {
         return;
       }
     }
@@ -566,7 +566,7 @@ public class TextGameController implements Controller {
 
     // show the neighbors Info: name, items, players
     neighbors = neighbors.replace("[[", "").replace("]]", "");
-    String[] neighborParts = neighbors.split("\\], \\[");
+    String[] neighborParts = neighbors.split("], \\[");
     for (String neighbor : neighborParts) {
       String[] neighborInfo = neighbor.split(";");
 
@@ -624,7 +624,7 @@ public class TextGameController implements Controller {
     // Get neighboring places info
     String currentPlaceNeighbour = town.getCurrentPlaceNeighborsInfo(currentPlaceNumber);
     currentPlaceNeighbour = currentPlaceNeighbour.substring(1, currentPlaceNeighbour.length() - 1);
-    String[] places = currentPlaceNeighbour.split("\\], \\[");
+    String[] places = currentPlaceNeighbour.split("], \\[");
 
     // Process neighbor information
     HashSet<Integer> neighborNumbers = new HashSet<>();
@@ -672,7 +672,7 @@ public class TextGameController implements Controller {
     // If the player is human controlled, ask the player where they want to move
     String currentPlaceNeighbour = town.getCurrentPlaceNeighborsInfo(currentPlaceNumber);
     currentPlaceNeighbour = currentPlaceNeighbour.substring(1, currentPlaceNeighbour.length() - 1);
-    String[] places = currentPlaceNeighbour.split("\\], \\[");
+    String[] places = currentPlaceNeighbour.split("], \\[");
     HashSet<Integer> neighborNumber = new HashSet<>();
     for (String place : places) {
       place = place.replace("[", "").replace("]", "");

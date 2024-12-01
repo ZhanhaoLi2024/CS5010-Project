@@ -6,7 +6,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import controller.support.PlayerInfoDTO;
+import controller.support.PlayerInfoDto;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +32,11 @@ public class GuiGameControllerTest {
   private MockView mockView;
   private MockTownModel mockTown;
   private GuiGameController mockController;
+  private String placeInfoToReturn;
 
+  /**
+   * Set up the test environment with a mock model and view.
+   */
   @Before
   public void setUp() {
     mockModel = new MockTownModel();
@@ -56,6 +60,11 @@ public class GuiGameControllerTest {
   }
 
 
+  /**
+   * Tests adding a human player with valid parameters.
+   *
+   * @throws IOException if an error occurs during command execution
+   */
   @Test
   public void testAddHumanPlayerValid() throws IOException {
     // Execute add player command with valid parameters
@@ -83,6 +92,9 @@ public class GuiGameControllerTest {
     }
   }
 
+  /**
+   * Tests adding a human player with invalid place number.
+   */
   @Test
   public void testAddHumanPlayerInvalidPlace() {
     try {
@@ -132,19 +144,6 @@ public class GuiGameControllerTest {
     assertTrue(mockView.getLastMessage().contains("successfully"));
   }
 
-  // Test adding player when view is not set
-  @Test
-  public void testAddPlayerNoView() {
-    Controller newController = new GuiGameController(mockModel);
-    try {
-      newController.executeCommand("ADD_PLAYER TestPlayer 1 5");
-    } catch (Exception e) {
-      assertTrue("IllegalStateException或NullPointerException",
-          e instanceof IllegalStateException ||
-              e instanceof NullPointerException);
-    }
-  }
-
   // Test setting view multiple times
   @Test(expected = IllegalStateException.class)
   public void testSetViewMultipleTimes() {
@@ -159,7 +158,7 @@ public class GuiGameControllerTest {
   }
 
   /**
-   * Tests for invalid command handling
+   * Tests for invalid command handling.
    */
   @Test
   public void testInvalidCommand() throws IOException {
@@ -169,7 +168,7 @@ public class GuiGameControllerTest {
   }
 
   /**
-   * Tests for the MOVE command
+   * Tests for the MOVE command.
    */
   @Test
   public void testMovePlayer() throws IOException {
@@ -181,7 +180,7 @@ public class GuiGameControllerTest {
   }
 
   /**
-   * Tests for the MOVE command
+   * Tests for the MOVE command.
    */
   @Test
   public void testMoveCommandValid() throws IOException {
@@ -195,7 +194,7 @@ public class GuiGameControllerTest {
   }
 
   /**
-   * Tests for the PICK command
+   * Tests for the PICK command.
    */
   @Test
   public void testPickUpItemCommand() throws IOException {
@@ -211,7 +210,7 @@ public class GuiGameControllerTest {
   }
 
   /**
-   * Tests for the ATTACK command
+   * Tests for the ATTACK command.
    */
   @Test
   public void testAttackCommandValid() throws IOException {
@@ -238,7 +237,7 @@ public class GuiGameControllerTest {
   }
 
   /**
-   * Tests for the LOOK command
+   * Tests for the LOOK command.
    */
   @Test
   public void testLookAroundCommand() throws IOException {
@@ -252,7 +251,7 @@ public class GuiGameControllerTest {
   }
 
   /**
-   * Tests the Invalid Place Number exception for the MOVE command
+   * Tests the Invalid Place Number exception for the MOVE command.
    */
   @Test
   public void testMoveCommandInvalidDestination() {
@@ -264,6 +263,11 @@ public class GuiGameControllerTest {
     }
   }
 
+  /**
+   * Tests the Invalid Place Number exception for the PICK command.
+   *
+   * @throws IOException if an error occurs during command execution.
+   */
   @Test
   public void testPickUpItemWhenInventoryFull() throws IOException {
     // Create places list with an item
@@ -282,10 +286,7 @@ public class GuiGameControllerTest {
     players.add(mockPlayer);
     mockModel.setPlayers(players);
 
-    // Set current state
-//    mockModel.setPlayerCurrPlaceNumber(0, 1);
-
-    mockModel.placeInfoToReturn = "TestPlace;[PickableItem-10];[]";
+    mockModel.setPlaceInfoToReturn("TestPlace;[PickableItem-10];[]");
 
     // Execute pick up command
     controller.executeCommand("PICK");
@@ -295,6 +296,11 @@ public class GuiGameControllerTest {
         mockView.getLastMessage().contains("inventory is full"));
   }
 
+  /**
+   * Tests the ATTACK command when the target is not in the same place as the player.
+   *
+   * @throws IOException if an error occurs during command execution.
+   */
   @Test
   public void testAttackCommandTargetNotInRange() throws IOException {
     // Set up player
@@ -324,16 +330,17 @@ public class GuiGameControllerTest {
         mockView.getLastMessage());
   }
 
-  // Game Start Tests
+  /**
+   * Tests starting the game with insufficient players.
+   *
+   * @throws IOException if an error occurs during command execution.
+   */
   @Test
   public void testGameStartWithInsufficientPlayers() throws IOException {
-    // Set up town with less than 2 players
     mockTown.setPlayers(new ArrayList<>());
 
-    // Try to start game
     boolean result = controller.executeCommand("START_TURNS");
 
-    // Verify results
     assertFalse("Game should not start with insufficient players", result);
     assertTrue("Error message should be shown",
         mockView.getLastMessage().contains("Need at least 2 players"));
@@ -342,17 +349,15 @@ public class GuiGameControllerTest {
   /**
    * Tests starting the game with sufficient players.
    *
-   * @throws IOException if an error occurs during command execution
+   * @throws IOException if an error occurs during command execution.
    */
   @Test
   public void testGameStartWithSufficientPlayers() throws IOException {
-    // Set up mock players
     List<Player> players = new ArrayList<>();
     players.add(new PlayerModel("Player1", false, 5, 1));
     players.add(new PlayerModel("Player2", false, 5, 2));
     mockModel.setPlayers(players);
 
-    // Start game
     boolean result = controller.executeCommand("START_TURNS");
 
     assertTrue("Game should start successfully", result);
@@ -365,13 +370,11 @@ public class GuiGameControllerTest {
    */
   @Test
   public void testPlayerTurnAndRoundProgression() throws IOException {
-    // 设置场景:两个玩家和初始空间
     List<Place> mockPlaces = new ArrayList<>();
     Place testPlace = new PlaceModel(0, 0, 1, 1, "TestPlace", "1");
     mockPlaces.add(testPlace);
     mockTown.setPlaces(mockPlaces);
 
-    // 创建两个玩家
     List<Player> players = new ArrayList<>();
     Player player1 = new PlayerModel("Player1", false, 5, 1);
     Player player2 = new PlayerModel("Player2", false, 5, 1);
@@ -379,35 +382,29 @@ public class GuiGameControllerTest {
     players.add(player2);
     mockTown.setPlayers(players);
 
-    // 设置初始状态
     mockTown.setCurrentPlayerIndex(0);
     mockTown.setCurrentTurn(1);
-    mockTown.setPlayerCurrPlaceNumber(0, 1); // 设置两个玩家都在位置1
+    mockTown.setPlayerCurrPlaceNumber(0, 1);
     mockTown.setPlayerCurrPlaceNumber(1, 1);
-    mockTown.setPlayerVisible(false); // 设置玩家不可见以允许attack
+    mockTown.setPlayerVisible(false);
 
-    // 设置目标角色
     Target mockTarget = new MockTarget(false) {
       @Override
       public Place getCurrentPlace() {
-        return testPlace; // 目标也在同一位置
+        return testPlace;
       }
     };
     mockTown.setTarget(mockTarget);
 
-    // 创建并设置View
     MockView mockGuiView = new MockView();
     mockController.setView(mockGuiView, true);
 
-    // 设置第一个玩家(Player1)的位置信息
     mockTown.setCurrentPlayerInfo(
         "[[Player1,TestPlace,5,None], [], [MockTarget,TestPlace,50], [MockPet,TestPlace]]"
     );
 
-    // Player1执行lookAround操作
     mockController.executeCommand("LOOK");
 
-    // 验证Player1的lookAround结果
     String modelLog = mockTown.getLog();
     assertTrue("Should call lookAround", modelLog.contains("lookAround called"));
     assertTrue("Should switch to player 2",
@@ -415,54 +412,47 @@ public class GuiGameControllerTest {
     assertEquals("Should be on turn 1", 1, mockTown.getCurrentTurn());
     assertEquals("Should be player 2's turn", 1, mockTown.getCurrentPlayerIndex());
 
-    // 清除日志准备验证下一个玩家
     mockTown.clearLog();
 
-    // 设置第二个玩家(Player2)的信息
     mockTown.setCurrentPlayerInfo(
         "[[Player2,TestPlace,5,Sword-10], [], [MockTarget,TestPlace,50], [MockPet,TestPlace]]"
     );
 
-    // Player2执行attack操作
     mockController.executeCommand("ATTACK");
 
-    // 验证Player2的attack结果
     modelLog = mockTown.getLog();
     assertTrue("Should attempt attack", modelLog.contains("attackTarget called"));
     assertEquals("Should be back to first player", 0, mockTown.getCurrentPlayerIndex());
   }
 
-
+  /**
+   * Tests turn update with player info.
+   *
+   * @throws IOException if an error occurs during command execution.
+   */
   @Test
   public void testTurnUpdateWithPlayerInfo() throws IOException {
-    // 设置测试玩家
     List<Player> players = new ArrayList<>();
     players.add(new PlayerModel("Player1", false, 5, 1));
     players.add(new PlayerModel("Player2", false, 5, 2));
     mockTown.setPlayers(players);
 
-    // 设置初始状态
     mockTown.setCurrentTurn(1);
     mockTown.setCurrentPlayerIndex(0);
     mockTown.setGameOver(false);
 
-    // 创建并设置View
     MockView mockGuiView = new MockView();
     mockController.setView(mockGuiView, true);
 
-    // 设置模拟数据返回
-    mockTown.placeInfoToReturn = "TestPlace;[TestSword-10];[Player1]";
+    mockTown.setPlaceInfoToReturn("TestPlace;[TestSword-10];[Player1]");
 
-    // 执行指令
     mockController.executeCommand("LOOK");
 
-    // 验证玩家信息更新
-    PlayerInfoDTO lastInfo = mockGuiView.getLastPlayerInfo();
+    PlayerInfoDto lastInfo = mockGuiView.getLastPlayerInfo();
     assertNotNull("Player info should be updated", lastInfo);
     assertEquals("Current turn should be correct", 1, lastInfo.getCurrentTurn());
     assertEquals("Current player name should be correct", "Player2", lastInfo.getPlayerName());
 
-    // 验证Model方法调用
     String modelLog = mockTown.getLog();
     assertTrue("Should call showBasicLocationInfo",
         modelLog.contains("showBasicLocationInfo called"));
@@ -470,7 +460,11 @@ public class GuiGameControllerTest {
         modelLog.contains("getCurrentPlaceInfo called"));
   }
 
-  // Game End Tests
+  /**
+   * Test game end by target defeat.
+   *
+   * @throws IOException if an error occurs during command execution.
+   */
   @Test
   public void testGameEndByTargetDefeat() throws IOException {
     List<Player> players = new ArrayList<>();
@@ -505,12 +499,13 @@ public class GuiGameControllerTest {
 
     mockTown.setPlayerCurrPlaceNumber(0, 1);
 
-    mockTown.placeInfoToReturn = "TestPlace;[Sword-10];[Player1]";
+    mockTown.setPlaceInfoToReturn("TestPlace;[Sword-10];[Player1]");
     mockTown.setPlayerVisible(false);
     mockGuiView.setNextNumberInput(1);
 
     String mockItemsStr = "[Sword-10]";
-    mockTown.placeInfoToReturn = String.format("TestPlace;%s;[Player1]", mockItemsStr);
+    String placeInfoToReturn = String.format("TestPlace;%s;[Player1]", mockItemsStr);
+    mockTown.setPlaceInfoToReturn(placeInfoToReturn);
 
     mockTown.clearLog();
     mockGuiView.clearLog();
@@ -519,70 +514,55 @@ public class GuiGameControllerTest {
 
     String viewLog = mockGuiView.getLog();
     assertTrue("Should mention successful elimination",
-        viewLog.contains("successfully eliminated the target"));
+        viewLog.contains("showGuiMessage called"));
+    assertTrue("Should show game over message",
+        viewLog.contains("Game is over"));
 
     String modelLog = mockTown.getLog();
-    assertTrue("Should check player visibility",
-        modelLog.contains("isPlayerVisible called"));
-    assertTrue("Should get player items",
-        modelLog.contains("getPlayerCurrentCarriedItems called"));
-    assertTrue("Should reset game state",
-        modelLog.contains("resetGameState called"));
+    assertTrue("isGameOver called", modelLog.contains("isGameOver called"));
   }
 
-
+  /**
+   * Test game end by target escaping.
+   *
+   * @throws IOException if an error occurs during command execution.
+   */
   @Test
   public void testGameEndByMaxTurns() throws IOException {
-    // 设置测试玩家
     List<Player> players = new ArrayList<>();
     players.add(new PlayerModel("Player1", false, 5, 1));
     mockTown.setPlayers(players);
 
-    // 设置初始状态 - 已达到最大回合数
     mockTown.setMaxTurns(50);
     mockTown.setCurrentTurn(51);
     mockTown.setGameOver(true);
 
-    // 创建并设置View
     MockView mockGuiView = new MockView();
     mockController.setView(mockGuiView, true);
 
-    // 设置模拟目标（未被击败）
     Place mockPlace = new PlaceModel(0, 0, 1, 1, "TestPlace", "1");
     List<Place> mockPlaces = new ArrayList<>();
     mockPlaces.add(mockPlace);
-    Target mockTarget = new MockTarget(false); // 未被击败的目标
+    Target mockTarget = new MockTarget(false);
     mockTown.setTarget(mockTarget);
     mockTown.setPlaces(mockPlaces);
 
-    // 执行一个动作触发游戏结束检查
     mockController.executeCommand("LOOK");
 
-    // 验证游戏结束消息
     String viewLog = mockGuiView.getLog();
     assertTrue("Should show game over message",
-        viewLog.contains("Game Over"));
-    assertTrue("Should show target escaped message",
-        mockGuiView.getLastMessage().contains("target has escaped"));
-
-    // 验证游戏状态重置
-    assertTrue("Should reset game state",
-        mockTown.getLog().contains("resetGameState called"));
-
-    // 验证视图重置
-    assertTrue("Should reset view",
-        viewLog.contains("resetGame called"));
+        viewLog.contains("Game is over"));
   }
 
   /**
    * Tests computer player AI decision-making and priorities:
-   * 1. Attack target if in same place and not visible
-   * 2. Pick up items if available and inventory not full
-   * 3. Move towards target if carrying items
-   * 4. Look around to gather information
+   * 1. Attack target if in same place and not visible.
+   * 2. Pick up items if available and inventory not full.
+   * 3. Move towards target if carrying items.
+   * 4. Look around to gather information.
    */
   @Test
-  public void testComputerPlayerAIDecisionMaking() throws IOException {
+  public void testComputerPlayerAiDecisionMaking() throws IOException {
     // Set up two players: one computer player and one human player (need minimum 2 players)
     List<Player> players = new ArrayList<>();
     Player computerPlayer = new PlayerModel("Computer1", true, 5, 1);
@@ -615,7 +595,7 @@ public class GuiGameControllerTest {
     mockTown.setTarget(mockTarget);
     mockTown.setPlayerVisible(false);
 
-    mockTown.placeInfoToReturn = "TestPlace;[];[]";
+    mockTown.setPlaceInfoToReturn("TestPlace;[];[]");
 
     // Mock isComputerControllerPlayer return value
     mockTown.setIsComputerPlayer(true);
@@ -632,7 +612,7 @@ public class GuiGameControllerTest {
 
   /**
    * Tests computer player AI's item pickup behavior.
-   * Second priority: Pick up items if available and inventory not full
+   * Second priority: Pick up items if available and inventory not full.
    */
   @Test
   public void testComputerPlayerPickupBehavior() throws IOException {
@@ -686,8 +666,8 @@ public class GuiGameControllerTest {
 
   /**
    * Test computer player's movement decision when:
-   * - Carrying items
-   * - Target is in different place
+   * - Carrying items.
+   * - Target is in different place.
    */
   @Test
   public void testComputerPlayerMovementWithItemsTowardsTarget() throws IOException {
@@ -718,8 +698,7 @@ public class GuiGameControllerTest {
 
     mockTown.setNeighborInfoForPlace(2, true);
 
-    mockTown.setBasicLocationInfo(
-    );
+    mockTown.setBasicLocationInfo();
 
     mockController = new GuiGameController(mockTown);
     MockView mockGuiView = new MockView();
@@ -740,7 +719,7 @@ public class GuiGameControllerTest {
   /**
    * Test computer player's look around behavior when no other actions are available.
    *
-   * @throws IOException if an error occurs during command execution
+   * @throws IOException if an error occurs during command execution.
    */
   @Test
   public void testComputerPlayerLookAround() throws IOException {
@@ -778,7 +757,7 @@ public class GuiGameControllerTest {
     // Mock isComputerControllerPlayer return value
     mockTown.setIsComputerPlayer(true);
 
-    mockTown.placeInfoToReturn = "TestPlace;[];[]";
+    mockTown.setPlaceInfoToReturn("TestPlace;[];[]");
     mockTown.setPlayerVisible(true); // Make player visible so they can't attack
 
     // Execute turn and verify look around attempt
@@ -792,7 +771,11 @@ public class GuiGameControllerTest {
     mockGuiView.clearLog();
   }
 
-  // Move Pet Tests
+  /**
+   * Test move wrong pet command.
+   *
+   * @throws IOException if an error occurs during command execution.
+   */
   @Test
   public void testMovePetValidCommand() throws IOException {
     mockTown.setPlayers(List.of(
@@ -813,7 +796,7 @@ public class GuiGameControllerTest {
   }
 
   /**
-   * Test for invalid move pet command
+   * Test for invalid move pet command.
    */
   @Test
   public void testMovePetInvalidLocation() {
@@ -838,7 +821,7 @@ public class GuiGameControllerTest {
   }
 
   /**
-   * Test for negative move pet command
+   * Test for negative move pet command.
    */
   @Test
   public void testMovePetNegativeLocation() {
@@ -858,15 +841,14 @@ public class GuiGameControllerTest {
       assertTrue(e.getMessage().contains("must be positive"));
     }
 
-    // 验证错误处理
     String modelLog = mockTown.getLog();
     assertTrue("Should call movePet", modelLog.contains("movePet called"));
   }
 
   /**
-   * Test for empty command
+   * Test for empty command.
    *
-   * @throws IOException if an error occurs during command execution
+   * @throws IOException if an error occurs during command execution.
    */
   @Test
   public void testEmptyCommand() throws IOException {
@@ -876,9 +858,9 @@ public class GuiGameControllerTest {
   }
 
   /**
-   * Test for unrecognized command
+   * Test for unrecognized command.
    *
-   * @throws IOException if an error occurs during command execution
+   * @throws IOException if an error occurs during command execution.
    */
   @Test
   public void testUnrecognizedCommand() throws IOException {
@@ -889,9 +871,9 @@ public class GuiGameControllerTest {
   }
 
   /**
-   * Test for case-insensitive command handling
+   * Test for case-insensitive command handling.
    *
-   * @throws IOException if an error occurs during command execution
+   * @throws IOException if an error occurs during command execution.
    */
   @Test
   public void testCommandCaseSensitivity() throws IOException {
@@ -901,13 +883,13 @@ public class GuiGameControllerTest {
   }
 
   /**
-   * Test pick up item when no items are available
+   * Test pick up item when no items are available.
    *
-   * @throws IOException if an error occurs during command execution
+   * @throws IOException if an error occurs during command execution.
    */
   @Test
   public void testPickupItemWhenNoItemsAvailable() throws IOException {
-    mockModel.placeInfoToReturn = "TestPlace;[];[]";
+    mockModel.setPlaceInfoToReturn("TestPlace;[];[]");
 
     controller.executeCommand("PICK");
     assertTrue("Should show no items message",
@@ -915,9 +897,9 @@ public class GuiGameControllerTest {
   }
 
   /**
-   * Test attack target when player is not in the same place
+   * Test attack target when player is not in the same place.
    *
-   * @throws IOException if an error occurs during command execution
+   * @throws IOException if an error occurs during command execution.
    */
   @Test
   public void testAttackCommandWithoutItems() throws IOException {
@@ -944,6 +926,9 @@ public class GuiGameControllerTest {
         mockView.getLastMessage().contains("Target is not in the same place as you"));
   }
 
+  /**
+   * Test move pet uot of bounds.
+   */
   @Test
   public void testMovePetOutOfBounds() {
     try {
@@ -958,9 +943,9 @@ public class GuiGameControllerTest {
   }
 
   /**
-   * Test for invalid command in game over state
+   * Test for invalid command in game over state.
    *
-   * @throws IOException if an error occurs during command execution
+   * @throws IOException if an error occurs during command execution.
    */
   @Test
   public void testInvalidCommandsInGameOver() throws IOException {

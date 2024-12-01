@@ -6,7 +6,7 @@ import java.util.List;
  * Data Transfer Object for player information between Controller and View.
  * Used to maintain MVC separation by avoiding direct model class dependencies.
  */
-public class PlayerInfoDTO {
+public class PlayerInfoDto {
   private final String playerName;
   private final List<String> items;
   private final int currentTurn;
@@ -19,15 +19,15 @@ public class PlayerInfoDTO {
    * @param playerCurrentTurn  the current turn number
    * @param currentPlayerName  the player's name
    * @param currentItems       the player's items
-   * @param palyerCurrentPlace the player's current place
+   * @param playerCurrentPlace the player's current place
    * @param gameTarget         the player's target
    */
-  public PlayerInfoDTO(int playerCurrentTurn, String currentPlayerName, List<String> currentItems,
-                       String palyerCurrentPlace, String gameTarget) {
+  public PlayerInfoDto(int playerCurrentTurn, String currentPlayerName, List<String> currentItems,
+                       String playerCurrentPlace, String gameTarget) {
     this.playerName = currentPlayerName;
     this.items = currentItems;
     this.currentTurn = playerCurrentTurn;
-    this.currentPlace = palyerCurrentPlace;
+    this.currentPlace = playerCurrentPlace;
     this.target = gameTarget;
   }
 

@@ -19,7 +19,7 @@ public class MockTownModel implements Town {
   private final Map<Integer, Integer> playerPlaceNumbers = new HashMap<>();
   private final Map<String, Integer> methodCallCount = new HashMap<>();
   private final Map<Integer, String> neighborInfoMap = new HashMap<>();
-  public String placeInfoToReturn;
+  private String placeInfoToReturn;
   private List<Place> places;
   private List<Player> players;
   private Target target;
@@ -185,6 +185,9 @@ public class MockTownModel implements Town {
 
   /**
    * Sets the place info to return for testing purposes.
+   *
+   * @param playerIndex the player index
+   * @param placeNumber the place number
    */
   public void setPlayerCurrPlaceNumber(int playerIndex, int placeNumber) {
     playerPlaceNumbers.put(playerIndex, placeNumber);
@@ -302,6 +305,8 @@ public class MockTownModel implements Town {
 
   /**
    * Sets the place info to return for testing purposes.
+   *
+   * @param info the place info to return
    */
   public void setCurrentPlayerInfo(String info) {
     this.currentPlayerInfo = info;
@@ -386,7 +391,7 @@ public class MockTownModel implements Town {
   }
 
   /**
-   * Sets the current player index for testing purposes
+   * Sets the current player index for testing purposes.
    *
    * @param index the index to set
    */
@@ -466,5 +471,9 @@ public class MockTownModel implements Town {
     int count = methodCallCount.getOrDefault(methodName, 0) + 1;
     methodCallCount.put(methodName, count);
     return count > 1;
+  }
+
+  public void setPlaceInfoToReturn(String placeInfo) {
+    this.placeInfoToReturn = placeInfo;
   }
 }

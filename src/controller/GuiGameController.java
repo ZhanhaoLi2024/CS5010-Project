@@ -5,7 +5,7 @@ import controller.command.LookAroundCommand;
 import controller.command.MovePetCommand;
 import controller.command.MovePlayerCommand;
 import controller.command.PickUpItemCommand;
-import controller.support.PlayerInfoDTO;
+import controller.support.PlayerInfoDto;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -157,7 +157,6 @@ public class GuiGameController implements Controller {
 
     // other players in the same place
     parts[1] = parts[1].replace("[", "").replace("]", "");
-    String[] otherPlayers = parts[1].split(", ");
 
     // target info
     parts[2] = parts[2].replace("[", "").replace("]", "");
@@ -169,22 +168,14 @@ public class GuiGameController implements Controller {
 
     // current pet info
     parts[3] = parts[3].replace("[", "").replace("]", "");
-    String[] currentPetInfo = parts[3].split(",");
-    String petName = currentPetInfo[0];
-    String petPlace = currentPetInfo[1];
 
     // current place items
-    List<String> currentPlaceItemsList = new ArrayList<>();
     if (parts.length > 4) {
       parts[4] = parts[4].replace("[", "").replace("]", "");
-      String[] currentPlaceItems = parts[4].split(",");
-      String currentPlaceItemName = currentPlaceItems[0];
-      String currentPlaceItemDamage = currentPlaceItems[1];
-      currentPlaceItemsList.add(currentPlaceItemName + "(" + currentPlaceItemDamage + ")");
     }
 
-    PlayerInfoDTO playerInfo =
-        new PlayerInfoDTO(town.getCurrentTurn(), currentPlayerName, currentPlayerItems,
+    PlayerInfoDto playerInfo =
+        new PlayerInfoDto(town.getCurrentTurn(), currentPlayerName, currentPlayerItems,
             currentPlayerPlace, targetInfoString
         );
     guiView.updatePlayerInfo(playerInfo);
@@ -199,6 +190,7 @@ public class GuiGameController implements Controller {
     updateCurrentPlayerInfo(playerInfo);
     takeTurnForPlayer();
     boolean isGameOver = town.isGameOver();
+    System.out.println("Is game over: " + isGameOver);
     if (isGameOver) {
       endGame();
     }
@@ -275,7 +267,12 @@ public class GuiGameController implements Controller {
       }
       System.out.println("Max damage item: " + maxDamageItemName);
       new PickUpItemCommand(town, maxDamageItemName).execute();
-      takeTurn();
+      boolean isGameOver = town.isGameOver();
+      if (isGameOver) {
+        endGame();
+      } else {
+        takeTurn();
+      }
     }
   }
 
@@ -361,7 +358,12 @@ public class GuiGameController implements Controller {
    */
   private void handleComputerLookAround() throws IOException {
     new LookAroundCommand(town).execute();
-    takeTurn();
+    boolean isGameOver = town.isGameOver();
+    if (isGameOver) {
+      endGame();
+    } else {
+      takeTurn();
+    }
   }
 
   /**
@@ -373,7 +375,6 @@ public class GuiGameController implements Controller {
     int currentPlayerIndex = town.getCurrentPlayerIndex();
     int currentPlayerPlaceNumber = town.getPlayerCurrPlaceNumber(currentPlayerIndex);
     String currentPlace = town.getCurrentPlaceInfo(currentPlayerPlaceNumber);
-    String neighbors = town.getCurrentPlaceNeighborsInfo(currentPlayerPlaceNumber);
 
     StringBuilder lookAroundInfo;
     // Show current place info: name, items, players
@@ -409,6 +410,7 @@ public class GuiGameController implements Controller {
     lookAroundInfo.append("Current place players: ").append(currentPlayers).append("\n");
 
     // Show neighbors info: name, items, players
+    String neighbors = town.getCurrentPlaceNeighborsInfo(currentPlayerPlaceNumber);
     neighbors = neighbors.replace("[[", "").replace("]]", "");
     String[] neighborParts = neighbors.split("], \\[");
     System.out.println("Neighbor parts: " + Arrays.toString(neighborParts));
@@ -416,7 +418,7 @@ public class GuiGameController implements Controller {
       String[] neighborInfo = neighbor.split(";");
 
       String neighborName = neighborInfo[0].trim();
-      String neighborNumber = neighborInfo[1].trim();
+      final String neighborNumber = neighborInfo[1].trim();
       String neighborItem;
       String neighborItemName = "";
       String neighborItemDamage = "";
@@ -490,7 +492,7 @@ public class GuiGameController implements Controller {
     // Get neighboring places info
     String currentPlaceNeighbour = town.getCurrentPlaceNeighborsInfo(currentPlaceNumber);
     currentPlaceNeighbour = currentPlaceNeighbour.substring(1, currentPlaceNeighbour.length() - 1);
-    String[] places = currentPlaceNeighbour.split("\\], \\[");
+    String[] places = currentPlaceNeighbour.split("], \\[");
 
     // Process neighbor information
     HashSet<Integer> neighborNumbers = new HashSet<>();
@@ -523,7 +525,12 @@ public class GuiGameController implements Controller {
     // Execute move
     new MovePlayerCommand(town, currentPlayerIndex, newPlaceNumberInfo).execute();
 
-    takeTurn();
+    boolean isGameOver = town.isGameOver();
+    if (isGameOver) {
+      endGame();
+    } else {
+      takeTurn();
+    }
   }
 
   /**
@@ -680,7 +687,12 @@ public class GuiGameController implements Controller {
           });
     } else {
       town.switchToNextPlayer();
-      takeTurn();
+      boolean isGameOver = town.isGameOver();
+      if (isGameOver) {
+        endGame();
+      } else {
+        takeTurn();
+      }
     }
   }
 
@@ -765,10 +777,15 @@ public class GuiGameController implements Controller {
       }
     } else if (commandName.startsWith("ADD_COMPUTER")) {
       // Add computer player command
-      String playersSize = String.valueOf((town.getPlayers().size() + 1));
-      String computerName = "Computer" + playersSize;
+      String computerName;
+      if (town.getPlayers().isEmpty()) {
+        computerName = "Computer1";
+      } else {
+        String playersSize = String.valueOf((town.getPlayers().size() + 1));
+        computerName = "Computer" + playersSize;
+      }
       Random rand = new Random();
-      int startingPlace = rand.nextInt(town.getPlaces().size());
+      int startingPlace = rand.nextInt(19) + 1;
       boolean addSuccess =
           new AddPlayerCommand(town, true, computerName, startingPlace, 5).execute();
       if (addSuccess) {

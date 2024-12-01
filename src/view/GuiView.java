@@ -1,7 +1,7 @@
 package view;
 
 
-import controller.support.PlayerInfoDTO;
+import controller.support.PlayerInfoDto;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -14,7 +14,7 @@ public interface GuiView extends View {
    *
    * @param info the new player information
    */
-  void updatePlayerInfo(PlayerInfoDTO info);
+  void updatePlayerInfo(PlayerInfoDto info);
 
   /**
    * Shows a message to the user in the GUI.

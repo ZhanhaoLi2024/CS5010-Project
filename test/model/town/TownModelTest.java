@@ -26,6 +26,11 @@ public class TownModelTest {
   private TownModel townModel;
   private StringWriter output;
 
+  /**
+   * Set up a new TownModel for each test.
+   *
+   * @throws IOException if there is an error with I/O operations.
+   */
   @Before
   public void setUp() throws IOException {
     output = new StringWriter();
@@ -537,16 +542,12 @@ public class TownModelTest {
     townModel.addPlayer("Player1", 1, 5, false); // Player1 in Park
     townModel.addPlayer("Player2", 2, 5, false); // Player2 in Grocery Store
 
-    // Get places and players
-    Place place1 = townModel.getPlaceByNumber(1);
-    Place place2 = townModel.getPlaceByNumber(2);
-    Player player1 = townModel.getPlayers().get(0);
-    Player player2 = townModel.getPlayers().get(1);
 
     // Move pet away from Player1's location
     townModel.movePet(20);
 
     // Move target to same place as Player1
+    Place place1 = townModel.getPlaceByNumber(1);
     while (!townModel.getTarget().getCurrentPlace().equals(place1)) {
       townModel.moveTarget();
     }
@@ -560,13 +561,16 @@ public class TownModelTest {
     // Try to pick up the item and verify
     townModel.pickUpItem("Toy Ball");
 
+    Player player1 = townModel.getPlayers().get(0);
     assertFalse("Player1's inventory should not be empty",
         player1.getCurrentCarriedItems().isEmpty());
 
     // Verify place setup
+    Place place2 = townModel.getPlaceByNumber(2);
     assertTrue("Places should be neighbors", place1.isNeighbor(place2));
     assertTrue("Place1 should contain player1",
         place1.getCurrentPlacePlayers().contains(player1));
+    Player player2 = townModel.getPlayers().get(1);
     assertTrue("Place2 should contain player2",
         place2.getCurrentPlacePlayers().contains(player2));
 
@@ -668,7 +672,8 @@ public class TownModelTest {
     townModel.addPlayer("Player1", 1, 3, false); // In Park
     townModel.addPlayer("Player2", 2, 3, false); // In Grocery Store
 
-    // Initially players can see each other since pet is in Place 1 (Park) with target but Player1 is in Park so they're not visible
+    // Initially players can see each other since pet is in Place 1 (Park)
+    // with target but Player1 is in Park, so they're not visible
     assertFalse("Players should not be visible due to pet in Place 1",
         townModel.isPlayerVisible(townModel.getPlayers().get(0)));
 

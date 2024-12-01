@@ -1,6 +1,6 @@
 package mock;
 
-import controller.support.PlayerInfoDTO;
+import controller.support.PlayerInfoDto;
 import java.util.concurrent.CompletableFuture;
 import view.GuiView;
 
@@ -13,7 +13,7 @@ public class MockView implements GuiView {
   private final String nextStringInput;
   private String lastMessage;
   private int nextNumberInput;
-  private PlayerInfoDTO lastPlayerInfo;
+  private PlayerInfoDto lastPlayerInfo;
 
   /**
    * Constructs a new MockView.
@@ -47,7 +47,7 @@ public class MockView implements GuiView {
    *
    * @return last PlayerInfoDTO received
    */
-  public PlayerInfoDTO getLastPlayerInfo() {
+  public PlayerInfoDto getLastPlayerInfo() {
     return lastPlayerInfo;
   }
 
@@ -109,10 +109,18 @@ public class MockView implements GuiView {
 
   // GuiView interface implementations
   @Override
-  public void updatePlayerInfo(PlayerInfoDTO info) {
+  public void updatePlayerInfo(PlayerInfoDto info) {
     logMethodCall("updatePlayerInfo");
     lastPlayerInfo = info;
     log.append("Updated player info: ").append(info.getPlayerName()).append("\n");
+  }
+
+  @Override
+  public CompletableFuture<Integer> showGuiNumberMessage(String title, String message,
+                                                         String buttonText, int minValue,
+                                                         int maxValue) {
+    logMethodCall("showGuiNumberMessage");
+    return CompletableFuture.completedFuture(nextNumberInput);
   }
 
   @Override
@@ -122,14 +130,6 @@ public class MockView implements GuiView {
         .append(", Message: ").append(message)
         .append(", Button: ").append(buttonText).append("\n");
     lastMessage = message;
-  }
-
-  @Override
-  public CompletableFuture<Integer> showGuiNumberMessage(String title, String message,
-                                                         String buttonText, int minValue,
-                                                         int maxValue) {
-    logMethodCall("showGuiNumberMessage");
-    return CompletableFuture.completedFuture(nextNumberInput);
   }
 
   @Override
@@ -147,18 +147,5 @@ public class MockView implements GuiView {
   @Override
   public void resetGame() {
     logMethodCall("resetGame");
-  }
-
-  public void movePet(int placeNumber) {
-    logMethodCall("movePet");
-    log.append("Moving pet to: ").append(placeNumber).append("\n");
-
-    if (placeNumber <= 0) {
-      throw new IllegalArgumentException("Error in Pet movePet: place number must be positive!");
-    }
-    if (placeNumber > 20) {
-      throw new IllegalArgumentException(
-          "Error in Pet movePet: place number must be less than or equal to 20!");
-    }
   }
 }
