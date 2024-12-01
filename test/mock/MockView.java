@@ -148,4 +148,17 @@ public class MockView implements GuiView {
   public void resetGame() {
     logMethodCall("resetGame");
   }
+
+  public void movePet(int placeNumber) {
+    logMethodCall("movePet");
+    log.append("Moving pet to: ").append(placeNumber).append("\n");
+
+    if (placeNumber <= 0) {
+      throw new IllegalArgumentException("Error in Pet movePet: place number must be positive!");
+    }
+    if (placeNumber > 20) {
+      throw new IllegalArgumentException(
+          "Error in Pet movePet: place number must be less than or equal to 20!");
+    }
+  }
 }

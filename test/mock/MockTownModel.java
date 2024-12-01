@@ -125,6 +125,16 @@ public class MockTownModel implements Town {
   @Override
   public void movePet(int placeNumber) {
     logMethodCall("movePet");
+    log.append("Moving pet to: ").append(placeNumber).append("\n");
+
+    // 添加边界检查
+    if (placeNumber <= 0) {
+      throw new IllegalArgumentException("Error in Pet movePet: place number must be positive!");
+    }
+    if (placeNumber > 20) {
+      throw new IllegalArgumentException(
+          "Error in Pet movePet: place number must be less than or equal to 20!");
+    }
   }
 
   @Override

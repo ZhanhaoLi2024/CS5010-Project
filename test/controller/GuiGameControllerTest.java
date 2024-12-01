@@ -174,7 +174,7 @@ public class GuiGameControllerTest {
   @Test
   public void testMovePlayer() throws IOException {
     controller.executeCommand("MOVE,MockPlayer,1");
-    
+
     assertTrue(mockModel.getLog().contains("movePlayer called"));
     assertTrue("Check isGameOver called",
         mockModel.getLog().contains("isGameOver called"));
@@ -339,6 +339,11 @@ public class GuiGameControllerTest {
         mockView.getLastMessage().contains("Need at least 2 players"));
   }
 
+  /**
+   * Tests starting the game with sufficient players.
+   *
+   * @throws IOException if an error occurs during command execution
+   */
   @Test
   public void testGameStartWithSufficientPlayers() throws IOException {
     // Set up mock players
@@ -732,6 +737,11 @@ public class GuiGameControllerTest {
         modelLog.contains("movePlayer called"));
   }
 
+  /**
+   * Test computer player's look around behavior when no other actions are available.
+   *
+   * @throws IOException if an error occurs during command execution
+   */
   @Test
   public void testComputerPlayerLookAround() throws IOException {
 
@@ -782,6 +792,213 @@ public class GuiGameControllerTest {
     mockGuiView.clearLog();
   }
 
+  // Move Pet Tests
+  @Test
+  public void testMovePetValidCommand() throws IOException {
+    mockTown.setPlayers(List.of(
+        new PlayerModel("Player1", false, 5, 1),
+        new PlayerModel("Player2", false, 5, 2)
+    ));
+    mockTown.setCurrentPlayerIndex(0);
+
+    MockView mockGuiView = new MockView();
+    mockController.setView(mockGuiView, true);
+
+    mockGuiView.setNextNumberInput(5);
+
+    mockController.executeCommand("PETMOVE");
+
+    String modelLog = mockTown.getLog();
+    assertTrue("Should call movePet", modelLog.contains("movePet called"));
+  }
+
+  /**
+   * Test for invalid move pet command
+   */
+  @Test
+  public void testMovePetInvalidLocation() {
+    mockTown.setPlayers(List.of(
+        new PlayerModel("Player1", false, 5, 1),
+        new PlayerModel("Player2", false, 5, 2)
+    ));
+    mockTown.setCurrentPlayerIndex(0);
+
+    MockView mockGuiView = new MockView();
+    mockController.setView(mockGuiView, true);
+
+    try {
+      mockTown.movePet(25);
+      fail("Should throw exception for invalid place number");
+    } catch (IllegalArgumentException e) {
+      assertTrue(e.getMessage().contains("must be less than or equal to 20"));
+    }
+
+    String modelLog = mockTown.getLog();
+    assertTrue("Should call movePet", modelLog.contains("movePet called"));
+  }
+
+  /**
+   * Test for negative move pet command
+   */
+  @Test
+  public void testMovePetNegativeLocation() {
+    mockTown.setPlayers(List.of(
+        new PlayerModel("Player1", false, 5, 1),
+        new PlayerModel("Player2", false, 5, 2)
+    ));
+    mockTown.setCurrentPlayerIndex(0);
+
+    MockView mockGuiView = new MockView();
+    mockController.setView(mockGuiView, true);
+
+    try {
+      mockTown.movePet(-1);
+      fail("Should throw exception for negative place number");
+    } catch (IllegalArgumentException e) {
+      assertTrue(e.getMessage().contains("must be positive"));
+    }
+
+    // 验证错误处理
+    String modelLog = mockTown.getLog();
+    assertTrue("Should call movePet", modelLog.contains("movePet called"));
+  }
+
+  /**
+   * Test for empty command
+   *
+   * @throws IOException if an error occurs during command execution
+   */
+  @Test
+  public void testEmptyCommand() throws IOException {
+    controller.executeCommand("");
+    assertTrue("Should show invalid command message",
+        mockView.getLastMessage().contains("Invalid command"));
+  }
+
+  /**
+   * Test for unrecognized command
+   *
+   * @throws IOException if an error occurs during command execution
+   */
+  @Test
+  public void testUnrecognizedCommand() throws IOException {
+    // 测试未定义的命令
+    controller.executeCommand("JUMP");
+    assertTrue("Should show unrecognized command message",
+        mockView.getLastMessage().contains("Invalid command"));
+  }
+
+  /**
+   * Test for case-insensitive command handling
+   *
+   * @throws IOException if an error occurs during command execution
+   */
+  @Test
+  public void testCommandCaseSensitivity() throws IOException {
+    controller.executeCommand("move");
+    assertTrue("Should handle case-insensitive commands",
+        mockView.getLastMessage().contains("Invalid command"));
+  }
+
+  /**
+   * Test pick up item when no items are available
+   *
+   * @throws IOException if an error occurs during command execution
+   */
+  @Test
+  public void testPickupItemWhenNoItemsAvailable() throws IOException {
+    mockModel.placeInfoToReturn = "TestPlace;[];[]";
+
+    controller.executeCommand("PICK");
+    assertTrue("Should show no items message",
+        mockView.getLastMessage().contains("No item in this place"));
+  }
+
+  /**
+   * Test attack target when player is not in the same place
+   *
+   * @throws IOException if an error occurs during command execution
+   */
+  @Test
+  public void testAttackCommandWithoutItems() throws IOException {
+    mockModel.setPlayerVisible(false);
+    Place playerPlace = new PlaceModel(0, 0, 1, 1, "Place1", "1");
+    Place targetPlace = new PlaceModel(1, 1, 2, 2, "Place2", "2");
+
+    List<Place> places = new ArrayList<>();
+    places.add(playerPlace);
+    places.add(targetPlace);
+    mockModel.setPlaces(places);
+    mockModel.setPlayerCurrPlaceNumber(0, 1);
+
+    Target mockTarget = new MockTarget(false) {
+      @Override
+      public Place getCurrentPlace() {
+        return targetPlace;
+      }
+    };
+    mockModel.setTarget(mockTarget);
+
+    controller.executeCommand("ATTACK");
+    assertTrue("Should show not in range message",
+        mockView.getLastMessage().contains("Target is not in the same place as you"));
+  }
+
+  @Test
+  public void testMovePetOutOfBounds() {
+    try {
+      mockModel.movePet(100);
+      fail("Should throw exception for out of bounds place number");
+    } catch (IllegalArgumentException e) {
+      assertTrue(e.getMessage().contains("must be less than or equal to 20"));
+    }
+
+    String modelLog = mockModel.getLog();
+    assertTrue("Should call movePet", modelLog.contains("movePet called"));
+  }
+
+  /**
+   * Test for invalid command in game over state
+   *
+   * @throws IOException if an error occurs during command execution
+   */
+  @Test
+  public void testInvalidCommandsInGameOver() throws IOException {
+    mockModel.setGameOver(true);
+
+    List<Player> players = new ArrayList<>();
+    players.add(new PlayerModel("TestPlayer", false, 5, 1));
+    mockModel.setPlayers(players);
+
+    Place mockPlace = new PlaceModel(0, 0, 1, 1, "TestPlace", "1");
+    List<Place> mockPlaces = new ArrayList<>();
+    mockPlaces.add(mockPlace);
+    mockModel.setPlaces(mockPlaces);
+
+    controller.executeCommand("MOVE,Place1,1");
+    assertTrue("Move should not be allowed in game over state",
+        mockView.getLog().contains("Game is over"));
+    mockView.clearLog();
+
+    controller.executeCommand("PICK");
+    assertTrue("Pick up should not be allowed in game over state",
+        mockView.getLog().contains("Game is over"));
+    mockView.clearLog();
+
+    controller.executeCommand("ATTACK");
+    assertTrue("Attack should not be allowed in game over state",
+        mockView.getLog().contains("Game is over"));
+    mockView.clearLog();
+
+    controller.executeCommand("LOOK");
+    assertTrue("Look should not be allowed in game over state",
+        mockView.getLog().contains("Game is over"));
+    mockView.clearLog();
+
+    controller.executeCommand("PETMOVE");
+    assertTrue("Pet move should not be allowed in game over state",
+        mockView.getLog().contains("Game is over"));
+  }
 
   private static class MockTarget implements Target {
     private final boolean isDefeated;

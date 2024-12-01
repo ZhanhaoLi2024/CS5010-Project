@@ -438,6 +438,8 @@ public class GuiGameController implements Controller {
       } else {
         neighborPlayers = neighborInfo[3].replace("[", "").replace("]", "").trim();
       }
+      System.out.println("Neighbor name: " + neighborName);
+      System.out.println("Neighbor pet: " + neighborInfo[5]);
       if (neighborInfo[5].equals("true")) {
         lookAroundInfo.append("Neighboring place: ").append(neighborName).append("\n");
         lookAroundInfo.append("Pet is in this place.\n");
@@ -732,6 +734,17 @@ public class GuiGameController implements Controller {
 
   @Override
   public boolean executeCommand(String commandName) throws IOException {
+    if (commandName == null) {
+      throw new IllegalArgumentException("Command cannot be null");
+    }
+
+    if (town.isGameOver()
+        && !commandName.startsWith("START_TURNS") // 允许重新开始游戏
+        && !commandName.startsWith("ADD_PLAYER")  // 允许添加玩家
+        && !commandName.startsWith("ADD_COMPUTER")) { // 允许添加电脑玩家
+      guiView.showGuiMessage("Error", "Game is over. Start a new game to continue.", "OK");
+      return false;
+    }
     if (commandName.startsWith("ADD_PLAYER")) {
       // Add player command
       String[] parts = commandName.split(" ");
