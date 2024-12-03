@@ -1,6 +1,8 @@
 package controller;
 
 import java.io.IOException;
+import model.town.Town;
+import view.View;
 
 /**
  * The Controller interface defines the contract for managing game flow and user interactions.
@@ -8,35 +10,37 @@ import java.io.IOException;
  */
 public interface Controller {
   /**
-   * Initializes and starts the game, setting up initial game state and beginning gameplay.
+   * Sets the view component for this controller. The view can only be set once.
    *
-   * @throws IOException if there is an error during game initialization or I/O operations
+   * @param gameView the view to be used for user interaction
+   * @param gui      boolean indicating if the view is a GUI
+   * @throws IllegalStateException if the view has already been set
+   */
+  void setView(View gameView, boolean gui);
+
+  /**
+   * Starts the game by initializing the view and entering the main game loop.
+   * Displays welcome message and maximum turns, then shows the main menu until quit.
+   *
+   * @throws IOException           if there is an error in input/output operations
+   * @throws IllegalStateException if the view has not been set
    */
   void startGame() throws IOException;
 
   /**
-   * Generates and displays a graphical representation of the game map.
+   * Gets the town model associated with this controller.
    *
-   * @throws IOException if there is an error during map generation or display
+   * @return the Town model instance
    */
-  void printMap() throws IOException;
+  Town getTown();
 
   /**
-   * Displays detailed information about the current state of the game map.
-   */
-  void displayMapInfo();
-
-  /**
-   * Processes a single turn in the game, handling player actions and game state updates.
+   * Executes a game command.
    *
-   * @throws IOException if there is an error during turn processing
+   * @param command the command string to execute
+   * @return boolean indicating if the command was executed successfully
+   * @throws IOException if there is an error in input/output operations
    */
-  void takeTurn() throws IOException;
 
-  /**
-   * Concludes the game session and performs necessary cleanup operations.
-   *
-   * @throws IOException if there is an error during game termination
-   */
-  void endGame() throws IOException;
+  boolean executeCommand(String command) throws IOException;
 }

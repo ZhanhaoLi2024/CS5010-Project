@@ -2,306 +2,252 @@ package model.town;
 
 import java.io.IOException;
 import java.util.List;
-import model.item.Item;
-import model.pet.Pet;
 import model.place.Place;
 import model.player.Player;
 import model.target.Target;
 
 /**
- * The Town interface defines the basic behaviors and attributes of a town in a
- * game. A town has a name, a list of places, and a character that can move
- * between different places.
+ * The Town interface represents the game world model in the Doctor Lucky game.
+ * It encapsulates all game state and game logic, including players, places, items,
+ * the target character, and the pet. This interface follows the Model component
+ * of the MVC pattern, providing methods to query and modify the game state while
+ * maintaining encapsulation.
  */
 public interface Town {
-  /**
-   * Retrieves the place number by name.
-   *
-   * @param placeName the name of the place
-   * @return the place number
-   */
-  int getPlaceNumberByName(String placeName) throws IOException;
 
   /**
-   * Shows the current information about the pet.
+   * Gets the current information about the pet in the game, including its name
+   * and current location.
+   *
+   * @return a string containing the pet's name and current location, formatted as "name,location"
    */
-  void showPetCurrentInfo() throws IOException;
+  String petCurrentInfo();
 
   /**
-   * Retrieves the place by number.
+   * Retrieves a specific place in the town by its number.
    *
-   * @param placeNumber the number of the place
-   * @return the place
+   * @param placeNumber the number identifier of the place to retrieve
+   * @return the Place object corresponding to the given number
+   * @throws IllegalArgumentException if the place number is invalid
    */
   Place getPlaceByNumber(int placeNumber);
 
   /**
-   * Moves the character to the next place.
+   * Moves the target character to their next location following a predetermined path.
+   * The target moves to spaces in sequential order based on their index.
    */
   void moveTarget();
 
   /**
-   * Retrieves the character in the town.
+   * Retrieves the target character object.
    *
-   * @return the character in the town
+   * @return the Target object representing the game's target character
    */
   Target getTarget();
 
   /**
-   * Retrieves the pet in the town.
-   *
-   * @return the pet in the town
-   */
-  Pet getPet();
-
-  /**
-   * Determines if a place is visible (not blocked by pet).
-   *
-   * @param place the place to check visibility for
-   * @return true if the place is visible, false otherwise
-   */
-  boolean isPlaceVisible(Place place);
-
-  /**
-   * Moves the pet to a new location.
+   * Moves the pet to a specified location in the town.
    *
    * @param placeNumber the number of the place to move the pet to
    * @throws IllegalArgumentException if the place number is invalid
+   * @throws IOException              if there is an error in the operation
    */
   void movePet(int placeNumber) throws IOException;
 
   /**
-   * Retrieves the name of the town.
+   * Gets all places in the town.
    *
-   * @return the name of the town as a String
-   */
-  String getName();
-
-  /**
-   * Retrieves the list of items in the town.
-   *
-   * @return the list of items in the town
-   */
-  List<Item> getItems();
-
-  /**
-   * Retrieves the list of places in the town.
-   *
-   * @return the list of places in the town
+   * @return a List of all Place objects in the town
    */
   List<Place> getPlaces();
 
   /**
-   * Retrieves the name of the target character.
+   * Gets the name of the target character.
    *
-   * @return the name of the target character as a String
+   * @return the name of the target character
    */
   String getTargetName();
 
   /**
-   * Retrieves the health status of the target character.
+   * Gets the current health points of the target character.
    *
-   * @return the health status of the target character
+   * @return the current health points of the target
    */
   int getTargetHealth();
 
   /**
-   * Retrieves the name of the town.
+   * Gets all players currently in the game.
    *
-   * @return the name of the town as a String
-   */
-  String getTownName();
-
-  /**
-   * Retrieves the list of players in the town.
-   *
-   * @return the list of players in the town
+   * @return a List of all Player objects in the game
    */
   List<Player> getPlayers();
 
   /**
-   * Retrieves the neighbors of the specified place.
+   * Gets the current place number for a specific player.
    *
-   * @param place the place to retrieve the neighbors of
-   * @return the neighbors of the specified place
+   * @param playerIndex the index of the player in the players list
+   * @return the place number where the specified player is currently located
+   * @throws IllegalArgumentException if the player index is invalid
    */
-  List<Place> getCurrentPlaceNeighbors(Place place);
+  Integer getPlayerCurrPlaceNumber(int playerIndex);
 
   /**
-   * Adds a computer player to the town.
+   * Gets detailed information about a specific place.
    *
-   * @throws IOException if an I/O error occurs
+   * @param placeNumber the number of the place to get information about
+   * @return a string containing the place's information in format "name;items;players"
+   * @throws IOException if there is an error retrieving the information
    */
-  void addComputerPlayer() throws IOException;
+  String getCurrentPlaceInfo(int placeNumber) throws IOException;
 
   /**
-   * Adds a player to the town.
+   * Gets information about the neighboring places of a specific location.
    *
-   * @throws IOException if an I/O error occurs
+   * @param placeNumber the number of the place to get neighbors for
+   * @return a string containing information about all neighboring places
+   * @throws IOException if there is an error retrieving the information
    */
-  void addPlayer() throws IOException;
+  String getCurrentPlaceNeighborsInfo(int placeNumber) throws IOException;
 
   /**
-   * Shows information about all places.
+   * Adds a new player to the game.
    *
-   * @throws IOException if there is an issue with I/O operations.
+   * @param newPlayerName       the name of the new player
+   * @param newPlayerPlace      the starting place number for the new player
+   * @param newPlayerCarryLimit the maximum number of items the player can carry
+   * @param isComputerPlayer    true if the player is computer-controlled, false otherwise
+   * @throws IllegalArgumentException if any of the parameters are invalid
    */
-  void showAllPlacesInfo() throws IOException;
+  void addPlayer(String newPlayerName, int newPlayerPlace, int newPlayerCarryLimit,
+                 boolean isComputerPlayer);
 
   /**
-   * Shows information about a specific place.
+   * Gets information about a specific player by their name.
    *
-   * @param placeName the name of the place
-   * @throws IOException if there is an issue with I/O operations.
+   * @param playerName the name of the player to get information about
+   * @return a string containing the player's information
+   * @throws IOException if there is an error retrieving the information
    */
-  void getPlaceByName(String placeName) throws IOException;
+  String getPlayerByName(String playerName) throws IOException;
 
   /**
-   * Shows information about all places.
+   * Executes the look around action for the current player.
+   * This action allows a player to see information about their current location
+   * and neighboring spaces.
    *
-   * @throws IOException if there is an issue with I/O operations.
-   */
-  void showAllPlayersInfo() throws IOException;
-
-  /**
-   * Shows information about a specific player.
-   *
-   * @throws IOException if there is an issue with I/O operations.
-   */
-  void getPlayerByName(String playerName) throws IOException;
-
-  /**
-   * Allows the player to look around the current place.
-   *
-   * @throws IOException if there is an issue with I/O operations.
+   * @throws IOException if there is an error executing the action
    */
   void lookAround() throws IOException;
 
   /**
-   * Switches to the next player in the game.
+   * Attempts to attack the target character using a specified item.
+   *
+   * @param attackItemName the name of the item to use in the attack
+   * @return true if the attack succeeded in defeating the target, false otherwise
+   * @throws IOException if there is an error executing the attack
+   */
+  boolean attackTarget(String attackItemName) throws IOException;
+
+  /**
+   * Advances the game to the next player's turn.
+   *
+   * @throws IOException if there is an error switching players
    */
   void switchToNextPlayer() throws IOException;
 
   /**
-   * Shows the basic location information.
+   * Gets basic location information about the current game state.
    *
-   * @throws IOException if there is an issue with I/O operations
+   * @return a string containing basic location information
+   * @throws IOException if there is an error retrieving the information
    */
-  void showBasicLocationInfo() throws IOException;
+  String showBasicLocationInfo() throws IOException;
 
   /**
-   * Resets the game state to the initial configuration.
+   * Gets information about all players in the game.
    *
-   * @throws IOException if there is an issue with I/O operations.
+   * @return a List of strings containing information about all players
+   */
+  List<String> getAllPlayersInfo();
+
+  /**
+   * Resets the game state to its initial configuration.
+   *
+   * @throws IOException if there is an error resetting the game state
    */
   void resetGameState() throws IOException;
 
   /**
-   * Checks if the game is over.
+   * Checks if the game has ended.
    *
    * @return true if the game is over, false otherwise
    */
   boolean isGameOver();
 
   /**
-   * Checks if the computer controller is a player.
+   * Checks if the current player is computer-controlled.
    *
-   * @return true if the computer controller is a player, false otherwise
+   * @return true if the current player is computer-controlled, false otherwise
    */
   Boolean isComputerControllerPlayer();
 
   /**
-   * Retrieves the current turn number.
+   * Gets the current turn number.
    *
    * @return the current turn number
    */
   int getCurrentTurn();
 
   /**
-   * Moves the player to the next place in the list of neighboring places.
+   * Moves a specified player to a new location.
    *
-   * @throws IOException if there is an issue with I/O operations.
+   * @param playerIndex    the index of the player to move
+   * @param newPlaceNumber the number of the place to move to
+   * @throws IOException              if there is an error executing the move
+   * @throws IllegalArgumentException if the player index or place number is invalid
    */
-  void movePlayer() throws IOException;
+  void movePlayer(int playerIndex, int newPlaceNumber) throws IOException;
 
   /**
-   * Allows the player to pick up an item from the current location.
+   * Allows the current player to pick up a specified item from their current location.
    *
-   * @throws IllegalStateException if the player cannot carry any more items.
+   * @param itemName the name of the item to pick up
+   * @throws IOException           if there is an error executing the action
+   * @throws IllegalStateException if the player cannot carry any more items
    */
-  void pickUpItem() throws IOException;
+  void pickUpItem(String itemName) throws IOException;
 
   /**
    * Gets the index of the current player.
    *
-   * @return the index of the current player
+   * @return the index of the current player in the players list
    */
   int getCurrentPlayerIndex();
 
   /**
-   * Checks if a player can be seen by other players.
-   * A player is visible if another player is in the same room or a neighboring room.
+   * Checks if a specific player is visible to other players.
+   * A player is visible if they are in the same space as another player
+   * or in a neighboring space that isn't occupied by the pet.
    *
    * @param player the player to check visibility for
-   * @return true if the player can be seen by others, false otherwise
+   * @return true if the player is visible to others, false otherwise
+   * @throws IllegalArgumentException if the player is null
    */
   boolean isPlayerVisible(Player player);
 
   /**
-   * Displays the current state of the target character.
+   * Gets a string representation of the items currently carried by a player.
    *
-   * @throws IOException if there is an error writing output
+   * @param playerIndex the index of the player
+   * @return a string representation of the player's carried items
+   * @throws IOException if there is an error retrieving the information
    */
-  void showTargetInfo() throws IOException;
+  String getPlayerCurrentCarriedItems(int playerIndex) throws IOException;
 
   /**
-   * Displays the current state of the pet.
+   * Gets the maximum number of turns allowed in the game.
    *
-   * @throws IOException if there is an error writing output
-   */
-  void startTurn() throws IOException;
-
-  /**
-   * Executes an attack with a specific item.
-   *
-   * @param player the player performing the attack
-   * @param item   the item being used
-   * @throws IOException              if there is an error with output
-   * @throws IllegalArgumentException if player or item is null
-   */
-  void executeItemAttack(Player player, Item item) throws IOException;
-
-  /**
-   * Executes a basic poke attack that deals 1 damage.
-   *
-   * @param player the player performing the poke attack
-   * @throws IOException              if there is an error with output
-   * @throws IllegalArgumentException if player is null
-   */
-  void executePoke(Player player) throws IOException;
-
-  /**
-   * Executes an attack for a computer-controlled player.
-   *
-   * @param player the computer-controlled player
-   * @throws IOException              if there is an error with output
-   * @throws IllegalArgumentException if player is null or not computer-controlled
-   */
-  void executeComputerAttack(Player player) throws IOException;
-
-  /**
-   * Handles attack options and execution for human players.
-   *
-   * @param player the human player making the attack
-   * @throws IOException              if there is an error with output
-   * @throws IllegalArgumentException if player is null or is computer-controlled
-   */
-  void handleHumanAttack(Player player) throws IOException;
-
-  /**
-   * Retrieves the maximum number of turns allowed in the game.
-   *
-   * @return the maximum number of turns allowed in the game
+   * @return the maximum number of turns
    */
   int getMaxTurns();
 }

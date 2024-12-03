@@ -12,14 +12,15 @@ public class LookAroundCommand implements Command {
   /**
    * Constructs a new LookAroundCommand.
    *
-   * @param gameTown the town where the player is located
+   * @param gameTown the town model
    */
   public LookAroundCommand(Town gameTown) {
     this.town = gameTown;
   }
 
   @Override
-  public void execute() throws IOException {
+  public boolean execute() throws IOException {
     town.lookAround();
+    return true;
   }
 }

@@ -1,0 +1,78 @@
+This test is to verify that the space containing a pet becomes invisible (in the output, it will show "Pet is here" and the specific information of that space cannot be seen).
+
+The initial location of the pet is the same as that of the target, which is in the place named Park. I set the initial location of the player in the Grocery Store, which is adjacent to Park. When the player uses the "look around" function, the location of Park will display "Pet is here", preventing the player from knowing the detailed information about this location.
+
+
+(base) zhanhaoli@ZhanhaotekiMacBook-Pro cs5010-project % java -cp bin Driver res/SmallTownWorld.txt 3;
+
+++++++++++++++++++++
+Welcome to the game! You have 3 turns.
+Please choose an option:
+1. Show the Map Information
+2. Add the Human-controller player
+3. Add the Computer-controller player
+4. Display the player's information
+5. Display the Place's information
+6. Start the game
+7. Print the map
+0. Exit
+2
+Enter the player's name:
+Ivan
+Enter your starting place number (1-20):
+2
+Enter your limit of carrying items (1-10):
+3
+Player added successfully:
+Name: Ivan
+Location: Grocery Store
+Carry limit: 3
+Do you want to add another player? (yes/no)
+yes
+Enter the player's name:
+Steven
+Enter your starting place number (1-20):
+3
+Enter your limit of carrying items (1-10):
+3
+Player added successfully:
+Name: Steven
+Location: School
+Carry limit: 3
+Do you want to add another player? (yes/no)
+no
+Please choose an option:
+1. Show the Map Information
+2. Add the Human-controller player
+3. Add the Computer-controller player
+4. Display the player's information
+5. Display the Place's information
+6. Start the game
+7. Print the map
+0. Exit
+6
+
+1 of 3
+
+Hi Ivan, you are in Grocery Store
+Target is in Park
+Pet is in Park
+Item in this place: 
+ - Shopping Cart (Damage: 12)
+Please choose an option:
+1. Move player
+2. Pick up item
+3. Look around
+4. Attack target
+5. Move pet
+3
+Current place: Grocery Store
+Items in Grocery Store:
+Shopping Cart (Damage: 12)
+Neighbors of Grocery Store:
+ - Park (Pet is here)
+ - School
+   Items in School:Textbook (Damage: 6)
+   Players in this place:Steven
+ - Restaurant
+   Items in Restaurant:Menu (Damage: 22)

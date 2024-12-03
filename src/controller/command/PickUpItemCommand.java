@@ -8,18 +8,23 @@ import model.town.Town;
  */
 public class PickUpItemCommand implements Command {
   private final Town town;
+  private final String itemName;
 
   /**
    * Constructs a new PickUpItemCommand.
    *
-   * @param gameTown the town where the player is located.
+   * @param gameTown     the town model
+   * @param pickItemName the name of the item to pick up
    */
-  public PickUpItemCommand(Town gameTown) {
+  public PickUpItemCommand(Town gameTown, String pickItemName) {
     this.town = gameTown;
+    this.itemName = pickItemName;
   }
 
   @Override
-  public void execute() throws IOException {
-    town.pickUpItem();
+  public boolean execute() throws IOException {
+    System.out.println("Picking up item: " + itemName);
+    town.pickUpItem(itemName);
+    return true;
   }
 }

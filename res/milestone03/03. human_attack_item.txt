@@ -1,0 +1,277 @@
+# This run shows that the human-controlled player initiates an attack on the target.
+
+## Here are the three scenarios:
+   1. The human-controlled player attacks the target with no other players nearby.
+   2. The human-controlled player attacks the target with no pet present but other players nearby.
+   3. The human-controlled player attacks the target with a pet present and other players nearby.
+
+### Scenario 1:
+I placed Player 1 and Player 2 in non-adjacent locations. When Player 1 attacked the target, it successfully reduced the target’s health.
+(base) zhanhaoli@ZhanhaotekiMacBook-Pro cs5010-project % java -cp bin Driver res/SmallTownWorld.txt 5;
+
+++++++++++++++++++++
+Welcome to the game! You have 5 turns.
+Please choose an option:
+1. Show the Map Information
+2. Add the Human-controller player
+3. Add the Computer-controller player
+4. Display the player's information
+5. Display the Place's information
+6. Start the game
+7. Print the map
+0. Exit
+2
+Enter the player's name:
+Ivan
+Enter your starting place number (1-20):
+1
+Enter your limit of carrying items (1-10):
+3
+Player added successfully:
+Name: Ivan
+Location: Park
+Carry limit: 3
+Do you want to add another player? (yes/no)
+yes
+Enter the player's name:
+Steven
+Enter your starting place number (1-20):
+4
+Enter your limit of carrying items (1-10):
+3
+Player added successfully:
+Name: Steven
+Location: Post Office
+Carry limit: 3
+Do you want to add another player? (yes/no)
+no
+Please choose an option:
+1. Show the Map Information
+2. Add the Human-controller player
+3. Add the Computer-controller player
+4. Display the player's information
+5. Display the Place's information
+6. Start the game
+7. Print the map
+0. Exit
+6
+
+1 of 5
+
+Hi Ivan, you are in Park
+Target is in Park
+Pet is in Park
+Item in this place: 
+ - Toy Ball (Damage: 8)
+Please choose an option:
+1. Move player
+2. Pick up item
+3. Look around
+4. Attack target
+5. Move pet
+4
+
+Choose your attack:
+0. Poke in the eye (1 damage)
+0
+Successfully poked the target in the eye for 1 damage! 
+Target health: 49
+
+
+
+
+### Scenario 2:
+I placed Player 1 and Player 2 in adjacent locations. When Player 1 attempted to attack the target, the attack failed.
+
+(base) zhanhaoli@ZhanhaotekiMacBook-Pro cs5010-project % java -cp bin Driver res/SmallTownWorld.txt 5;
+
+++++++++++++++++++++
+Welcome to the game! You have 5 turns.
+Please choose an option:
+1. Show the Map Information
+2. Add the Human-controller player
+3. Add the Computer-controller player
+4. Display the player's information
+5. Display the Place's information
+6. Start the game
+7. Print the map
+0. Exit
+2
+Enter the player's name:
+Ivan
+Enter your starting place number (1-20):
+2
+Enter your limit of carrying items (1-10):
+3
+Player added successfully:
+Name: Ivan
+Location: Grocery Store
+Carry limit: 3
+Do you want to add another player? (yes/no)
+yes
+Enter the player's name:
+Steven
+Enter your starting place number (1-20):
+3
+Enter your limit of carrying items (1-10):
+3
+Player added successfully:
+Name: Steven
+Location: School
+Carry limit: 3
+Do you want to add another player? (yes/no)
+no
+Please choose an option:
+1. Show the Map Information
+2. Add the Human-controller player
+3. Add the Computer-controller player
+4. Display the player's information
+5. Display the Place's information
+6. Start the game
+7. Print the map
+0. Exit
+6
+
+1 of 5
+
+Hi Ivan, you are in Grocery Store
+Target is in Park
+Pet is in Park
+Item in this place: 
+ - Shopping Cart (Damage: 12)
+Please choose an option:
+1. Move player
+2. Pick up item
+3. Look around
+4. Attack target
+5. Move pet
+2
+Items in Grocery Store:
+1. Shopping Cart (Damage: 12)
+Enter the item number to pick up:
+1
+Picked up Shopping Cart.
+
+Turn changed from Ivan to Steven (Turn 1)
+
+1 of 5
+
+Hi Steven, you are in School
+Target is in Park
+Pet is in Park
+Item in this place: 
+ - Textbook (Damage: 6)
+Please choose an option:
+1. Move player
+2. Pick up item
+3. Look around
+4. Attack target
+5. Move pet
+3
+Current place: School
+Items in School:
+Textbook (Damage: 6)
+Neighbors of School:
+ - Grocery Store
+   Players in this place:Ivan
+ - Post Office
+   Items in Post Office:Envelope (Damage: 8)
+ - Hospital
+   Items in Hospital:Medical Kit (Damage: 18)
+ - Restaurant
+   Items in Restaurant:Menu (Damage: 22)
+
+
+Turn changed from Steven to Ivan (Turn 2)
+
+2 of 5
+
+Hi Ivan, you are in Grocery Store
+Target is in Grocery Store
+Please choose an option:
+1. Move player
+2. Pick up item
+3. Look around
+4. Attack target
+5. Move pet
+4
+
+Choose your attack:
+0. Poke in the eye (1 damage)
+1. Use Shopping Cart (12 damage)
+1
+Attack failed: Other players have witnessed your attempt!
+
+
+### Scenario 3:
+I placed Player 1 and Player 2 in adjacent locations, with the pet positioned at Player 1’s location. When Player 1 attacked the target, it successfully reduced the target’s health.
+
+(base) zhanhaoli@ZhanhaotekiMacBook-Pro cs5010-project % java -cp bin Driver res/SmallTownWorld.txt 5;
+
+++++++++++++++++++++
+Welcome to the game! You have 5 turns.
+Please choose an option:
+1. Show the Map Information
+2. Add the Human-controller player
+3. Add the Computer-controller player
+4. Display the player's information
+5. Display the Place's information
+6. Start the game
+7. Print the map
+0. Exit
+2
+Enter the player's name:
+Ivan
+Enter your starting place number (1-20):
+1
+Enter your limit of carrying items (1-10):
+3
+Player added successfully:
+Name: Ivan
+Location: Park
+Carry limit: 3
+Do you want to add another player? (yes/no)
+yes
+Enter the player's name:
+Steven
+Enter your starting place number (1-20):
+2
+Enter your limit of carrying items (1-10):
+3
+Player added successfully:
+Name: Steven
+Location: Grocery Store
+Carry limit: 3
+Do you want to add another player? (yes/no)
+no
+Please choose an option:
+1. Show the Map Information
+2. Add the Human-controller player
+3. Add the Computer-controller player
+4. Display the player's information
+5. Display the Place's information
+6. Start the game
+7. Print the map
+0. Exit
+6
+
+1 of 5
+
+Hi Ivan, you are in Park
+Target is in Park
+Pet is in Park
+Item in this place: 
+ - Toy Ball (Damage: 8)
+Please choose an option:
+1. Move player
+2. Pick up item
+3. Look around
+4. Attack target
+5. Move pet
+4
+
+Choose your attack:
+0. Poke in the eye (1 damage)
+0
+Successfully poked the target in the eye for 1 damage! 
+Target health: 49

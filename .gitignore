@@ -13,3 +13,7 @@ out/
 .classpath
 .project
 *.iml
+
+/lib/
+
+res/CS5010-Project.jar

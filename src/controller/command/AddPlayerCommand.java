@@ -1,61 +1,40 @@
 package controller.command;
 
 import java.io.IOException;
-import java.util.Scanner;
 import model.town.Town;
 
 /**
  * Command to add a human player or computer player to the game.
  */
 public class AddPlayerCommand implements Command {
-  private final Appendable output;
   private final Town town;
-  private final Scanner scanner;
   private final boolean isComputerPlayer;
+  private final String playerName;
+  private final int startingPlace;
+  private final int carryLimit;
 
   /**
-   * Constructs a new AddHumanPlayerCommand.
+   * Constructs a new AddPlayerCommand.
    *
-   * @param gameOutput  the output stream to write messages to
-   * @param gameTown    the town where the players are located
-   * @param gameScanner the scanner to get user input
-   * @param playerType  whether the player is a computer player
+   * @param gameTown   the town model
+   * @param playerType the type of player to add
+   * @param name       the name of the player
+   * @param place      the starting place of the player
+   * @param limit      the carry limit of the player
    */
-  public AddPlayerCommand(Town gameTown, Appendable gameOutput,
-                          Scanner gameScanner, boolean playerType) {
-    this.output = gameOutput;
+  public AddPlayerCommand(Town gameTown, boolean playerType,
+                          String name, int place, int limit) {
     this.town = gameTown;
-    this.scanner = gameScanner;
     this.isComputerPlayer = playerType;
+    this.playerName = name;
+    this.startingPlace = place;
+    this.carryLimit = limit;
   }
-
+  
   @Override
-  public void execute() throws IOException {
-    if (isComputerPlayer) {
-      town.addComputerPlayer();
-    } else {
-      addPlayerMenu();
-    }
+  public boolean execute() throws IOException {
+    town.addPlayer(playerName, startingPlace, carryLimit, isComputerPlayer);
+    return true;
   }
 
-  /**
-   * Adds a human player to the game.
-   *
-   * @throws IOException if there is an issue with I/O operations.
-   */
-  private void addPlayerMenu() throws IOException {
-    boolean addPlayerContinue = true;
-    town.addPlayer();
-    while (addPlayerContinue) {
-      output.append("Do you want to add another player? (yes/no)\n");
-      String choice = scanner.nextLine();
-      if ("yes".equalsIgnoreCase(choice)) {
-        town.addPlayer();
-      } else if ("no".equalsIgnoreCase(choice)) {
-        addPlayerContinue = false;
-      } else {
-        output.append("Invalid input. Please enter 'yes' or 'no'.\n");
-      }
-    }
-  }
 }
